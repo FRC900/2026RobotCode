@@ -5,6 +5,10 @@ import com.team254.lib.subsystems.MotorInputs;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowers;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.team254.lib.subsystems.*;
+
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -12,18 +16,20 @@ public class ShooterTop extends ServoMotorSubsystemWithFollowers<MotorInputs, Mo
 
     private final RobotState state;
 
-    // private ShooterTopInputsAutoLogged InputsSensors = new ShooterTopInputsAutoLogged();
+    private ShooterTopSensorIO.ShooterTopSensorInputs inputsSensors = new ShooterTopSensorIO.ShooterTopSensorInputs();
     private ShooterTopSensorIO ioSensors;
 
 
 
-    public ShooterTop(ServoMotorSubsystemWithFollowersConfig leadConfig, 
-    MotorIO leadIO, 
-    MotorIO[] FollowerIO, 
-    final ShooterTopSensorIO sensorIO, 
-    RobotState state) {
-
-        super(leadConfig, 
+    public ShooterTop(
+        ServoMotorSubsystemWithFollowersConfig leadConfig, 
+        MotorIO leadIO, 
+        MotorIO[] FollowerIO, 
+        final ShooterTopSensorIO sensorIO, 
+        RobotState state) {
+    
+        super(
+        leadConfig, 
         new MotorInputs(), 
         leadIO, 
         new MotorInputs[] {new MotorInputs()}, 
@@ -44,7 +50,9 @@ public class ShooterTop extends ServoMotorSubsystemWithFollowers<MotorInputs, Mo
     public void periodic() {
         super.periodic();
         
-      //  ioSensors.readInputs(InputsSensors);
+        ioSensors.readInputs(inputsSensors);
+
+        //Logger.processInputs("ShooterTop", inputsSensors);
 
     }
 }

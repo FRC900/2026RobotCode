@@ -2,16 +2,20 @@ package com.team900.frc2026.subsystems.ShooterTop;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public class ShooterTopSensorIO {
+import edu.wpi.first.wpilibj.DigitalInput;
+
+public interface ShooterTopSensorIO {
 
     @AutoLog
 
     public class ShooterTopSensorInputs {
 
-        public boolean ExampleBoolean;
+        public boolean shooterBannerHasPiece;
 
     }
 
-     public default void readInputs(ShooterTopSensorIO.ShooterTopSensorInputs inputs) {}
+    public default void readInputs(ShooterTopSensorInputs inputs) {}
 
+
+    DigitalInput getBanner();
 }
