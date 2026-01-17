@@ -1,12 +1,6 @@
 package com.team254.lib.reefscape;
 
-import com.team254.frc2025.Constants;
-import com.team254.lib.util.FieldConstants;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 public class ScoringLocation {
 
@@ -18,7 +12,7 @@ public class ScoringLocation {
         this.scoringLocationIndex = scoringLocationIndex;
     }
 
-    public Pose2d getPose() {
+    /* public Pose2d getPose() {
         return pose;
     }
 
@@ -207,5 +201,5 @@ public class ScoringLocation {
     public static final ScoringLocation IceCreamMiddle =
             new ScoringLocation(FieldConstants.StagingPositions.middleIceCream, -1);
     public static final ScoringLocation IceCreamRight =
-            new ScoringLocation(FieldConstants.StagingPositions.rightIceCream, -1);
+            new ScoringLocation(FieldConstants.StagingPositions.rightIceCream, -1); */
 }

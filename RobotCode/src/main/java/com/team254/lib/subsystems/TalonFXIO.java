@@ -5,11 +5,12 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.team254.frc2025.Robot;
 import com.team254.lib.drivers.CANDeviceId;
 import com.team254.lib.util.CANStatusLogger;
 import com.team254.lib.util.CTREUtil;
+import com.team900.frc2026.Robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -26,8 +27,9 @@ public class TalonFXIO implements MotorIO {
     private final PositionVoltage positionVoltageControl = new PositionVoltage(0.0);
     private final MotionMagicVoltage motionMagicPositionControl = new MotionMagicVoltage(0.0);
     private final DynamicMotionMagicVoltage dynamicMotionMagicVoltage =
-            new DynamicMotionMagicVoltage(0.0, 0.0, 0.0, 0.0);
-    private final Follower followerControl = new Follower(0, true);
+            new DynamicMotionMagicVoltage(0.0, 0.0, 0.0);
+    private final Follower followerControl = new Follower(0, MotorAlignmentValue.Opposed);
+
     private final TorqueCurrentFOC torqueCurrentFOC = new TorqueCurrentFOC(0.0);
 
     private final StatusSignal<Angle> positionSignal;
@@ -190,10 +192,10 @@ public class TalonFXIO implements MotorIO {
     @Override
     public void follow(CANDeviceId masterId, boolean opposeMasterDirection) {
         CTREUtil.tryUntilOK(
-                () ->
+
                         talon.setControl(
                                 followerControl
-                                        .withMasterID(masterId.getDeviceNumber())
+                                        .withLeaderID(masterId.getDeviceNumber()),
                                         .withOpposeMasterDirection(opposeMasterDirection)),
                 this.config.talonCANID.getDeviceNumber());
     }
@@ -207,4 +209,12 @@ public class TalonFXIO implements MotorIO {
     public void setVoltageConfig(VoltageConfigs inputConfig) {
         CTREUtil.applyConfigurationNonBlocking(talon, inputConfig);
     }
+
+    @Override
+    public void readFollowerInputs(MotorInputs[] inputs) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'readFollowerInputs'");
+    }
+
+
 }

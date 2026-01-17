@@ -4,23 +4,44 @@
 
 package com.team900.frc2026.factories;
 
-
+import com.team254.lib.util.ShooterSetpoint;
+import com.team900.frc2026.RobotContainer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import java.util.function.Supplier;
 
 public class ShootingFactory {
- 
-/* Commands for shooting */
 
-  public static Command SpinBoth() {
+    /* Commands for shooting */
 
-    return null;
-  }
+    public static Command SpinBoth(
+            RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
 
-  public static Command SpinBottom() {
-    return null;
-  }
+        var topShooter = container.getTopShooter();
+        var bottomShooter = container.getBottomShooter();
+        return new ParallelCommandGroup(
+                        topShooter.velocitySetpointCommand(
+                                () -> setpointSupplier.get().getShooterStage1RPS()),
+                        bottomShooter.velocitySetpointCommand(
+                                () -> setpointSupplier.get().getShooterRPS()))
+                .withName("Spin Both Shooter Stages");
+    }
 
-  public static Command SpinTop() {
-    return null;
-  }
+    public static Command SpinBottom(
+            RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
+
+        var bottomShooter = container.getBottomShooter();
+        return bottomShooter
+                .velocitySetpointCommand(() -> setpointSupplier.get().getShooterRPS())
+                .withName("Spin Up Bottom Shooter");
+    }
+
+    public static Command SpinTop(
+            RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
+
+        var topShooter = container.getTopShooter();
+        return topShooter
+                .velocitySetpointCommand(() -> setpointSupplier.get().getShooterRPS())
+                .withName("Spin Up Bottom Shooter");
+    }
 }

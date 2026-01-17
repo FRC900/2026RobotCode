@@ -4,17 +4,54 @@
 
 package com.team900.frc2026;
 
+import com.team254.lib.subsystems.TalonFXIO;
+import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottom;
+import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIOHardware;
+import com.team900.frc2026.subsystems.TopShooter.TopShooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
-  public RobotContainer() {
-    configureBindings();
-  }
+    public RobotContainer() {
+        configureBindings();
+    }
 
-  private void configureBindings() {}
+    public RobotState getRobotState() {
+        return robotState;
+    }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
-  }
+    private void configureBindings() {}
+
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
+
+    public TopShooter getTopShooter() {
+        return topShooter;
+    }
+
+    private ShooterBottom buildShooterBottom() {
+        return new ShooterBottom(
+                Constants.kShooterBottomConfig,
+                new TalonFXIO(Constants.kShooterBottomConfig),
+                new ShooterBottomSensorIOHardware(
+                        Constants.SensorConstants.kShooterStage1BannerSensorPort),
+                robotState);
+    }
+
+    private TopShooter buildTopShooter() {
+        return new TopShooter(
+                Constants.kShooterTopConfig,
+                new TalonFXIO(Constants.kShooterTopTopConfig),
+                new TalonFXIO[] {new TalonFXIO(Constants.kShooterTopBottomConfig)},
+                robotState);
+    }
+
+    public ShooterBottom getBottomShooter() {
+        return shooterBottom;
+    }
+
+    private final RobotState robotState = new RobotState();
+    private final ShooterBottom shooterBottom = buildShooterBottom();
+    private final TopShooter topShooter = buildTopShooter();
 }

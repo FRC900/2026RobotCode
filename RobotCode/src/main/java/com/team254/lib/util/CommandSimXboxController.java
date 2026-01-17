@@ -1,6 +1,6 @@
 package com.team254.lib.util;
 
-import com.team254.frc2025.Constants;
+import com.team900.frc2026.Constants;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;

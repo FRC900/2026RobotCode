@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
  *
  * @param <T>
  */
-public class ServoMotorSubsystem<T extends MotorInputs, U extends MotorIO>
+public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends MotorIO>
         extends SubsystemBase {
     protected U io;
     protected T inputs;

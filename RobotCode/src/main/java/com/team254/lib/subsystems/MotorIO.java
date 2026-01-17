@@ -8,6 +8,8 @@ import com.team254.lib.drivers.CANDeviceId;
 public interface MotorIO {
     void readInputs(MotorInputs inputs);
 
+    void readFollowerInputs(MotorInputs[] inputs);
+
     void setOpenLoopDutyCycle(double dutyCycle);
 
     // These are in the "units" of the subsystem (rad, m).

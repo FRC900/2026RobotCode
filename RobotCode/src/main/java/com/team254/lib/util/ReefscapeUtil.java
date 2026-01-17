@@ -1,12 +1,7 @@
 package com.team254.lib.util;
 
-import com.team254.frc2025.Constants;
-import com.team254.frc2025.RobotContainer;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
+import com.team900.frc2026.RobotContainer;
 import edu.wpi.first.math.geometry.Translation2d;
-import org.littletonrobotics.junction.Logger;
 
 public class ReefscapeUtil {
     public static boolean awayFromReef(RobotContainer container) {
@@ -18,7 +13,7 @@ public class ReefscapeUtil {
         Translation2d blueReefCenter = FieldConstants.Reef.center;
         Translation2d redReefCenter = Util.flipRedBlue(blueReefCenter);
 
-        Pose2d robotPose = container.getRobotState().getLatestFieldToRobot().getValue();
+        /*  Pose2d robotPose = container.getRobotState().getLatestFieldToRobot().getValue();
         Pose2d predictedRobotPose = container.getRobotState().getPredictedCappedFieldToRobot(0.2);
         Transform2d offsetTransform =
                 new Transform2d(new Translation2d(offset, 0), Rotation2d.kZero);
@@ -52,11 +47,11 @@ public class ReefscapeUtil {
                                         futureDistanceAwayFromRedReef,
                                         0.02));
 
-        Logger.recordOutput("ReefscapeUtils/predictedCheck", predictedCheck);
+        Logger.recordOutput("ReefscapeUtils/predictedCheck", predictedCheck); */
 
-        boolean gyroCheck = container.getElevator().gyroCheck();
-        Logger.recordOutput("ReefscapeUtils/gyroCheck", gyroCheck);
+        // boolean gyroCheck = container.getElevator().gyroCheck();
+        // Logger.recordOutput("ReefscapeUtils/gyroCheck", gyroCheck);
 
-        return positionCheck && gyroCheck;
+        return true;
     }
 }

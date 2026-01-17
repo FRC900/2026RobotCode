@@ -12,9 +12,13 @@ spotless {
         targetExclude(
             'src/main/java/com/team900/frc2026/BuildConstants.java',
             'src/main/java/com/team900/frc2026/subsystems/superstructure/ModalSuperstructureTriggers.java'
+           
         )
     }
 }
+
+
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
