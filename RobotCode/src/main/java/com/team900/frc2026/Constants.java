@@ -10,7 +10,7 @@ public class Constants {
     public static final class SensorConstants {
         // placeholder constant. Make sure to tune.
         public static final int kAmpPostChopstickSensorPort = 4;
-        public static final int kShooterStage1BannerSensorPort = 3;
+        public static final int kShooterBottomBannerSensorPort = 3;
         public static final int kAmpBannerSensorPort = 2;
         public static final int kFeederBannerSensorPort = 1;
         public static final int kIntakeBannerSensorPort = 0;
