@@ -18,7 +18,6 @@ public class Robot extends LoggedRobot {
 
     public Robot() {
         m_robotContainer = new RobotContainer();
-
     }
 
     @Override
@@ -43,17 +42,20 @@ public class Robot extends LoggedRobot {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
 
-        Logger.recordMetadata("ProjectName", "YourRobot");
-        Logger.recordMetadata("Build", BuildConstants.GIT_SHA);
+        Logger.start();
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
             Logger.addDataReceiver(new NT4Publisher());
         } else {
             Logger.addDataReceiver(new WPILOGWriter("logs"));
-    }
+            Logger.addDataReceiver(new NT4Publisher());
 
-    Logger.start();
+            Logger.recordMetadata("ProjectName", "YourRobot");
+            Logger.recordMetadata("Build", BuildConstants.GIT_SHA);
+        }
+
+        Logger.start();
     }
 
     @Override
@@ -64,21 +66,23 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+
+        Logger.start();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-
-        
-        Logger.recordMetadata("ProjectName", "YourRobot");
-        Logger.recordMetadata("Build", BuildConstants.GIT_SHA);
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
             Logger.addDataReceiver(new NT4Publisher());
         } else {
             Logger.addDataReceiver(new WPILOGWriter("logs"));
+            Logger.addDataReceiver(new NT4Publisher());
+
+            Logger.recordMetadata("ProjectName", "YourRobot");
+            Logger.recordMetadata("Build", BuildConstants.GIT_SHA);
+        }
     }
-}
 
     @Override
     public void teleopPeriodic() {}
@@ -96,5 +100,4 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testExit() {}
-    
 }

@@ -4,12 +4,8 @@ import com.team254.lib.time.RobotTime;
 import com.team254.lib.util.LatchedBoolean;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
-
-
-
 
 public class SimulatedRobotState {
 
@@ -21,7 +17,7 @@ public class SimulatedRobotState {
     }
 
     TimeInterpolatableBuffer<Pose2d> fieldToRobotSimulatedTruth =
-        TimeInterpolatableBuffer.createBuffer(RobotState.LOOKBACK_TIME);
+            TimeInterpolatableBuffer.createBuffer(RobotState.LOOKBACK_TIME);
 
     private BallState ballState = BallState.INTAKE;
     private LatchedBoolean shooterOn = new LatchedBoolean();
@@ -30,36 +26,34 @@ public class SimulatedRobotState {
 
     private RobotContainer container;
 
-    public SimulatedRobotState(RobotContainer container){
+    public SimulatedRobotState(RobotContainer container) {
         this.container = container;
     }
 
-    synchronized public void addFieldToRobot(Pose2d pose){
+    public synchronized void addFieldToRobot(Pose2d pose) {
         fieldToRobotSimulatedTruth.addSample(RobotTime.getTimestampSeconds(), pose);
     }
 
-    synchronized public BallState getBallState() {
+    public synchronized BallState getBallState() {
         return this.ballState;
     }
 
-    synchronized public void setBallState(BallState state) {
+    public synchronized void setBallState(BallState state) {
         this.ballState = state;
     }
 
-    synchronized public Pose2d getLatestFieldToRobot() {
+    public synchronized Pose2d getLatestFieldToRobot() {
         var entry = fieldToRobotSimulatedTruth.getInternalBuffer().lastEntry();
         if (entry == null) {
-        return null;
+            return null;
         }
         return entry.getValue();
     }
 
+    public synchronized void updateSim() {
 
-
-    synchronized public void updateSim() {
-
-        boolean ShooterCurrentlyOn = shooterOn.update(container.getTopShooter().getCurrentVelocity() > 1.0);
-        // update intake and climb states as well
+        boolean ShooterCurrentlyOn =
+                shooterOn.update(container.getTopShooter().getCurrentVelocity() > 1.0);
 
         switch (ballState) {
             case INTAKE_AND_SHOOT -> {
@@ -80,9 +74,5 @@ public class SimulatedRobotState {
                 // Climbing
             }
         }
-
-        
     }
-
-
 }

@@ -5,7 +5,7 @@ import com.team254.lib.drivers.CANDeviceId;
 
 public class ServoMotorSubsystemConfig {
     public String name = "UNNAMED";
-    public CANDeviceId talonCANID;
+    public CANDeviceId talonCANID = new CANDeviceId(1);
     public TalonFXConfiguration fxConfig = new TalonFXConfiguration();
 
     // Ratio of rotor to units for this talon.  rotor * by this ratio should

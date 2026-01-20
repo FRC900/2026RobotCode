@@ -191,12 +191,9 @@ public class TalonFXIO implements MotorIO {
 
     @Override
     public void follow(CANDeviceId masterId, boolean opposeMasterDirection) {
+        // alignment already configured in followerControl constructor; just set the leader ID
         CTREUtil.tryUntilOK(
-
-                        talon.setControl(
-                                followerControl
-                                        .withLeaderID(masterId.getDeviceNumber()),
-                                        .withOpposeMasterDirection(opposeMasterDirection)),
+                () -> talon.setControl(followerControl.withLeaderID(masterId.getDeviceNumber())),
                 this.config.talonCANID.getDeviceNumber());
     }
 
@@ -212,9 +209,30 @@ public class TalonFXIO implements MotorIO {
 
     @Override
     public void readFollowerInputs(MotorInputs[] inputs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readFollowerInputs'");
+        if (inputs == null || inputs.length == 0) {
+            return;
+        }
+
+        // Refresh once, then populate each non-null slot with the current status values.
+        BaseStatusSignal.refreshAll(signals);
+
+        double pos = rotorToUnits(positionSignal.getValueAsDouble());
+        double vel = rotorToUnits(velocitySignal.getValueAsDouble());
+        double volts = voltageSignal.getValueAsDouble();
+        double stator = currentStatorSignal.getValueAsDouble();
+        double supply = currentSupplySignal.getValueAsDouble();
+        double rawRotor = rawRotorPositionSignal.getValueAsDouble();
+
+        for (MotorInputs in : inputs) {
+            if (in == null) {
+                continue;
+            }
+            in.unitPosition = pos;
+            in.velocityUnitsPerSecond = vel;
+            in.appliedVolts = volts;
+            in.currentStatorAmps = stator;
+            in.currentSupplyAmps = supply;
+            in.rawRotorPosition = rawRotor;
+        }
     }
-
-
 }
