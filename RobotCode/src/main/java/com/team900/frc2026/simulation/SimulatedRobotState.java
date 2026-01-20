@@ -24,8 +24,9 @@ public class SimulatedRobotState {
         TimeInterpolatableBuffer.createBuffer(RobotState.LOOKBACK_TIME);
 
     private BallState ballState = BallState.INTAKE;
-    private LatchedBoolean ShooterOn = new LatchedBoolean();
-    private LatchedBoolean IntakeOn = new LatchedBoolean();
+    private LatchedBoolean shooterOn = new LatchedBoolean();
+    private LatchedBoolean intakeOn = new LatchedBoolean();
+    private LatchedBoolean climb = new LatchedBoolean();
 
     private RobotContainer container;
 
@@ -57,18 +58,25 @@ public class SimulatedRobotState {
 
     synchronized public void updateSim() {
 
+        boolean ShooterCurrentlyOn = shooterOn.update(container.getTopShooter().getCurrentVelocity() > 1.0);
+        // update intake and climb states as well
 
         switch (ballState) {
             case INTAKE_AND_SHOOT -> {
+                intakeOn.update(true);
+                shooterOn.update(true);
                 // Intaking fuel and shooting fuel simultaneously
             }
             case INTAKE -> {
+                intakeOn.update(true);
                 // Intaking fuel
             }
             case SHOOT -> {
+                shooterOn.update(true);
                 // Shooting fuel
             }
             case CLIMB -> {
+                climb.update(true);
                 // Climbing
             }
         }
