@@ -1,6 +1,7 @@
 package com.team900.frc2026.simulation;
 
 import com.team254.lib.time.RobotTime;
+import com.team254.lib.util.LatchedBoolean;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 
@@ -13,14 +14,18 @@ import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 public class SimulatedRobotState {
 
     public enum BallState {
-        STATE_ONE,
-        STATE_TWO
+        INTAKE_AND_SHOOT,
+        INTAKE,
+        SHOOT,
+        CLIMB
     }
 
     TimeInterpolatableBuffer<Pose2d> fieldToRobotSimulatedTruth =
         TimeInterpolatableBuffer.createBuffer(RobotState.LOOKBACK_TIME);
 
-    private BallState ballState = BallState.STATE_ONE;
+    private BallState ballState = BallState.INTAKE;
+    private LatchedBoolean ShooterOn = new LatchedBoolean();
+    private LatchedBoolean IntakeOn = new LatchedBoolean();
 
     private RobotContainer container;
 
@@ -48,7 +53,26 @@ public class SimulatedRobotState {
         return entry.getValue();
     }
 
+
+
     synchronized public void updateSim() {
+
+
+        switch (ballState) {
+            case INTAKE_AND_SHOOT -> {
+                // Intaking fuel and shooting fuel simultaneously
+            }
+            case INTAKE -> {
+                // Intaking fuel
+            }
+            case SHOOT -> {
+                // Shooting fuel
+            }
+            case CLIMB -> {
+                // Climbing
+            }
+        }
+
         
     }
 
