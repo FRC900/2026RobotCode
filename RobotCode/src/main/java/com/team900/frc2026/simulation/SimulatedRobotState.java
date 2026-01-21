@@ -1,20 +1,26 @@
 package com.team900.frc2026.simulation;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.team254.lib.time.RobotTime;
 import com.team254.lib.util.LatchedBoolean;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class SimulatedRobotState {
 
     public enum BallState {
         INTAKE_AND_SHOOT,
         INTAKE,
-        SHOOT,
+        SHOOT, 
         CLIMB
     }
+
+    private static final DoubleLogEntry shooterIsOn = new DoubleLogEntry(DataLogManager.getLog(), "shooterOn");
 
     TimeInterpolatableBuffer<Pose2d> fieldToRobotSimulatedTruth =
             TimeInterpolatableBuffer.createBuffer(RobotState.LOOKBACK_TIME);
@@ -55,6 +61,9 @@ public class SimulatedRobotState {
         boolean ShooterCurrentlyOn =
                 shooterOn.update(container.getTopShooter().getCurrentVelocity() > 1.0);
 
+        Logger.recordOutput("SimulatedRobotState/ShooterCurrentlyOn", ShooterCurrentlyOn);
+        shooterIsOn.append(ShooterCurrentlyOn ? 1.0 : 0.0);
+        
         switch (ballState) {
             case INTAKE_AND_SHOOT -> {
                 intakeOn.update(true);

@@ -4,6 +4,7 @@
 
 package com.team900.frc2026;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -18,11 +19,15 @@ public class Robot extends LoggedRobot {
 
     public Robot() {
         m_robotContainer = new RobotContainer();
+        DataLogManager.start();
     }
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+        if (Robot.isSimulation()){
+            m_robotContainer.getSimulatedRobotState().updateSim();
+        }
     }
 
     @Override
@@ -42,7 +47,7 @@ public class Robot extends LoggedRobot {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
 
-        Logger.start();
+
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
@@ -51,7 +56,7 @@ public class Robot extends LoggedRobot {
             Logger.addDataReceiver(new WPILOGWriter("logs"));
             Logger.addDataReceiver(new NT4Publisher());
 
-            Logger.recordMetadata("ProjectName", "YourRobot");
+            Logger.recordMetadata("ProjectName", "Robot");
             Logger.recordMetadata("Build", BuildConstants.GIT_SHA);
         }
 
@@ -67,7 +72,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
 
-        Logger.start();
+
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
@@ -79,9 +84,11 @@ public class Robot extends LoggedRobot {
             Logger.addDataReceiver(new WPILOGWriter("logs"));
             Logger.addDataReceiver(new NT4Publisher());
 
-            Logger.recordMetadata("ProjectName", "YourRobot");
+            Logger.recordMetadata("ProjectName", "Robot");
             Logger.recordMetadata("Build", BuildConstants.GIT_SHA);
         }
+
+        Logger.start();
     }
 
     @Override

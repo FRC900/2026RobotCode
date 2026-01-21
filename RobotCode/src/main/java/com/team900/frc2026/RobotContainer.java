@@ -6,6 +6,7 @@ package com.team900.frc2026;
 
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
+import com.team900.frc2026.simulation.SimulatedRobotState;
 import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottom;
 import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIOHardware;
 import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIOSim;
@@ -19,7 +20,8 @@ public class RobotContainer {
     private RobotState robotState;
     private ShooterBottom shooterBottom;
     private TopShooter topShooter;
-
+    
+    private final SimulatedRobotState simulatedRobotState = Robot.isSimulation() ? new SimulatedRobotState(this) : null;
     private ShooterBottomSensorIOSim simulatedBottomShooterSensors;
 
     public RobotContainer() {
@@ -47,6 +49,11 @@ public class RobotContainer {
 
     public TopShooter getTopShooter() {
         return topShooter;
+    }
+
+
+    public SimulatedRobotState getSimulatedRobotState() {
+        return simulatedRobotState;
     }
 
     private ShooterBottom buildShooterBottom() {
