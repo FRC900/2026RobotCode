@@ -3,10 +3,14 @@ package com.team254.lib.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.team254.lib.drivers.CANDeviceId;
 
+import edu.wpi.first.wpilibj.CAN;
+
 public class ServoMotorSubsystemConfig {
-    public String name = "UNNAMED";
-    public CANDeviceId talonCANID = new CANDeviceId(1);
+    public String name = "ServoMotorSubsystem";
+    public CANDeviceId talonCANID;
     public TalonFXConfiguration fxConfig = new TalonFXConfiguration();
+
+    
 
     // Ratio of rotor to units for this talon.  rotor * by this ratio should
     // be the units.
@@ -17,4 +21,9 @@ public class ServoMotorSubsystemConfig {
 
     // Moment of Inertia (KgMetersSquared) for sim
     public double momentOfInertia = 0.5;
+
+    public ServoMotorSubsystemConfig(int talonCANIDNum) {
+        this.talonCANID = new CANDeviceId(talonCANIDNum);
+        this.fxConfig = fxConfig;
+    }
 }

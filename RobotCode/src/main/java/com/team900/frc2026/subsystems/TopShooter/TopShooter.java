@@ -90,34 +90,34 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
     protected void setOpenLoopDutyCycleImpl(double dutyCycle) {
         Logger.recordOutput(
                 getName() + "/top/API/setOpenLoopDutyCycle/dutyCycle",
-                dutyCycle * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                dutyCycle * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
         Logger.recordOutput(
                 getName() + "/bottom/API/setOpenLoopDutyCycle/dutyCycle",
-                dutyCycle * Constants.ShooterConstants.kBottomRollerSpeedupFactor);
+                dutyCycle * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
         topMotorIO.setOpenLoopDutyCycle(
-                dutyCycle * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                dutyCycle * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
         bottomMotorIO.setOpenLoopDutyCycle(
-                dutyCycle * Constants.ShooterConstants.kBottomRollerSpeedupFactor);
+                dutyCycle * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
     }
 
     private void setVelocitySetpointImpl(double unitsPerSecond) {
         Logger.recordOutput(
                 getName() + "/top/API/setVelocitySetpointImpl/UnitsPerS",
-                unitsPerSecond * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                unitsPerSecond * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
         Logger.recordOutput(
                 getName() + "/bottom/API/setVelocitySetpointImpl/UnitsPerS",
-                unitsPerSecond * Constants.ShooterConstants.kBottomRollerSpeedupFactor);
+                unitsPerSecond * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
         topMotorIO.setVelocitySetpoint(
-                unitsPerSecond * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                unitsPerSecond * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
         bottomMotorIO.setVelocitySetpoint(
-                unitsPerSecond * Constants.ShooterConstants.kBottomRollerSpeedupFactor);
+                unitsPerSecond * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
     }
 
     public double getCurrentVelocity() {
         return ((pickFirst(inputsBottomMotor).velocityUnitsPerSecond
-                                / Constants.ShooterConstants.kBottomRollerSpeedupFactor)
+                                / Constants.ShooterConstants.kTopBottomRollerSpeedupFactor)
                         + (inputsTopMotor.velocityUnitsPerSecond
-                                / Constants.ShooterConstants.kTopRollerSpeedupFactor))
+                                / Constants.ShooterConstants.kTopTopRollerSpeedupFactor))
                 / 2.0;
     }
 }

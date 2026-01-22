@@ -1,5 +1,6 @@
 package com.team900.frc2026;
 
+import com.ctre.phoenix6.CANBus;
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,13 +22,13 @@ public class Constants {
     }
 
     public static final ServoMotorSubsystemConfig kShooterBottomConfig =
-            new ServoMotorSubsystemConfig();
+            new ServoMotorSubsystemConfig(3);
     public static final ServoMotorSubsystemConfig kShooterTopTopConfig =
-            new ServoMotorSubsystemConfig();
+            new ServoMotorSubsystemConfig(2);
     public static final ServoMotorSubsystemConfig kShooterTopBottomConfig =
-            new ServoMotorSubsystemConfig();
+            new ServoMotorSubsystemConfig(1);
     public static final ServoMotorSubsystemWithFollowersConfig kShooterTopConfig =
-            new ServoMotorSubsystemWithFollowersConfig();
+            new ServoMotorSubsystemWithFollowersConfig(4);
 
     public static final double kFieldLengthMeters = 8.07;
 
@@ -39,7 +40,9 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        // Placeholder values. Make sure to tuen.
+        // Placeholder values. Make sure to tune.
+
+        public static final CANBus CAN_BUS = CANBus.roboRIO();
         public static final Rotation2d kTurretToShotCorrection =
                 new Rotation2d(Units.degreesToRadians(1.5));
 
@@ -51,22 +54,22 @@ public class Constants {
         public static final double kRingLaunchVelMetersPerSecPerRotPerSec = 0.141;
         public static final double kRingLaunchLiftCoeff =
                 0.013; // Multiply by v^2 to get lift accel
-        public static final double kShooterStage2RPSShortRange = 120.0; // rot/s
-        public static final double kShooterStage2MaxShortRangeDistance = 2.0;
-        public static final double kShooterStage2MinLongRangeDistance = 3.0;
-        public static final double kShooterStage2RPSLongRange = 120.0; // rot/s
-        public static final double kShooterStage2RPSCap = 130.0; // rot/s
-        public static final double kShooterStage1RPS = 70.0; // rot/s
-        public static final double kShooterStage2Epsilon = 3.0;
-        public static final double kShooterSpinupStage1RPS = 0.0;
+        public static final double kShooterTopRPSShortRange = 120.0; // rot/s
+        public static final double kShooterTopMaxShortRangeDistance = 2.0;
+        public static final double kShooterTopMinLongRangeDistance = 3.0;
+        public static final double kShooterTopRPSLongRange = 120.0; // rot/s
+        public static final double kShooterTopRPSCap = 130.0; // rot/s
+        public static final double kShooterBottomRPS = 70.0; // rot/s
+        public static final double kShooterTopEpsilon = 3.0;
+        public static final double kShooterSpinupBottomRPS = 0.0;
 
-        public static final double kShooterStage1IntakeRPS = 4.0;
-        public static final double kShooterStage1ExhaustRPS = -10.0;
+        public static final double kShooterBottomIntakeRPS = 4.0;
+        public static final double kShooterBottomExhaustRPS = -10.0;
 
         public static final double kFenderShotRPS = 100.0;
         public static final double kPreloadShotRPS = 90.0;
 
-        public static final double kBottomRollerSpeedupFactor = 1.0;
-        public static final double kTopRollerSpeedupFactor = 1.0;
+        public static final double kTopBottomRollerSpeedupFactor = 1.0;
+        public static final double kTopTopRollerSpeedupFactor = 1.0;
     }
 }

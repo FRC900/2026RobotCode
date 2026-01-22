@@ -14,7 +14,7 @@ public class ShooterBottomSensorIOHardware implements ShooterBottomSensorIO {
     @Override
     public void readInputs(ShooterBottomSensorInputs inputs) {
 
-        inputs.shooterBannerHasPiece = shooterBanner.get();
+        inputs.bottomShooterBannerHasPiece = shooterBanner.get();
     }
 
     @Override
