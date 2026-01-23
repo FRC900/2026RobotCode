@@ -16,8 +16,8 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
 
     private final RobotState state;
 
-    private static MotorInputsAutoLogged inputsTopMotor = new MotorInputsAutoLogged();
-    private static MotorInputsAutoLogged[] inputsBottomMotor = {new MotorInputsAutoLogged()};
+    private static MotorInputsAutoLogged inputsTopMotorAutoLogged = new MotorInputsAutoLogged();
+    private static MotorInputsAutoLogged[] inputsBottomMotorAutoLogged = {new MotorInputsAutoLogged()};
 
     private MotorIO topMotorIO;
     private MotorIO bottomMotorIO;
@@ -28,21 +28,22 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
             MotorIO[] motorIOBottom,
             RobotState state) {
 
-        super(leadConfig, inputsTopMotor, motorIOTop, inputsBottomMotor, motorIOBottom);
+        super(leadConfig, inputsTopMotorAutoLogged, motorIOTop, inputsBottomMotorAutoLogged, motorIOBottom);
 
         this.state = state;
         this.topMotorIO = motorIOTop;
         this.bottomMotorIO = motorIOBottom[0];
+
     }
 
     @Override
     public void periodic() {
         super.periodic();
         double timestamp = RobotTime.getTimestampSeconds();
-        bottomMotorIO.readFollowerInputs(inputsBottomMotor);
-        topMotorIO.readInputs(inputsTopMotor);
-        Logger.processInputs(getName() + "/bottom", pickFirst(inputsBottomMotor));
-        Logger.processInputs(getName() + "/top", inputsTopMotor);
+        bottomMotorIO.readFollowerInputs(inputsBottomMotorAutoLogged);
+        topMotorIO.readInputs(inputsTopMotorAutoLogged);
+        Logger.processInputs("Bottom of Top", pickFirst(inputsBottomMotorAutoLogged));
+        Logger.processInputs("Top of Top", inputsTopMotorAutoLogged);
 
         Logger.recordOutput(
                 getName() + "/latencyPeriodicSec", RobotTime.getTimestampSeconds() - timestamp);
@@ -114,9 +115,9 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
     }
 
     public double getCurrentVelocity() {
-        return ((pickFirst(inputsBottomMotor).velocityUnitsPerSecond
+        return ((pickFirst(inputsBottomMotorAutoLogged).velocityUnitsPerSecond
                                 / Constants.ShooterConstants.kTopBottomRollerSpeedupFactor)
-                        + (inputsTopMotor.velocityUnitsPerSecond
+                        + (inputsTopMotorAutoLogged.velocityUnitsPerSecond
                                 / Constants.ShooterConstants.kTopTopRollerSpeedupFactor))
                 / 2.0;
     }
