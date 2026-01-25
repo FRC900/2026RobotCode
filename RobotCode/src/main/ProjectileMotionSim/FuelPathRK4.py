@@ -123,37 +123,42 @@ vel_approx_tlist, pos_approx_tlist = vel_approx.t_list.copy()[:len(sy_list)], po
 sx_list, sz_list, vx_list, vy_list, vz_list = sx_list[:len(sy_list)], sz_list[:len(sy_list)], vx_list[:len(sy_list)], vy_list[:len(sy_list)], vz_list[:len(sy_list)]
 
 
-plt.scatter(vel_approx_tlist, vx_list, s=1)
+gy_list = [(vy0*i*dt-(0.5*g*((i*dt)**2))) for i in range(int(2*vy0/(g*dt))+1)]
+gx_list = [vx0*i*dt for i in range(len(gy_list))]
+gz_list = [vz0*i*dt for i in range(len(gy_list))]
+
+
+plt.scatter(vel_approx_tlist, vx_list, s=1, color="red")
 plt.xlabel("Time (s)")
 plt.ylabel("X-Velocity (m/s)")
 plt.title("X-Velocity vs. Time")
 plt.show()
 
-plt.scatter(vel_approx_tlist, vy_list, s=1)
+plt.scatter(vel_approx_tlist, vy_list, s=1, color="blue")
 plt.xlabel("Time (s)")
 plt.ylabel("Y-Velocity (m/s)")
 plt.title("Y-Velocity vs. Time")
 plt.show()
 
-plt.scatter(vel_approx_tlist, vz_list, s=1)
+plt.scatter(vel_approx_tlist, vz_list, s=1, color="green")
 plt.xlabel("Time (s)")
 plt.ylabel("Z-Velocity (m/s)")
 plt.title("Z-Velocity vs. Time")
 plt.show()
 
-plt.scatter(pos_approx_tlist, sx_list, s=1)
+plt.scatter(pos_approx_tlist, sx_list, s=1, color="red")
 plt.xlabel("Time (s)")
 plt.ylabel("X-Position (m)")
 plt.title("X-Position vs. Time")
 plt.show()
 
-plt.scatter(pos_approx_tlist, sy_list, s=1)
+plt.scatter(pos_approx_tlist, sy_list, s=1, color="blue")
 plt.xlabel("Time (s)")
 plt.ylabel("Y-Position (m)")
 plt.title("Y-Position vs. Time")
 plt.show()
 
-plt.scatter(pos_approx_tlist, sz_list, s=1)
+plt.scatter(pos_approx_tlist, sz_list, s=1, color="green")
 plt.xlabel("Time (s)")
 plt.ylabel("Z-Position (m)")
 plt.title("Z-Position vs. Time")
@@ -162,7 +167,8 @@ plt.show()
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.scatter(sx_list, sy_list, sz_list, label='Trajectory', color='red', s=1)
+ax.scatter(sx_list, sy_list, sz_list, label='Full Trajectory', color='magenta', s=1)
+ax.scatter(gx_list, gy_list, gz_list, label='Gravity Only (DVAT) Trajectory', color='orange', s=1)
 
 ax.set_xlabel('X Position (m)')
 ax.set_ylabel('Y Position (m)')
