@@ -105,6 +105,21 @@ vel_approx.sim(sim_end_time)
 v_list = vel_approx.a_list
 vx_list, vy_list, vz_list = map(list, zip(*vel_approx.a_list))
 
+
+def dsdt(t, _):
+    idx = int(t / dt)
+
+    dsx = v_list[idx][0]
+    dsy = v_list[idx][1]
+    dsz = v_list[idx][2]
+
+    return np.array([dsx, dsy, dsz], dtype=float)
+
+pos_approx = RungeKutta4(dsdt, t0, dt, p0_vec)
+pos_approx.sim(sim_end_time)
+sx_list, sy_list, sz_list = map(list, zip(*pos_approx.a_list))
+
+
 plt.scatter(vel_approx.t_list, vx_list)
 plt.xlabel("Time (s)")
 plt.ylabel("X-Velocity (m/s)")
@@ -123,20 +138,6 @@ plt.ylabel("Z-Velocity (m/s)")
 plt.title("Z-Velocity vs. Time")
 plt.show()
 
-
-def dsdt(t, _):
-    idx = int(t / dt)
-
-    dsx = v_list[idx][0]
-    dsy = v_list[idx][1]
-    dsz = v_list[idx][2]
-
-    return np.array([dsx, dsy, dsz], dtype=float)
-
-pos_approx = RungeKutta4(dsdt, t0, dt, p0_vec)
-pos_approx.sim(sim_end_time)
-sx_list, sy_list, sz_list = map(list, zip(*pos_approx.a_list))
-
 plt.scatter(pos_approx.t_list, sx_list)
 plt.xlabel("Time (s)")
 plt.ylabel("X-Position (m)")
@@ -153,4 +154,17 @@ plt.scatter(pos_approx.t_list, sz_list)
 plt.xlabel("Time (s)")
 plt.ylabel("Z-Position (m)")
 plt.title("Z-Position vs. Time")
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter(sx_list, sy_list, sz_list, label='Trajectory', color='red', s=1)
+
+ax.set_xlabel('X Position (m)')
+ax.set_ylabel('Y Position (m)')
+ax.set_zlabel('Z Position (m)')
+ax.set_title('3D Trajectory')
+ax.legend()
+
 plt.show()
