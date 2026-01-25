@@ -53,7 +53,6 @@ class RungeKutta4:
             self.a_list.append(self.a.copy())
 
 
-
 def reynolds(speed):
     return (rho*speed*2*ball_radius) / mu
 
@@ -119,38 +118,42 @@ pos_approx = RungeKutta4(dsdt, t0, dt, p0_vec)
 pos_approx.sim(sim_end_time)
 sx_list, sy_list, sz_list = map(list, zip(*pos_approx.a_list))
 
+sy_list = [i for i in sy_list if i >= 0]
+vel_approx_tlist, pos_approx_tlist = vel_approx.t_list.copy()[:len(sy_list)], pos_approx.t_list.copy()[:len(sy_list)]
+sx_list, sz_list, vx_list, vy_list, vz_list = sx_list[:len(sy_list)], sz_list[:len(sy_list)], vx_list[:len(sy_list)], vy_list[:len(sy_list)], vz_list[:len(sy_list)]
 
-plt.scatter(vel_approx.t_list, vx_list)
+
+plt.scatter(vel_approx_tlist, vx_list, s=1)
 plt.xlabel("Time (s)")
 plt.ylabel("X-Velocity (m/s)")
 plt.title("X-Velocity vs. Time")
 plt.show()
 
-plt.scatter(vel_approx.t_list, vy_list)
+plt.scatter(vel_approx_tlist, vy_list, s=1)
 plt.xlabel("Time (s)")
 plt.ylabel("Y-Velocity (m/s)")
 plt.title("Y-Velocity vs. Time")
 plt.show()
 
-plt.scatter(vel_approx.t_list, vz_list)
+plt.scatter(vel_approx_tlist, vz_list, s=1)
 plt.xlabel("Time (s)")
 plt.ylabel("Z-Velocity (m/s)")
 plt.title("Z-Velocity vs. Time")
 plt.show()
 
-plt.scatter(pos_approx.t_list, sx_list)
+plt.scatter(pos_approx_tlist, sx_list, s=1)
 plt.xlabel("Time (s)")
 plt.ylabel("X-Position (m)")
 plt.title("X-Position vs. Time")
 plt.show()
 
-plt.scatter(pos_approx.t_list, sy_list)
+plt.scatter(pos_approx_tlist, sy_list, s=1)
 plt.xlabel("Time (s)")
 plt.ylabel("Y-Position (m)")
 plt.title("Y-Position vs. Time")
 plt.show()
 
-plt.scatter(pos_approx.t_list, sz_list)
+plt.scatter(pos_approx_tlist, sz_list, s=1)
 plt.xlabel("Time (s)")
 plt.ylabel("Z-Position (m)")
 plt.title("Z-Position vs. Time")
