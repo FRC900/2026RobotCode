@@ -1,5 +1,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Define Constants 
 ball_radius = 0.150114
@@ -10,15 +11,18 @@ t0 = 0
 vx0 = 8
 vy0 = 5
 vz0 = 2
-v0_vec = np.array([vx0, vy0, vz0])
+sx0 = 0
+sy0 = 0
+sz0 = 0
+v0_vec = np.array([vx0, vy0, vz0], dtype=float)
+p0_vec = np.array([sx0, sy0, sz0], dtype=float)
 omega0 = 12 * np.pi
 I = 0.4 * ball_mass * (ball_radius**2)
 n_hat = 1
 rho = 1.195
 mu = 1.835e-5
 dt = 0.01
-vel_sim_end_time = 10
-pos_sim_end_time = 10
+sim_end_time = 10
 
 
 class RungeKutta4:
@@ -94,24 +98,59 @@ def dvdt(t, a):
     dvy = dvydt(t, speed, vx, vy)
     dvz = dvzdt(speed, vz)
 
-    return np.array([dvx, dvy, dvz])
-
+    return np.array([dvx, dvy, dvz], dtype=float)
 
 vel_approx = RungeKutta4(dvdt, t0, dt, v0_vec)
-vel_approx.sim(vel_sim_end_time)
+vel_approx.sim(sim_end_time)
+v_list = vel_approx.a_list
 vx_list, vy_list, vz_list = map(list, zip(*vel_approx.a_list))
 
 plt.scatter(vel_approx.t_list, vx_list)
 plt.xlabel("Time (s)")
 plt.ylabel("X-Velocity (m/s)")
+plt.title("X-Velocity vs. Time")
 plt.show()
 
 plt.scatter(vel_approx.t_list, vy_list)
 plt.xlabel("Time (s)")
 plt.ylabel("Y-Velocity (m/s)")
+plt.title("Y-Velocity vs. Time")
 plt.show()
 
 plt.scatter(vel_approx.t_list, vz_list)
 plt.xlabel("Time (s)")
 plt.ylabel("Z-Velocity (m/s)")
+plt.title("Z-Velocity vs. Time")
+plt.show()
+
+
+def dsdt(t, _):
+    idx = int(t / dt)
+
+    dsx = v_list[idx][0]
+    dsy = v_list[idx][1]
+    dsz = v_list[idx][2]
+
+    return np.array([dsx, dsy, dsz], dtype=float)
+
+pos_approx = RungeKutta4(dsdt, t0, dt, p0_vec)
+pos_approx.sim(sim_end_time)
+sx_list, sy_list, sz_list = map(list, zip(*pos_approx.a_list))
+
+plt.scatter(pos_approx.t_list, sx_list)
+plt.xlabel("Time (s)")
+plt.ylabel("X-Position (m)")
+plt.title("X-Position vs. Time")
+plt.show()
+
+plt.scatter(pos_approx.t_list, sy_list)
+plt.xlabel("Time (s)")
+plt.ylabel("Y-Position (m)")
+plt.title("Y-Position vs. Time")
+plt.show()
+
+plt.scatter(pos_approx.t_list, sz_list)
+plt.xlabel("Time (s)")
+plt.ylabel("Z-Position (m)")
+plt.title("Z-Position vs. Time")
 plt.show()
