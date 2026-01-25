@@ -167,13 +167,30 @@ plt.show()
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.scatter(sx_list, sy_list, sz_list, label='Full Trajectory', color='magenta', s=1)
-ax.scatter(gx_list, gy_list, gz_list, label='Gravity Only (DVAT) Trajectory', color='orange', s=1)
+t_f = pos_approx_tlist
+scf = ax.scatter(
+    sx_list, sy_list, sz_list,
+    c=t_f, s=6, cmap='cividis'
+)
+plt.colorbar(scf, ax=ax, label='Time--Full Model (s)')
+ax.plot(sx_list, sy_list, sz_list, linewidth=1, label="Full Trajectory", color="olive")
+
+t_g = [i*dt for i in range(len(gx_list))]
+scg = ax.scatter(
+    gx_list, gy_list, gz_list,
+    c=t_g, s=6, cmap='inferno'
+)
+plt.colorbar(scg, ax=ax, label='Time--Gravity Model (s)')
+ax.plot(gx_list, gy_list, gz_list, linewidth=1, label="Gravity Only", color="blue")
 
 ax.set_xlabel('X Position (m)')
 ax.set_ylabel('Y Position (m)')
 ax.set_zlabel('Z Position (m)')
-ax.set_title('3D Trajectory')
+ax.set_title('3D Trajectory with Time')
 ax.legend()
+
+v1 = np.array([gx_list[-1], gy_list[-1], gz_list[-1]])
+v2 = np.array([sx_list[-1], sy_list[-1], sz_list[-1]])
+print(np.linalg.norm(v2-v1))
 
 plt.show()
