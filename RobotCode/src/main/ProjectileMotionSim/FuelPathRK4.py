@@ -29,7 +29,7 @@ ball_csarea = np.pi * (ball_radius**2) # ball cross-sectional area, m^2
 ball_mass = 0.21500278 # ball mass, kg
 omega0 = 0 # ball angular velocity, rad/s
 I = 0.4 * ball_mass * (ball_radius**2) # ball moment of inertia, kg*m^2
-n_hat = 1 # angular velocity direction unit vector (1 or -1)
+n_hat = 1 # angular velocity direction unit vector
 rho = 1.195 # fluid density, kg/m^3
 mu = 1.835e-5 # fluid dynamic viscosity, N*s/m^2
 g = 9.81 # acceleration due to gravity, m/s^2
@@ -224,5 +224,5 @@ def plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist
 
 
 # example usage
-vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = solve(8, 12, 3)
+vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = solve(8, 12, 3, omega0_param=30)
 plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list)
