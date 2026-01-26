@@ -6,7 +6,7 @@ in x, y, and z velocities of the object, along with the change in x, y,
 and z positions of the object.
 
 This script is optimized for an FRC "Fuel" object, a ~3-in diameter and 
-~0.5 pound foam ball. This object is to be shot into the "Hub" (a 
+~0.5 pounds foam ball. This object is to be shot into the "Hub" (a 
 container) as part of the 2026 FRC game "Rebuilt."
 
 The simulation accounts for the following:
@@ -121,7 +121,7 @@ def dvdt(t, a):
 
     return np.array([dvx, dvy, dvz], dtype=float)
 
-# callable function to approximate velocity and position 
+# function to simulate velocity and position over time 
 def solve(vx0, vy0, vz0, omega0_param=0, n_hat_param=1, t0=0, dt=0.01, sim_end_time=10, sx0=0, sy0=0, sz0=0):
     global omega0
     global n_hat
