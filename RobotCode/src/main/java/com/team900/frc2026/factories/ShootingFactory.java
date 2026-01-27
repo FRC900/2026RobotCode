@@ -14,7 +14,7 @@ public class ShootingFactory {
 
     /* Commands for shooting */
 
-    public static Command SpinBoth(
+    public static Command spinBoth(
             RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
 
         var topShooter = container.getTopShooter();
@@ -27,7 +27,7 @@ public class ShootingFactory {
                 .withName("Spin Both Shooter Stages");
     }
 
-    public static Command SpinBottom(
+    public static Command spinBottom(
             RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
 
         var bottomShooter = container.getBottomShooter();
@@ -36,7 +36,7 @@ public class ShootingFactory {
                 .withName("Spin Up Bottom Shooter");
     }
 
-    public static Command SpinTop(
+    public static Command spinTop(
             RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
 
         var topShooter = container.getTopShooter();

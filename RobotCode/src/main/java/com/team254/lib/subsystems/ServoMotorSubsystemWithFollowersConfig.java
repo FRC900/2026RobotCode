@@ -7,13 +7,12 @@ public class ServoMotorSubsystemWithFollowersConfig extends ServoMotorSubsystemC
 
         public FollowerConfig(int CANnum) {
             this.config = new ServoMotorSubsystemConfig(CANnum);
-
         }
     }
-
 
     public ServoMotorSubsystemWithFollowersConfig(int talonCANIDNum) {
         super(talonCANIDNum);
     }
+
     public FollowerConfig[] followers = new FollowerConfig[] {};
 }

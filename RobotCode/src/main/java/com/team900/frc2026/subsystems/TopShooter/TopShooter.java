@@ -1,5 +1,7 @@
 package com.team900.frc2026.subsystems.TopShooter;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.MotorIO;
 import com.team254.lib.subsystems.MotorInputsAutoLogged;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowers;
@@ -9,6 +11,8 @@ import com.team900.frc2026.Constants;
 // import com.team900.frc2026.subsystems.ShooterTop.ShooterBottomSensorInputsAutoLogged;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -17,7 +21,9 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
     private final RobotState state;
 
     private static MotorInputsAutoLogged inputsTopMotorAutoLogged = new MotorInputsAutoLogged();
-    private static MotorInputsAutoLogged[] inputsBottomMotorAutoLogged = {new MotorInputsAutoLogged()};
+    private static MotorInputsAutoLogged[] inputsBottomMotorAutoLogged = {
+        new MotorInputsAutoLogged()
+    };
 
     private MotorIO topMotorIO;
     private MotorIO bottomMotorIO;
@@ -28,12 +34,16 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
             MotorIO[] motorIOBottom,
             RobotState state) {
 
-        super(leadConfig, inputsTopMotorAutoLogged, motorIOTop, inputsBottomMotorAutoLogged, motorIOBottom);
+        super(
+                leadConfig,
+                inputsTopMotorAutoLogged,
+                motorIOTop,
+                inputsBottomMotorAutoLogged,
+                motorIOBottom);
 
         this.state = state;
         this.topMotorIO = motorIOTop;
         this.bottomMotorIO = motorIOBottom[0];
-
     }
 
     @Override
@@ -121,4 +131,6 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
                                 / Constants.ShooterConstants.kTopTopRollerSpeedupFactor))
                 / 2.0;
     }
+
+
 }

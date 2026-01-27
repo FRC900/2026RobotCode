@@ -3,14 +3,10 @@ package com.team254.lib.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.team254.lib.drivers.CANDeviceId;
 
-import edu.wpi.first.wpilibj.CAN;
-
 public class ServoMotorSubsystemConfig {
     public String name = "ServoMotorSubsystem";
     public CANDeviceId talonCANID;
     public TalonFXConfiguration fxConfig = new TalonFXConfiguration();
-
-    
 
     // Ratio of rotor to units for this talon.  rotor * by this ratio should
     // be the units.

@@ -8,15 +8,16 @@ public class ModalControls {
     private static Optional<ModalControls> instance = Optional.empty();
 
     public enum Mode {
-        MODEONE,
-        MODETWO // Placeholder modes since I don't really know what modes we want to roll with
+        INTAKE_AND_SHOOT,
+        INTAKE,
+        SHOOT,
+        CLIMB
     }
 
-    private Mode currentMode = Mode.MODEONE;
+    private Mode currentMode = Mode.INTAKE_AND_SHOOT;
     private Consumer<Mode> stateChangeconsumer;
 
-    private Trigger triggerOne;
-    private Trigger triggerTwo;
+    private Trigger shootTrigger;
 
     public static ModalControls getInstance() {
         if (instance.isEmpty()) {
@@ -27,6 +28,10 @@ public class ModalControls {
 
     public Mode getMode() {
         return currentMode;
+    }
+
+    public void configureBindings() {
+        shootTrigger = ControlBoard.getInstance().shoot();
     }
 
     public void setMode(Mode mode) {
@@ -46,5 +51,9 @@ public class ModalControls {
     public void forceSetMode(Mode mode) {
         maybeTriggerStateChangeConsumer(mode);
         setMode(mode);
+    }
+
+    public Trigger shoot() {
+        return shootTrigger;
     }
 }

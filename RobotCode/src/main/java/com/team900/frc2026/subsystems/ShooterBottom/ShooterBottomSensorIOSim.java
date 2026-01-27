@@ -2,7 +2,6 @@ package com.team900.frc2026.subsystems.ShooterBottom;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team900.frc2026.Constants.ShooterConstants;
-
 import edu.wpi.first.hal.simulation.DIODataJNI;
 import edu.wpi.first.units.measure.AngularVelocity;
 
@@ -26,8 +25,7 @@ public class ShooterBottomSensorIOSim extends ShooterBottomSensorIOHardware {
 
     @Override
     public void setFlywheelSpeed(AngularVelocity speed) {
-    // Phoenix 6 handles closed-loop control automatically in simulation
-    wheelTalon.setControl(
-        new com.ctre.phoenix6.controls.VelocityVoltage(0).withVelocity(speed).withSlot(0));
-  }
+        wheelTalon.setControl(
+                new com.ctre.phoenix6.controls.VelocityVoltage(0).withVelocity(speed).withSlot(0));
+    }
 }

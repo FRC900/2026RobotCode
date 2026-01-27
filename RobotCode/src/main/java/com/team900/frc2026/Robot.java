@@ -25,7 +25,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        if (Robot.isSimulation()){
+        if (Robot.isSimulation()) {
             m_robotContainer.getSimulatedRobotState().updateSim();
         }
     }
@@ -46,8 +46,6 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
-
-
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
@@ -71,7 +69,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
-
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();

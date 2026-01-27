@@ -16,6 +16,7 @@ public class ServoMotorSubsystemWithCanCoderConfig extends ServoMotorSubsystemCo
     public ServoMotorSubsystemWithCanCoderConfig(int talonCANIDNum) {
         super(talonCANIDNum);
     }
+
     public boolean isFusedCancoder = false;
     public double ratioForSim = 1.0;
     public double cancoderUnitsForSim = 1.0;

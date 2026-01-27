@@ -4,8 +4,17 @@
 
 package com.team900.frc2026;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import com.team254.lib.loops.StatusSignalLoop;
+import com.team254.lib.pathplanner.auto.NamedCommands;
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
+import com.team254.lib.util.ShooterSetpoint;
+import com.team900.frc2026.controlboard.ControlBoard;
+import com.team900.frc2026.controlboard.ModalControls;
+import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
 import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottom;
 import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIOHardware;
@@ -14,46 +23,70 @@ import com.team900.frc2026.subsystems.TopShooter.TopShooter;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
-
     private RobotState robotState;
     private ShooterBottom shooterBottom;
     private TopShooter topShooter;
-    
-    private final SimulatedRobotState simulatedRobotState = Robot.isSimulation() ? new SimulatedRobotState(this) : null;
+
+    private SimulatedRobotState simulatedRobotState;
     private ShooterBottomSensorIOSim simulatedBottomShooterSensors;
 
+
     public RobotContainer() {
-        configureBindings();
-        simulatedBottomShooterSensors =
-                Robot.isSimulation()
+
+        this.robotState = new RobotState();
+
+
+        this.simulatedRobotState =
+                RobotBase.isSimulation() ? new SimulatedRobotState(this) : null;
+        this.simulatedBottomShooterSensors =
+                RobotBase.isSimulation()
                         ? new ShooterBottomSensorIOSim(
                                 Constants.SensorConstants.kShooterBottomBannerSensorPort)
                         : null;
 
-        shooterBottom = buildShooterBottom();
-        topShooter = buildTopShooter();
-        robotState = new RobotState();
+        this.shooterBottom = buildShooterBottom();
+        this.topShooter = buildTopShooter();
+
+
+        configureBindings();
+        
+        Supplier shoooterSetpoint = ShooterSetpoint.speakerSetpointSupplier(robotState);
+        NamedCommands.registerCommand("Shoot", new
+            SequentialCommandGroup(ShootingFactory.spinBoth(this, shoooterSetpoint)));
+
+        configureBindings();
+        statusSignalLoop.register(getBottomShooter());
     }
 
     public RobotState getRobotState() {
         return robotState;
     }
 
-    private void configureBindings() {}
+    private void configureBindings() {
+        modalControls.configureBindings();
+
+        modalControls.shoot().whileTrue(ShootingFactory.spinBoth(this, ShooterSetpoint.speakerSetpointSupplier(robotState))
+                );
+    }
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
     }
 
-    public TopShooter getTopShooter() {
-        return topShooter;
-    }
+    private final ControlBoard controlBoard = ControlBoard.getInstance();
+    private final ModalControls modalControls = ModalControls.getInstance();
 
+    private final StatusSignalLoop statusSignalLoop = new StatusSignalLoop(250.0, "TurretThread");
 
     public SimulatedRobotState getSimulatedRobotState() {
         return simulatedRobotState;
+    }
+
+    public TopShooter getTopShooter() {
+        return topShooter;
     }
 
     private ShooterBottom buildShooterBottom() {

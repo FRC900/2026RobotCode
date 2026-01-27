@@ -1,8 +1,8 @@
 package com.team900.frc2026.subsystems.ShooterBottom;
 
-
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
@@ -10,7 +10,7 @@ import com.team900.frc2026.Constants;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -20,17 +20,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
         implements IStatusSignalLoop {
 
-    private final RobotState state;
+    private final RobotState robotState;
+    private final ServoMotorSubsystemConfig leadconfig;
 
     private ShooterBottomSensorInputsAutoLogged inputsSensors =
             new ShooterBottomSensorInputsAutoLogged();
-            
+
     private ShooterBottomSensorIO ioSensors;
 
     private AtomicBoolean ballEntered = new AtomicBoolean(false);
@@ -48,9 +48,10 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
 
         super(leadConfig, new MotorInputsAutoLogged(), leadIO);
 
-        this.state = state;
-        this.ioSensors = sensorIO;
+        leadconfig = leadConfig;
 
+        robotState = state;
+        ioSensors = sensorIO;
     }
 
     @Override
@@ -79,9 +80,12 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
         return dutyCycleCommand(() -> 0.0);
     }
 
-    public Command setWheelRP(Supplier<AngularVelocity> speed){
-        return runOnce(() -> {Logger.recordOutput("shooter_rpm",speed.get().in(RotationsPerSecond));
-            ioSensors.setFlywheelSpeed(speed.get());});
+    public Command setWheelRP(Supplier<AngularVelocity> speed) {
+        return runOnce(
+                () -> {
+                    Logger.recordOutput("shooter_rpm", speed.get().in(RotationsPerSecond));
+                    ioSensors.setFlywheelSpeed(speed.get());
+                });
     }
 
     public Command runUntilBanner(DoubleSupplier velocitySupplier) {
@@ -104,11 +108,9 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
         // Run until banner sensor is triggered
     }
 
-
-
-  public AngularVelocity getCurrentWheelSpeed() {
-    return inputsSensors.wheelVelocity;
-  }
+    public AngularVelocity getCurrentWheelSpeed() {
+        return inputsSensors.wheelVelocity;
+    }
 
     public boolean hasBall() {
         // If shooter has ball
