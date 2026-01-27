@@ -98,12 +98,14 @@ def lift_coeff(S): # complete
 # change in x-velocity vs. time    
 def dvxdt(t, speed, vx, vy):
     coeff = (-1*rho*ball_csarea*speed) / (2*ball_mass) # coefficient of constants in the general dv_x/dt formula 
-    return coeff * ((drag_coeff(reynolds(speed))*vx) + (lift_coeff(shear(t, speed))*vy))
+    w = omega(t, speed)
+    return coeff * ((drag_coeff(reynolds(speed))*vx) + (lift_coeff(shear(t, speed))*np.sign(w)*vy))
 
 # change in y-velocity vs. time
 def dvydt(t, speed, vx, vy):
     coeff = (rho*ball_csarea*speed) / (2*ball_mass) # coefficient of constants in the general dv_y/dt formula 
-    return coeff * ((-1*drag_coeff(reynolds(speed))*vy) + (lift_coeff(shear(t, speed))*vx)) - g 
+    w = omega(t, speed)
+    return coeff * ((-1*drag_coeff(reynolds(speed))*vy) + (lift_coeff(shear(t, speed))*np.sign(w)*vx)) - g 
 
 # change in z-velocity vs. time
 def dvzdt(speed, vz):
@@ -225,5 +227,5 @@ def plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist
 
 # example usage
 if __name__ == "__main__":
-    vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = solve(12, 10, 3, omega0_param=0, n_hat_param=-1)
+    vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = solve(12, 10, 3, omega0_param=36)
     plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list)
