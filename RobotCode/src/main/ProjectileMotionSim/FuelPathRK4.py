@@ -71,7 +71,7 @@ def reynolds(speed):
 
 # rotational drag coefficient  
 def spin_coeff(Re): # complete
-    return 0.02
+    return 0.002
 
 # angular velocity as a function of time
 def omega(t, speed):
@@ -224,5 +224,6 @@ def plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist
 
 
 # example usage
-vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = solve(8, 12, 3, omega0_param=30)
-plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list)
+if __name__ == "__main__":
+    vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = solve(12, 10, 3, omega0_param=0, n_hat_param=-1)
+    plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list)
