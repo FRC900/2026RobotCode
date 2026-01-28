@@ -73,7 +73,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return ShootingFactory.spinBoth(this, ShooterSetpoint.speakerSetpointSupplier(robotState));
     }
 
     private final ControlBoard controlBoard = ControlBoard.getInstance();

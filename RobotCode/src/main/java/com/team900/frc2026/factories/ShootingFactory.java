@@ -21,10 +21,19 @@ public class ShootingFactory {
         var bottomShooter = container.getBottomShooter();
         return new ParallelCommandGroup(
                         topShooter.velocitySetpointCommand(
-                                () -> setpointSupplier.get().getShooterStage1RPS()),
+                                () -> setpointSupplier.get().getTopShooterRPS()),
                         bottomShooter.velocitySetpointCommand(
                                 () -> setpointSupplier.get().getShooterRPS()))
                 .withName("Spin Both Shooter Stages");
+    }
+
+
+    public static Command spinTest(
+            RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
+
+        var topShooter = container.getTopShooter();
+        return topShooter
+                .dutyCycleCommand(()-> 0.5);
     }
 
     public static Command spinBottom(

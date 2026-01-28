@@ -14,6 +14,8 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterBottomSensorIO {
 
+  
+
     @AutoLog
     public class ShooterBottomSensorInputs {
 
@@ -26,8 +28,10 @@ public interface ShooterBottomSensorIO {
 
     public default void readInputs(ShooterBottomSensorInputs inputs) {}
 
-    public default void setFlywheelSpeed(AngularVelocity speed) {}
-    ;
+    public default void setFlywheelSpeed(AngularVelocity speed) {
+
+    }
+    
 
     DigitalInput getBanner();
 }

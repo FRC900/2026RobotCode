@@ -6,6 +6,7 @@ import com.team254.lib.subsystems.MotorIO;
 import com.team254.lib.subsystems.MotorInputsAutoLogged;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowers;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
+import com.team254.lib.subsystems.TalonFXIO;
 import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants;
 // import com.team900.frc2026.subsystems.ShooterTop.ShooterBottomSensorInputsAutoLogged;
@@ -25,13 +26,15 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
         new MotorInputsAutoLogged()
     };
 
-    private MotorIO topMotorIO;
-    private MotorIO bottomMotorIO;
+    private TalonFXIO topMotorIO;
+    private TalonFXIO bottomMotorIO;
+
+    
 
     public TopShooter(
             ServoMotorSubsystemWithFollowersConfig leadConfig,
-            MotorIO motorIOTop,
-            MotorIO[] motorIOBottom,
+            TalonFXIO motorIOTop,
+            TalonFXIO[] motorIOBottom,
             RobotState state) {
 
         super(
@@ -118,6 +121,7 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
         Logger.recordOutput(
                 getName() + "/bottom/API/setVelocitySetpointImpl/UnitsPerS",
                 unitsPerSecond * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
+        
         topMotorIO.setVelocitySetpoint(
                 unitsPerSecond * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
         bottomMotorIO.setVelocitySetpoint(

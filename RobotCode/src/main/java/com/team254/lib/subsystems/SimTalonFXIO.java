@@ -3,6 +3,8 @@ package com.team254.lib.subsystems;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.team254.lib.time.RobotTime;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -69,6 +71,26 @@ public class SimTalonFXIO extends TalonFXIO {
         Logger.recordOutput(config.name + "/Sim/setPositionRad", rad);
     }
 
+    @Override
+    public void setVelocitySetpoint(double unitsPerSecond) {
+        // Convert mechanism units/sec to rotor RPS
+        double rotorRPS = unitsPerSecond * config.unitToRotorRatio;
+        
+        // Simple feedforward: estimate voltage needed
+        // For flywheel: V = kV * velocity
+        double kV = 12.0 / DCMotor.getKrakenX60Foc(1).freeSpeedRadPerSec; // volts per rad/s
+        double targetRadPerSec = Units.rotationsToRadians(rotorRPS);
+        double voltage = kV * targetRadPerSec;
+        
+        // Clamp to battery voltage
+        voltage = Math.max(-12.0, Math.min(12.0, voltage));
+        
+        talon.setVoltage(voltage);
+        
+        Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/TargetRPS", rotorRPS);
+        Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/CommandedVoltage", voltage);
+    }
+
     protected double addFriction(double motorVoltage, double frictionVoltage) {
         if (Math.abs(motorVoltage) < frictionVoltage) {
             motorVoltage = 0.0;
@@ -93,6 +115,8 @@ public class SimTalonFXIO extends TalonFXIO {
     public void setInvertVoltage(boolean invertVoltage) {
         this.invertVoltage = invertVoltage;
     }
+
+    
 
     protected void updateSimState() {
         var simState = talon.getSimState();
