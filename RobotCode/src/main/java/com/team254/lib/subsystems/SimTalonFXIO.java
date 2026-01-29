@@ -59,6 +59,8 @@ public class SimTalonFXIO extends TalonFXIO {
                             updateSimState();
                         });
         simNotifier.startPeriodic(0.005);
+
+        this.lastUpdateTimestamp = RobotTime.getTimestampSeconds();
     }
 
     // Need to use rad of the mechanism itself.
@@ -85,7 +87,7 @@ public class SimTalonFXIO extends TalonFXIO {
         // Clamp to battery voltage
         voltage = Math.max(-12.0, Math.min(12.0, voltage));
         
-        talon.setVoltage(voltage);
+        talon.setVoltage(addFriction(voltage, 0.25));
         
         Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/TargetRPS", rotorRPS);
         Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/CommandedVoltage", voltage);
@@ -119,7 +121,12 @@ public class SimTalonFXIO extends TalonFXIO {
     
 
     protected void updateSimState() {
+
+        Logger.recordOutput(config.name + "/Sim/IsRunning", true);
         var simState = talon.getSimState();
+        double rawMotorVoltage = simState.getMotorVoltage();
+        Logger.recordOutput(config.name + "/Sim/SimulatorRawMotorVoltage", rawMotorVoltage);
+
         double simVoltage = addFriction(simState.getMotorVoltage(), 0.25);
         simVoltage = (invertVoltage) ? -simVoltage : simVoltage;
         sim.setInput(simVoltage);
