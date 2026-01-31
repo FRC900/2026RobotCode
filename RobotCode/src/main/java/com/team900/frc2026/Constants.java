@@ -93,8 +93,7 @@ public class Constants {
         public static final double kShooterTopEpsilon = 3.0;
         public static final double kShooterSpinupBottomRPS = 0.0;
 
-        public static final double kShooterBottomIntakeRPS = 4.0;
-        public static final double kShooterBottomExhaustRPS = -10.0;
+
 
         public static final double kFenderShotRPS = 100.0;
         public static final double kPreloadShotRPS = 90.0;
@@ -114,8 +113,4 @@ public class Constants {
 
 
 
-    public static final class HoodConstants {
-        public static final double kHoodZeroedAngleDegrees = 51.7;
-
-    }
 }

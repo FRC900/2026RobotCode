@@ -45,6 +45,13 @@ public class SimTalonFXIO extends TalonFXIO {
                         0.001));
     }
 
+
+    public void resetSimState() {
+        lastUpdateTimestamp = RobotTime.getTimestampSeconds();
+        sim.setState(0, 0);  // reset position and velocity
+    }
+
+
     public SimTalonFXIO(ServoMotorSubsystemConfig config, DCMotorSim sim) {
         super(config);
         this.sim = sim;
@@ -52,6 +59,9 @@ public class SimTalonFXIO extends TalonFXIO {
                 (config.fxConfig.MotorOutput.Inverted == InvertedValue.Clockwise_Positive)
                         ? ChassisReference.Clockwise_Positive
                         : ChassisReference.CounterClockwise_Positive;
+
+
+        resetSimState();
         /* Run simulation at a faster rate so PID gains behave more reasonably */
         simNotifier =
                 new Notifier(
@@ -60,7 +70,7 @@ public class SimTalonFXIO extends TalonFXIO {
                         });
         simNotifier.startPeriodic(0.005);
 
-        this.lastUpdateTimestamp = RobotTime.getTimestampSeconds();
+
     }
 
     // Need to use rad of the mechanism itself.
@@ -73,25 +83,21 @@ public class SimTalonFXIO extends TalonFXIO {
         Logger.recordOutput(config.name + "/Sim/setPositionRad", rad);
     }
 
-    @Override
-    public void setVelocitySetpoint(double unitsPerSecond) {
-        // Convert mechanism units/sec to rotor RPS
-        double rotorRPS = unitsPerSecond * config.unitToRotorRatio;
-        
-        // Simple feedforward: estimate voltage needed
-        // For flywheel: V = kV * velocity
-        double kV = 12.0 / DCMotor.getKrakenX60Foc(1).freeSpeedRadPerSec; // volts per rad/s
-        double targetRadPerSec = Units.rotationsToRadians(rotorRPS);
-        double voltage = kV * targetRadPerSec;
-        
-        // Clamp to battery voltage
-        voltage = Math.max(-12.0, Math.min(12.0, voltage));
-        
-        talon.setVoltage(addFriction(voltage, 0.25));
-        
-        Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/TargetRPS", rotorRPS);
-        Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/CommandedVoltage", voltage);
-    }
+@Override
+public void setVelocitySetpoint(double unitsPerSecond) {
+    double rotorRPS = unitsPerSecond * config.unitToRotorRatio;
+    double targetRadPerSec = Units.rotationsToRadians(rotorRPS);
+    
+    // Use a better kV estimate (adjust 12.0/X to match your motor's actual curve)
+    double kV = 12.0 / 101.3;  // Kraken X60 free speed is ~6380 RPM = 101.3 rad/s
+    double voltage = kV * targetRadPerSec;
+    voltage = Math.max(-12.0, Math.min(12.0, voltage));
+    
+    talon.setVoltage(voltage);
+    
+    Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/TargetRPS", rotorRPS);
+    Logger.recordOutput(config.name + "/Sim/VelocitySetpoint/CommandedVoltage", voltage);
+}
 
     protected double addFriction(double motorVoltage, double frictionVoltage) {
         if (Math.abs(motorVoltage) < frictionVoltage) {
@@ -133,7 +139,15 @@ public class SimTalonFXIO extends TalonFXIO {
         Logger.recordOutput(config.name + "/Sim/SimulatorVoltage", simVoltage);
 
         double timestamp = RobotTime.getTimestampSeconds();
-        sim.update(timestamp - lastUpdateTimestamp);
+        double dt = timestamp - lastUpdateTimestamp;
+
+        if (dt > 0.05 || dt < 0.0) {
+            Logger.recordOutput(config.name + "/Sim/LargeTimestampGap", dt);
+            lastUpdateTimestamp = timestamp;
+            dt = 0.005;  
+        }
+        
+        sim.update(dt);
         lastUpdateTimestamp = timestamp;
 
         overridePos.ifPresent(aDouble -> sim.setAngle(aDouble));

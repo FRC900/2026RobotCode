@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
+import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.math.filter.Debouncer;
@@ -57,11 +58,10 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
     @Override
     public void periodic() {
         super.periodic();
-
+        double timestamp = RobotTime.getTimestampSeconds();
         ioSensors.readInputs(inputsSensors);
 
         Logger.processInputs("BottomShooter", inputsSensors);
-        Logger.recordOutput("shooterspeed", inputsSensors.wheelVelocity.in(RPM));
     }
 
     public Command waitForCurrentSpike(double ampsToWaitFor) {
