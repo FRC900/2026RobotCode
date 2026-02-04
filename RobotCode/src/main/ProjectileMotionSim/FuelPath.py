@@ -8,6 +8,8 @@ import time
 xt = 10
 yt = 2
 zt = 10
+
+# define initial solution guesses
 vxi0 = 10
 vyi0 = 10
 vzi0 = 10
