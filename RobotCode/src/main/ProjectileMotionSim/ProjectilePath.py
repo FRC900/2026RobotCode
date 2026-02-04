@@ -170,19 +170,19 @@ class Projectile:
 
     # plot the outputs of the simulation
     def plot_solutions(self, vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list):
-        plt.scatter(vel_approx_tlist, vx_list, s=1, color="red")
+        plt.scatter(vel_approx_tlist[:len(pos_approx_tlist)], vx_list[:len(pos_approx_tlist)], s=1, color="red")
         plt.xlabel("Time (s)")
         plt.ylabel("X-Velocity (m/s)")
         plt.title("X-Velocity vs. Time")
         plt.show()
 
-        plt.scatter(vel_approx_tlist, vy_list, s=1, color="blue")
+        plt.scatter(vel_approx_tlist[:len(pos_approx_tlist)], vy_list[:len(pos_approx_tlist)], s=1, color="blue")
         plt.xlabel("Time (s)")
         plt.ylabel("Y-Velocity (m/s)")
         plt.title("Y-Velocity vs. Time")
         plt.show()
 
-        plt.scatter(vel_approx_tlist, vz_list, s=1, color="green")
+        plt.scatter(vel_approx_tlist[:len(pos_approx_tlist)], vz_list[:len(pos_approx_tlist)], s=1, color="green")
         plt.xlabel("Time (s)")
         plt.ylabel("Z-Velocity (m/s)")
         plt.title("Z-Velocity vs. Time")
