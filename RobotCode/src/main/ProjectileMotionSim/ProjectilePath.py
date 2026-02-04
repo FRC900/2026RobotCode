@@ -58,12 +58,12 @@ class RungeKutta4:
         self.t += self.dt
 
     # run until the simulation reaches the designated end time 
-    def sim(self, timelen=10, stop_on_y_zero=False):
+    def sim(self, timelen=10, stop_on_y=None):
         while self.t <= timelen: # stop RK4 when it reaches specified simulation time
-            if stop_on_y_zero: # stop RK4 when y-position<0 (i.e., object hits the ground)
-                if self.a[1] < 0:
+            if stop_on_y is not None: # stop RK4 when y-position < target y position
+                if self.a[1] < stop_on_y and np.sign(self.dadt(self.t, self.a)[1]) == -1:
                     break 
-                
+
             self.rk4()
             self.t_list.append(self.t)
             self.a_list.append(self.a.copy())
@@ -78,9 +78,6 @@ class Projectile:
             self.I = I
         else:
             self.I = 0.4 * self.mass * (self.radius**2) 
-
-        self.omega0 = 0 # object initial angular velocity, rad/s
-        self.n_hat = 1 # angular velocity direction unit vector (+1: backspin, -1: topspin, 0: no spin)
         
         self.rho = rho # fluid density, kg/m^3
         self.mu = mu # fluid dynamic viscosity, N*s/m^2
@@ -89,6 +86,9 @@ class Projectile:
         self.spin_coeff = spin_coeff # rotational drag coefficient  
         self.drag_coeff = drag_coeff # coefficient of drag
         self.lift_coeff = lift_coeff # coefficient of lift (Magnus effect)
+
+        self.omega0 = 0 # object initial angular velocity, rad/s
+        self.n_hat = 1 # angular velocity direction unit vector (+1: backspin, -1: topspin, 0: no spin)
 
     # calculate Reynold's number
     def reynolds(self, speed):
@@ -108,7 +108,7 @@ class Projectile:
             return 0.0
         return (np.abs(self.omega(t, speed))*self.radius) / speed
 
-    # change in x-velocity vs. time    
+    # change in x-velocity vs. time 
     def dvxdt(self, t, speed, vx, vy):
         coeff = (-1*self.rho*self.csarea*speed) / (2*self.mass) # coefficient of constants in the general dv_x/dt formula 
         w = self.omega(t, speed)
@@ -137,7 +137,7 @@ class Projectile:
         return np.array([dvx, dvy, dvz], dtype=float)
 
     # function to simulate velocity and position over time 
-    def trajectory(self, vx0, vy0, vz0, omega0=0, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, stop_on_y_zero=False):
+    def trajectory(self, vx0, vy0, vz0, omega0=0, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, stop_on_y=None):
         # set initial conditions 
         self.omega0 = omega0 # initial angular velocity (rad/s)
         self.n_hat = n_hat # initial angular velocity direction
@@ -162,10 +162,13 @@ class Projectile:
 
         # approximate position of object
         pos_approx = RungeKutta4(dsdt, t0, dt, p0_vec)
-        pos_approx.sim(timelen=sim_end_time, stop_on_y_zero=stop_on_y_zero)
+        pos_approx.sim(timelen=sim_end_time, stop_on_y=stop_on_y)
         sx_list, sy_list, sz_list = map(list, zip(*pos_approx.a_list))
 
-        return vel_approx.t_list, vx_list, vy_list, vz_list, pos_approx.t_list, sx_list, sy_list, sz_list
+        speedf = np.linalg.norm(v_list[(len(sx_list)-1)]) # final speed
+        omegaf = self.omega(vel_approx.t_list[(len(sx_list)-1)], speedf) # final angular velocity
+
+        return vel_approx.t_list, vx_list, vy_list, vz_list, speedf, pos_approx.t_list, sx_list, sy_list, sz_list, omegaf
 
     # plot the outputs of the simulation
     def plot_solutions(self, vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list):
@@ -215,6 +218,18 @@ class Projectile:
         )
         plt.colorbar(scf, ax=ax, label='Time--Full Model (s)')
         ax.plot(sx_list, sy_list, sz_list, linewidth=1, label="Full Trajectory", color="olive")
+        
+        xmin, xmax = np.min(sx_list), np.max(sx_list)
+        ymin, ymax = np.min(sy_list), np.max(sy_list)
+        zmin, zmax = np.min(sz_list), np.max(sz_list)
+
+        overall_min = min(xmin, ymin, zmin, 0) 
+        overall_max = max(xmax, ymax, zmax)
+
+        ax.set_xlim(overall_min, overall_max)
+        ax.set_ylim(overall_min, overall_max)
+        ax.set_zlim(overall_min, overall_max)
+
         ax.set_xlabel('X Position (m)')
         ax.set_ylabel('Y Position (m)')
         ax.set_zlabel('Z Position (m)')
@@ -226,10 +241,10 @@ class Projectile:
 
 # class to solve for vx0, vy0, vz0, and omega0 given a target x, y, z 
 class ProjectileSolver:
-    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, ct=0, thetat=0, phit=0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.01, theta_scale=0.1, phi_scale=0.1, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, stop_on_y_zero=False, eps=1e-4, lam0=1e-2, tol=np.full(6, 1e-4), lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
+    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.01, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
         self.projectile = projectile # projectile object being solved
-        self.targets = np.array([xt, yt, zt, ct, thetat, phit]) # target x (m), y (m), z (m), satisfies clearance threshold, satisfies theta range, and satisfies phi range -- clearance: defined if object needs to clear a physical threshold, theta (polar angle down from the +z axis): defined if object can be shot at only a range of thetas, phi (azimuthal angle in the x–y plane, measured from the +x-axis): defined if object can be shot at only a range of phis
-        self.scale_array = np.array([x_scale, y_scale, z_scale, c_scale, theta_scale, phi_scale]) # weight of each parameter on residual calculation  
+        self.targets = np.array([xt, yt, zt, ct]) # target x (m), y (m), z (m), clearance (defined if object needs to clear a physical threshold, clearance != 0 if physical threshold is not cleared)
+        self.scale_array = np.array([x_scale, y_scale, z_scale, c_scale]) # weight of each parameter on residual calculation  
 
         self.sx0 = sx0 # initial x-position (m)
         self.sy0 = sy0 # initial y-position (m) 
@@ -238,47 +253,72 @@ class ProjectileSolver:
         self.vx = vx0 # x-velocity (m/s)
         self.vy = vy0 # y-velocity (m/s)
         self.vz = vz0 # z-velocity (m/s)
+        self.v_min, self.v_max = v_bounds # defines range of possible velocity magnitudes
+        self.v = np.array([self.vx, self.vy, self.vz]) # velocity vector (m/s), not used in any function
+        self.v_mag = np.linalg.norm(self.v) # velocity magnitude (m/s), not used in any function
+
         self.omega = omega0 # angular velocity (rad/s)
+        self.omega_min, self.omega_max = omega_bounds # defines range of possible angular velocities 
         self.n_hat = n_hat # angular velocity direction unit vector (+1: backspin, -1: topspin, 0: no spin)
+        
+        self.theta = np.arcsin(self.vz / self.v_mag) # theta (rad, polar angle down from the +z axis), not used in any function
+        self.phi = np.arctan2(self.vy, self.vx) # phi (rad, azimuthal angle in the x–y plane, measured from the +x-axis), not used in any function
+        self.theta_min, self.theta_max = theta_bounds # defines range of possible thetas
+        self.phi_min, self.phi_max = phi_bounds # defines range of possible phis
+
+        self.clearance_func = clearance_func # function associated with current clearance 
 
         self.t0 = t0 # initial time (s)
         self.dt = dt # timestep (s)
         self.sim_end_time = sim_end_time # simulation duration (s)
-        self.stop_on_y_zero = stop_on_y_zero # stop RK4 when y-position=0 (i.e., object hits the ground)
         
         self.eps = eps # Jacobian approximation delta t (s)
         self.lam = lam0 # Levenberg–Marquardt damping parameter
-        self.tol = tol # solution accuracy tolerance 
+
+        if tol: # solution accuracy tolerance 
+            self.tol = tol
+        else:
+            self.tol = np.full(self.targets.shape[0], 1e-4) 
+
         self.lm_iters = lm_iters # max Levenberg–Marquardt iterations 
         self.lam_scaleup = lam_scaleup # lambda scaleup factor
         self.lam_scaledown = lam_scaledown # lambda scaledown factor
+
+        self._shot_cache = {} # RK4 run cache
     
-    def possible_theta(self, vx, vy, vz):
-        # function to check if angle is possible
-        # add other params regarding angle bounds
-        # continous output
-        return 0
-    
-    def possible_phi(self, vx, vy, vz):
-        # function to check if angle is possible
-        # add other params regarding angle bounds
-        # continous output
-        return 0
-    
-    def clearance(self, sx_list, sy_list, sz_list):
-        # function to check if is clear or not (is diameter within the opening)
-        # add other params regarding clearance bounds
-        # continous output 
-        return 0
+    def enforce_bounds(self):
+        self.omega = np.clip(self.omega, self.omega_min, self.omega_max) # clip angular velocity
+
+        v = np.array([self.vx, self.vy, self.vz])
+        v_mag = np.linalg.norm(v)
+        v = np.clip(v_mag, self.v_min, self.v_max) # clip speed
+
+        theta = np.arcsin(self.vz / v) 
+        theta = np.clip(theta, self.theta_min, self.theta_max) # clip theta
+        phi = np.arctan2(self.vy, self.vx)
+        phi = np.clip(phi, self.phi_min, self.phi_max) # clip phi
+
+        # reconstruct vx, vy, and vz from new theta and phi
+        self.vx = v * np.cos(theta) * np.cos(phi)
+        self.vy = v * np.cos(theta) * np.sin(phi)
+        self.vz = v * np.sin(theta)
+        self.v = np.array([self.vx, self.vy, self.vz])
+        self.theta = theta
+        self.phi = phi
     
     # simulate shot and return final state 
     def rk4_shot(self):
-        vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list = self.projectile.trajectory(self.vx, self.vy, self.vz, omega0=self.omega, n_hat=self.n_hat, sx0=self.sx0, sy0=self.sy0, sz0=self.sz0, t0=self.t0, dt=self.dt, sim_end_time=self.sim_end_time, stop_on_y_zero=self.stop_on_y_zero)
+        key = (self.vx, self.vy, self.vz, self.omega)
+        if key in self._shot_cache: # check if we've already run this RK4 simulation
+            return self._shot_cache[key]
+
+        vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = self.projectile.trajectory(self.vx, self.vy, self.vz, omega0=self.omega, n_hat=self.n_hat, sx0=self.sx0, sy0=self.sy0, sz0=self.sz0, t0=self.t0, dt=self.dt, sim_end_time=self.sim_end_time, stop_on_y=self.targets[1])
         xf, yf, zf = sx_list[-1], sy_list[-1], sz_list[-1]
-        cf = self.clearance(sx_list, sy_list, sz_list)
-        thetaf = self.possible_theta(self.vx, self.vy, self.vz)
-        phif = self.possible_phi(self.vx, self.vy, self.vz)
-        return np.array([xf, yf, zf, cf, thetaf, phif])
+        cf = self.clearance_func(vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf)
+
+        out = np.array([xf, yf, zf, cf])
+        self._shot_cache[key] = out  # update RK4 cache dictionary
+        return out
     
     # difference between current final state and desired final state
     def residual(self):
@@ -290,7 +330,7 @@ class ProjectileSolver:
         r0 = self.residual()
         J = np.zeros((r0.shape[0], 4))
         with_respect_to = ["vx", "vy", "vz", "omega"]
-
+        
         for i, name in enumerate(with_respect_to):
             setattr(self, name, getattr(self, name)+self.eps)
             r = self.residual()
@@ -323,11 +363,14 @@ class ProjectileSolver:
             self.vz += delta[2]
             self.omega += delta[3]
 
+            self.enforce_bounds()
+
             # calculate new residual 
             r_new = self.residual()
             cost_new = np.dot(r_new, r_new)
 
             if cost_new < cost: # if change lowers cost
+                self._shot_cache.clear() # clear RK4 run cache
                 self.lam *= self.lam_scaledown # scale down lambda, move closer to Newton-Raphson (faster)
                 if np.all(np.abs(self.residual()) < self.tol): # check if a solution has been reached
                     return True
@@ -336,3 +379,26 @@ class ProjectileSolver:
                 self.lam *= self.lam_scaleup # scale up lambda, move closer to gradient descent (more stable)
 
         return False
+
+
+# clearance for Hub in 2026 FRC game
+def hub_clearance(vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf): # solver will pass all these parameters, not all are used
+    hub_height = 2 # 2 m, the target y
+    hub_half_diag = 0.5 # half diagonal distance from center of hub to corner
+    fuel_diameter = 0.1524 
+    extra_tolerance = 0.2 
+
+    xc, zc = (10, 10) # hub center relative to origin
+    required_height = hub_height + fuel_diameter + extra_tolerance # clearance height
+
+    # if ball clears the edge of the hub plus the extra tolerance, return 0. otherwise, increase the error in the Levenberg–Marquardt algorithm
+    for i in range(len(sx_list) - 1, -1, -1): # work backwards along trajectory from hub center
+        dx = sx_list[i] - xc
+        dz = sz_list[i] - zc
+        xz_dist = np.hypot(dx, dz)
+
+        if xz_dist >= hub_half_diag: # at hub edge 
+            y = sy_list[i]
+            return max(0, required_height - y) # if (required_height - y) is negative, the shot clears and there is no penalty. otherwise, we a penalty of (required_height - y) is applied
+
+    return required_height # big penalty if shot does not reach the hub
