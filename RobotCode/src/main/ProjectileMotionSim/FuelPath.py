@@ -1,7 +1,7 @@
 # example usage of ProjectilePath.py
 
 import ProjectilePath as pp
-from numpy import rad2deg
+from numpy import rad2deg, deg2rad
 import time 
 
 # define targets and initial condition guesses
@@ -17,7 +17,7 @@ omegai0 = 10
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
-fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, lm_iters=3, sim_end_time=5, dt=0.01, clearance_func=pp.hub_clearance)
+fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, lm_iters=3, sim_end_time=5, dt=0.01, v_bounds=(0, 30), omega_bounds=(0, 40), theta_bounds=(deg2rad(25), deg2rad(55)), phi_bounds=(deg2rad(-90), deg2rad(90)), sy0=0.3, clearance_func=pp.hub_clearance)
 
 # solve for valid inputs and time the solver
 start = time.perf_counter()
