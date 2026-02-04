@@ -18,10 +18,8 @@ The simulation assumes the following:
 Suppose we are given a target set of coordinates, but want to know the 
 x, y, and z velocities and spin needed to move the object to those
 coordinates. This is essentially the inverse of what the RK4 simulation
-is doing. Since there are no equations relating displacement to velocity
-(we have a set of differential equations relating velocity to time which
-required RK4 to solve), we cannot analytically derive a closed-form 
-inverse. 
+is doing. Since RK4 is a numerical approximator in itself, we cannot 
+analytically derive a closed-form inverse. 
 
 Thus, we employ the Levenberg-Marquardt algorithm (a combination of the
 Newton-Raphson method and gradient descent) to change the velocity and
