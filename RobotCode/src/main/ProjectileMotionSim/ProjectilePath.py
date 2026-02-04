@@ -211,11 +211,11 @@ class Projectile:
 
         t_f = pos_approx_tlist
         scf = ax.scatter(
-            sx_list, sy_list, sz_list,
+            sx_list, sz_list, sy_list,
             c=t_f, s=6, cmap='cividis'
         )
         plt.colorbar(scf, ax=ax, label='Time--Full Model (s)')
-        ax.plot(sx_list, sy_list, sz_list, linewidth=1, label="Full Trajectory", color="olive")
+        ax.plot(sx_list, sz_list, sy_list, linewidth=1, label="Full Trajectory", color="olive")
         
         xmin, xmax = np.min(sx_list), np.max(sx_list)
         ymin, ymax = np.min(sy_list), np.max(sy_list)
@@ -229,8 +229,8 @@ class Projectile:
         ax.set_zlim(overall_min, overall_max)
 
         ax.set_xlabel('X Position (m)')
-        ax.set_ylabel('Y Position (m)')
-        ax.set_zlabel('Z Position (m)')
+        ax.set_ylabel('Z Position (m)')
+        ax.set_zlabel('Y Position (m)')
         ax.set_title('3D Trajectory with Time')
         ax.legend()
 
