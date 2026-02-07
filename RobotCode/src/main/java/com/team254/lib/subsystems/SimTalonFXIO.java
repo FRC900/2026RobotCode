@@ -62,7 +62,7 @@ public class SimTalonFXIO extends TalonFXIO {
 
 
         resetSimState();
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
+ 
         simNotifier =
                 new Notifier(
                         () -> {
@@ -128,47 +128,48 @@ public void setVelocitySetpoint(double unitsPerSecond) {
 
     protected void updateSimState() {
 
-        Logger.recordOutput(config.name + "/Sim/IsRunning", true);
         var simState = talon.getSimState();
         double rawMotorVoltage = simState.getMotorVoltage();
-        Logger.recordOutput(config.name + "/Sim/SimulatorRawMotorVoltage", rawMotorVoltage);
+       // Logger.recordOutput(config.name + "/Sim/SimulatorRawMotorVoltage", rawMotorVoltage);
 
         double simVoltage = addFriction(simState.getMotorVoltage(), 0.25);
         simVoltage = (invertVoltage) ? -simVoltage : simVoltage;
         sim.setInput(simVoltage);
-        Logger.recordOutput(config.name + "/Sim/SimulatorVoltage", simVoltage);
+      //  Logger.recordOutput(config.name + "/Sim/SimulatorVoltage", simVoltage);
 
         double timestamp = RobotTime.getTimestampSeconds();
         double dt = timestamp - lastUpdateTimestamp;
 
         if (dt > 0.05 || dt < 0.0) {
             Logger.recordOutput(config.name + "/Sim/LargeTimestampGap", dt);
-            lastUpdateTimestamp = timestamp;
             dt = 0.005;  
         }
         
-        sim.update(dt);
-        lastUpdateTimestamp = timestamp;
+
 
         overridePos.ifPresent(aDouble -> sim.setAngle(aDouble));
 
         // Find current state of sim in radians from 0 point
         double simPositionRads = sim.getAngularPositionRad();
-        Logger.recordOutput(config.name + "/Sim/SimulatorPositionRadians", simPositionRads);
+       // Logger.recordOutput(config.name + "/Sim/SimulatorPositionRadians", simPositionRads);
 
         // Mutate rotor position
         double rotorPosition = Units.radiansToRotations(simPositionRads) / getSimRatio();
         lastRotations.set(rotorPosition);
         simState.setRawRotorPosition(rotorPosition);
-        Logger.recordOutput(config.name + "/Sim/setRawRotorPosition", rotorPosition);
+      //  Logger.recordOutput(config.name + "/Sim/setRawRotorPosition", rotorPosition);
 
         // Mutate rotor vel
         double rotorVel =
                 Units.radiansToRotations(sim.getAngularVelocityRadPerSec()) / getSimRatio();
         lastRPS.set(rotorVel);
         simState.setRotorVelocity(overrideRPS.isEmpty() ? rotorVel : overrideRPS.get());
-        Logger.recordOutput(
-                config.name + "/Sim/SimulatorVelocityRadS", sim.getAngularVelocityRadPerSec());
+       // Logger.recordOutput(
+          //      config.name + "/Sim/SimulatorVelocityRadS", sim.getAngularVelocityRadPerSec());
+
+
+        sim.update(dt);
+        lastUpdateTimestamp = timestamp;
     }
 
     public void overrideRPS(Optional<Double> rps) {

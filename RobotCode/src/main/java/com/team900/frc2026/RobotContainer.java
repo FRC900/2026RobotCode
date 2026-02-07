@@ -7,6 +7,7 @@ package com.team900.frc2026;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.loops.StatusSignalLoop;
 import com.team254.lib.pathplanner.auto.NamedCommands;
 import com.team254.lib.subsystems.SimTalonFXIO;
@@ -38,17 +39,21 @@ public class RobotContainer {
 
         this.robotState = new RobotState();
 
-
         this.simulatedRobotState =
                 RobotBase.isSimulation() ? new SimulatedRobotState(this) : null;
         this.simulatedBottomShooterSensors =
-                RobotBase.isSimulation()
-                        ? new ShooterBottomSensorIOSim(
-                                Constants.SensorConstants.kShooterBottomBannerSensorPort)
+                    RobotBase.isSimulation() ? new ShooterBottomSensorIOSim(
+                        Constants.SensorConstants.kShooterBottomBannerSensorPort,
+                        Constants.kShooterBottomConfig)
                         : null;
+
+
+        
 
         this.shooterBottom = buildShooterBottom();
         this.topShooter = buildTopShooter();
+        shooterBottom.resetSimState();
+        topShooter.resetSimState();
 
 
         configureBindings();
@@ -59,6 +64,8 @@ public class RobotContainer {
 
         configureBindings();
         statusSignalLoop.register(getBottomShooter());
+        statusSignalLoop.register(getTopShooter());
+        statusSignalLoop.start();
     }
 
     public RobotState getRobotState() {
@@ -113,14 +120,12 @@ public class RobotContainer {
         if (RobotBase.isSimulation()) {
             return new TopShooter(
                     Constants.kShooterTopConfig,
-                    new SimTalonFXIO(Constants.kShooterTopTopConfig),
-                    new SimTalonFXIO[] {new SimTalonFXIO(Constants.kShooterTopBottomConfig)},
+                    new SimTalonFXIO(Constants.kShooterTopConfig),
                     robotState);
         } else {
             return new TopShooter(
                     Constants.kShooterTopConfig,
-                    new TalonFXIO(Constants.kShooterTopTopConfig),
-                    new TalonFXIO[] {new TalonFXIO(Constants.kShooterTopBottomConfig)},
+                    new TalonFXIO(Constants.kShooterTopConfig),
                     robotState);
         }
     }

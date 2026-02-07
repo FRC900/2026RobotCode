@@ -21,16 +21,18 @@ public interface ShooterBottomSensorIO {
 
         public boolean bottomShooterBannerHasPiece = false;
         public AngularVelocity wheelVelocity = RotationsPerSecond.of(0);
-        public AngularAcceleration wheelAcceleration = RotationsPerSecondPerSecond.of(0);
+
         public Current wheelAppliedCurrent = Amps.of(0);
         public Voltage wheelAppliedVoltage = Volts.of(0);
     }
 
     public default void readInputs(ShooterBottomSensorInputs inputs) {}
 
-    public default void setFlywheelSpeed(AngularVelocity speed) {
+    public default void setFlywheelSpeed(double speed) {
 
     }
+
+
     
 
     DigitalInput getBanner();

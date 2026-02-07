@@ -4,8 +4,11 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.MotorIO;
 import com.team254.lib.subsystems.MotorInputsAutoLogged;
+import com.team254.lib.subsystems.ServoMotorSubsystem;
+import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowers;
 import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
+import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
 import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants;
@@ -13,50 +16,44 @@ import com.team900.frc2026.Constants;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAutoLogged, MotorIO> {
+public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO> implements IStatusSignalLoop{
 
     private final RobotState state;
 
     private static MotorInputsAutoLogged inputsTopMotorAutoLogged = new MotorInputsAutoLogged();
-    private static MotorInputsAutoLogged[] inputsBottomMotorAutoLogged = {
-        new MotorInputsAutoLogged()
-    };
+
 
     private TalonFXIO topMotorIO;
-    private TalonFXIO bottomMotorIO;
+
 
     
 
     public TopShooter(
-            ServoMotorSubsystemWithFollowersConfig leadConfig,
+            ServoMotorSubsystemConfig leadConfig,
             TalonFXIO motorIOTop,
-            TalonFXIO[] motorIOBottom,
             RobotState state) {
 
         super(
                 leadConfig,
                 inputsTopMotorAutoLogged,
-                motorIOTop,
-                inputsBottomMotorAutoLogged,
-                motorIOBottom);
+                motorIOTop);
 
         this.state = state;
         this.topMotorIO = motorIOTop;
-        this.bottomMotorIO = motorIOBottom[0];
+
     }
 
     @Override
     public void periodic() {
         super.periodic();
         double timestamp = RobotTime.getTimestampSeconds();
-        bottomMotorIO.readFollowerInputs(inputsBottomMotorAutoLogged);
-        topMotorIO.readInputs(inputsTopMotorAutoLogged);
-        Logger.processInputs("Bottom of Top", pickFirst(inputsBottomMotorAutoLogged));
-        Logger.processInputs("Top of Top", inputsTopMotorAutoLogged);
+
+        Logger.processInputs("Top", inputsTopMotorAutoLogged);
 
         Logger.recordOutput(
                 getName() + "/latencyPeriodicSec", RobotTime.getTimestampSeconds() - timestamp);
@@ -104,36 +101,44 @@ public class TopShooter extends ServoMotorSubsystemWithFollowers<MotorInputsAuto
     protected void setOpenLoopDutyCycleImpl(double dutyCycle) {
         Logger.recordOutput(
                 getName() + "/top/API/setOpenLoopDutyCycle/dutyCycle",
-                dutyCycle * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
-        Logger.recordOutput(
-                getName() + "/bottom/API/setOpenLoopDutyCycle/dutyCycle",
-                dutyCycle * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
+                dutyCycle * Constants.ShooterConstants.kTopRollerSpeedupFactor);
         topMotorIO.setOpenLoopDutyCycle(
-                dutyCycle * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
-        bottomMotorIO.setOpenLoopDutyCycle(
-                dutyCycle * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
+                dutyCycle * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+
     }
 
     private void setVelocitySetpointImpl(double unitsPerSecond) {
         Logger.recordOutput(
                 getName() + "/top/API/setVelocitySetpointImpl/UnitsPerS",
-                unitsPerSecond * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
-        Logger.recordOutput(
-                getName() + "/bottom/API/setVelocitySetpointImpl/UnitsPerS",
-                unitsPerSecond * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
+                unitsPerSecond * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+
         
         topMotorIO.setVelocitySetpoint(
-                unitsPerSecond * Constants.ShooterConstants.kTopTopRollerSpeedupFactor);
-        bottomMotorIO.setVelocitySetpoint(
-                unitsPerSecond * Constants.ShooterConstants.kTopBottomRollerSpeedupFactor);
+                unitsPerSecond * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+
     }
 
     public double getCurrentVelocity() {
-        return ((pickFirst(inputsBottomMotorAutoLogged).velocityUnitsPerSecond
-                                / Constants.ShooterConstants.kTopBottomRollerSpeedupFactor)
-                        + (inputsTopMotorAutoLogged.velocityUnitsPerSecond
-                                / Constants.ShooterConstants.kTopTopRollerSpeedupFactor))
-                / 2.0;
+        return (inputsTopMotorAutoLogged.velocityUnitsPerSecond
+                                / Constants.ShooterConstants.kTopRollerSpeedupFactor);
+    }
+
+    @Override
+    public List<BaseStatusSignal> getStatusSignals() {
+        return new ArrayList<>();
+    }
+
+    public void resetSimState() {
+    if (topMotorIO instanceof SimTalonFXIO) {
+        ((SimTalonFXIO) topMotorIO).resetSimState();
+    }
+
+}
+
+    @Override
+    public void onLoop() {
+
+        topMotorIO.readInputs(inputsTopMotorAutoLogged);
     }
 
 

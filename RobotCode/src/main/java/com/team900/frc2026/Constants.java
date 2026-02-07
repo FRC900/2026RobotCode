@@ -16,11 +16,10 @@ public class Constants {
 
     public static final class SensorConstants {
         // placeholder constant. Make sure to tune.
-        public static final int kAmpPostChopstickSensorPort = 4;
+
         public static final int kShooterBottomBannerSensorPort = 3;
-        public static final int kAmpBannerSensorPort = 2;
-        public static final int kFeederBannerSensorPort = 1;
-        public static final int kIntakeBannerSensorPort = 0;
+
+   
         public static final double kShooterDebounceTime = 0.01;
         public static final double kAmpDebounceTime = 0.01;
         public static final double kFeederDebounceTime = 0.01;
@@ -38,13 +37,10 @@ public class Constants {
     public static final int kDriveGamepadPort = 0;
 
     public static final ServoMotorSubsystemConfig kShooterBottomConfig =
-            new ServoMotorSubsystemConfig(3);
-    public static final ServoMotorSubsystemConfig kShooterTopTopConfig =
             new ServoMotorSubsystemConfig(2);
-    public static final ServoMotorSubsystemConfig kShooterTopBottomConfig =
+    public static final ServoMotorSubsystemConfig kShooterTopConfig =
             new ServoMotorSubsystemConfig(1);
-    public static final ServoMotorSubsystemWithFollowersConfig kShooterTopConfig =
-            new ServoMotorSubsystemWithFollowersConfig(4);
+
 
 
         
@@ -98,8 +94,9 @@ public class Constants {
         public static final double kFenderShotRPS = 100.0;
         public static final double kPreloadShotRPS = 90.0;
 
-        public static final double kTopBottomRollerSpeedupFactor = 1.0;
-        public static final double kTopTopRollerSpeedupFactor = 1.0;
+
+        public static final double kTopRollerSpeedupFactor = 1.0;
+        public static final double kBottomRollerSpeedupFactor = 1.0;
     }
 
 

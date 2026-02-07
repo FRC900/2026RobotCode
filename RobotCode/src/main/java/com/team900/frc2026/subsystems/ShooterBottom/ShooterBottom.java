@@ -8,6 +8,7 @@ import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
 import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants;
+import com.team900.frc2026.Robot;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -59,7 +60,6 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
     public void periodic() {
         super.periodic();
         double timestamp = RobotTime.getTimestampSeconds();
-        ioSensors.readInputs(inputsSensors);
 
         Logger.processInputs("BottomShooter", inputsSensors);
     }
@@ -80,13 +80,28 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
         return dutyCycleCommand(() -> 0.0);
     }
 
-    public Command setWheelRP(Supplier<AngularVelocity> speed) {
-        return runOnce(
-                () -> {
-                    Logger.recordOutput("shooter_rpm", speed.get().in(RotationsPerSecond));
-                    ioSensors.setFlywheelSpeed(speed.get());
-                });
+
+    public Command velocitySetpointCommand(DoubleSupplier setpoint) {
+        return runEnd(
+                        () -> {
+                            double vel = setpoint.getAsDouble();
+                            Logger.recordOutput("velocitySetpointCommand/vel", vel);
+                            setVelocitySetpointImpl(vel);
+                        },
+                        () -> {
+                            setOpenLoopDutyCycleImpl(0.0);
+                        })
+                .withName(getName() + " Velocity Command");
     }
+
+
+
+    private void setVelocitySetpointImpl(double unitsPerSecond) {
+        
+        ioSensors.setFlywheelSpeed(
+                unitsPerSecond * Constants.ShooterConstants.kBottomRollerSpeedupFactor);
+    }
+
 
     public Command runUntilBanner(DoubleSupplier velocitySupplier) {
         return Commands.runOnce(
@@ -119,20 +134,15 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
 
     @Override
     public void onLoop() {
-        if (ballEntered.get() && hasBall()) {
-            // If ball has entered
-            setVelocitySetpointImpl(0.0, 0);
-            didStopShooter.set(true);
-            ballEntered.set(false);
-        }
-
-        if (ballExited.get() && !hasBall()) {
-            // If ball has exited
-            setVelocitySetpointImpl(0.0, 0);
-            didStopShooter.set(true);
-            ballExited.set(false);
-        }
+        ioSensors.readInputs(inputsSensors);
     }
+
+    public void resetSimState() {
+    if (ioSensors instanceof ShooterBottomSensorIOSim) {
+        ((ShooterBottomSensorIOSim) ioSensors).resetTalon();
+    }
+ 
+}
 
     @Override
     public List<BaseStatusSignal> getStatusSignals() {

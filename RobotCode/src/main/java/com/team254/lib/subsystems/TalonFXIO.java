@@ -11,7 +11,10 @@ import com.team254.lib.drivers.CANDeviceId;
 import com.team254.lib.util.CANStatusLogger;
 import com.team254.lib.util.CTREUtil;
 import com.team900.frc2026.Robot;
+import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIO.ShooterBottomSensorInputs;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -83,6 +86,10 @@ public class TalonFXIO implements MotorIO {
                 MathUtil.clamp(units, config.kMinPositionUnits, config.kMaxPositionUnits));
     }
 
+    public double getAngularVelocityRadPerSec(){
+        return velocitySignal.getValueAsDouble()*2.0*Math.PI;
+    }
+
     public double unitsToRotor(double units) {
         return units / config.unitToRotorRatio;
     }
@@ -97,6 +104,14 @@ public class TalonFXIO implements MotorIO {
         inputs.currentStatorAmps = currentStatorSignal.getValueAsDouble();
         inputs.currentSupplyAmps = currentSupplySignal.getValueAsDouble();
         inputs.rawRotorPosition = rawRotorPositionSignal.getValueAsDouble();
+    }
+
+    public void readInputs(ShooterBottomSensorInputs inputs){
+        BaseStatusSignal.refreshAll(signals);
+
+        inputs.wheelVelocity = Units.RotationsPerSecond.of(rotorToUnits(velocitySignal.getValueAsDouble()));
+        inputs.wheelAppliedCurrent = Units.Amps.of(currentStatorSignal.getValueAsDouble());
+        inputs.wheelAppliedVoltage = Units.Volts.of(voltageSignal.getValueAsDouble());
     }
 
     @Override

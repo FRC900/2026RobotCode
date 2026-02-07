@@ -9,6 +9,7 @@ public class ShooterBottomSensorIOHardware implements ShooterBottomSensorIO {
     public ShooterBottomSensorIOHardware(int dioPort) {
 
         shooterBanner = new DigitalInput(dioPort);
+
     }
 
     @Override
