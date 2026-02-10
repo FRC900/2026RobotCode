@@ -1,0 +1,21 @@
+package com.team900.frc2026.factories;
+
+import edu.wpi.first.wpilibj2.command.Command;
+
+public class IntakeFactory{
+    public command intake(){
+        
+    }
+
+    public command outtake(){
+
+    }
+
+    public command extend(){
+
+    }
+
+    public command retract(){
+
+    }
+}
