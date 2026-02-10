@@ -30,42 +30,29 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public Command intake() {
         return run(() -> {
-            wheelsIn(1.0);
-            setIntake(1);
+            io.runWheels(1.0);
+            io.setIntake(1);
         }).withName("Intake intaking fuel");
     }
 
     public Command outtake() {
         return run(() -> {
-            wheelsIn(-1.0);
-            setIntake(1);
+            io.runWheels(-1.0);
+            io.setIntake(1);
         }).withName("Intake spitting out fuel");
+    }
+
+    public Command extend() {
+        return run(() -> {
+            io.runWheels(0.0);
+            io.setIntake(1);
+        }).withName("Intake extending");
     }
 
     public Command retract() {
         return run(() -> {
-            wheelsIn(0.0);
-            setIntake(0);
+            io.runWheels(0.0);
+            io.setIntake(0);
         }).withName("Intake retracting");
-    }
-
-    public void wheelsIn(double speed) {
-        intakeTalon.set(speed);
-    }
-
-    public void setIntake(int pos) {
-        if(pos == 0){
-            setExtended(false);
-        } else {
-            setExtended(true);
-        }
-    }
-
-    public boolean isExtended() {
-        return extended;
-    }
-
-    public void setExtended(boolean Extended) {
-        this.extended = Extended;
     }
 }
