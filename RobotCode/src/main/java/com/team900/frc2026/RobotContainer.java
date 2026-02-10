@@ -29,10 +29,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RobotContainer {
     private RobotState robotState;
     private ShooterBottom shooterBottom;
+    public Supplier shooterSetpoint;
+
     private TopShooter topShooter;
 
     private SimulatedRobotState simulatedRobotState;
-    private ShooterBottomSensorIOSim simulatedBottomShooterSensors;
 
 
     public RobotContainer() {
@@ -41,14 +42,6 @@ public class RobotContainer {
 
         this.simulatedRobotState =
                 RobotBase.isSimulation() ? new SimulatedRobotState(this) : null;
-        this.simulatedBottomShooterSensors =
-                    RobotBase.isSimulation() ? new ShooterBottomSensorIOSim(
-                        Constants.SensorConstants.kShooterBottomBannerSensorPort,
-                        Constants.kShooterBottomConfig)
-                        : null;
-
-
-        
 
         this.shooterBottom = buildShooterBottom();
         this.topShooter = buildTopShooter();
@@ -58,9 +51,9 @@ public class RobotContainer {
 
         configureBindings();
         
-        Supplier shoooterSetpoint = ShooterSetpoint.speakerSetpointSupplier(robotState);
+        this.shooterSetpoint = ShooterSetpoint.speakerSetpointSupplier(robotState);
         NamedCommands.registerCommand("Shoot", new
-            SequentialCommandGroup(ShootingFactory.spinBoth(this, shoooterSetpoint)));
+            SequentialCommandGroup(ShootingFactory.spinBoth(this, shooterSetpoint)));
 
         configureBindings();
         statusSignalLoop.register(getBottomShooter());
@@ -75,12 +68,12 @@ public class RobotContainer {
     private void configureBindings() {
         modalControls.configureBindings();
 
-        modalControls.shoot().whileTrue(ShootingFactory.spinBoth(this, ShooterSetpoint.speakerSetpointSupplier(robotState))
+        modalControls.shoot().whileTrue(ShootingFactory.spinBoth(this, shooterSetpoint)
                 );
     }
 
     public Command getAutonomousCommand() {
-        return ShootingFactory.spinBoth(this, ShooterSetpoint.speakerSetpointSupplier(robotState));
+        return ShootingFactory.spinBoth(this, shooterSetpoint);
     }
 
     private final ControlBoard controlBoard = ControlBoard.getInstance();
@@ -100,15 +93,17 @@ public class RobotContainer {
         if (RobotBase.isSimulation()) {
             return new ShooterBottom(
                     Constants.kShooterBottomConfig,
-                    new SimTalonFXIO(Constants.kShooterBottomConfig),
-                    simulatedBottomShooterSensors,
+                    new ShooterBottomSensorIOSim(
+                        Constants.SensorConstants.kShooterBottomBannerSensorPort,
+                        Constants.kShooterBottomConfig, new SimTalonFXIO(Constants.kShooterBottomConfig)),
                     robotState);
         } else {
             return new ShooterBottom(
                     Constants.kShooterBottomConfig,
-                    new TalonFXIO(Constants.kShooterBottomConfig),
                     new ShooterBottomSensorIOHardware(
-                            Constants.SensorConstants.kShooterBottomBannerSensorPort),
+                            Constants.SensorConstants.kShooterBottomBannerSensorPort,
+                            Constants.kShooterBottomConfig,                    
+                            new TalonFXIO(Constants.kShooterBottomConfig)),
                     robotState);
         }
     }

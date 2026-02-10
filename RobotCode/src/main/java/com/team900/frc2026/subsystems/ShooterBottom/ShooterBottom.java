@@ -7,7 +7,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
 import com.team254.lib.time.RobotTime;
-import com.team900.frc2026.ShooterConstants;
+import com.team900.frc2026.Constants.ShooterConstants;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
 import com.team900.frc2026.RobotState;
@@ -30,11 +30,13 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
 
     private final RobotState robotState;
     private final ServoMotorSubsystemConfig leadconfig;
+    private final MotorIO leadIO;
 
     private ShooterBottomSensorInputsAutoLogged inputsSensors =
             new ShooterBottomSensorInputsAutoLogged();
 
     private ShooterBottomSensorIO ioSensors;
+
 
     private AtomicBoolean ballEntered = new AtomicBoolean(false);
     private AtomicBoolean ballExited = new AtomicBoolean(false);
@@ -45,16 +47,18 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
 
     public ShooterBottom(
             ServoMotorSubsystemConfig leadConfig,
-            MotorIO leadIO,
             final ShooterBottomSensorIO sensorIO,
             RobotState state) {
 
-        super(leadConfig, new MotorInputsAutoLogged(), leadIO);
+
+
+        super(leadConfig, new MotorInputsAutoLogged(), sensorIO.getTalon());
 
         leadconfig = leadConfig;
-
-        robotState = state;
         ioSensors = sensorIO;
+        robotState = state;
+
+        leadIO = sensorIO.getTalon();
     }
 
     @Override
@@ -125,7 +129,7 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
     }
 
     public AngularVelocity getCurrentWheelSpeed() {
-        return inputsSensors.wheelVelocity;
+        return inputsSensors.velocityUnitsPerSecond;
     }
 
     public boolean hasBall() {

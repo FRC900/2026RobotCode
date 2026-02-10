@@ -6,8 +6,8 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
-import com.team900.frc2026.ShooterConstants;
-import com.team900.frc2026.Constants;
+import com.team254.lib.subsystems.TalonFXIO;
+import com.team900.frc2026.Constants.ShooterConstants;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.hal.simulation.DIODataJNI;
@@ -22,14 +22,19 @@ public class ShooterBottomSensorIOSim implements ShooterBottomSensorIO {
     private final ServoMotorSubsystemConfig config;
     private final SimTalonFXIO wheelTalon;
 
-    public ShooterBottomSensorIOSim(int dioPort, ServoMotorSubsystemConfig config) {
+    public ShooterBottomSensorIOSim(int dioPort, ServoMotorSubsystemConfig config,SimTalonFXIO talon) {
         super();
         this.port = dioPort;
         this.config = config;
         shooterBanner = new DigitalInput(dioPort);
+        this.wheelTalon = talon;
 
-        setHasNote();
-        wheelTalon = new SimTalonFXIO(config);
+        setNoNote();
+
+    }
+
+    public SimTalonFXIO getTalon(){
+        return this.wheelTalon;
     }
 
     public void setNoNote() {
@@ -46,8 +51,7 @@ public class ShooterBottomSensorIOSim implements ShooterBottomSensorIO {
         inputs.bottomShooterBannerHasPiece = shooterBanner.get();
    
 
-     //  inputs.wheelVelocity = Units.RotationsPerSecond.of(wheelTalon.getAngularVelocityRadPerSec() / (2.0*Math.PI));
-     //  inputs.wheelVelocity = wheelTalon.rotorToUnits(wheelTalon.getAngularVelocityRadPerSec());
+
     }
 
     @Override

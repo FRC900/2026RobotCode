@@ -1,15 +1,39 @@
 package com.team900.frc2026.subsystems.ShooterBottom;
 
+import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
+import com.team254.lib.subsystems.SimTalonFXIO;
+import com.team254.lib.subsystems.TalonFXIO;
+
+import edu.wpi.first.hal.simulation.DIODataJNI;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ShooterBottomSensorIOHardware implements ShooterBottomSensorIO {
-
+    private final int port;
+    private final ServoMotorSubsystemConfig config;
     protected final DigitalInput shooterBanner;
+    private final TalonFXIO wheelTalon;
 
-    public ShooterBottomSensorIOHardware(int dioPort) {
-
+    public ShooterBottomSensorIOHardware(int dioPort, ServoMotorSubsystemConfig config, TalonFXIO talon) {
+        this.port = dioPort;
+        this.config = config;
         shooterBanner = new DigitalInput(dioPort);
+        this.wheelTalon = talon;
+    }
 
+    @Override
+    public void setFlywheelSpeed(double speed) {
+        wheelTalon.setVelocitySetpoint(speed);}
+
+    public void setNoNote() {
+        DIODataJNI.setValue(port, false);
+    }
+
+    public TalonFXIO getTalon(){
+        return this.wheelTalon;
+    }
+
+    public void setHasNote() {
+        DIODataJNI.setValue(port, true);
     }
 
     @Override

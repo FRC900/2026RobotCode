@@ -11,8 +11,7 @@ import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
 import com.team254.lib.time.RobotTime;
-import com.team900.frc2026.ShooterConstants;
-import com.team900.frc2026.Constants;
+import com.team900.frc2026.Constants.ShooterConstants;
 // import com.team900.frc2026.subsystems.ShooterTop.ShooterBottomSensorInputsAutoLogged;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -111,10 +110,10 @@ public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, Motor
 
     }
 
-    private void setVelocitySetpointImpl(double unitsPerSecond) {
+    private void setVelocitySetpointImpl(double metersPerSecond) {
         
         topMotorIO.setVelocitySetpoint(
-                unitsPerSecond * ShooterConstants.kTopRollerSpeedupFactor);
+                metersPerSecond * ShooterConstants.kTopRollerSpeedupFactor);
 
 
     }

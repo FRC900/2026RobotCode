@@ -50,7 +50,7 @@ public class ShootingFactory {
 
         var topShooter = container.getTopShooter();
         return topShooter
-                .velocitySetpointCommand(() -> setpointSupplier.get().getShooterRPS())
-                .withName("Spin Up Bottom Shooter");
+                .velocitySetpointCommand(() -> setpointSupplier.get().getTopShooterRPS())
+                .withName("Spin Up Top Shooter");
     }
 }

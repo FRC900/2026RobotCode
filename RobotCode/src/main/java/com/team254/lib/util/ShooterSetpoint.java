@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.team900.frc2026.Constants;
-import com.team900.frc2026.ShooterConstants;
+import com.team900.frc2026.Constants.ShooterConstants;
 import com.team900.frc2026.RobotState;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,7 +17,7 @@ public class ShooterSetpoint {
     public static Optional<Double> overrideRPS = Optional.empty();
 
     private double shooterRPS;
-    private double shooterTopRPS = 5.0;
+    private double shooterTopRPS;
 
     private boolean isValid;
 
@@ -25,6 +25,7 @@ public class ShooterSetpoint {
             double shooterRPS,
             boolean isValid) {
         this.shooterRPS = shooterRPS;
+        this.shooterTopRPS = shooterRPS;
         this.isValid = isValid;
     }
 
@@ -32,6 +33,7 @@ public class ShooterSetpoint {
             double shooterRPS,
             double hoodFF) {
         this.shooterRPS = shooterRPS;
+        this.shooterTopRPS = shooterRPS;
         this.isValid = true;
     }
 
@@ -71,7 +73,7 @@ public class ShooterSetpoint {
         double launchSpeedRPS = placeholderRPS;
  
 
-        double launchSpeedMetersPerSec = ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec *
+        double launchSpeedMetersPerSec = ShooterConstants.kBallLaunchVelMetersPerSecPerRotPerSec *
                 launchSpeedRPS;
 
 
@@ -84,13 +86,13 @@ public class ShooterSetpoint {
  
 
         boolean validSetpont = true;
-        double shooterRPS = launchSpeedMetersPerSec / ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec;
-        if (shooterRPS > ShooterConstants.kShooterTopRPSCap) {
-            shooterRPS = ShooterConstants.kShooterTopRPSCap;
+        double shooterRPSTest = launchSpeedMetersPerSec / ShooterConstants.kBallLaunchVelMetersPerSecPerRotPerSec;
+        if (shooterRPSTest > ShooterConstants.kShooterTopRPSCap) {
+            shooterRPSTest = ShooterConstants.kShooterTopRPSCap;
             validSetpont = false;
         }
 
-        return new ShooterSetpoint(shooterRPS,validSetpont);
+        return new ShooterSetpoint(shooterRPSTest,validSetpont);
     }
 
 

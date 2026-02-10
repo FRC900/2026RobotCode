@@ -56,6 +56,26 @@ public class Constants {
     }
 
 
+        public class ShooterConstants {
+                //Tune Constants
+                public static final double kBallReleaseHeight = Units.inchesToMeters(22.183);
+
+
+                public static final double kStage2ShooterWheelDiameter = Units.inchesToMeters(3.0); // in
+                public static final double kStage1ShooterWheelDiameter = Units.inchesToMeters(2.0); // in
+
+                public static final double kBallLaunchVelMetersPerSecPerRotPerSec = 0.141;
+
+                public static final double kShooterTopRPSCap = 3.0; // rot/s
+        
+
+
+
+                public static final double kTopRollerSpeedupFactor = 1.0;
+                public static final double kBottomRollerSpeedupFactor = 1.0;
+
+        }
+
     //TUNE ALL OF THESE
     public static final double kTurretToRobotCenterX = Units.inchesToMeters(2.3115);
     public static final double kTurretToRobotCenterY = 0;
