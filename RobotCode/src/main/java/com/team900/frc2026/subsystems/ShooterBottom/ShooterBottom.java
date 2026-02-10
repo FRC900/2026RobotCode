@@ -7,6 +7,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
 import com.team254.lib.time.RobotTime;
+import com.team900.frc2026.ShooterConstants;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
 import com.team900.frc2026.RobotState;
@@ -99,7 +100,7 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
     private void setVelocitySetpointImpl(double unitsPerSecond) {
         
         ioSensors.setFlywheelSpeed(
-                unitsPerSecond * Constants.ShooterConstants.kBottomRollerSpeedupFactor);
+                unitsPerSecond * ShooterConstants.kBottomRollerSpeedupFactor);
     }
 
 

@@ -6,7 +6,8 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
-import com.team900.frc2026.Constants.ShooterConstants;
+import com.team900.frc2026.ShooterConstants;
+import com.team900.frc2026.Constants;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.hal.simulation.DIODataJNI;

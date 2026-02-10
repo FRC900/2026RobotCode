@@ -9,6 +9,7 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -22,7 +23,8 @@ public interface ShooterBottomSensorIO {
         public boolean bottomShooterBannerHasPiece = false;
         public AngularVelocity wheelVelocity = RotationsPerSecond.of(0);
 
-        public Current wheelAppliedCurrent = Amps.of(0);
+        public Current wheelAppliedStatorCurrent = Amps.of(0);
+        public Current wheelAppliedSupplyCurrent = Amps.of(0);
         public Voltage wheelAppliedVoltage = Volts.of(0);
     }
 

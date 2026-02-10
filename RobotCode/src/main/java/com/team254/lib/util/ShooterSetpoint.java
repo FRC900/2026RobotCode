@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.team900.frc2026.Constants;
+import com.team900.frc2026.ShooterConstants;
 import com.team900.frc2026.RobotState;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -70,7 +71,7 @@ public class ShooterSetpoint {
         double launchSpeedRPS = placeholderRPS;
  
 
-        double launchSpeedMetersPerSec = Constants.ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec *
+        double launchSpeedMetersPerSec = ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec *
                 launchSpeedRPS;
 
 
@@ -83,9 +84,9 @@ public class ShooterSetpoint {
  
 
         boolean validSetpont = true;
-        double shooterRPS = launchSpeedMetersPerSec / Constants.ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec;
-        if (shooterRPS > Constants.ShooterConstants.kShooterTopRPSCap) {
-            shooterRPS = Constants.ShooterConstants.kShooterTopRPSCap;
+        double shooterRPS = launchSpeedMetersPerSec / ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec;
+        if (shooterRPS > ShooterConstants.kShooterTopRPSCap) {
+            shooterRPS = ShooterConstants.kShooterTopRPSCap;
             validSetpont = false;
         }
 

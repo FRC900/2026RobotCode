@@ -11,6 +11,7 @@ import com.team254.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
 import com.team254.lib.time.RobotTime;
+import com.team900.frc2026.ShooterConstants;
 import com.team900.frc2026.Constants;
 // import com.team900.frc2026.subsystems.ShooterTop.ShooterBottomSensorInputsAutoLogged;
 import com.team900.frc2026.RobotState;
@@ -28,7 +29,11 @@ public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, Motor
     private static MotorInputsAutoLogged inputsTopMotorAutoLogged = new MotorInputsAutoLogged();
 
 
+
     private TalonFXIO topMotorIO;
+
+
+
 
 
     
@@ -46,6 +51,7 @@ public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, Motor
         this.state = state;
         this.topMotorIO = motorIOTop;
 
+
     }
 
     @Override
@@ -54,6 +60,7 @@ public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, Motor
         double timestamp = RobotTime.getTimestampSeconds();
 
         Logger.processInputs("Top", inputsTopMotorAutoLogged);
+
 
         Logger.recordOutput(
                 getName() + "/latencyPeriodicSec", RobotTime.getTimestampSeconds() - timestamp);
@@ -99,29 +106,25 @@ public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, Motor
     }
 
     protected void setOpenLoopDutyCycleImpl(double dutyCycle) {
-        Logger.recordOutput(
-                getName() + "/top/API/setOpenLoopDutyCycle/dutyCycle",
-                dutyCycle * Constants.ShooterConstants.kTopRollerSpeedupFactor);
         topMotorIO.setOpenLoopDutyCycle(
-                dutyCycle * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                dutyCycle * ShooterConstants.kTopRollerSpeedupFactor);
 
     }
 
     private void setVelocitySetpointImpl(double unitsPerSecond) {
-        Logger.recordOutput(
-                getName() + "/top/API/setVelocitySetpointImpl/UnitsPerS",
-                unitsPerSecond * Constants.ShooterConstants.kTopRollerSpeedupFactor);
-
         
         topMotorIO.setVelocitySetpoint(
-                unitsPerSecond * Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                unitsPerSecond * ShooterConstants.kTopRollerSpeedupFactor);
+
 
     }
 
     public double getCurrentVelocity() {
         return (inputsTopMotorAutoLogged.velocityUnitsPerSecond
-                                / Constants.ShooterConstants.kTopRollerSpeedupFactor);
+                                / ShooterConstants.kTopRollerSpeedupFactor);
     }
+
+
 
     @Override
     public List<BaseStatusSignal> getStatusSignals() {

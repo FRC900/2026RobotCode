@@ -98,20 +98,22 @@ public class TalonFXIO implements MotorIO {
     public void readInputs(MotorInputs inputs) {
         BaseStatusSignal.refreshAll(signals);
 
-        inputs.unitPosition = rotorToUnits(positionSignal.getValueAsDouble());
+        //inputs.unitPosition = rotorToUnits(positionSignal.getValueAsDouble());
         inputs.velocityUnitsPerSecond = rotorToUnits(velocitySignal.getValueAsDouble());
         inputs.appliedVolts = voltageSignal.getValueAsDouble();
         inputs.currentStatorAmps = currentStatorSignal.getValueAsDouble();
         inputs.currentSupplyAmps = currentSupplySignal.getValueAsDouble();
-        inputs.rawRotorPosition = rawRotorPositionSignal.getValueAsDouble();
+       // inputs.rawRotorPosition = rawRotorPositionSignal.getValueAsDouble();
     }
 
     public void readInputs(ShooterBottomSensorInputs inputs){
         BaseStatusSignal.refreshAll(signals);
 
         inputs.wheelVelocity = Units.RotationsPerSecond.of(rotorToUnits(velocitySignal.getValueAsDouble())/(2*Math.PI));
-        inputs.wheelAppliedCurrent = Units.Amps.of(currentStatorSignal.getValueAsDouble());
+        inputs.wheelAppliedStatorCurrent = Units.Amps.of(currentStatorSignal.getValueAsDouble());
         inputs.wheelAppliedVoltage = Units.Volts.of(voltageSignal.getValueAsDouble());
+        inputs.wheelAppliedSupplyCurrent = Units.Amps.of(currentSupplySignal.getValueAsDouble());
+
     }
 
     @Override
