@@ -13,7 +13,6 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.measure.Current;
 import com.team900.frc2026.Constants;
 
 import edu.wpi.first.math.MathUtil;
@@ -21,6 +20,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.Current;
+
 
 /**
  * Hardware implementation of the HoodIO interface for the hood subsystem.
