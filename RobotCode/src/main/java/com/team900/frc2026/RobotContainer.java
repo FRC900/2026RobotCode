@@ -4,10 +4,15 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.subsystems.Hood.HoodSubsystem;
+import com.team900.frc2026.subsystems.Hood.HoodIOHardware;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
+  private final HoodSubsystem Hood = new HoodSubsystem(new HoodIOHardware());
+
   public RobotContainer() {
     configureBindings();
   }
@@ -16,5 +21,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+  }
+
+  public HoodSubsystem getHood() {
+    return Hood;
   }
 }
