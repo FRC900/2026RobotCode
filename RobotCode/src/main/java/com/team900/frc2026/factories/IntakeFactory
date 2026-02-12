@@ -1,21 +1,42 @@
 package com.team900.frc2026.factories;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import com.team900.frc2026.subsystems.Intake;
+import com.team900.frc2026.RobotContainer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import java.util.function.DoubleSupplier;
 
 public class IntakeFactory{
-    public command intake(){
-        
+
+    private static final RobotContainer container = RobotContainer.getInstance();
+    private static final RobotContainer arm = RobotContainer.getInstance();
+
+    public static Command runIntake(DoubleSupplier intakeSpeed) {
+        return container
+            .getIntakeSubSystem()
+            .dutyCycleCommand(intakeSpeed)
+            .withName("Duty Cycle Intake");
     }
 
-    public command outtake(){
-
+    public static Command runOuttake(DoubleSupplier intakeSpeed) {
+        return container
+            .getIntakeSubSystem()
+            .dutyCycleCommand(-intakeSpeed)
+            .withName("Duty Cycle Outtake");
     }
 
-    public command extend(){
-
+    public static Command extendIntake(DoubleSupplier extendSpeed) {
+        return arm
+            .getIntakeSubSystem()
+            .dutyCycleCommand(extendSpeed)
+            .withName("Extending Slapdown");
     }
 
-    public command retract(){
-
+    public static Command retractIntake(DoubleSupplier extendSpeed) {
+        return arm
+            .getIntakeSubSystem()
+            .dutyCycleCommand(-extendSpeed)
+            .withName("Retracting Slapdown");
     }
 }

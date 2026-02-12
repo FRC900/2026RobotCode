@@ -72,6 +72,39 @@ public class IntakeIOReal implements IntakeIO {
 
         intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        intakeConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.intakeStatorCurrentLimit;
+        intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        intakeConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.intakeSupplyCurrentLimit;
+        intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+        rollerConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.intakeStatorCurrentLimit;
+        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.intakeSupplyCurrentLimit;
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+        intakeVelocitySignal = intakeTalon.getRotorVelocity();
+        intakeVoltsSignal = intakeTalon.getMotorVoltage();
+        intakeCurrentStatorSignal = intakeTalon.getStatorCurrent();
+        intakeCurrentSupplySignal = intakeTalon.getSupplyCurrent();
+        intakeTemperatureSignal = intakeTalon.getDeviceTemp();
+
+        rRollerVelocitySignal = rRollerTalon.getRotorVelocity();
+        rRollerVoltsSignal = rRollerTalon.getMotorVoltage();
+        rRollerCurrentStatorSignal = rRollerTalon.getStatorCurrent();
+        rRollerCurrentSupplySignal = rRollerTalon.getSupplyCurrent();
+        rRollerTemperatureSignal = rRollerTalon.getDeviceTemp();
+
+        lRollerVelocitySignal = lRollerTalon.getRotorVelocity();
+        lRollerVoltsSignal = lRollerTalon.getMotorVoltage();
+        lRollerCurrentStatorSignal = lRollerTalon.getStatorCurrent();
+        lRollerCurrentSupplySignal = lRollerTalon.getSupplyCurrent();
+        lRollerTemperatureSignal = lRollerTalon.getDeviceTemp();
+
+        fCANrangeIsDectected = fCANrange.getIsDetected();
+        rCANrangeIsDectected = rCANrange.getIsDetected();
+        lCANrangeIsDectected = lCANrange.getIsDetected();
+        bCANrangeIsDectected = rCANrange.getIsDetected();
     }
 
     public void setIntake(int pos) {
