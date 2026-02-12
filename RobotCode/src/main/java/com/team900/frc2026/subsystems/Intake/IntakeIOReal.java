@@ -30,6 +30,8 @@ public class IntakeIOReal implements IntakeIO {
     protected final TalonFX intakeTalon;
     protected final TalonFX rRollerTalon;
     protected final TalonFX lRollerTalon;
+    protected final TalonFX rMotorTalon;
+    protected final TalonFX lMotorTalon;
     protected final CANrange fCANrange;
     protected final CANrange rCANrange;
     protected final CANrange lCANrange;
@@ -53,6 +55,18 @@ public class IntakeIOReal implements IntakeIO {
     private final StatusSignal<Current> lRollerCurrentSupplySignal;
     private final StatusSignal<Temperature> lRollerTemperatureSignal;
 
+    private final StatusSignal<AngularVelocity> rMotorVelocitySignal;
+    private final StatusSignal<Voltage> rMotorVoltsSignal;
+    private final StatusSignal<Current> rMotorCurrentStatorSignal;
+    private final StatusSignal<Current> rMotorCurrentSupplySignal;
+    private final StatusSignal<Temperature> rMotorTemperatureSignal;
+
+    private final StatusSignal<AngularVelocity> lMotorVelocitySignal;
+    private final StatusSignal<Voltage> lMotorVoltsSignal;
+    private final StatusSignal<Current> lMotorCurrentStatorSignal;
+    private final StatusSignal<Current> lMotorCurrentSupplySignal;
+    private final StatusSignal<Temperature> lMotorTemperatureSignal;
+
     private final StatusSignal<Boolean> fCANrangeIsDectected;
     private final StatusSignal<Boolean> rCANrangeIsDectected;
     private final StatusSignal<Boolean> lCANrangeIsDectected;
@@ -65,6 +79,8 @@ public class IntakeIOReal implements IntakeIO {
         intakeTalon = new TalonFX(IntakeConstants.intakeTalonCanID, IntakeConstants.canBUS);
         rRollerTalon = new TalonFX(IntakeConstants.rRollerTalonCanID, IntakeConstants.canBUS);
         lRollerTalon = new TalonFX(IntakeConstants.lRollerTalonCanID, IntakeConstants.canBUS);
+        rMotorTalon = new TalonFX(IntakeConstants.rMotorTalonCanID, IntakeConstants.canBUS);
+        lMotorTalon = new TalonFX(IntakeConstants.lMotorTalonCanID, IntakeConstants.canBUS);
         fCANrange = new CANrange(IntakeConstants.fCANrangeCanID, IntakeConstants.canBUS);
         rCANrange = new CANrange(IntakeConstants.rCANrangeCanID, IntakeConstants.canBUS);
         lCANrange = new CANrange(IntakeConstants.lCANrangeCanID, IntakeConstants.canBUS);

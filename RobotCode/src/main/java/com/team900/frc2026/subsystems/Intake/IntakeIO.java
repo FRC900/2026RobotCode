@@ -47,10 +47,9 @@ public interface IntakeIO {
     }
 
     default void updateInputs(IntakeIOInputs inputs) {}
-    default void setIntake(int pos) {}
-    default void runWheels(double output) {}
-    default void retract() {}
-    default void extend() {}
+    default void setIntakeDutyCycleOut(double output) {}
+    default void setIntakeBrakeMode(boolean enabled) {}
+    default void stopIntake(int pos) {}
 
     default void setLRollerDutyCycleOut(double output) {}
     default void setLRollerBrakeMode(boolean enabled) {}
@@ -60,4 +59,12 @@ public interface IntakeIO {
     default void setRRollerBrakeMode(boolean enabled) {}
     default void stopRRoller() {}
 
+    
+    default void setLMotorDutyCycleOut(double output) {}
+    default void setLMotorBrakeMode(boolean enabled) {}
+    default void stopLMotor() {}
+
+    default void setRMotorDutyCycleOut(double output) {}
+    default void setRMotorBrakeMode(boolean enabled) {}
+    default void stopRMotor() {}
 }

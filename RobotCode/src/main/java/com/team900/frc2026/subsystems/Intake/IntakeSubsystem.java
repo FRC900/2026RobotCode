@@ -1,10 +1,12 @@
 package com.team900.frc2026.subsystems.Intake;
 
 import com.team254.lib.subsystems.MotorIO;
-import edu.wpi.first.wpilibj.RobotState;
+import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -19,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public IntakeSubsystem(final IntakeIO io) {
         this.io = io;
         this.state = RobotState.getInstance();
-        setDefaultCommand(run(this::retract).withName("No Intake"));
+        setDefaultCommand(run(this::stopAll).withName("No Intake"));
     }
 
     @Override
@@ -28,31 +30,34 @@ public class IntakeSubsystem extends SubsystemBase{
         Logger.processInputs("Intake", inputs);
     }
 
-    public Command intake() {
-        return run(() -> {
-            io.runWheels(1.0);
-            io.setIntake(1);
-        }).withName("Intake intaking fuel");
+    public void stopAll() {
+        io.stopIntake();
+        io.stopLRoller();
+        io.stopRRoller();
+        io.stopLMotor();
+        io.stopRMotor();
     }
 
-    public Command outtake() {
-        return run(() -> {
-            io.runWheels(-1.0);
-            io.setIntake(1);
-        }).withName("Intake spitting out fuel");
+    public void extendIntake(){
+        io.setLMotorDutyCycleOut(0.67);
+        io.setRMotorDutyCycleOut(0.67);
     }
 
-    public Command extend() {
-        return run(() -> {
-            io.runWheels(0.0);
-            io.setIntake(1);
-        }).withName("Intake extending");
+    public void intakeFuel(){
+        io.setIntakeDutyCycleOut(0.67);
+        if(inputs.lCANrangeRange && inputs.rCANrangeRange){
+            io.setLRollerDutyCycleOut(-0.67);
+            io.setRRollerDutyCycleOut(-0.67);
+        } else {
+            io.setLRollerDutyCycleOut(-0.67);
+            io.setRRollerDutyCycleOut(0.67);
+        }
     }
 
-    public Command retract() {
-        return run(() -> {
-            io.runWheels(0.0);
-            io.setIntake(0);
-        }).withName("Intake retracting");
+    public Command intakeFuelCommand(){
+        return run(this::intakeFuel).withName("Intaking Fuel");
     }
+
+    public Command extendIntakeCommand() {
+    return run(this::extendIntake).withName("Extending Intake");
 }

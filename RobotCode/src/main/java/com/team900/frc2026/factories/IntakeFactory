@@ -12,6 +12,8 @@ public class IntakeFactory{
     private static final RobotContainer container = RobotContainer.getInstance();
     private static final RobotContainer arm = RobotContainer.getInstance();
 
+    //Can runIntake and runOuttake be combined? (same question for two below)
+    //Can someone make sure this makes sense?
     public static Command runIntake(DoubleSupplier intakeSpeed) {
         return container
             .getIntakeSubSystem()
