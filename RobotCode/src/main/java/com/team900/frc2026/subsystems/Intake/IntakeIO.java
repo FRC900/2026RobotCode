@@ -3,6 +3,8 @@ package com.team900.frc2026.subsystems.Intake;
 import edu.wpi.first.wpilibj.DigitalInput;
 import org.littletonrobotics.junction.AutoLog;
 
+
+//L and R motor for slapdown arm motors
 public interface IntakeIO {
 
     @AutoLog
@@ -49,7 +51,7 @@ public interface IntakeIO {
     default void updateInputs(IntakeIOInputs inputs) {}
     default void setIntakeDutyCycleOut(double output) {}
     default void setIntakeBrakeMode(boolean enabled) {}
-    default void stopIntake(int pos) {}
+    default void stopIntake() {}
 
     default void setLRollerDutyCycleOut(double output) {}
     default void setLRollerBrakeMode(boolean enabled) {}

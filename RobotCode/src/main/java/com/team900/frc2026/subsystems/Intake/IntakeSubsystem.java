@@ -13,6 +13,8 @@ import org.littletonrobotics.junction.Logger;
 import com.team254.lib.time.RobotTime;
 import com.team254.lib.subsystems.*;
 
+
+//L and R motor for slapdown arm motors
 public class IntakeSubsystem extends SubsystemBase{
     private final RobotState state;
     private final IntakeIO io;

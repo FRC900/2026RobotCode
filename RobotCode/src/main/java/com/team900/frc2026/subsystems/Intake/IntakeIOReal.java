@@ -3,6 +3,7 @@ package com.team900.frc2026.subsystems.Intake;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -20,7 +21,10 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.team254.lib.util.CTREUtil;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -36,6 +40,9 @@ public class IntakeIOReal implements IntakeIO {
     protected final CANrange rCANrange;
     protected final CANrange lCANrange;
     protected final CANrange bCANrange;
+
+    private final DutyCycleOut dutyCycleOutControl =
+      new DutyCycleOut(0);
 
     private final StatusSignal<AngularVelocity> intakeVelocitySignal;
     private final StatusSignal<Voltage> intakeVoltsSignal;
@@ -74,6 +81,7 @@ public class IntakeIOReal implements IntakeIO {
 
     private final TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     private final TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+    private final TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
     public IntakeIOReal(){
         intakeTalon = new TalonFX(IntakeConstants.intakeTalonCanID, IntakeConstants.canBUS);
@@ -88,6 +96,7 @@ public class IntakeIOReal implements IntakeIO {
 
         intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         intakeConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.intakeStatorCurrentLimit;
         intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -98,6 +107,11 @@ public class IntakeIOReal implements IntakeIO {
         rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         rollerConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.intakeSupplyCurrentLimit;
         rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+        motorConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.intakeStatorCurrentLimit;
+        motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        motorConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.intakeSupplyCurrentLimit;
+        motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         intakeVelocitySignal = intakeTalon.getRotorVelocity();
         intakeVoltsSignal = intakeTalon.getMotorVoltage();
@@ -117,57 +131,251 @@ public class IntakeIOReal implements IntakeIO {
         lRollerCurrentSupplySignal = lRollerTalon.getSupplyCurrent();
         lRollerTemperatureSignal = lRollerTalon.getDeviceTemp();
 
+        rMotorVelocitySignal = rMotorTalon.getRotorVelocity();
+        rMotorVoltsSignal = rMotorTalon.getMotorVoltage();
+        rMotorCurrentStatorSignal = rMotorTalon.getStatorCurrent();
+        rMotorCurrentSupplySignal = rMotorTalon.getSupplyCurrent();
+        rMotorTemperatureSignal = rMotorTalon.getDeviceTemp();
+
+        lMotorVelocitySignal = lMotorTalon.getRotorVelocity();
+        lMotorVoltsSignal = lMotorTalon.getMotorVoltage();
+        lMotorCurrentStatorSignal = lMotorTalon.getStatorCurrent();
+        lMotorCurrentSupplySignal = lMotorTalon.getSupplyCurrent();
+        lMotorTemperatureSignal = lMotorTalon.getDeviceTemp();
+
         fCANrangeIsDectected = fCANrange.getIsDetected();
         rCANrangeIsDectected = rCANrange.getIsDetected();
         lCANrangeIsDectected = lCANrange.getIsDetected();
         bCANrangeIsDectected = rCANrange.getIsDetected();
+
+        CTREUtil.applyConfiguration(intakeTalon, intakeConfig);
+        BaseStatusSignal.setUpdateFrequencyForAll(10,
+        intakeVelocitySignal,
+        intakeVoltsSignal,
+        intakeCurrentStatorSignal,
+        intakeCurrentSupplySignal,
+        intakeTemperatureSignal);
+
+        CTREUtil.applyConfiguration(rRollerTalon, rollerConfig);
+        BaseStatusSignal.setUpdateFrequencyForAll(10,
+            rRollerVelocitySignal,
+            rRollerVoltsSignal,
+            rRollerCurrentStatorSignal,
+            rRollerCurrentSupplySignal,
+            rRollerTemperatureSignal);
+
+        CTREUtil.applyConfiguration(lRollerTalon, rollerConfig);
+        BaseStatusSignal.setUpdateFrequencyForAll(10,
+            lRollerVelocitySignal,
+            lRollerVoltsSignal,
+            lRollerCurrentStatorSignal,
+            lRollerCurrentSupplySignal,
+            lRollerTemperatureSignal);
+
+        CTREUtil.applyConfiguration(rMotorTalon, motorConfig);
+        BaseStatusSignal.setUpdateFrequencyForAll(10,
+            rMotorVelocitySignal,
+            rMotorVoltsSignal,
+            rMotorCurrentStatorSignal,
+            rMotorCurrentSupplySignal,
+            rMotorTemperatureSignal);
+
+        CTREUtil.applyConfiguration(lMotorTalon, motorConfig);
+        BaseStatusSignal.setUpdateFrequencyForAll(10,
+            lMotorVelocitySignal,
+            lMotorVoltsSignal,
+            lMotorCurrentStatorSignal,
+            lMotorCurrentSupplySignal,
+            lMotorTemperatureSignal);
+
+        BaseStatusSignal.setUpdateFrequencyForAll(50,
+        fCANrangeIsDectected,
+        rCANrangeIsDectected,
+        lCANrangeIsDectected,
+        bCANrangeIsDectected);
+
+        // Optimize bus utilization
+        intakeTalon.optimizeBusUtilization(0, 1.0);
+        rRollerTalon.optimizeBusUtilization(0, 1.0);
+        lRollerTalon.optimizeBusUtilization(0, 1.0);
+        rMotorTalon.optimizeBusUtilization(0, 1.0);
+        lMotorTalon.optimizeBusUtilization(0, 1.0);
+        // fCANrange.optimizeBusUtilization(0, 1.0);
+        // rCANrange.optimizeBusUtilization(0, 1.0);
+        // lCANrange.optimizeBusUtilization(0, 1.0);
+        // bCANrange.optimizeBusUtilization(0, 1.0);
+    };
+
+    @Override
+    public void updateInputs(IntakeIOInputs inputs) {
+
+        //Intake
+        inputs.intakeConnected =
+            BaseStatusSignal.refreshAll(
+                    intakeVelocitySignal,
+                    intakeVoltsSignal,
+                    intakeCurrentStatorSignal,
+                    intakeCurrentSupplySignal,
+                    intakeTemperatureSignal)
+                .isOK();
+
+        inputs.intakeVelocityRotPerSec = intakeVelocitySignal.getValueAsDouble();
+        inputs.intakeAppliedVolts = intakeVoltsSignal.getValueAsDouble();
+        inputs.intakeSupplyAmps = intakeCurrentSupplySignal.getValueAsDouble();
+        inputs.intakeStatorAmps = intakeCurrentStatorSignal.getValueAsDouble();
+        inputs.intakeTempCelc = intakeTemperatureSignal.getValueAsDouble();
+
+        //R Roller
+        inputs.rRollerConnected =
+            BaseStatusSignal.refreshAll(
+                    rRollerVelocitySignal,
+                    rRollerVoltsSignal,
+                    rRollerCurrentStatorSignal,
+                    rRollerCurrentSupplySignal,
+                    rRollerTemperatureSignal)
+                .isOK();
+
+        inputs.rRollerVelocityRotPerSec = rRollerVelocitySignal.getValueAsDouble();
+        inputs.rRollerAppliedVolts = rRollerVoltsSignal.getValueAsDouble();
+        inputs.rRollerSupplyAmps = rRollerCurrentSupplySignal.getValueAsDouble();
+        inputs.rRollerStatorAmps = rRollerCurrentStatorSignal.getValueAsDouble();
+        inputs.rRollerTempCelc = rRollerTemperatureSignal.getValueAsDouble();
+
+        //L Roller
+        inputs.lRollerConnected =
+        BaseStatusSignal.refreshAll(
+                lRollerVelocitySignal,
+                lRollerVoltsSignal,
+                lRollerCurrentStatorSignal,
+                lRollerCurrentSupplySignal,
+                lRollerTemperatureSignal)
+            .isOK();
+
+        inputs.lRollerVelocityRotPerSec = lRollerVelocitySignal.getValueAsDouble();
+        inputs.lRollerAppliedVolts = lRollerVoltsSignal.getValueAsDouble();
+        inputs.lRollerSupplyAmps = lRollerCurrentSupplySignal.getValueAsDouble();
+        inputs.lRollerStatorAmps = lRollerCurrentStatorSignal.getValueAsDouble();
+        inputs.lRollerTempCelc = lRollerTemperatureSignal.getValueAsDouble();
+
+        //R Motor
+        inputs.rRollerConnected =
+            BaseStatusSignal.refreshAll(
+                    rMotorVelocitySignal,
+                    rMotorVoltsSignal,
+                    rMotorCurrentStatorSignal,
+                    rMotorCurrentSupplySignal,
+                    rMotorTemperatureSignal)
+                .isOK();
+
+        inputs.rMotorVelocityRotPerSec = rMotorVelocitySignal.getValueAsDouble();
+        inputs.rMotorAppliedVolts = rMotorVoltsSignal.getValueAsDouble();
+        inputs.rMotorSupplyAmps = rMotorCurrentSupplySignal.getValueAsDouble();
+        inputs.rMotorStatorAmps = rMotorCurrentStatorSignal.getValueAsDouble();
+        inputs.rMotorTempCelc = rMotorTemperatureSignal.getValueAsDouble();
+
+        //L Motor
+        inputs.lRollerConnected =
+        BaseStatusSignal.refreshAll(
+                lMotorVelocitySignal,
+                lMotorVoltsSignal,
+                lMotorCurrentStatorSignal,
+                lMotorCurrentSupplySignal,
+                lMotorTemperatureSignal)
+            .isOK();
+
+        inputs.lMotorVelocityRotPerSec = lMotorVelocitySignal.getValueAsDouble();
+        inputs.lMotorAppliedVolts = lMotorVoltsSignal.getValueAsDouble();
+        inputs.lMotorSupplyAmps = lMotorCurrentSupplySignal.getValueAsDouble();
+        inputs.lMotorStatorAmps = lMotorCurrentStatorSignal.getValueAsDouble();
+        inputs.lMotorTempCelc = lMotorTemperatureSignal.getValueAsDouble();
+
+        //Front CANrange
+        inputs.fCANrangeConnected =
+        BaseStatusSignal.refreshAll(
+            fCANrangeIsDectected)
+            .isOK();
+        inputs.fCANrangeRange = fCANrangeIsDectected.getValue();
+
+        //Right CANrange
+        inputs.rCANrangeConnected =
+        BaseStatusSignal.refreshAll(
+            rCANrangeIsDectected)
+            .isOK();
+        inputs.rCANrangeRange = rCANrangeIsDectected.getValue();
+
+        //Left CANrange
+        inputs.lCANrangeConnected =
+        BaseStatusSignal.refreshAll(
+            lCANrangeIsDectected)
+            .isOK();
+        inputs.lCANrangeRange = lCANrangeIsDectected.getValue();
+
+        //Back CANrange
+        inputs.bCANrangeConnected =
+        BaseStatusSignal.refreshAll(
+            bCANrangeIsDectected)
+            .isOK();
+        inputs.bCANrangeRange = bCANrangeIsDectected.getValue();
     }
 
-    public void setIntake(int pos) {
-        if(pos == 0){
-            setExtended(false);
-        } else {
-            setExtended(true);
-        }
-    }
+    @Override
+    public void setIntakeDutyCycleOut(double output) {
+        intakeTalon.setControl(dutyCycleOutControl.withOutput(output));}
 
-    public void runWheels(double speed) {
-        intakeTalon.set(speed);
-    }
+    @Override
+    public void setIntakeBrakeMode(boolean enabled) {
+        intakeTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);}
 
-    public void setExtended(boolean Extended) {
-        this.extended = Extended;
-    }
+    @Override
+    public void stopIntake() {
+        intakeTalon.setControl(new NeutralOut());}
 
-    public void retract(){
-        intakeTalon.setControl(new NeutralOut());
-    }
-
-    public void extend(){
-
-    }
-
-    public void setLRollerDutyCycleOut(double output) {
-
-    }
-
-    public void setLRollerBrakeMode(boolean enabled) {
-
-    }
-
-    public void stopLRoller() {
-
-    }
-
+    @Override
     public void setRRollerDutyCycleOut(double output) {
+        rRollerTalon.setControl(dutyCycleOutControl.withOutput(output));}
 
-    }
-
+    @Override
     public void setRRollerBrakeMode(boolean enabled) {
+        rRollerTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);}
 
-    }
-
+    @Override
     public void stopRRoller() {
+        rRollerTalon.setControl(new NeutralOut());}
 
-    }
+    @Override
+    public void setLRollerDutyCycleOut(double output) {
+        lRollerTalon.setControl(dutyCycleOutControl.withOutput(output));}
+
+    @Override
+    public void setLRollerBrakeMode(boolean enabled) {
+        lRollerTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);}
+
+    @Override
+    public void stopLRoller() {
+        lRollerTalon.setControl(new NeutralOut());}
+
+    @Override
+    public void setRMotorDutyCycleOut(double output) {
+        rMotorTalon.setControl(dutyCycleOutControl.withOutput(output));}
+
+    @Override
+    public void setRMotorBrakeMode(boolean enabled) {
+        rMotorTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);}
+
+    @Override
+    public void stopRMotor() {
+        rMotorTalon.setControl(new NeutralOut());}
+
+    @Override
+    public void setLMotorDutyCycleOut(double output) {
+        lMotorTalon.setControl(dutyCycleOutControl.withOutput(output));}
+
+    @Override
+    public void setLMotorBrakeMode(boolean enabled) {
+        lMotorTalon.setNeutralMode(enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast);}
+
+    @Override
+    public void stopLMotor() {
+        lMotorTalon.setControl(new NeutralOut());}
 }
+
