@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
 import com.team254.lib.util.CTREUtil;
@@ -24,6 +25,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Current;
+
+import static edu.wpi.first.units.Units.Radians;
 
 import java.util.Arrays;
 import java.util.List;
@@ -100,13 +103,16 @@ public class TurretIOHardware implements TurretIO {
     }
 
     public void readFastInputs(FastTurretInputs inputs) {
-        Angle talonPosition = BaseStatusSignal.getLatencyCompensatedValue(positionSignal, velocitySignal);
+        double talonPosition = BaseStatusSignal.getLatencyCompensatedValue(positionSignal, velocitySignal).in(Radians);
         double kGearRatio = Constants.TurretConstants.kTurretGearRatio;
+        
         inputs.positionRad = Units.rotationsToRadians(talonPosition * kGearRatio);
-        inputs.velocityRadPerSec = Units.rotationsToRadians(velocitySignal.getValueAsDouble() * kGearRatio);
-        inputs.turretPositionAbsolute = Rotation2d
-                .fromRotations(
-                        BaseStatusSignal.getLatencyCompensatedValue(cancoder1AbsolutePosition, cancoder1Velocity));
+        
+        double talonVelocity = velocitySignal.getValueAsDouble();
+        inputs.velocityRadPerSec = Units.rotationsToRadians(talonVelocity * kGearRatio);
+        
+        double cancoderRotations = BaseStatusSignal.getLatencyCompensatedValue(cancoder1AbsolutePosition, cancoder1Velocity).in(Radians);
+        inputs.turretPositionAbsolute = Rotation2d.fromRotations(cancoderRotations);
     }
 
     @Override
