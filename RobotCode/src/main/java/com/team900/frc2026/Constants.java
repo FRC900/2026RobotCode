@@ -41,6 +41,8 @@ public class Constants {
 
         public static final double kTurretEpsilon = Units.degreesToRadians(2.0);
         public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);
+    
+        public static final double toleranceRad = 0.1;
     }
 
     public static boolean hasMacAddress(final String mac_address) {
