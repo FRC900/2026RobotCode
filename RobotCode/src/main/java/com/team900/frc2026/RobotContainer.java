@@ -5,14 +5,23 @@
 package com.team900.frc2026;
 
 import com.team900.frc2026.subsystems.Turret.TurretIOHardware;
+import com.team900.frc2026.subsystems.Turret.TurretIOSim;
 import com.team900.frc2026.subsystems.Turret.TurretSubsystem;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
-  private final TurretSubsystem Turret = new TurretSubsystem(new TurretIOHardware()); 
+  private final TurretSubsystem Turret;
+
   public RobotContainer() {
+    if (RobotBase.isReal()) {
+      Turret = new TurretSubsystem(new TurretIOHardware());
+    } else {
+      Turret = new TurretSubsystem(new TurretIOSim());
+    }
+
     configureBindings();
   }
 
