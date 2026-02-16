@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class TurretFactory {
     public static Command aimTurretToPose(RobotContainer container, Supplier<ShooterSupplier> setpointSupplier) {
         TurretSubsystem turret = container.getTurret();
+        
         return Commands.run(
             () -> turret.setPositionRadians(
                 setpointSupplier.get().getTurretRadiansFromCenter(), 
@@ -19,4 +20,16 @@ public class TurretFactory {
                 turret
             ).withName("Align Turret to Pose");;
     } 
+
+    public static Command aimTurretToPoseDegrees(RobotContainer container, Supplier<ShooterSupplier> setpointSupplier) {
+        TurretSubsystem turret = container.getTurret();
+
+        return Commands.run(
+            () -> turret.setPositionDegrees(
+                setpointSupplier.get().getTurretDegreesFromCenter(),
+                setpointSupplier.get().getTurretFFDegrees() // Optional: if you have velocity in deg/sec
+            ),
+            turret
+        ).withName("Align Turret to Pose (deg)");
+    }
 }
