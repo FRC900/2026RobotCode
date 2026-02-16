@@ -18,7 +18,7 @@ public class TurretFactory {
                 setpointSupplier.get().getTurretFF().withName("Align Turret to Pose")
                 ),
                 turret
-            ).withName("Align Turret to Pose");;
+            ).withName("Align Turret to Pose (rad)");;
     } 
 
     public static Command aimTurretToPoseDegrees(RobotContainer container, Supplier<ShooterSupplier> setpointSupplier) {
