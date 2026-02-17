@@ -16,15 +16,15 @@ The simulation assumes the following:
 - Only spin about the z-axis is present (i.e., topspin or backspin).
 
 Suppose we are given a target set of coordinates, but want to know the 
-x, y, and z velocities and spin needed to move the object to those
-coordinates. This is essentially the inverse of what the RK4 simulation
-is doing. Since RK4 is a numerical approximator in itself, we cannot 
-analytically derive a closed-form inverse. 
+speed, theta, phi, and spin (or the x, y, and z velocities) and spin 
+needed to move the object to those coordinates. This is essentially the 
+inverse of what the RK4 simulation is doing. Since RK4 is a numerical 
+approximator in itself, we cannot analytically derive a closed-form inverse. 
 
 Thus, we employ the Levenberg-Marquardt algorithm (a combination of the
-Newton-Raphson method and gradient descent) to change the velocity and
-spin inputs until we reach a solution. The program is designed to 
-allow us to limit the solution velocity and spins based on physical
+Newton-Raphson method and gradient descent) to change the velocity, launch 
+angle, and spin inputs until we reach a solution. The program is designed 
+to allow us to limit the solution velocity and spins based on physical
 and angular constraints. 
 """
 
