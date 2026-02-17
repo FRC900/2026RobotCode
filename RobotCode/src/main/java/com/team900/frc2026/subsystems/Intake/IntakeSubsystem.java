@@ -13,7 +13,6 @@ import org.littletonrobotics.junction.Logger;
 import com.team254.lib.time.RobotTime;
 import com.team254.lib.subsystems.*;
 
-
 //L and R motor for slapdown arm motors
 public class IntakeSubsystem extends SubsystemBase{
     private final RobotState state;
@@ -41,18 +40,18 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void extendIntake(){
-        io.setLMotorDutyCycleOut(0.67);
-        io.setRMotorDutyCycleOut(0.67);
+        io.setLMotorDutyCycleOut(0.8);
+        io.setRMotorDutyCycleOut(0.8);
     }
 
     public void intakeFuel(){
-        io.setIntakeDutyCycleOut(0.67);
+        io.setIntakeDutyCycleOut(0.8);
         if(inputs.lCANrangeRange && inputs.rCANrangeRange){
-            io.setLRollerDutyCycleOut(-0.67);
-            io.setRRollerDutyCycleOut(-0.67);
+            io.setLRollerDutyCycleOut(-0.8);
+            io.setRRollerDutyCycleOut(-0.8);
         } else {
-            io.setLRollerDutyCycleOut(-0.67);
-            io.setRRollerDutyCycleOut(0.67);
+            io.setLRollerDutyCycleOut(-0.8);
+            io.setRRollerDutyCycleOut(0.8);
         }
     }
 
@@ -61,5 +60,6 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public Command extendIntakeCommand() {
-    return run(this::extendIntake).withName("Extending Intake");
+        return run(this::extendIntake).withName("Extending Intake");
+    }
 }

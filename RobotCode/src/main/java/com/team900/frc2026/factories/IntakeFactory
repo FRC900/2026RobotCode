@@ -5,40 +5,40 @@ import com.team900.frc2026.subsystems.Intake;
 import com.team900.frc2026.RobotContainer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import java.util.function.DoubleSupplier;
 
 public class IntakeFactory{
 
     private static final RobotContainer container = RobotContainer.getInstance();
-    private static final RobotContainer arm = RobotContainer.getInstance();
 
-    //Can runIntake and runOuttake be combined? (same question for two below)
-    //Can someone make sure this makes sense?
-    public static Command runIntake(DoubleSupplier intakeSpeed) {
+    public static Command runIntake() {
         return container
-            .getIntakeSubSystem()
-            .dutyCycleCommand(intakeSpeed)
+            .getIntakeRoller()
+            .dutyCycleCommand(() -> IntakeConstants.kIntakeDutyCycleIntake)
             .withName("Duty Cycle Intake");
     }
 
-    public static Command runOuttake(DoubleSupplier intakeSpeed) {
+    public static Command Outtake() {
         return container
-            .getIntakeSubSystem()
-            .dutyCycleCommand(-intakeSpeed)
+            .getIntakeRoller()
+            .dutyCycleCommand(() -> IntakeConstants.kIntakeDutyCycleOuttake)
             .withName("Duty Cycle Outtake");
     }
 
-    public static Command extendIntake(DoubleSupplier extendSpeed) {
-        return arm
-            .getIntakeSubSystem()
-            .dutyCycleCommand(extendSpeed)
+    public static Command extendIntake() {
+        return container
+            .getIntakePivot()
+            .motionMagicSetpointCommandBlocking(() -> 
+                IntakeConstants.kIntakePivotDeployPositionRadians,
+                Constants.IntakeConstants.kIntakePivotToleranceRadians)
             .withName("Extending Slapdown");
     }
 
-    public static Command retractIntake(DoubleSupplier extendSpeed) {
-        return arm
-            .getIntakeSubSystem()
-            .dutyCycleCommand(-extendSpeed)
+    public static Command retractIntake() {
+        return container
+            .getIntakePivot()
+            .motionMagicSetpointCommandBlocking(() -> 
+                IntakeConstants.kIntakePivotStowPositionRadians,
+                Constants.IntakeConstants.kIntakePivotToleranceRadians)
             .withName("Retracting Slapdown");
     }
 }

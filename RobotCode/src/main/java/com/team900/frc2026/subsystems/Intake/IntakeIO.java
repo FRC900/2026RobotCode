@@ -61,7 +61,6 @@ public interface IntakeIO {
     default void setRRollerBrakeMode(boolean enabled) {}
     default void stopRRoller() {}
 
-    
     default void setLMotorDutyCycleOut(double output) {}
     default void setLMotorBrakeMode(boolean enabled) {}
     default void stopLMotor() {}
