@@ -2,12 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package com.team900.frc2026;
 
 import com.team254.lib.subsystems.SimCanCoderIO;
 import com.team900.frc2026.subsystems.Intake.IntakeConstants;
 import com.team900.frc2026.subsystems.Intake.IntakePivotSubsystem;
 import com.team900.frc2026.subsystems.Intake.IntakeRollerSubsystem;
+import com.team254.lib.subsystems.SimTalonFXIO;
+import com.team254.lib.subsystems.TalonFXIO;
+import com.team254.lib.subsystems.CanCoderIOHardware;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,8 +53,8 @@ public class RobotContainer {
     }
     return new IntakePivotSubsystem(
       IntakeConstants.kIntakePivotConfig, 
-      new TalonFXIO(IntakeConstants.kIntakePivotConfig.canCoderConfig), 
-      new CanCoderIOHardware(IntakeConstants.kIntakePivotConfig), 
+      new TalonFXIO(IntakeConstants.kIntakePivotConfig), 
+      new CanCoderIOHardware(IntakeConstants.kIntakePivotConfig.canCoderConfig), 
       robotState);
   }
 
