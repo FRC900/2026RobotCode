@@ -237,7 +237,7 @@ class Projectile:
         plt.show()
 
 
-# class to solve for vx0, vy0, vz0, and omega0 given a target x, y, z 
+# class to solve for  active parameters (v_vec, theta, phi, and omega0 [v_vec and omega0 can be held constat if needed]) given a target x, y, z 
 class ProjectileSolver:
     def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), fix_speed=False, omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), fix_omega=False, phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.01, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
         self.projectile = projectile # projectile object being solved
@@ -254,12 +254,12 @@ class ProjectileSolver:
         self.v_min, self.v_max = v_bounds # defines range of possible velocity magnitudes
         self.v = np.array([self.vx, self.vy, self.vz]) # velocity vector (m/s), not used in any function
         self.v_mag = np.linalg.norm(self.v) # velocity magnitude (m/s)
-        self.fix_speed = fix_speed # keep speed magnitude constant
+        self.fix_speed = fix_speed # keep speed magnitude constant; should program change speed
 
         self.omega = omega0 # angular velocity (rad/s)
         self.omega_min, self.omega_max = omega_bounds # defines range of possible angular velocities 
         self.n_hat = n_hat # angular velocity direction unit vector (+1: backspin, -1: topspin, 0: no spin)
-        self.fix_omega = fix_omega # keep spin magnitude constant
+        self.fix_omega = fix_omega # keep spin magnitude constant; should program change spin
 
         self.theta = np.arcsin(self.vz / self.v_mag) # theta (rad, polar angle down from the +z axis)
         self.phi = np.arctan2(self.vy, self.vx) # phi (rad, azimuthal angle in the x–y plane, measured from the +x-axis)
@@ -286,7 +286,7 @@ class ProjectileSolver:
 
         self._shot_cache = {} # RK4 run cache
 
-    # which parameters are we changing 
+    # finds which parameters are we changing 
     def get_active_parameters(self):
         params = []
 
@@ -344,7 +344,7 @@ class ProjectileSolver:
         shot_output = self.rk4_shot()
         return (shot_output-self.targets) / self.scale_array
     
-    # matrix of change in residual with respect to change in vx, vy, vz, and omega0
+    # matrix of change in residual with respect to change in active parameters 
     def jacobian(self):
         r0 = self.residual()
         with_respect_to = self.get_active_parameters()
@@ -372,7 +372,7 @@ class ProjectileSolver:
         for _ in range(self.lm_iters):
             self._shot_cache.clear()
 
-            # calculate residual of current vx, vy, vz, and omega0
+            # calculate residual of current active parameters
             r = self.residual()
             cost = np.dot(r, r)
 
@@ -383,11 +383,11 @@ class ProjectileSolver:
             A = H + self.lam * (np.eye(H.shape[0])+diag_H)
             B = -(J.T @ r)
 
-            delta = np.linalg.solve(A, B) # attempt to solve Ax = B, where x is the change in vx, vy, vz, and omega0
+            delta = np.linalg.solve(A, B) # attempt to solve Ax = B, where x is the change in active parameters
 
             vxi, vyi, vzi, omegai = self.vx, self.vy, self.vz, self.omega # save original inputs
 
-            # update v_mag, omega, theta, phi with delta
+            # update active parameters
             params = self.get_active_parameters()
 
             for i, name in enumerate(params):
