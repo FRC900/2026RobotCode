@@ -239,7 +239,7 @@ class Projectile:
 
 # class to solve for vx0, vy0, vz0, and omega0 given a target x, y, z 
 class ProjectileSolver:
-    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.01, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
+    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), fix_speed=False, omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), fix_omega=False, phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.01, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
         self.projectile = projectile # projectile object being solved
         self.targets = np.array([xt, yt, zt, ct]) # target x (m), y (m), z (m), clearance (defined if object needs to clear a physical threshold, clearance != 0 if physical threshold is not cleared)
         self.scale_array = np.array([x_scale, y_scale, z_scale, c_scale]) # weight of each parameter on residual calculation  
@@ -253,14 +253,16 @@ class ProjectileSolver:
         self.vz = vz0 # z-velocity (m/s)
         self.v_min, self.v_max = v_bounds # defines range of possible velocity magnitudes
         self.v = np.array([self.vx, self.vy, self.vz]) # velocity vector (m/s), not used in any function
-        self.v_mag = np.linalg.norm(self.v) # velocity magnitude (m/s), not used in any function
+        self.v_mag = np.linalg.norm(self.v) # velocity magnitude (m/s)
+        self.fix_speed = fix_speed # keep speed magnitude constant
 
         self.omega = omega0 # angular velocity (rad/s)
         self.omega_min, self.omega_max = omega_bounds # defines range of possible angular velocities 
         self.n_hat = n_hat # angular velocity direction unit vector (+1: backspin, -1: topspin, 0: no spin)
-        
-        self.theta = np.arcsin(self.vz / self.v_mag) # theta (rad, polar angle down from the +z axis), not used in any function
-        self.phi = np.arctan2(self.vy, self.vx) # phi (rad, azimuthal angle in the x–y plane, measured from the +x-axis), not used in any function
+        self.fix_omega = fix_omega # keep spin magnitude constant
+
+        self.theta = np.arcsin(self.vz / self.v_mag) # theta (rad, polar angle down from the +z axis)
+        self.phi = np.arctan2(self.vy, self.vx) # phi (rad, azimuthal angle in the x–y plane, measured from the +x-axis)
         self.theta_min, self.theta_max = theta_bounds # defines range of possible thetas
         self.phi_min, self.phi_max = phi_bounds # defines range of possible phis
 
@@ -283,6 +285,26 @@ class ProjectileSolver:
         self.lam_scaledown = lam_scaledown # lambda scaledown factor
 
         self._shot_cache = {} # RK4 run cache
+
+    # which parameters are we changing 
+    def get_active_parameters(self):
+        params = []
+
+        if not self.fix_speed:
+            params.append("v_mag")
+
+        params.append("theta")
+        params.append("phi")
+
+        if not self.fix_omega:
+            params.append("omega")
+
+        return params
+
+    def update_velocity_from_angles(self):
+        self.vx = self.v_mag * np.cos(self.theta) * np.cos(self.phi)
+        self.vy = self.v_mag * np.cos(self.theta) * np.sin(self.phi)
+        self.vz = self.v_mag * np.sin(self.theta)
     
     def enforce_bounds(self):
         self.omega = np.clip(self.omega, self.omega_min, self.omega_max) # clip angular velocity
@@ -297,9 +319,7 @@ class ProjectileSolver:
         phi = np.clip(phi, self.phi_min, self.phi_max) # clip phi
 
         # reconstruct vx, vy, and vz from new theta and phi
-        self.vx = v * np.cos(theta) * np.cos(phi)
-        self.vy = v * np.cos(theta) * np.sin(phi)
-        self.vz = v * np.sin(theta)
+        self.update_velocity_from_angles()
         self.v = np.array([self.vx, self.vy, self.vz])
         self.theta = theta
         self.phi = phi
@@ -320,26 +340,38 @@ class ProjectileSolver:
     
     # difference between current final state and desired final state
     def residual(self):
+        self.update_velocity_from_angles()
         shot_output = self.rk4_shot()
         return (shot_output-self.targets) / self.scale_array
     
     # matrix of change in residual with respect to change in vx, vy, vz, and omega0
     def jacobian(self):
         r0 = self.residual()
-        J = np.zeros((r0.shape[0], 4))
-        with_respect_to = ["vx", "vy", "vz", "omega"]
-        
+        with_respect_to = self.get_active_parameters()
+
+        J = np.zeros((r0.shape[0], len(with_respect_to)))
+
         for i, name in enumerate(with_respect_to):
             setattr(self, name, getattr(self, name)+self.eps)
+
+            if name in ["v_mag", "theta", "phi"]:
+                self.update_velocity_from_angles()
+
             r = self.residual()
             J[:, i] = (r-r0) / self.eps
+
             setattr(self, name, getattr(self, name)-self.eps)
+
+            if name in ["v_mag", "theta", "phi"]:
+                self.update_velocity_from_angles()
 
         return J
 
     # Levenberg–Marquardt algorithm: combination of Newton-Raphson method and gradient descent to minimize the cost function of the residual 
     def levenberg_marquardt(self):
         for _ in range(self.lm_iters):
+            self._shot_cache.clear()
+
             # calculate residual of current vx, vy, vz, and omega0
             r = self.residual()
             cost = np.dot(r, r)
@@ -355,12 +387,14 @@ class ProjectileSolver:
 
             vxi, vyi, vzi, omegai = self.vx, self.vy, self.vz, self.omega # save original inputs
 
-            # update vx, vy, vz, and omega0 with delta
-            self.vx += delta[0]
-            self.vy += delta[1]
-            self.vz += delta[2]
-            self.omega += delta[3]
+            # update v_mag, omega, theta, phi with delta
+            params = self.get_active_parameters()
 
+            for i, name in enumerate(params):
+                setattr(self, name, getattr(self, name) + delta[i])
+
+            if any(p in ["v_mag", "theta", "phi"] for p in params):
+                self.update_velocity_from_angles()            
             self.enforce_bounds()
 
             # calculate new residual 
