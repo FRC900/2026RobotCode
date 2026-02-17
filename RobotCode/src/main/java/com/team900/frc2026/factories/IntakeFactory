@@ -29,7 +29,7 @@ public class IntakeFactory{
             .getIntakePivot()
             .motionMagicSetpointCommandBlocking(() -> 
                 IntakeConstants.kIntakePivotDeployPositionRadians,
-                Constants.IntakeConstants.kIntakePivotToleranceRadians)
+                IntakeConstants.kIntakePivotToleranceRadians)
             .withName("Extending Slapdown");
     }
 
@@ -38,7 +38,7 @@ public class IntakeFactory{
             .getIntakePivot()
             .motionMagicSetpointCommandBlocking(() -> 
                 IntakeConstants.kIntakePivotStowPositionRadians,
-                Constants.IntakeConstants.kIntakePivotToleranceRadians)
+                IntakeConstants.kIntakePivotToleranceRadians)
             .withName("Retracting Slapdown");
     }
 }

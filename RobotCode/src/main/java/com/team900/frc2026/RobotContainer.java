@@ -39,7 +39,7 @@ public class RobotContainer {
 
   public IntakePivotSubsystem buildIntakePivotSubsystem(){
     if(RobotBase.isSimulation()){
-      var simTalon = new simTalonFXIO(IntakeConstants.kIntakePivotConfig);
+      var simTalon = new SimTalonFXIO(IntakeConstants.kIntakePivotConfig);
       return new IntakePivotSubsystem(
         IntakeConstants.kIntakePivotConfig, 
         simTalon, 
