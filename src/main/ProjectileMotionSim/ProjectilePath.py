@@ -239,7 +239,7 @@ class Projectile:
 
 # class to solve for  active parameters (v_vec, theta, phi, and omega0 [v_vec and omega0 can be held constat if needed]) given a target x, y, z 
 class ProjectileSolver:
-    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), fix_speed=False, omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), fix_omega=False, phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.01, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
+    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), fix_speed=False, omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), fix_omega=False, phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.2, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
         self.projectile = projectile # projectile object being solved
         self.targets = np.array([xt, yt, zt, ct]) # target x (m), y (m), z (m), clearance (defined if object needs to clear a physical threshold, clearance != 0 if physical threshold is not cleared)
         self.scale_array = np.array([x_scale, y_scale, z_scale, c_scale]) # weight of each parameter on residual calculation  
@@ -411,26 +411,3 @@ class ProjectileSolver:
                 self.lam *= self.lam_scaleup # scale up lambda, move closer to gradient descent (more stable)
 
         return False
-
-
-# clearance for Hub in 2026 FRC game
-def hub_clearance(vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf): # solver will pass all these parameters, not all are used
-    hub_height = 2 # 2 m, the target y
-    hub_half_diag = 0.5 # half diagonal distance from center of hub to corner
-    fuel_diameter = 0.1524 
-    extra_tolerance = 0.2 
-
-    xc, zc = (10, 10) # hub center relative to origin
-    required_height = hub_height + fuel_diameter + extra_tolerance # clearance height
-
-    # if ball clears the edge of the hub plus the extra tolerance, return 0. otherwise, increase the error in the Levenberg–Marquardt algorithm
-    for i in range(len(sx_list) - 1, -1, -1): # work backwards along trajectory from hub center
-        dx = sx_list[i] - xc
-        dz = sz_list[i] - zc
-        xz_dist = np.hypot(dx, dz)
-
-        if xz_dist >= hub_half_diag: # at hub edge 
-            y = sy_list[i]
-            return max(0, required_height - y) # if (required_height - y) is negative, the shot clears and there is no penalty. otherwise, we a penalty of (required_height - y) is applied
-
-    return required_height # big penalty if shot does not reach the hub
