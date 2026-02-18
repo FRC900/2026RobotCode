@@ -1,6 +1,7 @@
 # example usage of ProjectilePath.py
 
 import ProjectilePath as pp
+import FuelClearance as fc
 from numpy import rad2deg
 import time 
 
@@ -17,7 +18,7 @@ omegai0 = 10
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
-fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, fix_speed=True, fix_omega=True, lm_iters=10, sim_end_time=5, dt=0.01)
+fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, fix_speed=True, fix_omega=True, lm_iters=10, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance)
 
 # solve for valid inputs and time the solver
 start = time.perf_counter()
