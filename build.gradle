@@ -184,6 +184,6 @@ gversion {
     classPackage = "com.team900.frc2026"
     className    = "BuildConstants"
     dateFormat   = "yyyy-MM-dd HH:mm:ss z"
-    timeZone     = "America/Los_Angeles"
+    timeZone     = "America/New_York"
     indent       = "  "
 }
