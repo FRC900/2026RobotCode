@@ -194,3 +194,6 @@ src/main/java/com/team254/frc2025/BuildConstants.java
 simgui-window.json
 simgui.json
 .wpilib/
+
+# Ignore Redundant Information
+src/main/java/com/team900/frc2026/BuildConstants.java
