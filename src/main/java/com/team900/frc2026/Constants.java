@@ -45,4 +45,8 @@ public class Constants {
 
     public static final double kFieldWidthMeters = kAprilTagLayout.getFieldWidth();
     public static final double kFieldLengthMeters = kAprilTagLayout.getFieldLength();
+
+    
+  public record Gains(
+      double kP, double kI, double kD, double ffkS, double ffkV, double ffkA, double ffkG) {}
 }
