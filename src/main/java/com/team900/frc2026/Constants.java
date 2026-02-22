@@ -12,6 +12,8 @@ public class Constants {
     public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
     public static final SimControllerType kSimControllerType = SimControllerType.XBOX;
 
+    public static final double kRealDt = 0.02;
+
     public enum SimControllerType {
         XBOX,
         DUAL_SENSE

@@ -9,7 +9,6 @@ package com.team900.frc2026.subsystems.drive;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import com.team900.lib.util.PhoenixUtil;
 import edu.wpi.first.math.util.Units;
 import org.ironmaple.simulation.drivesims.GyroSimulation;
 
