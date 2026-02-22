@@ -65,9 +65,6 @@ public class DriveSubsystem extends SubsystemBase {
       new SwerveSetpointGenerator(
           DriveConstants.PP_CONFIG, DriveConstants.MAX_STEER_VEL_RAD_PER_SEC);
 
-  private final AlignController alignController =
-      new AlignController(7, Constants.kRealDt, this::getPose);
-
   private Rotation2d rawYawRotation = new Rotation2d();
 
   private double rawYawVelocity = 0.0;
@@ -75,7 +72,6 @@ public class DriveSubsystem extends SubsystemBase {
   private double rawAccelX = 0.0;
   private double rawAccelY = 0.0;
 
-  private final RobotState state;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
