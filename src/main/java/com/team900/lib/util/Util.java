@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -88,63 +87,67 @@ public class Util {
         return (Math.abs(value) > Math.abs(deadband)) ? scaledValue : 0;
     }
 
-     /** Flips an x coordinate to the correct side of the field based on the current alliance color. */
-  public static double applyX(double xCoordinate) {
-    if (shouldFlip()) {
-      return Constants.kFieldLengthMeters - xCoordinate;
-    } else {
-      return xCoordinate;
+    /**
+     * Flips an x coordinate to the correct side of the field based on the current alliance color.
+     */
+    public static double applyX(double xCoordinate) {
+        if (shouldFlip()) {
+            return Constants.kFieldLengthMeters - xCoordinate;
+        } else {
+            return xCoordinate;
+        }
     }
-  }
 
-  public static double applyY(double yCoordinate) {
-    if (shouldFlip()) {
-      return Constants.kFieldWidthMeters - yCoordinate;
-    } else {
-      return yCoordinate;
+    public static double applyY(double yCoordinate) {
+        if (shouldFlip()) {
+            return Constants.kFieldWidthMeters - yCoordinate;
+        } else {
+            return yCoordinate;
+        }
     }
-  }
 
-  /** Flips a translation to the correct side of the field based on the current alliance color. */
-  public static Translation2d apply(Translation2d translation) {
-    if (shouldFlip()) {
-      return new Translation2d(applyX(translation.getX()), applyY(translation.getY()));
-    } else {
-      return translation;
+    /** Flips a translation to the correct side of the field based on the current alliance color. */
+    public static Translation2d apply(Translation2d translation) {
+        if (shouldFlip()) {
+            return new Translation2d(applyX(translation.getX()), applyY(translation.getY()));
+        } else {
+            return translation;
+        }
     }
-  }
 
-  /** Flips a rotation based on the current alliance color. */
-  public static Rotation2d apply(Rotation2d rotation) {
-    if (shouldFlip()) {
-      return new Rotation2d(-rotation.getCos(), -rotation.getSin());
-    } else {
-      return rotation;
+    /** Flips a rotation based on the current alliance color. */
+    public static Rotation2d apply(Rotation2d rotation) {
+        if (shouldFlip()) {
+            return new Rotation2d(-rotation.getCos(), -rotation.getSin());
+        } else {
+            return rotation;
+        }
     }
-  }
 
-  /** Flips a pose to the correct side of the field based on the current alliance color. */
-  public static Pose2d apply(Pose2d pose) {
-    if (shouldFlip()) {
-      return new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()));
-    } else {
-      return pose;
+    /** Flips a pose to the correct side of the field based on the current alliance color. */
+    public static Pose2d apply(Pose2d pose) {
+        if (shouldFlip()) {
+            return new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()));
+        } else {
+            return pose;
+        }
     }
-  }
 
-  public static Translation3d apply(Translation3d translation3d) {
-    if (shouldFlip()) {
-      return new Translation3d(
-          applyX(translation3d.getX()), applyY(translation3d.getY()), translation3d.getZ());
-    } else {
-      return translation3d;
+    public static Translation3d apply(Translation3d translation3d) {
+        if (shouldFlip()) {
+            return new Translation3d(
+                    applyX(translation3d.getX()),
+                    applyY(translation3d.getY()),
+                    translation3d.getZ());
+        } else {
+            return translation3d;
+        }
     }
-  }
 
-  public static boolean shouldFlip() {
-    return DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red;
-  }
+    public static boolean shouldFlip() {
+        return DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() == Alliance.Red;
+    }
 
     public static <T> Supplier<T> memoizeByIteration(IntSupplier iteration, Supplier<T> delegate) {
         AtomicReference<T> value = new AtomicReference<>();

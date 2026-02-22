@@ -6,7 +6,6 @@ public class CANDeviceId {
     private final int deviceNumber;
     private final CANBus bus;
 
-
     public CANDeviceId(int deviceNumber, CANBus bus) {
         this.deviceNumber = deviceNumber;
         this.bus = bus;
@@ -28,5 +27,4 @@ public class CANDeviceId {
     public boolean equals(CANDeviceId other) {
         return other.deviceNumber == deviceNumber && other.bus == bus;
     }
-
 }

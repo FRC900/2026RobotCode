@@ -1,28 +1,20 @@
 package com.team900.frc2026;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-
 import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RobotState {
     private static volatile RobotState instance;
     public static final double LOOKBACK_TIME = 1.0;
 
-    private RobotState()    {
+    private RobotState() {}
 
+    public void buildState() {}
 
-    }
-
-    public void buildState() {
-
-    }
-
-      // Kinematic Frames
+    // Kinematic Frames
     // Robot's pose in field coordinates over time
     private final ConcurrentTimeInterpolatableBuffer<Pose2d> fieldToRobot =
             ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
@@ -59,8 +51,7 @@ public class RobotState {
     private final ConcurrentTimeInterpolatableBuffer<Double> accelY =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
 
-
-     public void addDriveMotionMeasurements(
+    public void addDriveMotionMeasurements(
             double timestamp,
             double angularRollRadsPerS,
             double angularPitchRadsPerS,
@@ -88,20 +79,18 @@ public class RobotState {
         this.fusedFieldRelativeChassisSpeeds.set(fusedFieldRelativeSpeeds);
     }
 
-    
     public void incrementIterationCount() {
         iteration.incrementAndGet();
     }
 
-    public static RobotState getInstance()  {
-        if (instance == null)   {
+    public static RobotState getInstance() {
+        if (instance == null) {
             synchronized (RobotState.class) {
-                if (instance == null)   {
+                if (instance == null) {
                     instance = new RobotState();
                 }
             }
         }
         return instance;
     }
-
 }

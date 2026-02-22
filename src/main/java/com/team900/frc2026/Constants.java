@@ -1,10 +1,9 @@
 package com.team900.frc2026;
 
-import java.util.Arrays;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Arrays;
 
 public class Constants {
 
@@ -12,8 +11,7 @@ public class Constants {
     public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
     public static final SimControllerType kSimControllerType = SimControllerType.XBOX;
 
-      public static final boolean tuningMode = false;
-
+    public static final boolean tuningMode = false;
 
     public static final double kRealDt = 0.02;
 
@@ -33,15 +31,14 @@ public class Constants {
         REPLAY
     }
 
+    public static boolean disableHAL = false;
 
-  public static boolean disableHAL = false;
-    
-  public static void disableHAL() {
-    disableHAL = true;
-  }
-    
+    public static void disableHAL() {
+        disableHAL = true;
+    }
+
     // TODO: temporary code to be changed to reflect rebuilt map
-     public static final AprilTagFieldLayout kAprilTagLayout =
+    public static final AprilTagFieldLayout kAprilTagLayout =
             AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     public static final int[] kAllowedTagIDs = {17, 18, 19, 20, 21, 22, 6, 7, 8, 9, 10, 11};
     public static final AprilTagFieldLayout kAprilTagLayoutReefsOnly =
@@ -58,7 +55,6 @@ public class Constants {
     public static final double kFieldWidthMeters = kAprilTagLayout.getFieldWidth();
     public static final double kFieldLengthMeters = kAprilTagLayout.getFieldLength();
 
-    
-  public record Gains(
-      double kP, double kI, double kD, double ffkS, double ffkV, double ffkA, double ffkG) {}
+    public record Gains(
+            double kP, double kI, double kD, double ffkS, double ffkV, double ffkA, double ffkG) {}
 }

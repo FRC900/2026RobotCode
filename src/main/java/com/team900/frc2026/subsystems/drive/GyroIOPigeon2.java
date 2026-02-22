@@ -8,11 +8,11 @@
 package com.team900.frc2026.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -22,87 +22,89 @@ import java.util.Queue;
 
 /** IO implementation for Pigeon 2. */
 public class GyroIOPigeon2 implements GyroIO {
-  private final Pigeon2 pigeon =
-      new Pigeon2(
-          CompTunerConstants.DrivetrainConstants.Pigeon2Id,
-          CompTunerConstants.DrivetrainConstants.CANBusName);
+    private final Pigeon2 pigeon =
+            new Pigeon2(
+                    CompTunerConstants.DrivetrainConstants.Pigeon2Id,
+                    new CANBus(CompTunerConstants.DrivetrainConstants.CANBusName));
 
-  private final StatusSignal<Angle> yaw = pigeon.getYaw();
+    private final StatusSignal<Angle> yaw = pigeon.getYaw();
 
-  private final StatusSignal<LinearAcceleration> accelX = pigeon.getAccelerationX();
-  private final StatusSignal<LinearAcceleration> accelY = pigeon.getAccelerationY();
+    private final StatusSignal<LinearAcceleration> accelX = pigeon.getAccelerationX();
+    private final StatusSignal<LinearAcceleration> accelY = pigeon.getAccelerationY();
 
-  private final Queue<Double> yawPositionQueue;
-  private final Queue<Double> yawVelocityQueue;
+    private final Queue<Double> yawPositionQueue;
+    private final Queue<Double> yawVelocityQueue;
 
-  private final Queue<Double> timestampQueue;
+    private final Queue<Double> timestampQueue;
 
-  private final Queue<Double> accelXQueue;
-  private final Queue<Double> accelYQueue;
+    private final Queue<Double> accelXQueue;
+    private final Queue<Double> accelYQueue;
 
-  private final StatusSignal<AngularVelocity> yawVelocity = pigeon.getAngularVelocityZWorld();
+    private final StatusSignal<AngularVelocity> yawVelocity = pigeon.getAngularVelocityZWorld();
 
-  public GyroIOPigeon2() {
-    pigeon.getConfigurator().apply(new Pigeon2Configuration());
-    pigeon.getConfigurator().setYaw(0.0);
+    public GyroIOPigeon2() {
+        pigeon.getConfigurator().apply(new Pigeon2Configuration());
+        pigeon.getConfigurator().setYaw(0.0);
 
-    yaw.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
+        yaw.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
 
-    yawVelocity.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
+        yawVelocity.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
 
-    accelX.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
-    accelY.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
+        accelX.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
+        accelY.setUpdateFrequency(DriveConstants.ODOMETRY_FREQUENCY);
 
-    pigeon.optimizeBusUtilization();
+        pigeon.optimizeBusUtilization();
 
-    timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+        timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
 
-    yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pigeon.getYaw());
+        yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(pigeon.getYaw());
 
-    yawVelocityQueue =
-        PhoenixOdometryThread.getInstance()
-            .registerSignalVelocity(pigeon.getAngularVelocityZWorld());
+        yawVelocityQueue =
+                PhoenixOdometryThread.getInstance()
+                        .registerSignalVelocity(pigeon.getAngularVelocityZWorld());
 
-    accelXQueue =
-        PhoenixOdometryThread.getInstance().registerSignalAcceleration(pigeon.getAccelerationX());
-    accelYQueue =
-        PhoenixOdometryThread.getInstance().registerSignalAcceleration(pigeon.getAccelerationY());
-  }
+        accelXQueue =
+                PhoenixOdometryThread.getInstance()
+                        .registerSignalAcceleration(pigeon.getAccelerationX());
+        accelYQueue =
+                PhoenixOdometryThread.getInstance()
+                        .registerSignalAcceleration(pigeon.getAccelerationY());
+    }
 
-  @Override
-  public void updateInputs(GyroIOInputs inputs) {
-    inputs.connected =
-        BaseStatusSignal.refreshAll(yaw, yawVelocity, accelX, accelY).equals(StatusCode.OK);
+    @Override
+    public void updateInputs(GyroIOInputs inputs) {
+        inputs.connected =
+                BaseStatusSignal.refreshAll(yaw, yawVelocity, accelX, accelY).equals(StatusCode.OK);
 
-    inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
+        inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
 
-    inputs.yawPosition =
-        Rotation2d.fromDegrees(
-            BaseStatusSignal.getLatencyCompensatedValueAsDouble(yaw, yawVelocity));
+        inputs.yawPosition =
+                Rotation2d.fromDegrees(
+                        BaseStatusSignal.getLatencyCompensatedValueAsDouble(yaw, yawVelocity));
 
-    inputs.accelX = accelX.getValueAsDouble();
-    inputs.accelY = accelY.getValueAsDouble();
+        inputs.accelX = accelX.getValueAsDouble();
+        inputs.accelY = accelY.getValueAsDouble();
 
-    inputs.odometryTimestamps =
-        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+        inputs.odometryTimestamps =
+                timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
 
-    inputs.odometryYawPositions =
-        yawPositionQueue.stream()
-            .map((Double value) -> Rotation2d.fromDegrees(value))
-            .toArray(Rotation2d[]::new);
+        inputs.odometryYawPositions =
+                yawPositionQueue.stream()
+                        .map((Double value) -> Rotation2d.fromDegrees(value))
+                        .toArray(Rotation2d[]::new);
 
-    inputs.odometryYawVelocityRadPerSecs =
-        yawVelocityQueue.stream().mapToDouble(Double::doubleValue).toArray();
+        inputs.odometryYawVelocityRadPerSecs =
+                yawVelocityQueue.stream().mapToDouble(Double::doubleValue).toArray();
 
-    inputs.odometryAccelXs = accelXQueue.stream().mapToDouble(Double::doubleValue).toArray();
-    inputs.odometryAccelYs = accelYQueue.stream().mapToDouble(Double::doubleValue).toArray();
+        inputs.odometryAccelXs = accelXQueue.stream().mapToDouble(Double::doubleValue).toArray();
+        inputs.odometryAccelYs = accelYQueue.stream().mapToDouble(Double::doubleValue).toArray();
 
-    timestampQueue.clear();
-    yawPositionQueue.clear();
+        timestampQueue.clear();
+        yawPositionQueue.clear();
 
-    yawVelocityQueue.clear();
+        yawVelocityQueue.clear();
 
-    accelXQueue.clear();
-    accelYQueue.clear();
-  }
+        accelXQueue.clear();
+        accelYQueue.clear();
+    }
 }

@@ -11,7 +11,6 @@ import com.team900.frc2026.Robot;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.util.CANStatusLogger;
 import com.team900.lib.util.CTREUtil;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -196,7 +195,10 @@ public class TalonFXIO implements MotorIO {
                         talon.setControl(
                                 followerControl
                                         .withLeaderID(leaderId.getDeviceNumber())
-                                        .withMotorAlignment(opposeLeaderDirection? MotorAlignmentValue.Opposed: MotorAlignmentValue.Aligned)),
+                                        .withMotorAlignment(
+                                                opposeLeaderDirection
+                                                        ? MotorAlignmentValue.Opposed
+                                                        : MotorAlignmentValue.Aligned)),
                 this.config.talonCANID.getDeviceNumber());
     }
 

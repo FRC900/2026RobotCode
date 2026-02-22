@@ -2,7 +2,6 @@ package com.team900.lib.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-
 public class ServoMotorSubsystemWithFollowers<T extends MotorInputsAutoLogged, U extends MotorIO>
         extends ServoMotorSubsystem<T, U> {
     protected ServoMotorSubsystemWithFollowersConfig leaderConfig;

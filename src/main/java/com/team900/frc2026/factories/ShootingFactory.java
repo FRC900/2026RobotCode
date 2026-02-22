@@ -4,23 +4,22 @@
 
 package com.team900.frc2026.factories;
 
-
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShootingFactory {
- 
-/* Commands for shooting */
 
-  public static Command SpinBoth() {
+    /* Commands for shooting */
 
-    return null;
-  }
+    public static Command SpinBoth() {
 
-  public static Command SpinBottom() {
-    return null;
-  }
+        return null;
+    }
 
-  public static Command SpinTop() {
-    return null;
-  }
+    public static Command SpinBottom() {
+        return null;
+    }
+
+    public static Command SpinTop() {
+        return null;
+    }
 }

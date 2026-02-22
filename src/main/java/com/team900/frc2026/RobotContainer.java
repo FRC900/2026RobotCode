@@ -4,29 +4,28 @@
 
 package com.team900.frc2026;
 
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class RobotContainer {
     private static volatile RobotContainer instance;
- public SwerveDriveSimulation driveSimulation = null;
+    public SwerveDriveSimulation driveSimulation = null;
 
-  private RobotContainer() {
-    configureBindings();
-  }
+    private RobotContainer() {
+        configureBindings();
+    }
 
-  private void configureBindings() {}
+    private void configureBindings() {}
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
-  }
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
 
- public static RobotContainer getInstance()  {
-        if (instance == null)   {
+    public static RobotContainer getInstance() {
+        if (instance == null) {
             synchronized (RobotContainer.class) {
-                if (instance == null)   {
+                if (instance == null) {
                     instance = new RobotContainer();
                 }
             }

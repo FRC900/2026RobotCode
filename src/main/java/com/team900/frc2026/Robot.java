@@ -4,75 +4,71 @@
 
 package com.team900.frc2026;
 
-import org.littletonrobotics.junction.LoggedRobot;
-
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
-  private Command m_autonomousCommand;
+    private Command m_autonomousCommand;
 
+    public Robot() {}
 
-  public Robot() {
-  }
+    @Override
+    public void robotPeriodic() {
 
-  @Override
-  public void robotPeriodic() {
-   
-     Threads.setCurrentThreadPriority(true, 99);
+        Threads.setCurrentThreadPriority(true, 99);
 
-    
-    CommandScheduler.getInstance().run();
+        CommandScheduler.getInstance().run();
 
-     Threads.setCurrentThreadPriority(false, 10);
-  }
-
-  @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void disabledExit() {}
-
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
+        Threads.setCurrentThreadPriority(false, 10);
     }
-  }
 
-  @Override
-  public void autonomousPeriodic() {}
+    @Override
+    public void disabledInit() {}
 
-  @Override
-  public void autonomousExit() {}
+    @Override
+    public void disabledPeriodic() {}
 
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    @Override
+    public void disabledExit() {}
+
+    @Override
+    public void autonomousInit() {
+        m_autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
+
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().schedule(m_autonomousCommand);
+        }
     }
-  }
 
-  @Override
-  public void teleopPeriodic() {}
+    @Override
+    public void autonomousPeriodic() {}
 
-  @Override
-  public void teleopExit() {}
+    @Override
+    public void autonomousExit() {}
 
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
+    @Override
+    public void teleopInit() {
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+    }
 
-  @Override
-  public void testPeriodic() {}
+    @Override
+    public void teleopPeriodic() {}
 
-  @Override
-  public void testExit() {}
+    @Override
+    public void teleopExit() {}
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
+    public void testPeriodic() {}
+
+    @Override
+    public void testExit() {}
 }
