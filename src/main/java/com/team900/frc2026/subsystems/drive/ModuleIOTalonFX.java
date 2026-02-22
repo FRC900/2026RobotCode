@@ -5,14 +5,15 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package com.team1533.frc2026.subsystems.drive;
+package com.team900.frc2026.subsystems.drive;
 
-import static com.team1533.lib.util.PhoenixUtil.tryUntilOk;
+import static com.team254.lib.util.CTREUtil.tryUntilOK;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -22,8 +23,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.team1533.frc2026.Constants;
-import com.team1533.frc2026.generated.TunerConstants;
+import com.team900.frc2026.Constants;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -75,9 +75,9 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
           constants) {
     this.constants = constants;
 
-    driveTalon = new TalonFX(constants.DriveMotorId, TunerConstants.DrivetrainConstants.CANBusName);
-    turnTalon = new TalonFX(constants.SteerMotorId, TunerConstants.DrivetrainConstants.CANBusName);
-    cancoder = new CANcoder(constants.EncoderId, TunerConstants.DrivetrainConstants.CANBusName);
+    driveTalon = new TalonFX(constants.DriveMotorId, CompTunerConstants.DrivetrainConstants.CANBusName);
+    turnTalon = new TalonFX(constants.SteerMotorId, CompTunerConstants.DrivetrainConstants.CANBusName);
+    cancoder = new CANcoder(constants.EncoderId, CompTunerConstants.DrivetrainConstants.CANBusName);
 
     // Configure drive motor
     var driveConfig = constants.DriveMotorInitialConfigs;
@@ -93,9 +93,9 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
             : InvertedValue.CounterClockwise_Positive;
 
     driveConfig.Feedback.SensorToMechanismRatio = 1;
-    tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
-    tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
-
+    tryUntilOk(() -> driveTalon.getConfigurator().apply(driveConfig, 0.25), driveTalon.getDeviceID());
+    tryUntilOk(() -> driveTalon.setPosition(0.0, 0.25), driveTalon.getDeviceID());
+    
     // Configure turn motor
     var turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -123,7 +123,7 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
         constants.SteerMotorInverted
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
-    tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
+    tryUntilOk(() -> turnTalon.getConfigurator().apply(turnConfig, 0.25), turnTalon.getDeviceID());
 
     // Configure CANCoder
     CANcoderConfiguration cancoderConfig = constants.EncoderInitialConfigs;
