@@ -5,15 +5,14 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package com.team1533.frc2026.subsystems.drive;
+package com.team900.frc2026.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-import com.team1533.frc2026.Constants.Gains;
-import com.team1533.frc2026.generated.TunerConstants;
+import com.team900.frc2026.Constants.Gains;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -24,18 +23,18 @@ import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 
 public class DriveConstants {
 
-  // TunerConstants doesn't include these constants, so they are declared locally
+  // CompTunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY =
-      new CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
+      new CANBus(CompTunerConstants.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
 
   public static final double DRIVE_BASE_RADIUS =
       Math.max(
           Math.max(
-              Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontRight.LocationY),
-              Math.hypot(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY)),
+              Math.hypot(CompTunerConstants.FrontLeft.LocationX, CompTunerConstants.FrontRight.LocationY),
+              Math.hypot(CompTunerConstants.FrontRight.LocationX, CompTunerConstants.FrontRight.LocationY)),
           Math.max(
-              Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
-              Math.hypot(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
+              Math.hypot(CompTunerConstants.BackLeft.LocationX, CompTunerConstants.BackLeft.LocationY),
+              Math.hypot(CompTunerConstants.BackRight.LocationX, CompTunerConstants.BackRight.LocationY)));
 
   // PathPlanner config constants
   public static final double ROBOT_MASS_KG = Units.lbsToKilograms(140);
@@ -47,12 +46,12 @@ public class DriveConstants {
           ROBOT_MASS_KG,
           ROBOT_MOI,
           new ModuleConfig(
-              TunerConstants.FrontLeft.WheelRadius,
-              TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+              CompTunerConstants.FrontLeft.WheelRadius,
+              CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
               WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
-                  .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
-              TunerConstants.FrontLeft.SlipCurrent,
+                  .withReduction(CompTunerConstants.FrontLeft.DriveMotorGearRatio),
+              CompTunerConstants.FrontLeft.SlipCurrent,
               1),
           getModuleTranslations());
 
@@ -65,21 +64,21 @@ public class DriveConstants {
               new SwerveModuleSimulationConfig(
                   DCMotor.getKrakenX60Foc(1),
                   DCMotor.getKrakenX60Foc(1),
-                  TunerConstants.FrontLeft.DriveMotorGearRatio,
-                  TunerConstants.FrontLeft.SteerMotorGearRatio,
-                  Volts.of(TunerConstants.FrontLeft.DriveFrictionVoltage),
-                  Volts.of(TunerConstants.FrontLeft.SteerFrictionVoltage),
-                  Meters.of(TunerConstants.FrontLeft.WheelRadius),
-                  KilogramSquareMeters.of(TunerConstants.FrontLeft.SteerInertia),
+                  SimTunerConstants.FrontLeft.DriveMotorGearRatio,
+                  SimTunerConstants.FrontLeft.SteerMotorGearRatio,
+                  Volts.of(SimTunerConstants.FrontLeft.DriveFrictionVoltage),
+                  Volts.of(SimTunerConstants.FrontLeft.SteerFrictionVoltage),
+                  Meters.of(SimTunerConstants.FrontLeft.WheelRadius),
+                  KilogramSquareMeters.of(SimTunerConstants.FrontLeft.SteerInertia),
                   WHEEL_COF));
 
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
-      new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
-      new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
-      new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
+      new Translation2d(CompTunerConstants.FrontLeft.LocationX, CompTunerConstants.FrontLeft.LocationY),
+      new Translation2d(CompTunerConstants.FrontRight.LocationX, CompTunerConstants.FrontRight.LocationY),
+      new Translation2d(CompTunerConstants.BackLeft.LocationX, CompTunerConstants.BackLeft.LocationY),
+      new Translation2d(CompTunerConstants.BackRight.LocationX, CompTunerConstants.BackRight.LocationY)
     };
   }
 

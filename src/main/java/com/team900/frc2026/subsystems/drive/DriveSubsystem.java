@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package com.team1533.frc2026.subsystems.drive;
+package com.team900.frc2026.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -17,15 +17,8 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
-import com.team1533.frc2026.Constants;
-import com.team1533.frc2026.RobotContainer;
-import com.team1533.frc2026.RobotState;
-import com.team1533.frc2026.Constants.ReefLocations;
-import com.team1533.frc2026.Constants.RobotType;
-import com.team1533.frc2026.generated.TunerConstants;
-import com.team1533.lib.swerve.AlignController;
-import com.team1533.lib.util.AllianceFlipUtil;
-import com.team1533.lib.util.LocalADStarAK;
+import com.team900.frc2026.Constants;
+import com.team900.frc2026.RobotContainer;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -105,10 +98,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     state = RobotState.getInstance();
 
-    modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
-    modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
-    modules[2] = new Module(blModuleIO, 2, TunerConstants.BackLeft);
-    modules[3] = new Module(brModuleIO, 3, TunerConstants.BackRight);
+    modules[0] = new Module(flModuleIO, 0, CompTunerConstants.FrontLeft);
+    modules[1] = new Module(frModuleIO, 1, CompTunerConstants.FrontRight);
+    modules[2] = new Module(blModuleIO, 2, CompTunerConstants.BackLeft);
+    modules[3] = new Module(brModuleIO, 3, CompTunerConstants.BackRight);
 
     setpoint =
         new SwerveSetpoint(getChassisSpeeds(), getModuleStates(), DriveFeedforwards.zeros(4));
@@ -324,7 +317,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Calculate module setpoints
     speeds = ChassisSpeeds.discretize(speeds, Constants.kRealDt);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, CompTunerConstants.kSpeedAt12Volts);
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -445,7 +438,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    return CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
   }
 
   /** Returns the maximum angular speed in radians per sec. */
@@ -456,11 +449,11 @@ public class DriveSubsystem extends SubsystemBase {
   public void teleopControl(double driveX, double driveY, double rotate) {
     double magnitude = Math.hypot(driveX, driveY);
     double speedX =
-        TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
+        CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
             * MathUtil.applyDeadband(driveX, 0.05)
             * magnitude;
     double speedY =
-        TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
+        CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
             * MathUtil.applyDeadband(driveY, 0.05)
             * magnitude;
     double speedR = 6 * MathUtil.applyDeadband(rotate, 0.05);
