@@ -12,6 +12,9 @@ public class Constants {
     public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
     public static final SimControllerType kSimControllerType = SimControllerType.XBOX;
 
+      public static final boolean tuningMode = false;
+
+
     public static final double kRealDt = 0.02;
 
     public enum SimControllerType {
@@ -29,6 +32,13 @@ public class Constants {
         /** Replaying from a log file. */
         REPLAY
     }
+
+
+  public static boolean disableHAL = false;
+    
+  public static void disableHAL() {
+    disableHAL = true;
+  }
     
     // TODO: temporary code to be changed to reflect rebuilt map
      public static final AprilTagFieldLayout kAprilTagLayout =
