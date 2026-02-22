@@ -19,6 +19,10 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.RobotContainer;
+import com.team900.frc2026.RobotState;
+import com.team900.frc2026.Constants.Mode;
+import com.team900.lib.util.Util;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -46,7 +50,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveSubsystem extends SubsystemBase {
 
-  static final Lock odometryLock = new ReentrantLock();
+    static final Lock odometryLock = new ReentrantLock();
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -92,8 +96,6 @@ public class DriveSubsystem extends SubsystemBase {
       ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
 
-    state = RobotState.getInstance();
-
     modules[0] = new Module(flModuleIO, 0, CompTunerConstants.FrontLeft);
     modules[1] = new Module(frModuleIO, 1, CompTunerConstants.FrontRight);
     modules[2] = new Module(blModuleIO, 2, CompTunerConstants.BackLeft);
@@ -105,8 +107,6 @@ public class DriveSubsystem extends SubsystemBase {
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
-    // Start odometry thread
-    PhoenixOdometryThread.getInstance().start();
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
@@ -119,7 +119,6 @@ public class DriveSubsystem extends SubsystemBase {
         DriveConstants.PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
-    Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
           Logger.recordOutput(
@@ -144,7 +143,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+// TODO: Do the chassis speeds and gyro data really need to be read at 250 hertz when not doing odometry?
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -154,7 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     odometryLock.unlock();
 
-    state.incrementIterationCount();
+    RobotState.getInstance().incrementIterationCount();
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -192,7 +191,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Use the real gyro angle
         rawYawRotation = gyroInputs.odometryYawPositions[i];
         // too lazy to update gyro sim so here's the solution
-        if (Constants.getRobot() == RobotType.COMPBOT) {
+        if (Constants.currentMode == Mode.REAL) {
           rawYawVelocity = gyroInputs.odometryYawVelocityRadPerSecs[i];
 
           rawAccelX = gyroInputs.odometryAccelXs[i];
@@ -204,9 +203,6 @@ public class DriveSubsystem extends SubsystemBase {
         rawYawRotation = rawYawRotation.plus(new Rotation2d(twist.dtheta));
       }
       // Apply update
-      state.addOdometryMeasurement(
-          sampleTimestamps[i],
-          poseEstimator.updateWithTime(sampleTimestamps[i], rawYawRotation, modulePositions));
 
       ChassisSpeeds measuredRobotRelativeChassisSpeeds =
           kinematics.toChassisSpeeds(swerveModulePositionToState(modulePositions));
@@ -220,87 +216,29 @@ public class DriveSubsystem extends SubsystemBase {
               measuredFieldRelativeChassisSpeeds.vxMetersPerSecond,
               measuredFieldRelativeChassisSpeeds.vyMetersPerSecond,
               rawYawVelocity);
-
-      state.addDriveMotionMeasurements(
+      // TODO: convert units all to radians then add the methods to get these measurements
+      // also I think you need the the lock and the queues to update the drivemotionmeasurements at 250 hertz to use for shooting but confirm tm
+      RobotState.getInstance().addDriveMotionMeasurements(
           sampleTimestamps[i],
+          rawRollVelocity,
+          rawPitchVelocity,
           rawYawVelocity,
+          rawPitch,
+          rawRoll,
           rawAccelX,
           rawAccelY,
+          setpoint.robotRelativeSpeeds(),
           desiredFieldRelativeChassisSpeeds,
           measuredRobotRelativeChassisSpeeds,
           measuredFieldRelativeChassisSpeeds,
           fusedFieldRelativeChassisSpeeds);
 
-      state.addYawMeasurements(rawYawRotation, sampleTimestamps[i]);
+       RobotState.getInstance().addYawMeasurements(rawYawRads, sampleTimestamps[i]);
     }
 
     // Update gyro alert
-    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.getRobot() != RobotType.SIMBOT);
+    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
     
-    
-    // Reef autoalign
-    // Pose2d bestPose = Pose2d.kZero;
-    // double min = Double.POSITIVE_INFINITY;
-    // if (RobotContainer.getInstance().isAlgaeMode()) {
-    //   for (ReefLocations location : ReefLocations.values()) {
-    //     if (min
-    //         > location
-    //             .getPose2dFlipped()
-    //             .getTranslation()
-    //             .getDistance(getPose().getTranslation())) {
-    //       min =
-    //           location.getPose2dFlipped().getTranslation().getDistance(getPose().getTranslation());
-    //       bestPose = location.getPose2dFlipped();
-    //     }
-    //   }
-    // } else {
-    //   for (ReefLocations location : ReefLocations.values()) {
-    //     if ((min
-    //             > location
-    //                 .getPose2dReef(false)
-    //                 .getTranslation()
-    //                 .getDistance(getPose().getTranslation()))
-    //         && RobotContainer.getInstance().isRight()) {
-    //       min =
-    //           location
-    //               .getPose2dReef(false)
-    //               .getTranslation()
-    //               .getDistance(getPose().getTranslation());
-    //       bestPose = location.getPose2dReef(false);
-    //     }
-    //     if ((min
-    //             > location
-    //                 .getPose2dReef(true)
-    //                 .getTranslation()
-    //                 .getDistance(getPose().getTranslation()))
-    //         && RobotContainer.getInstance().isLeft()) {
-    //       min =
-    //           location.getPose2dReef(true).getTranslation().getDistance(getPose().getTranslation());
-    //       bestPose = location.getPose2dReef(true);
-    //     }
-    //   }
-    // }
-
-    // if (
-    // Math.abs(
-    //    MathUtil.angleModulus(
-    //     bestPose.getRotation().minus(
-    //       RobotContainer.getInstance().getDriveSubsystem().getRotation()).getRadians()
-    //     )) > Math.PI/2) 
-    // {
-    // bestPose = new Pose2d(bestPose.getX(),bestPose.getY(),bestPose.getRotation().plus(Rotation2d.k180deg));
-    //   RobotContainer.getInstance().setFacingForward(false);
-    // }
-
-    // else{
-    //   RobotContainer.getInstance().setFacingForward(true);
-    // }
-
-    // setAlignTarget(bestPose);
-
-    // if (!RobotContainer.getInstance().isLeft() && !RobotContainer.getInstance().isRight()) {
-    //   setAlignTarget(Pose2d.kZero);
-    // }
   }
 
   /**
@@ -422,7 +360,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawYawRotation, getModulePositions(), pose);
-    if (Constants.getRobot() == Constants.RobotType.SIMBOT) {
+    if (Constants.currentMode == Mode.SIM) {
       RobotContainer.getInstance().driveSimulation.setSimulationWorldPose(pose);
     }
   }
@@ -454,7 +392,7 @@ public class DriveSubsystem extends SubsystemBase {
             * magnitude;
     double speedR = 6 * MathUtil.applyDeadband(rotate, 0.05);
 
-    if (AllianceFlipUtil.shouldFlip()) {
+    if (Util.shouldFlip()) {
       speedX = -speedX;
       speedY = -speedY;
     }
@@ -463,8 +401,7 @@ public class DriveSubsystem extends SubsystemBase {
     setpoint =
         generator.generateSetpoint(
             setpoint,
-            alignController.update(
-               prePoofed),
+               prePoofed,
             Constants.kRealDt);
     Logger.recordOutput("Drive/Poofed/Setpoint", setpoint.robotRelativeSpeeds());
     runVelocity(setpoint.robotRelativeSpeeds());
@@ -475,13 +412,9 @@ public class DriveSubsystem extends SubsystemBase {
         rawYawRotation,
         getModulePositions(),
         new Pose2d(
-            getPose().getX(), getPose().getY(), AllianceFlipUtil.apply(Rotation2d.fromDegrees(0))));
+            getPose().getX(), getPose().getY(), Util.apply(Rotation2d.fromDegrees(0))));
   }
-
-  public void setAlignTarget(Pose2d target) {
-    alignController.setTarget(target);
-  }
-
+  
   public static SwerveModuleState[] swerveModulePositionToState(SwerveModulePosition... positions) {
     SwerveModuleState[] states = new SwerveModuleState[positions.length];
     for (int i = 0; i < positions.length; i++) {
