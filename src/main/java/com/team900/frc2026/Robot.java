@@ -6,21 +6,26 @@ package com.team900.frc2026;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
-  private final RobotContainer m_robotContainer;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
   }
 
   @Override
   public void robotPeriodic() {
+   
+     Threads.setCurrentThreadPriority(true, 99);
+
+    
     CommandScheduler.getInstance().run();
+
+     Threads.setCurrentThreadPriority(false, 10);
   }
 
   @Override
@@ -34,7 +39,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
