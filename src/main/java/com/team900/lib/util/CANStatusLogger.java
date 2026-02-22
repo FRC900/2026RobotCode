@@ -1,6 +1,7 @@
 package com.team900.lib.util;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -20,10 +21,10 @@ public class CANStatusLogger {
         private final String name;
         private final TalonFX talon;
         private final int deviceId;
-        private final String canBus;
+        private final CANBus canBus;
         private final StatusSignal<?> supplyVoltage;
 
-        public DeviceStatusInfo(String name, TalonFX talon, int deviceId, String canBus) {
+        public DeviceStatusInfo(String name, TalonFX talon, int deviceId, CANBus canBus) {
             this.name = name;
             this.talon = talon;
             this.deviceId = deviceId;
@@ -45,7 +46,7 @@ public class CANStatusLogger {
         return instance;
     }
 
-    public void registerTalonFX(String name, TalonFX talon, int deviceId, String canBus) {
+    public void registerTalonFX(String name, TalonFX talon, int deviceId, CANBus canBus) {
         devices.add(new DeviceStatusInfo(name, talon, deviceId, canBus));
     }
 
@@ -53,7 +54,7 @@ public class CANStatusLogger {
         registerTalonFX(name, talon, deviceId.getDeviceNumber(), deviceId.getBus());
     }
 
-    public void registerCANcoder(String name, CANcoder cancoder, int deviceId, String canBus) {
+    public void registerCANcoder(String name, CANcoder cancoder, int deviceId, CANBus canBus) {
         // This method is kept for compatibility but doesn't need to track CANcoders
     }
 
