@@ -218,22 +218,22 @@ public class DriveSubsystem extends SubsystemBase {
               rawYawVelocity);
       // TODO: convert units all to radians then add the methods to get these measurements
       // also I think you need the the lock and the queues to update the drivemotionmeasurements at 250 hertz to use for shooting but confirm tm
-      RobotState.getInstance().addDriveMotionMeasurements(
-          sampleTimestamps[i],
-          rawRollVelocity,
-          rawPitchVelocity,
-          rawYawVelocity,
-          rawPitch,
-          rawRoll,
-          rawAccelX,
-          rawAccelY,
-          setpoint.robotRelativeSpeeds(),
-          desiredFieldRelativeChassisSpeeds,
-          measuredRobotRelativeChassisSpeeds,
-          measuredFieldRelativeChassisSpeeds,
-          fusedFieldRelativeChassisSpeeds);
+      // RobotState.getInstance().addDriveMotionMeasurements(
+      //     sampleTimestamps[i],
+      //     rawRollVelocity,
+      //     rawPitchVelocity,
+      //     rawYawVelocity,
+      //     rawPitch,
+      //     rawRoll,
+      //     rawAccelX,
+      //     rawAccelY,
+      //     setpoint.robotRelativeSpeeds(),
+      //     desiredFieldRelativeChassisSpeeds,
+      //     measuredRobotRelativeChassisSpeeds,
+      //     measuredFieldRelativeChassisSpeeds,
+      //     fusedFieldRelativeChassisSpeeds);
 
-       RobotState.getInstance().addYawMeasurements(rawYawRads, sampleTimestamps[i]);
+      //  RobotState.getInstance().addYawMeasurements(rawYawRads, sampleTimestamps[i]);
     }
 
     // Update gyro alert
