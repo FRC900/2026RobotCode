@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.team900.lib.time.RobotTime;
 import com.team900.lib.util.Util;
-
 import edu.wpi.first.wpilibj2.command.*;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;

@@ -2,8 +2,6 @@ package com.team900.lib.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-
-
 public class ServoMotorSubsystemWithCanCoder<
                 T extends MotorInputsAutoLogged,
                 U extends MotorIO,
