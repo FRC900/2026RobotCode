@@ -24,6 +24,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.team900.frc2026.Constants;
+import com.team900.frc2026.Constants.Mode;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -93,15 +94,15 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
             : InvertedValue.CounterClockwise_Positive;
 
     driveConfig.Feedback.SensorToMechanismRatio = 1;
-    tryUntilOk(() -> driveTalon.getConfigurator().apply(driveConfig, 0.25), driveTalon.getDeviceID());
-    tryUntilOk(() -> driveTalon.setPosition(0.0, 0.25), driveTalon.getDeviceID());
-    
+    tryUntilOK(() -> driveTalon.getConfigurator().apply(driveConfig, 0.25), driveTalon.getDeviceID());
+    tryUntilOK(() -> driveTalon.setPosition(0.0, 0.25), driveTalon.getDeviceID());
+
     // Configure turn motor
     var turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.Slot0 = constants.SteerMotorGains;
-    if (Constants.getRobot() == Constants.RobotType.SIMBOT)
-      turnConfig.Slot0.withKD(0).withKS(0); // during simulation, gains are slightly different
+    if (Constants.currentMode == Mode.SIM)
+      turnConfig.Slot0 = SimTunerConstants.FrontLeft.SteerMotorGains; // during simulation, gains are slightly different
 
     turnConfig.Feedback.FeedbackRemoteSensorID = constants.EncoderId;
     turnConfig.Feedback.FeedbackSensorSource =
@@ -123,7 +124,7 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
         constants.SteerMotorInverted
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
-    tryUntilOk(() -> turnTalon.getConfigurator().apply(turnConfig, 0.25), turnTalon.getDeviceID());
+    tryUntilOK(() -> turnTalon.getConfigurator().apply(turnConfig, 0.25), turnTalon.getDeviceID());
 
     // Configure CANCoder
     CANcoderConfiguration cancoderConfig = constants.EncoderInitialConfigs;
