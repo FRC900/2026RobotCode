@@ -7,7 +7,7 @@
 
 package com.team900.frc2026.subsystems.drive;
 
-import static com.team254.lib.util.CTREUtil.tryUntilOK;
+import static com.team900.lib.util.CTREUtil.tryUntilOK;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
