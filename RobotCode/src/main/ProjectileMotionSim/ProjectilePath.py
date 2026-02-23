@@ -59,7 +59,7 @@ class RungeKutta4:
     def sim(self, timelen=10, stop_on_y=None):
         while self.t <= timelen: # stop RK4 when it reaches specified simulation time
             if stop_on_y is not None: # stop RK4 when y-position < target y position
-                if self.a[1] < stop_on_y and np.sign(self.dadt(self.t, self.a)[1]) == -1:
+                if self.a[1] < stop_on_y and np.sign(self.dadt(self.t, self.a)[1]) == -1: # make sure projectile is falling before stopping
                     break 
 
             self.rk4()
@@ -239,7 +239,7 @@ class Projectile:
 
 # class to solve for  active parameters (v_vec, theta, phi, and omega0 [v_vec and omega0 can be held constat if needed]) given a target x, y, z 
 class ProjectileSolver:
-    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, v_bounds=(-np.inf, np.inf), fix_speed=False, omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), fix_omega=False, phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.2, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
+    def __init__(self, projectile, xt, yt, zt, vx0, vy0, vz0, omega0, vx_frame=0, vy_frame=0, vz_frame=0, omega_frame=0, v_bounds=(-np.inf, np.inf), fix_speed=False, omega_bounds=(-np.inf, np.inf), theta_bounds=(-np.inf, np.inf), fix_omega=False, phi_bounds=(-np.inf, np.inf), ct=0, clearance_func=lambda *args: 0, x_scale=0.05, y_scale=0.05, z_scale=0.05, c_scale=0.2, n_hat=1, sx0=0, sy0=0, sz0=0, t0=0, dt=0.01, sim_end_time=10, eps=1e-4, lam0=1e-2, tol=False, lm_iters=20, lam_scaleup=8, lam_scaledown=0.2):
         self.projectile = projectile # projectile object being solved
         self.targets = np.array([xt, yt, zt, ct]) # target x (m), y (m), z (m), clearance (defined if object needs to clear a physical threshold, clearance != 0 if physical threshold is not cleared)
         self.scale_array = np.array([x_scale, y_scale, z_scale, c_scale]) # weight of each parameter on residual calculation  
@@ -248,16 +248,20 @@ class ProjectileSolver:
         self.sy0 = sy0 # initial y-position (m) 
         self.sz0 = sz0 # initial z-position (m)
 
-        self.vx = vx0 # x-velocity (m/s)
-        self.vy = vy0 # y-velocity (m/s)
-        self.vz = vz0 # z-velocity (m/s)
+        self.vx = vx0 # x-velocity (vx0=initial guess) (m/s)
+        self.vy = vy0 # y-velocity (vy0=initial guess) (m/s)
+        self.vz = vz0 # z-velocity (vz0=initial guess) (m/s)
+        self.vx_frame = vx_frame # initial x-velocity (m/s)
+        self.vy_frame = vy_frame # initial y-velocity (m/s)
+        self.vz_frame = vz_frame # initial z-velocity (m/s) 
         self.v_min, self.v_max = v_bounds # defines range of possible velocity magnitudes
         self.v = np.array([self.vx, self.vy, self.vz]) # velocity vector (m/s), not used in any function
         self.v_mag = np.linalg.norm(self.v) # velocity magnitude (m/s)
         self.fix_speed = fix_speed # keep speed magnitude constant; should program change speed
 
-        self.omega = omega0 # angular velocity (rad/s)
+        self.omega = omega0 # angular velocity (omega0=initial guess) (rad/s)
         self.omega_min, self.omega_max = omega_bounds # defines range of possible angular velocities 
+        self.omega_frame = omega_frame # initial spin (rad/s)
         self.n_hat = n_hat # angular velocity direction unit vector (+1: backspin, -1: topspin, 0: no spin)
         self.fix_omega = fix_omega # keep spin magnitude constant; should program change spin
 
@@ -326,11 +330,17 @@ class ProjectileSolver:
     
     # simulate shot and return final state 
     def rk4_shot(self):
-        key = (self.vx, self.vy, self.vz, self.omega)
+        # account for initial velocities 
+        vx_total = self.vx + self.vx_frame
+        vy_total = self.vy + self.vy_frame
+        vz_total = self.vz + self.vz_frame
+        omega_total = self.omega + self.omega_frame
+
+        key = (vx_total, vy_total, vz_total, omega_total)
         if key in self._shot_cache: # check if we've already run this RK4 simulation
             return self._shot_cache[key]
 
-        vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = self.projectile.trajectory(self.vx, self.vy, self.vz, omega0=self.omega, n_hat=self.n_hat, sx0=self.sx0, sy0=self.sy0, sz0=self.sz0, t0=self.t0, dt=self.dt, sim_end_time=self.sim_end_time, stop_on_y=self.targets[1])
+        vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = self.projectile.trajectory(vx_total, vy_total, vz_total, omega0=omega_total, n_hat=self.n_hat, sx0=self.sx0, sy0=self.sy0, sz0=self.sz0, t0=self.t0, dt=self.dt, sim_end_time=self.sim_end_time, stop_on_y=self.targets[1])
         xf, yf, zf = sx_list[-1], sy_list[-1], sz_list[-1]
         cf = self.clearance_func(vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf)
 
