@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.ShooterBottom;
+package com.team900.frc2026.subsystems.Handoff;
 
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
@@ -7,13 +7,13 @@ import com.team254.lib.subsystems.TalonFXIO;
 import edu.wpi.first.hal.simulation.DIODataJNI;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class ShooterBottomSensorIOHardware implements ShooterBottomSensorIO {
+public class HandoffSensorIOHardware implements HandoffIO {
     private final int port;
     private final ServoMotorSubsystemConfig config;
     protected final DigitalInput shooterBanner;
     private final TalonFXIO wheelTalon;
 
-    public ShooterBottomSensorIOHardware(int dioPort, ServoMotorSubsystemConfig config, TalonFXIO talon) {
+    public HandoffSensorIOHardware(int dioPort, ServoMotorSubsystemConfig config, TalonFXIO talon) {
         this.port = dioPort;
         this.config = config;
         shooterBanner = new DigitalInput(dioPort);
@@ -37,9 +37,9 @@ public class ShooterBottomSensorIOHardware implements ShooterBottomSensorIO {
     }
 
     @Override
-    public void readInputs(ShooterBottomSensorInputs inputs) {
+    public void readInputs(HandoffSensorInputs inputs) {
 
-        inputs.bottomShooterBannerHasPiece = shooterBanner.get();
+        inputs.handoffBannerHasPiece = shooterBanner.get();
     }
 
     @Override

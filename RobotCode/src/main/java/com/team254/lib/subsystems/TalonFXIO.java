@@ -11,7 +11,7 @@ import com.team254.lib.drivers.CANDeviceId;
 import com.team254.lib.util.CANStatusLogger;
 import com.team254.lib.util.CTREUtil;
 import com.team900.frc2026.Robot;
-import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIO.ShooterBottomSensorInputs;
+import com.team900.frc2026.subsystems.Handoff.HandoffSensorIO.HandoffmSensorInputs;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
@@ -106,7 +106,7 @@ public class TalonFXIO implements MotorIO {
 
     }
 
-    public void readInputs(ShooterBottomSensorInputs inputs){
+    public void readInputs(HandoffSensorInputs inputs){
         BaseStatusSignal.refreshAll(signals);
 
         inputs.velocityUnitsPerSecond = Units.RotationsPerSecond.of(rotorToUnits(velocitySignal.getValueAsDouble())/(2*Math.PI));

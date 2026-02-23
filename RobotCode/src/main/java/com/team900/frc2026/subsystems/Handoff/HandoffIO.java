@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.ShooterBottom;
+package com.team900.frc2026.subsystems.Handoff;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -15,14 +15,14 @@ import org.littletonrobotics.junction.AutoLog;
 
 import com.team254.lib.subsystems.TalonFXIO;
 
-public interface ShooterBottomSensorIO {
+public interface HandoffIO {
 
   
 
     @AutoLog
-    public class ShooterBottomSensorInputs {
+    public class HandoffSensorInputs {
 
-        public boolean bottomShooterBannerHasPiece = false;
+        public boolean handoffBannerHasPiece = false;
         public AngularVelocity velocityUnitsPerSecond = RotationsPerSecond.of(0);
 
         public Current currentStatorAmps = Amps.of(0);
@@ -30,19 +30,19 @@ public interface ShooterBottomSensorIO {
         public Voltage appliedVolts = Volts.of(0);
     }
 
-    public default void readInputs(ShooterBottomSensorInputs inputs) {}
+    public default void readInputs(HandoffSensorInputs inputs) {}
 
     public default void setFlywheelSpeed(double speed) {
 
     }
 
     public default TalonFXIO getTalon(){
-        if (this instanceof ShooterBottomSensorIOSim){
-            return (((ShooterBottomSensorIOSim) this).getTalon());
+        if (this instanceof HandoffSensorIOSim){
+            return (((HandoffSensorIOSim) this).getTalon());
         }
 
         else {
-            return (((ShooterBottomSensorIOHardware) this).getTalon());
+            return (((HandoffSensorIOHardware) this).getTalon());
         }
 
     }

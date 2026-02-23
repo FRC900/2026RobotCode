@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.ShooterBottom;
+package com.team900.frc2026.subsystems.Handoff;
 
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -8,6 +8,7 @@ import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
 import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants.ShooterConstants;
+import com.team900.frc2026.subsystems.Handoff.HandoffSensorInputsAutoLogged;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
 import com.team900.frc2026.RobotState;
@@ -25,17 +26,17 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
-public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
+public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
         implements IStatusSignalLoop {
 
     private final RobotState robotState;
     private final ServoMotorSubsystemConfig leadconfig;
     private final MotorIO leadIO;
 
-    private ShooterBottomSensorInputsAutoLogged inputsSensors =
-            new ShooterBottomSensorInputsAutoLogged();
+    private HandoffSensorInputsAutoLogged inputsSensors =
+            new HandoffSensorInputsAutoLogged();
 
-    private ShooterBottomSensorIO ioSensors;
+    private HandoffIO ioSensors;
 
 
     private AtomicBoolean ballEntered = new AtomicBoolean(false);
@@ -45,9 +46,9 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
             new Debouncer(
                     Constants.SensorConstants.kShooterDebounceTime, Debouncer.DebounceType.kRising);
 
-    public ShooterBottom(
+    public Handoff(
             ServoMotorSubsystemConfig leadConfig,
-            final ShooterBottomSensorIO sensorIO,
+            final HandoffIO sensorIO,
             RobotState state) {
 
 
@@ -66,7 +67,7 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
         super.periodic();
         double timestamp = RobotTime.getTimestampSeconds();
 
-        Logger.processInputs("BottomShooter", inputsSensors);
+        Logger.processInputs("Handoff", inputsSensors);
     }
 
     public Command waitForCurrentSpike(double ampsToWaitFor) {
@@ -143,8 +144,8 @@ public class ShooterBottom extends ServoMotorSubsystem<MotorInputsAutoLogged, Mo
     }
 
     public void resetSimState() {
-    if (ioSensors instanceof ShooterBottomSensorIOSim) {
-        ((ShooterBottomSensorIOSim) ioSensors).resetTalon();
+    if (ioSensors instanceof HandoffSensorIOSim) {
+        ((HandoffSensorIOSim) ioSensors).resetTalon();
     }
  
 }

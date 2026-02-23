@@ -18,11 +18,11 @@ public class ShootingFactory {
             RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
 
         var topShooter = container.getTopShooter();
-        var bottomShooter = container.getBottomShooter();
+        var handoff = container.getHandoff();
         return new ParallelCommandGroup(
                         topShooter.velocitySetpointCommand(
                                 () -> setpointSupplier.get().getTopShooterRPS()),
-                        bottomShooter.velocitySetpointCommand(
+                        handoff.velocitySetpointCommand(
                                 () -> setpointSupplier.get().getShooterRPS()))
                 .withName("Spin Both Shooter Stages");
     }
@@ -39,8 +39,8 @@ public class ShootingFactory {
     public static Command spinBottom(
             RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
 
-        var bottomShooter = container.getBottomShooter();
-        return bottomShooter
+        var handoff = container.getHandoff();
+        return handoff
                 .velocitySetpointCommand(() -> setpointSupplier.get().getShooterRPS())
                 .withName("Spin Up Bottom Shooter");
     }

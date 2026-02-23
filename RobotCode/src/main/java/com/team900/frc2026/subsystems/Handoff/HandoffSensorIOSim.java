@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.ShooterBottom;
+package com.team900.frc2026.subsystems.Handoff;
 
 import static edu.wpi.first.units.Units.Radians;
 
@@ -15,14 +15,14 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class ShooterBottomSensorIOSim implements ShooterBottomSensorIO {
+public class HandoffSensorIOSim implements HandoffIO {
     protected final DigitalInput shooterBanner;
 
     private final int port;
     private final ServoMotorSubsystemConfig config;
     private final SimTalonFXIO wheelTalon;
 
-    public ShooterBottomSensorIOSim(int dioPort, ServoMotorSubsystemConfig config,SimTalonFXIO talon) {
+    public HandoffSensorIOSim(int dioPort, ServoMotorSubsystemConfig config,SimTalonFXIO talon) {
         super();
         this.port = dioPort;
         this.config = config;
@@ -46,9 +46,9 @@ public class ShooterBottomSensorIOSim implements ShooterBottomSensorIO {
     }
 
     @Override
-    public void readInputs(ShooterBottomSensorInputs inputs) {
+    public void readInputs(HandoffSensorInputs inputs) {
         wheelTalon.readInputs(inputs);
-        inputs.bottomShooterBannerHasPiece = shooterBanner.get();
+        inputs.handoffBannerHasPiece = shooterBanner.get();
    
 
 

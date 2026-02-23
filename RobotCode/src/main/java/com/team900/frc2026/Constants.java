@@ -17,7 +17,7 @@ public class Constants {
     public static final class SensorConstants {
         // placeholder constant. Make sure to tune.
 
-        public static final int kShooterBottomBannerSensorPort = 3;
+        public static final int kHandoffBannerSensorPort = 3;
 
    
         public static final double kShooterDebounceTime = 0.01;
@@ -36,7 +36,7 @@ public class Constants {
     public static final double kJoystickThreshold = 0.1;
     public static final int kDriveGamepadPort = 0;
 
-    public static final ServoMotorSubsystemConfig kShooterBottomConfig =
+    public static final ServoMotorSubsystemConfig kHandoffConfig =
             new ServoMotorSubsystemConfig(1);
 
     public static final ServoMotorSubsystemWithFollowersConfig kShooterTopConfig = 

@@ -17,9 +17,9 @@ import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.controlboard.ModalControls;
 import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
-import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottom;
-import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIOHardware;
-import com.team900.frc2026.subsystems.ShooterBottom.ShooterBottomSensorIOSim;
+import com.team900.frc2026.subsystems.Handoff.Handoff;
+import com.team900.frc2026.subsystems.Handoff.HandoffSensorIOHardware;
+import com.team900.frc2026.subsystems.Handoff.HandoffSensorIOSim;
 import com.team900.frc2026.subsystems.TopShooter.TopShooter;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
     private RobotState robotState;
-    private ShooterBottom shooterBottom;
+    private Handoff handoff;
     public Supplier shooterSetpoint;
 
     private TopShooter topShooter;
@@ -43,9 +43,9 @@ public class RobotContainer {
         this.simulatedRobotState =
                 RobotBase.isSimulation() ? new SimulatedRobotState(this) : null;
 
-        this.shooterBottom = buildShooterBottom();
+        this.handoff = buildHandoff();
         this.topShooter = buildTopShooter();
-        shooterBottom.resetSimState();
+        handoff.resetSimState();
         topShooter.resetSimState();
 
 
@@ -56,7 +56,7 @@ public class RobotContainer {
             SequentialCommandGroup(ShootingFactory.spinBoth(this, shooterSetpoint)));
 
         configureBindings();
-        statusSignalLoop.register(getBottomShooter());
+        statusSignalLoop.register(getHandoff());
         statusSignalLoop.register(getTopShooter());
         statusSignalLoop.start();
     }
@@ -89,21 +89,21 @@ public class RobotContainer {
         return topShooter;
     }
 
-    private ShooterBottom buildShooterBottom() {
+    private Handoff buildHandoff() {
         if (RobotBase.isSimulation()) {
-            return new ShooterBottom(
-                    Constants.kShooterBottomConfig,
-                    new ShooterBottomSensorIOSim(
-                        Constants.SensorConstants.kShooterBottomBannerSensorPort,
-                        Constants.kShooterBottomConfig, new SimTalonFXIO(Constants.kShooterBottomConfig)),
+            return new Handoff(
+                    Constants.kHandoffConfig,
+                    new HandoffSensorIOSim(
+                        Constants.SensorConstants.kHandoffBannerSensorPort,
+                        Constants.kHandoffConfig, new SimTalonFXIO(Constants.kHandoffConfig)),
                     robotState);
         } else {
-            return new ShooterBottom(
-                    Constants.kShooterBottomConfig,
-                    new ShooterBottomSensorIOHardware(
-                            Constants.SensorConstants.kShooterBottomBannerSensorPort,
-                            Constants.kShooterBottomConfig,                    
-                            new TalonFXIO(Constants.kShooterBottomConfig)),
+            return new Handoff(
+                    Constants.kHandoffConfig,
+                    new HandoffSensorIOHardware(
+                            Constants.SensorConstants.kHandoffBannerSensorPort,
+                            Constants.kHandoffConfig,                    
+                            new TalonFXIO(Constants.kHandoffConfig)),
                     robotState);
         }
     }
@@ -125,7 +125,7 @@ public class RobotContainer {
         }
     }
 
-    public ShooterBottom getBottomShooter() {
-        return shooterBottom;
+    public Handoff getHandoff() {
+        return handoff;
     }
 }

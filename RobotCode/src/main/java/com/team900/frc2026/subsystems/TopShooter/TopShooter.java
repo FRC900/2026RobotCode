@@ -12,7 +12,7 @@ import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
 import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants.ShooterConstants;
-// import com.team900.frc2026.subsystems.ShooterTop.ShooterBottomSensorInputsAutoLogged;
+
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 
