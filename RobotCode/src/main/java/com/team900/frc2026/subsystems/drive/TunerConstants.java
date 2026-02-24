@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.*;
 /**
  * Swerve module constants.
  *
- * Drive: Kraken X60 FOC, R2 gear ratio (6.03:1)
+ * Drive: Kraken X60 FOC, MK5n (ratio set by kDriveRatioSelection)
  * Steer: Kraken X44, gear ratio 287:11 (~26.09:1)
  * CANivore
  */
@@ -84,10 +84,22 @@ public class TunerConstants {
 
     // --- Mechanical Constants ---
 
-    // MK5n R2 gear ratio: (14/54) * (32/25) * (15/30) = 6.03:1
-    // CTRE expects ratio as motor rotations per wheel rotation
+    // MK5n drive ratio options — change this to match your module's pinion gear
+    // R1 = 8.10:1 (14T pinion), R2 = 6.54:1 (16T pinion), R3 = 5.36:1 (18T pinion)
+    private enum MK5nDriveRatio {
+        R1(14), R2(16), R3(18);
+
+        final int pinionTeeth;
+        MK5nDriveRatio(int pinionTeeth) { this.pinionTeeth = pinionTeeth; }
+    }
+
+    // *** SET YOUR DRIVE RATIO HERE ***
+    private static final MK5nDriveRatio kDriveRatioSelection = MK5nDriveRatio.R2;
+
+    // Drive gear ratio computed from pinion selection
+    // MK5n formula: (pinionTeeth/54) * (32/25) * (15/30)
     private static final double kDriveGearRatio =
-            1.0 / ((14.0 / 54.0) * (32.0 / 25.0) * (15.0 / 30.0));
+            1.0 / ((kDriveRatioSelection.pinionTeeth / 54.0) * (32.0 / 25.0) * (15.0 / 30.0));
 
     // MK5n steering gear ratio: 287:11 = ~26.09:1
     // motor rotations per azimuth rotation
@@ -97,8 +109,8 @@ public class TunerConstants {
     private static final Distance kWheelRadius = Inches.of(2.0);
 
     // Coupling ratio: every 1 azimuth rotation causes this many drive motor turns
-    // Approximate for MK5n - can change based on mechanical coupling
-    private static final double kCoupleRatio = 0.0; // TODO: 3.5 for most mk5n
+    // Derived from the 54T bevel gear and the selected pinion
+    private static final double kCoupleRatio = 54.0 / kDriveRatioSelection.pinionTeeth;
 
     // Theoretical free speed at 12V: Kraken X60 FOC (5800 RPM) / 6.03 ratio = 962 RPM wheel = ~5.12 m/s with 2" radius wheel
     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.12);
