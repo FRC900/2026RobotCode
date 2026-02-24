@@ -14,6 +14,7 @@ import edu.wpi.first.units.measure.*;
  *
  * Drive: Kraken X60 FOC, R2 gear ratio (6.03:1)
  * Steer: Kraken X44, gear ratio 287:11 (~26.09:1)
+ * CANivore
  */
 public class TunerConstants {
 
