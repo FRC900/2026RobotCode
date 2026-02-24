@@ -8,7 +8,6 @@ import com.team254.lib.loops.IStatusSignalLoop;
 import com.team254.lib.subsystems.*;
 import com.team254.lib.time.RobotTime;
 import com.team900.frc2026.Constants.ShooterConstants;
-import com.team900.frc2026.subsystems.Handoff.HandoffSensorInputsAutoLogged;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
 import com.team900.frc2026.RobotState;
@@ -38,6 +37,7 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
 
 
     private AtomicBoolean ballEntered = new AtomicBoolean(false);
+    private boolean hasBall = false;
     private AtomicBoolean ballExited = new AtomicBoolean(false);
     private AtomicBoolean didStopShooter = new AtomicBoolean(false);
     private Debouncer bannerDebounce =
@@ -64,8 +64,8 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
     public void periodic() {
         super.periodic();
         double timestamp = RobotTime.getTimestampSeconds();
-
         Logger.processInputs("Handoff", inputsHandoffAutoLogged);
+        hasBall = bannerDebounce.calculate(ioSensors.getBanner().get());
     }
 
     public Command waitForCurrentSpike(double ampsToWaitFor) {
@@ -132,8 +132,7 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
     }
 
     public boolean hasBall() {
-        // If shooter has ball
-        return bannerDebounce.calculate(ioSensors.getBanner().get());
+       return hasBall;
     }
 
     @Override

@@ -107,16 +107,6 @@ public class TalonFXIO implements MotorIO {
 
     }
 
-    /*public void readInputs(HandoffSensorInputs inputs){
-        BaseStatusSignal.refreshAll(signals);
-
-        inputs.velocityUnitsPerSecond = Units.RotationsPerSecond.of(rotorToUnits(velocitySignal.getValueAsDouble())/(2*Math.PI));
-        inputs.currentStatorAmps = Units.Amps.of(currentStatorSignal.getValueAsDouble());
-        inputs.appliedVolts = Units.Volts.of(voltageSignal.getValueAsDouble());
-        inputs.currentSupplyAmps = Units.Amps.of(currentSupplySignal.getValueAsDouble());
-
-    }*/
-    
     @Override
     public void setOpenLoopDutyCycle(double dutyCycle) {
         talon.setControl(dutyCycleControl.withOutput(dutyCycle));

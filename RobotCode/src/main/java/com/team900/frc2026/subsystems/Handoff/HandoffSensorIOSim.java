@@ -8,10 +8,11 @@ import com.team254.lib.subsystems.MotorInputs;
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
-import com.team900.frc2026.Constants.ShooterConstants;
+import com.team900.frc2026.Constants;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.hal.simulation.DIODataJNI;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,7 +31,6 @@ public class HandoffSensorIOSim implements HandoffIO {
         shooterBanner = new DigitalInput(dioPort);
         this.wheelTalon = talon;
 
-        setNoNote();
 
     }
 
@@ -49,9 +49,8 @@ public class HandoffSensorIOSim implements HandoffIO {
     @Override
     public void readInputs(MotorInputs inputs) {
         wheelTalon.readInputs(inputs);
-      //  inputs.handoffBannerHasPiece = shooterBanner.get();
-   
-
+        
+    
 
     }
 

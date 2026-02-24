@@ -65,13 +65,7 @@ public class TopShooter extends ServoMotorSubsystem<MotorInputsAutoLogged, Motor
                 getName() + "/latencyPeriodicSec", RobotTime.getTimestampSeconds() - timestamp);
     }
 
-    private static MotorInputsAutoLogged pickFirst(MotorInputsAutoLogged[] arr) {
-        // Method so I can log inputs from follower motor
-        if (arr == null || arr.length == 0 || arr[0] == null) {
-            return new MotorInputsAutoLogged();
-        }
-        return arr[0];
-    }
+
 
     public void setTeleopDefaultCommand() {
         setDefaultCommand(dutyCycleCommand(() -> 0.0).withName("Zero shooter RPS"));

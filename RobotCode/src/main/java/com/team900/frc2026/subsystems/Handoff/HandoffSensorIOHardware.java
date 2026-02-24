@@ -39,8 +39,8 @@ public class HandoffSensorIOHardware implements HandoffIO {
 
     @Override
     public void readInputs(MotorInputs inputs) {
+        wheelTalon.readInputs(inputs);
 
-        //inputs.handoffBannerHasPiece = shooterBanner.get();
     }
 
     @Override
