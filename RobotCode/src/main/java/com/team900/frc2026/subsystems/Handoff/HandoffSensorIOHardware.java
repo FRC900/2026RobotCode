@@ -1,5 +1,6 @@
 package com.team900.frc2026.subsystems.Handoff;
 
+import com.team254.lib.subsystems.MotorInputs;
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
@@ -37,9 +38,9 @@ public class HandoffSensorIOHardware implements HandoffIO {
     }
 
     @Override
-    public void readInputs(HandoffSensorInputs inputs) {
+    public void readInputs(MotorInputs inputs) {
 
-        inputs.handoffBannerHasPiece = shooterBanner.get();
+        //inputs.handoffBannerHasPiece = shooterBanner.get();
     }
 
     @Override

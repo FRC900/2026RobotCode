@@ -39,8 +39,8 @@ public class Constants {
     public static final ServoMotorSubsystemConfig kHandoffConfig =
             new ServoMotorSubsystemConfig(1);
 
-    public static final ServoMotorSubsystemWithFollowersConfig kShooterTopConfig = 
-                new ServoMotorSubsystemWithFollowersConfig(2);
+    public static final ServoMotorSubsystemConfig kShooterTopConfig = 
+                new ServoMotorSubsystemConfig(2);
 
 
 

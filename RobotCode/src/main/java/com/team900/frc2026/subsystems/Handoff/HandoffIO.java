@@ -13,6 +13,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import org.littletonrobotics.junction.AutoLog;
 
+import com.team254.lib.subsystems.MotorInputs;
 import com.team254.lib.subsystems.TalonFXIO;
 
 public interface HandoffIO {
@@ -30,7 +31,7 @@ public interface HandoffIO {
         public Voltage appliedVolts = Volts.of(0);
     }
 
-    public default void readInputs(HandoffSensorInputs inputs) {}
+    public default void readInputs(MotorInputs inputs) {}
 
     public default void setFlywheelSpeed(double speed) {
 

@@ -32,9 +32,7 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
     private final RobotState robotState;
     private final ServoMotorSubsystemConfig leadconfig;
     private final MotorIO leadIO;
-
-    private HandoffSensorInputsAutoLogged inputsSensors =
-            new HandoffSensorInputsAutoLogged();
+    private static MotorInputsAutoLogged inputsHandoffAutoLogged = new MotorInputsAutoLogged();
 
     private HandoffIO ioSensors;
 
@@ -67,15 +65,15 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
         super.periodic();
         double timestamp = RobotTime.getTimestampSeconds();
 
-        Logger.processInputs("Handoff", inputsSensors);
+        Logger.processInputs("Handoff", inputsHandoffAutoLogged);
     }
 
     public Command waitForCurrentSpike(double ampsToWaitFor) {
-        return new WaitUntilCommand(() -> inputs.currentStatorAmps >= ampsToWaitFor);
+        return new WaitUntilCommand(() -> inputsHandoffAutoLogged.currentStatorAmps >= ampsToWaitFor);
     }
 
     public Command waitForCurrentDrop(double ampsToWaitFor) {
-        return new WaitUntilCommand(() -> inputs.currentStatorAmps <= ampsToWaitFor);
+        return new WaitUntilCommand(() -> inputsHandoffAutoLogged.currentStatorAmps <= ampsToWaitFor);
     }
 
     public void setTeleopDefaultCommand() {
@@ -129,8 +127,8 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
         // Run until banner sensor is triggered
     }
 
-    public AngularVelocity getCurrentWheelSpeed() {
-        return inputsSensors.velocityUnitsPerSecond;
+    public double getCurrentWheelSpeed() {
+        return inputsHandoffAutoLogged.velocityUnitsPerSecond;
     }
 
     public boolean hasBall() {
@@ -140,7 +138,7 @@ public class Handoff extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>
 
     @Override
     public void onLoop() {
-        ioSensors.readInputs(inputsSensors);
+        ioSensors.readInputs(inputsHandoffAutoLogged);
     }
 
     public void resetSimState() {

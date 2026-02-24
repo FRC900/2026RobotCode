@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.team254.lib.subsystems.MotorInputs;
 import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team254.lib.subsystems.SimTalonFXIO;
 import com.team254.lib.subsystems.TalonFXIO;
@@ -46,9 +47,9 @@ public class HandoffSensorIOSim implements HandoffIO {
     }
 
     @Override
-    public void readInputs(HandoffSensorInputs inputs) {
+    public void readInputs(MotorInputs inputs) {
         wheelTalon.readInputs(inputs);
-        inputs.handoffBannerHasPiece = shooterBanner.get();
+      //  inputs.handoffBannerHasPiece = shooterBanner.get();
    
 
 

@@ -11,7 +11,8 @@ import com.team254.lib.drivers.CANDeviceId;
 import com.team254.lib.util.CANStatusLogger;
 import com.team254.lib.util.CTREUtil;
 import com.team900.frc2026.Robot;
-import com.team900.frc2026.subsystems.Handoff.HandoffSensorIO.HandoffmSensorInputs;
+import com.team900.frc2026.subsystems.Handoff.HandoffIO.HandoffSensorInputs;
+
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
@@ -106,7 +107,7 @@ public class TalonFXIO implements MotorIO {
 
     }
 
-    public void readInputs(HandoffSensorInputs inputs){
+    /*public void readInputs(HandoffSensorInputs inputs){
         BaseStatusSignal.refreshAll(signals);
 
         inputs.velocityUnitsPerSecond = Units.RotationsPerSecond.of(rotorToUnits(velocitySignal.getValueAsDouble())/(2*Math.PI));
@@ -114,8 +115,8 @@ public class TalonFXIO implements MotorIO {
         inputs.appliedVolts = Units.Volts.of(voltageSignal.getValueAsDouble());
         inputs.currentSupplyAmps = Units.Amps.of(currentSupplySignal.getValueAsDouble());
 
-    }
-
+    }*/
+    
     @Override
     public void setOpenLoopDutyCycle(double dutyCycle) {
         talon.setControl(dutyCycleControl.withOutput(dutyCycle));
