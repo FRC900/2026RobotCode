@@ -186,4 +186,7 @@ compile_commands.json
 # Eclipse generated file for annotation processors
 .factorypath
 /RobotCode/build
-/RobotCode/build
+
+# External reference repos
+FRC-2025-Public/
+RobotCode/FRC-2025-Public/
