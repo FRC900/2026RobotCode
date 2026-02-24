@@ -3,7 +3,9 @@ package com.team900.frc2026;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.team900.frc2026.subsystems.drive.DriveIO;
 import com.team900.frc2026.subsystems.drive.DriveIOHardware;
+import com.team900.frc2026.subsystems.drive.DriveIOSim;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,10 +41,18 @@ public class RobotContainer {
     }
 
     private DriveSubsystem buildDriveSubsystem() {
-        return new DriveSubsystem(
-                new DriveIOHardware(
-                        Constants.DriveConstants.kDrivetrain.getDriveTrainConstants(),
-                        Constants.DriveConstants.kDrivetrain.getModuleConstants()));
+        DriveIO io =
+                switch (Constants.currentMode) {
+                    case REAL -> new DriveIOHardware(
+                            Constants.DriveConstants.kDrivetrain.getDriveTrainConstants(),
+                            Constants.DriveConstants.kDrivetrain.getModuleConstants());
+                    case SIM -> new DriveIOSim(
+                            Constants.DriveConstants.kDrivetrain.getDriveTrainConstants(),
+                            Constants.DriveConstants.kDrivetrain.getModuleConstants());
+                    case REPLAY -> throw new UnsupportedOperationException(
+                            "REPLAY mode not yet implemented");
+                };
+        return new DriveSubsystem(io);
     }
 
     /** Deadband & linear rescaling */
