@@ -45,12 +45,57 @@ public class RobotContainer {
                         Constants.DriveConstants.kDrivetrain.getModuleConstants()));
     }
 
+    /** Deadband & linear rescaling */
+    private static double deadbandRescale(double value, double deadband) {
+        if (Math.abs(value) < deadband) {
+            return 0.0;
+        }
+        return Math.signum(value) * (Math.abs(value) - deadband) / (1.0 - deadband);
+    }
+
+    /**
+     * Shape translation inputs using circular magnitude processing.
+     * Treats X/Y as a vector, prevents diagonal speed from being sqrt2× faster.
+     * Allows uniform speed in all directions
+     */
+    private static double[] shapeTranslation(double rawX, double rawY) {
+        double magnitude = Math.hypot(rawX, rawY);
+        if (magnitude < Constants.kJoystickDeadband) {
+            return new double[] {0.0, 0.0};
+        }
+
+        double rescaled = deadbandRescale(Math.min(magnitude, 1.0), Constants.kJoystickDeadband);
+        double shaped = Math.pow(rescaled, Constants.kTranslationExponent);
+
+        double scale = shaped / magnitude;
+        return new double[] {rawX * scale, rawY * scale};
+    }
+
+    private static double shapeRotation(double raw) {
+        double rescaled = deadbandRescale(raw, Constants.kJoystickDeadband);
+        return Math.signum(rescaled) * Math.pow(Math.abs(rescaled), Constants.kRotationExponent);
+    }
+
     private void configureDefaultCommands() {
         // Field-centric: left stick - translation, right stick X - rotation
-        drive.setDefaultCommand(drive.applyRequest(() -> fieldCentricDrive
-                                        .withVelocityX(-driverController.getLeftY() * Constants.DriveConstants.kDriveMaxSpeed)
-                                        .withVelocityY(-driverController.getLeftX() * Constants.DriveConstants.kDriveMaxSpeed)
-                                        .withRotationalRate(-driverController.getRightX() * Constants.DriveConstants.kDriveMaxAngularRate)));
+        drive.setDefaultCommand(drive.applyRequest(() -> {
+            double[] translation = shapeTranslation(
+                    -driverController.getLeftY(), -driverController.getLeftX());
+
+            double rotation = shapeRotation(-driverController.getRightX());
+
+            // // Slow mode: left trigger proportionally reduces speed
+            // double slowMultiplier =
+            //         1.0 - (driverController.getLeftTriggerAxis() * Constants.kSlowModeScalar);
+
+            return fieldCentricDrive
+                    .withVelocityX(
+                            translation[0] * Constants.DriveConstants.kDriveMaxSpeed)
+                    .withVelocityY(
+                            translation[1] * Constants.DriveConstants.kDriveMaxSpeed)
+                    .withRotationalRate(
+                            rotation * Constants.DriveConstants.kDriveMaxAngularRate);
+        }));
     }
 
     private void configureBindings() {

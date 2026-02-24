@@ -22,6 +22,9 @@ public class Constants {
     // Controls
     public static final int kDriverControllerPort = 0;
     public static final double kJoystickDeadband = 0.1;
+    public static final double kTranslationExponent = 3.0;
+    public static final double kRotationExponent = 2.0;
+    public static final double kSlowModeScalar = 0.7; // how much left trigger reduces speed (1.0 = full stop)
 
     public static final class DriveConstants {
         // MK5n with Kraken X60 FOC, R2 ratio: ~16.8 ft/s = ~5.12 m/s free speed
