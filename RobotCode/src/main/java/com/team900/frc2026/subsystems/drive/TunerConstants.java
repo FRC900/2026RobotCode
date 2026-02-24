@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.*;
 /**
  * Swerve module constants.
  *
- * Drive: Kraken X60 FOC, MK5n (ratio set by kDriveRatioSelection)
+ * Drive: Kraken X60 FOC, MK5n (made a choosable ratio with kDriveRatioSelection - Currently R2)
  * Steer: Kraken X44, gear ratio 287:11 (~26.09:1)
  * CANivore
  */
@@ -78,13 +78,11 @@ public class TunerConstants {
 
     private static final Pigeon2Configuration pigeonConfigs = null;
 
-    // --- CAN Bus ---
+    // CAN Bus
     public static final CANBus kCANBus = new CANBus("drivebase", "./logs/example.hoot");
 
 
-    // --- Mechanical Constants ---
-
-    // MK5n drive ratio options — change this to match your module's pinion gear
+    // Mech Constants
     // R1 = 8.10:1 (14T pinion), R2 = 6.54:1 (16T pinion), R3 = 5.36:1 (18T pinion)
     private enum MK5nDriveRatio {
         R1(14), R2(16), R3(18);
@@ -93,7 +91,7 @@ public class TunerConstants {
         MK5nDriveRatio(int pinionTeeth) { this.pinionTeeth = pinionTeeth; }
     }
 
-    // *** SET YOUR DRIVE RATIO HERE ***
+    // Drive Ratio Choice
     private static final MK5nDriveRatio kDriveRatioSelection = MK5nDriveRatio.R2;
 
     // Drive gear ratio computed from pinion selection
