@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.junction.Logger;
 
-/** Telemetry visualization for the swerve drivetrain Following the 254 DriveViz pattern. */
+/**
+ * Telemetry visualization for the swerve drivetrain.
+ * Following the 254 DriveViz pattern.
+ */
 public class DriveViz {
     private final double maxSpeed;
     private final Field2d field = new Field2d();
@@ -46,6 +49,10 @@ public class DriveViz {
         lastTime = currentTime;
         Translation2d distanceDiff = pose.minus(lastPose).getTranslation();
         lastPose = pose;
+
+        if (diffTime == 0.0) {
+            return;
+        }
         Translation2d velocities = distanceDiff.div(diffTime);
 
         Logger.recordOutput("Drive/Viz/Speed", velocities.getNorm());

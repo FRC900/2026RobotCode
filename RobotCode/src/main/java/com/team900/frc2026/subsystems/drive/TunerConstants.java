@@ -46,7 +46,7 @@ public class TunerConstants {
     // Feedback
     private static final SteerFeedbackType kSteerFeedbackType = SteerFeedbackType.FusedCANcoder;
 
-    // Stator current at which wheels start to slip (tune per robot)
+    // Current at which wheels start to slip
     private static final Current kSlipCurrent = Amps.of(120.0);
 
     // Motor Configs
@@ -75,7 +75,7 @@ public class TunerConstants {
 
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
 
-    private static final Pigeon2Configuration pigeonConfigs = null;
+    private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration();
 
     // CAN Bus
     public static final CANBus kCANBus = new CANBus("drivebase", "./logs/example.hoot");
@@ -168,7 +168,7 @@ public class TunerConstants {
                             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
     // Module CAN IDs and encoder offsets
-    // TODO: Update these with axctual CANIDS and Encoder Offsets
+    // TODO: Update these with actual CANIDS and Encoder Offsets
 
     // Front Left
     private static final int kFrontLeftDriveMotorId = 1;

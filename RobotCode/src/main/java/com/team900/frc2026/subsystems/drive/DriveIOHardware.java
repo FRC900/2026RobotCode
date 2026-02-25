@@ -83,7 +83,7 @@ public class DriveIOHardware extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder
 
     @Override
     public void setStateStdDevs(double xStd, double yStd, double rotStd) {
-        this.setStateStdDevs(VecBuilder.fill(xStd, yStd, rotStd));
+        super.setStateStdDevs(VecBuilder.fill(xStd, yStd, rotStd));
     }
 
     Consumer<SwerveDriveState> telemetryConsumer_ =
