@@ -42,4 +42,6 @@ public interface DriveIO {
     Command applyRequest(Supplier<SwerveRequest> requestSupplier, Subsystem subsystemRequired);
 
     void setStateStdDevs(double xStd, double yStd, double rotStd);
+
+    default void simulationPeriodic() {}
 }

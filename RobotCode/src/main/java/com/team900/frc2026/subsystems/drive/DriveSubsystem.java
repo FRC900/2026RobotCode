@@ -66,6 +66,11 @@ public class DriveSubsystem extends SubsystemBase {
         setControl(stopRequest);
     }
 
+    @Override
+    public void simulationPeriodic() {
+        io.simulationPeriodic();
+    }
+
     // --- Standard Deviation Configuration ---
 
     public void setStateStdDevs(double xStd, double yStd, double rotStd) {

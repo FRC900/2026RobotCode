@@ -1,30 +1,26 @@
 package com.team900.frc2026.subsystems.drive;
 
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Sim implementation of DriveIO. Extends DriveIOHardware and adds a Notifier that calls CTRE's
- * built-in updateSimState() at 200 Hz to run the physics simulation.
+ * Sim implementation of DriveIO. Exposes simulationPeriodic() to be called from the robot's
+ * simulationPeriodic(), which runs CTRE's built-in physics simulation.
  */
 public class DriveIOSim extends DriveIOHardware {
-
-    private static final double kSimUpdatePeriodSec = 0.005; // 200 Hz
-    private final Notifier simNotifier;
 
     public DriveIOSim(
             com.ctre.phoenix6.swerve.SwerveDrivetrainConstants driveTrainConstants,
             com.ctre.phoenix6.swerve.SwerveModuleConstants<?, ?, ?>... modules) {
         super(driveTrainConstants, modules);
 
-        simNotifier =
-                new Notifier(
-                        () -> {
-                            updateSimState(
-                                    kSimUpdatePeriodSec, RobotController.getBatteryVoltage());
-                        });
-        simNotifier.startPeriodic(kSimUpdatePeriodSec);
+        // Lower odometry thread priority in sim to avoid thread contention
+        this.getOdometryThread().setThreadPriority(1);
+    }
+
+    /** Must be called from Robot.simulationPeriodic() to drive the CTRE physics sim. */
+    public void simulationPeriodic() {
+        updateSimState(0.020, RobotController.getBatteryVoltage());
     }
 
     @Override
