@@ -4,9 +4,15 @@
 
 package com.team900.frc2026;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
@@ -14,6 +20,26 @@ public class Robot extends LoggedRobot {
     private final RobotContainer m_robotContainer;
 
     public Robot() {
+        // Set up AdvantageKit logging
+        if (isReal()) {
+            // Running on a real robot: log to USB stick and publish to NT for live viewing
+            Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to USB stick
+            Logger.addDataReceiver(new NT4Publisher()); // Publish to NetworkTables
+        } else if (RobotBase.isSimulation()) {
+            // Running in simulation: log to file and publish to NT for AdvantageScope
+            Logger.addDataReceiver(new WPILOGWriter("logs/")); // Log to project logs/ folder
+            Logger.addDataReceiver(new NT4Publisher()); // Publish to NetworkTables
+        } else {
+            // Replaying from a log file
+            setUseTiming(false); // Run as fast as possible
+            String logPath = LogFileUtil.findReplayLog();
+            Logger.setReplaySource(new WPILOGReader(logPath));
+            Logger.addDataReceiver(
+                    new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        }
+
+        Logger.start();
+
         m_robotContainer = new RobotContainer();
     }
 
