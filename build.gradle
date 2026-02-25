@@ -7,6 +7,11 @@ plugins {
       id("io.freefair.lombok") version "9.2.0"
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
 spotless {
     java {
         googleJavaFormat().aosp()
@@ -138,6 +143,8 @@ dependencies {
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.github.frc-88:ROSNetworkTablesBridge:2024-03-21'
 }
 
 test {
