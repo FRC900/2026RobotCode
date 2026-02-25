@@ -7,7 +7,6 @@ import com.team900.frc2026.subsystems.drive.DriveIO;
 import com.team900.frc2026.subsystems.drive.DriveIOHardware;
 import com.team900.frc2026.subsystems.drive.DriveIOSim;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -92,17 +91,20 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 drive.applyRequest(
                         () -> {
-                            double[] translation =
-                                    shapeTranslation(
-                                            -driverController.getLeftY(),
-                                            -driverController.getLeftX());
+                            double rawLeftY = -driverController.getLeftY();
+                            double rawLeftX = -driverController.getLeftX();
+                            double rawRightX = -driverController.getRightX();
 
-                            double rotation = shapeRotation(-driverController.getRightX());
+                            org.littletonrobotics.junction.Logger.recordOutput(
+                                    "Drive/rawLeftY", rawLeftY);
+                            org.littletonrobotics.junction.Logger.recordOutput(
+                                    "Drive/rawLeftX", rawLeftX);
+                            org.littletonrobotics.junction.Logger.recordOutput(
+                                    "Drive/rawRightX", rawRightX);
 
-                            // // Slow mode: left trigger proportionally reduces speed
-                            // double slowMultiplier =
-                            //         1.0 - (driverController.getLeftTriggerAxis() *
-                            // Constants.kSlowModeScalar);
+                            double[] translation = shapeTranslation(rawLeftY, rawLeftX);
+
+                            double rotation = shapeRotation(rawRightX);
 
                             return fieldCentricDrive
                                     .withVelocityX(
@@ -127,16 +129,17 @@ public class RobotContainer {
         //         new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
 
         // Start button: reset gyro heading (zero the field-centric forward direction)
-        driverController
-                .start()
-                .onTrue(
-                        Commands.runOnce(
-                                        () ->
-                                                drive.resetOdometry(
-                                                        new edu.wpi.first.math.geometry.Pose2d(
-                                                                drive.getPose().getTranslation(),
-                                                                new Rotation2d())))
-                                .ignoringDisable(true));
+        // Disabled in sim due to macOS not exposing Button 8 on Xbox controllers
+        // driverController
+        //         .start()
+        //         .onTrue(
+        //                 Commands.runOnce(
+        //                                 () ->
+        //                                         drive.resetOdometry(
+        //                                                 new edu.wpi.first.math.geometry.Pose2d(
+        //                                                         drive.getPose().getTranslation(),
+        //                                                         new Rotation2d())))
+        //                         .ignoringDisable(true));
     }
 
     public Command getAutonomousCommand() {
