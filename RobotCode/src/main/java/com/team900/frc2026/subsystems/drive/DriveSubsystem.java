@@ -3,8 +3,8 @@ package com.team900.frc2026.subsystems.drive;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
-import com.team900.frc2026.Constants;
 import com.team254.lib.time.RobotTime;
+import com.team900.frc2026.Constants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,9 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
-/**
- * Swerve drive subsystem
- */
+/** Swerve drive subsystem */
 public class DriveSubsystem extends SubsystemBase {
     DriveIO io;
     DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();

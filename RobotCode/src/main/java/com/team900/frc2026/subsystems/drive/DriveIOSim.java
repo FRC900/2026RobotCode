@@ -5,9 +5,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Sim implementation of DriveIO.
- * Extends DriveIOHardware and adds a Notifier that calls CTRE's built-in
- * updateSimState() at 200 Hz to run the physics simulation.
+ * Sim implementation of DriveIO. Extends DriveIOHardware and adds a Notifier that calls CTRE's
+ * built-in updateSimState() at 200 Hz to run the physics simulation.
  */
 public class DriveIOSim extends DriveIOHardware {
 
@@ -19,9 +18,12 @@ public class DriveIOSim extends DriveIOHardware {
             com.ctre.phoenix6.swerve.SwerveModuleConstants<?, ?, ?>... modules) {
         super(driveTrainConstants, modules);
 
-        simNotifier = new Notifier(() -> {
-            updateSimState(kSimUpdatePeriodSec, RobotController.getBatteryVoltage());
-        });
+        simNotifier =
+                new Notifier(
+                        () -> {
+                            updateSimState(
+                                    kSimUpdatePeriodSec, RobotController.getBatteryVoltage());
+                        });
         simNotifier.startPeriodic(kSimUpdatePeriodSec);
     }
 

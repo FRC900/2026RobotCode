@@ -9,9 +9,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLog;
 
-/**
- * IO interface for the swerve drivetrain.
- */
+/** IO interface for the swerve drivetrain. */
 public interface DriveIO {
 
     @AutoLog

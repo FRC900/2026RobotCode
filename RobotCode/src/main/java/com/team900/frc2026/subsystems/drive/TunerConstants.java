@@ -12,9 +12,8 @@ import edu.wpi.first.units.measure.*;
 /**
  * Swerve module constants.
  *
- * Drive: Kraken X60 FOC, MK5n (made a choosable ratio with kDriveRatioSelection - Currently R2)
- * Steer: Kraken X44, gear ratio 287:11 (~26.09:1)
- * CANivore
+ * <p>Drive: Kraken X60 FOC, MK5n (made a choosable ratio with kDriveRatioSelection - Currently R2)
+ * Steer: Kraken X44, gear ratio 287:11 (~26.09:1) CANivore
  */
 public class TunerConstants {
 
@@ -81,14 +80,18 @@ public class TunerConstants {
     // CAN Bus
     public static final CANBus kCANBus = new CANBus("drivebase", "./logs/example.hoot");
 
-
     // Mech Constants
     // R1 = 8.10:1 (14T pinion), R2 = 6.54:1 (16T pinion), R3 = 5.36:1 (18T pinion)
     private enum MK5nDriveRatio {
-        R1(14), R2(16), R3(18);
+        R1(14),
+        R2(16),
+        R3(18);
 
         final int pinionTeeth;
-        MK5nDriveRatio(int pinionTeeth) { this.pinionTeeth = pinionTeeth; }
+
+        MK5nDriveRatio(int pinionTeeth) {
+            this.pinionTeeth = pinionTeeth;
+        }
     }
 
     // Drive Ratio Choice
@@ -110,9 +113,9 @@ public class TunerConstants {
     // Derived from the 54T bevel gear and the selected pinion
     private static final double kCoupleRatio = 54.0 / kDriveRatioSelection.pinionTeeth;
 
-    // Theoretical free speed at 12V: Kraken X60 FOC (5800 RPM) / 6.03 ratio = 962 RPM wheel = ~5.12 m/s with 2" radius wheel
+    // Theoretical free speed at 12V: Kraken X60 FOC (5800 RPM) / 6.03 ratio = 962 RPM wheel = ~5.12
+    // m/s with 2" radius wheel
     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.12);
-
 
     // Drive inversions
     private static final boolean kInvertLeftSide = false;
@@ -120,7 +123,7 @@ public class TunerConstants {
 
     // Pigeon 2 IMU
     // TODO: EDIT ID
-    private static final int kPigeonId = 13; 
+    private static final int kPigeonId = 13;
 
     // Simulation Constants
     private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.01);
@@ -164,7 +167,6 @@ public class TunerConstants {
                             .withSteerFrictionVoltage(kSteerFrictionVoltage)
                             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
- 
     // Module CAN IDs and encoder offsets
     // TODO: Update these with axctual CANIDS and Encoder Offsets
 

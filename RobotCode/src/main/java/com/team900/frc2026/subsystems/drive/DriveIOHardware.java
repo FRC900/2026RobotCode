@@ -23,9 +23,8 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Hardware implementation of DriveIO
- * Using CTRE Phoenix 6 SwerveDrivetrain with Kraken X60 and CANcoders. 
- * Runs odometry at 250 Hz.
+ * Hardware implementation of DriveIO Using CTRE Phoenix 6 SwerveDrivetrain with Kraken X60 and
+ * CANcoders. Runs odometry at 250 Hz.
  */
 public class DriveIOHardware extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
         implements DriveIO {

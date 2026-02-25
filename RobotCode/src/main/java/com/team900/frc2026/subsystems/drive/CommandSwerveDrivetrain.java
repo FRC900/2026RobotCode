@@ -3,9 +3,7 @@ package com.team900.frc2026.subsystems.drive;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
-/**
- * Simple container for holding CTRE swerve drivetrain creation constants. 
- */
+/** Simple container for holding CTRE swerve drivetrain creation constants. */
 public class CommandSwerveDrivetrain {
     SwerveDrivetrainConstants driveTrainConstants;
     SwerveModuleConstants<?, ?, ?>[] moduleConstants;

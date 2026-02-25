@@ -25,12 +25,14 @@ public class RobotContainer {
             new SwerveRequest.FieldCentric()
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
                     .withSteerRequestType(SteerRequestType.MotionMagicExpo)
-                    .withDeadband(Constants.DriveConstants.kDriveMaxSpeed * Constants.kJoystickDeadband)
+                    .withDeadband(
+                            Constants.DriveConstants.kDriveMaxSpeed * Constants.kJoystickDeadband)
                     .withRotationalDeadband(
                             Constants.DriveConstants.kDriveMaxAngularRate
                                     * Constants.kJoystickDeadband);
 
-    private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.SwerveDriveBrake brakeRequest =
+            new SwerveRequest.SwerveDriveBrake();
 
     private final SwerveRequest.PointWheelsAt pointRequest = new SwerveRequest.PointWheelsAt();
 
@@ -64,9 +66,8 @@ public class RobotContainer {
     }
 
     /**
-     * Shape translation inputs using circular magnitude processing.
-     * Treats X/Y as a vector, prevents diagonal speed from being sqrt2× faster.
-     * Allows uniform speed in all directions
+     * Shape translation inputs using circular magnitude processing. Treats X/Y as a vector,
+     * prevents diagonal speed from being sqrt2× faster. Allows uniform speed in all directions
      */
     private static double[] shapeTranslation(double rawX, double rawY) {
         double magnitude = Math.hypot(rawX, rawY);
@@ -88,24 +89,33 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         // Field-centric: left stick - translation, right stick X - rotation
-        drive.setDefaultCommand(drive.applyRequest(() -> {
-            double[] translation = shapeTranslation(
-                    -driverController.getLeftY(), -driverController.getLeftX());
+        drive.setDefaultCommand(
+                drive.applyRequest(
+                        () -> {
+                            double[] translation =
+                                    shapeTranslation(
+                                            -driverController.getLeftY(),
+                                            -driverController.getLeftX());
 
-            double rotation = shapeRotation(-driverController.getRightX());
+                            double rotation = shapeRotation(-driverController.getRightX());
 
-            // // Slow mode: left trigger proportionally reduces speed
-            // double slowMultiplier =
-            //         1.0 - (driverController.getLeftTriggerAxis() * Constants.kSlowModeScalar);
+                            // // Slow mode: left trigger proportionally reduces speed
+                            // double slowMultiplier =
+                            //         1.0 - (driverController.getLeftTriggerAxis() *
+                            // Constants.kSlowModeScalar);
 
-            return fieldCentricDrive
-                    .withVelocityX(
-                            translation[0] * Constants.DriveConstants.kDriveMaxSpeed)
-                    .withVelocityY(
-                            translation[1] * Constants.DriveConstants.kDriveMaxSpeed)
-                    .withRotationalRate(
-                            rotation * Constants.DriveConstants.kDriveMaxAngularRate);
-        }));
+                            return fieldCentricDrive
+                                    .withVelocityX(
+                                            translation[0]
+                                                    * Constants.DriveConstants.kDriveMaxSpeed)
+                                    .withVelocityY(
+                                            translation[1]
+                                                    * Constants.DriveConstants.kDriveMaxSpeed)
+                                    .withRotationalRate(
+                                            rotation
+                                                    * Constants.DriveConstants
+                                                            .kDriveMaxAngularRate);
+                        }));
     }
 
     private void configureBindings() {
@@ -117,12 +127,16 @@ public class RobotContainer {
         //         new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
 
         // Start button: reset gyro heading (zero the field-centric forward direction)
-        driverController.start().onTrue(Commands.runOnce(
-                                        () ->drive.resetOdometry(
-                                                new edu.wpi.first.math.geometry.Pose2d(
-                                                        drive.getPose().getTranslation(),
-                                                        new Rotation2d())))
-                                                .ignoringDisable(true));
+        driverController
+                .start()
+                .onTrue(
+                        Commands.runOnce(
+                                        () ->
+                                                drive.resetOdometry(
+                                                        new edu.wpi.first.math.geometry.Pose2d(
+                                                                drive.getPose().getTranslation(),
+                                                                new Rotation2d())))
+                                .ignoringDisable(true));
     }
 
     public Command getAutonomousCommand() {

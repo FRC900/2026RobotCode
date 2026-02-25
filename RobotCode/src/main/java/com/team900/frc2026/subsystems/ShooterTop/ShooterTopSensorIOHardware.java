@@ -9,19 +9,16 @@ public class ShooterTopSensorIOHardware implements ShooterTopSensorIO {
     public ShooterTopSensorIOHardware(int dioPort) {
 
         shooterBanner = new DigitalInput(dioPort);
-
     }
 
     @Override
     public void readInputs(ShooterTopSensorInputs inputs) {
 
         inputs.shooterBannerHasPiece = shooterBanner.get();
-
     }
 
     @Override
     public DigitalInput getBanner() {
         return shooterBanner;
     }
-
 }
