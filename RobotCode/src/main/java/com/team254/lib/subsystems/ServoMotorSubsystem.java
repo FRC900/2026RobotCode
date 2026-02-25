@@ -8,13 +8,14 @@ import edu.wpi.first.wpilibj2.command.*;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 /**
  * RollerMotorSubsystem
  *
  * @param <T>
  */
-public class ServoMotorSubsystem<T extends MotorInputs, U extends MotorIO>
+public class ServoMotorSubsystem<T extends MotorInputs & LoggableInputs, U extends MotorIO>
         extends SubsystemBase {
     protected U io;
     protected T inputs;

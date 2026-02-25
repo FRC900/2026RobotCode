@@ -1,6 +1,5 @@
 package com.team254.lib.util;
 
-import com.team254.frc2025.Constants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +13,9 @@ import java.util.function.Supplier;
 /** Contains basic functions that are used often. */
 public class Util {
     public static final double kEpsilon = 1e-12;
+
+    // 2025 Reefscape field length in meters (was in com.team254.frc2025.Constants)
+    private static final double kFieldLengthMeters = 17.548;
 
     /** Prevent this class from being instantiated. */
     private Util() {}
@@ -87,18 +89,16 @@ public class Util {
 
     public static Translation3d flipRedBlue(Translation3d original) {
         return new Translation3d(
-                Constants.kFieldLengthMeters - original.getX(), original.getY(), original.getZ());
+                kFieldLengthMeters - original.getX(), original.getY(), original.getZ());
     }
 
     public static Pose2d flipRedBlue(Pose2d original) {
         return new Pose2d(
-                Constants.kFieldLengthMeters - original.getX(),
-                original.getY(),
-                original.getRotation());
+                kFieldLengthMeters - original.getX(), original.getY(), original.getRotation());
     }
 
     public static Translation2d flipRedBlue(Translation2d original) {
-        return new Translation2d(Constants.kFieldLengthMeters - original.getX(), original.getY());
+        return new Translation2d(kFieldLengthMeters - original.getX(), original.getY());
     }
 
     public static Rotation2d flipRedBlue(Rotation2d original) {

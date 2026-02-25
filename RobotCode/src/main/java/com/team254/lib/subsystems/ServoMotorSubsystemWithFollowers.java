@@ -1,8 +1,10 @@
 package com.team254.lib.subsystems;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public class ServoMotorSubsystemWithFollowers<T extends MotorInputs, U extends MotorIO>
+public class ServoMotorSubsystemWithFollowers<
+                T extends MotorInputs & LoggableInputs, U extends MotorIO>
         extends ServoMotorSubsystem<T, U> {
     protected ServoMotorSubsystemWithFollowersConfig leaderConfig;
     protected ServoMotorSubsystemWithFollowersConfig.FollowerConfig[] followerConfigs;
