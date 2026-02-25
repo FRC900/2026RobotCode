@@ -1,8 +1,11 @@
 package com.team900.frc2026.factories;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import com.team900.frc2026.subsystems.Intake;
+import com.team900.frc2026.subsystems.Intake.IntakePivotSubsystem;
+import com.team900.frc2026.subsystems.Intake.IntakeRollerSubsystem;
+import com.team900.frc2026.subsystems.Intake.IntakeConstants;
 import com.team900.frc2026.RobotContainer;
+import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 

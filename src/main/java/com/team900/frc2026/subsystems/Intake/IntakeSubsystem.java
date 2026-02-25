@@ -1,6 +1,5 @@
 package com.team900.frc2026.subsystems.Intake;
 
-import com.team254.lib.subsystems.MotorIO;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -10,8 +9,7 @@ import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.team254.lib.time.RobotTime;
-import com.team254.lib.subsystems.*;
+import com.team900.lib.subsystems.*;
 
 //L and R motor for slapdown arm motors
 public class IntakeSubsystem extends SubsystemBase{

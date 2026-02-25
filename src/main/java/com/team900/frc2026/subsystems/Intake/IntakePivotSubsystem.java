@@ -1,9 +1,10 @@
 package com.team900.frc2026.subsystems.Intake;
 
-import com.team254.lib.subsystems.*;
-import com.team254.lib.util.Util;
+import com.team900.lib.subsystems.*;
+import com.team900.lib.util.Util;
 import com.team900.frc2026.subsystems.*;
 import com.team900.frc2026.RobotState;
+import com.team900.lib.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +19,7 @@ public class IntakePivotSubsystem extends ServoMotorSubsystemWithCanCoder<
             final MotorIO motorIO,
             final CanCoderIO canCoderIO,
             RobotState state) {
-        super(motorConfig, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged, canCoderIO);
+        super(motorConfig, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), canCoderIO);
         this.setCurrentPosition(IntakeConstants.kIntakePivotStowPositionRadians);
         this.positionSetpointUnits = IntakeConstants.kIntakePivotStowPositionRadians;
         this.state = state;

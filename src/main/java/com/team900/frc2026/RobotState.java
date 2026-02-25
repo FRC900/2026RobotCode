@@ -6,6 +6,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.team900.frc2026.subsystems.Led.LedState;
+
 public class RobotState {
     private static volatile RobotState instance;
     public static final double LOOKBACK_TIME = 1.0;
@@ -93,4 +95,26 @@ public class RobotState {
         }
         return instance;
     }
+
+    //Led State
+    public void setLedState(LedState state){
+        ledState.set(state);
+    }
+
+    public LedState getLedState() {
+        return ledState.get();
+    }
+
+    public void updateLogger(){
+        LedState currentLedState = getLedState();
+        Logger.recordOutput(
+                "RobotState/LEDState",
+                String.format(
+                        "R:%d,G:%d,B:%d",
+                        currentLedState.red,
+                        currentLedState.green,
+                        currentLedState.blue));
+    }
+
+    private final AtomicReference<LedState> ledState = new AtomicReference<>(LedState.kOff);
 }

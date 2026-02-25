@@ -1,15 +1,17 @@
 package com.team900.frc2026.subsystems.Intake;
 
-import com.team254.lib.drivers.CANDeviceId;
-import com.team254.lib.subsystems.ServoMotorSubsystemConfig;
-import com.team254.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
+import com.team900.lib.drivers.CANDeviceId;
+import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
+import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
+
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IntakeConstants {
     
-    public static final String kCanBusSuperstructureCanivore = "superstructure";
+    public static final CANBus kCANBus = new CANBus("enable-only", "./logs/example.hoot");
     //Actually put in all positions later
     public static final double kIntakeDutyCycleIntake = 1.0;
     public static final double kIntakeDutyCycleOuttake = -1.0;
@@ -26,7 +28,7 @@ public class IntakeConstants {
 
     static {
         kIntakeRollerConfig.name = "Intake_Roller";
-        kIntakeRollerConfig.talonCANID = new CANDeviceId(21, kCanBusSuperstructureCanivore);
+        kIntakeRollerConfig.talonCANID = new CANDeviceId(21, kCANBus);
         kIntakeRollerConfig.momentOfInertia = 0.0;
         kIntakeRollerConfig.unitToRotorRatio = (0.0);
 
@@ -40,7 +42,7 @@ public class IntakeConstants {
 
     static {
         kIntakePivotConfig.name = "Intake_Pivot";
-        kIntakePivotConfig.talonCANID = new CANDeviceId(22, kCanBusSuperstructureCanivore);
+        kIntakePivotConfig.talonCANID = new CANDeviceId(22, kCANBus);
         kIntakePivotConfig.momentOfInertia = 0.0;
         kIntakePivotConfig.fxConfig.Slot0.kP = 0.0;
         kIntakePivotConfig.fxConfig.Slot0.kD = 0.0;
@@ -50,7 +52,7 @@ public class IntakeConstants {
         kIntakePivotConfig.unitToRotorRatio = Units.rotationsToRadians(0.0);
 
         kIntakePivotConfig.canCoderConfig.CANID =
-                new CANDeviceId(30, kCanBusSuperstructureCanivore);
+                new CANDeviceId(30, kCANBus);
         kIntakePivotConfig.canCoderConfig.config.MagnetSensor.MagnetOffset =
                 IntakeConstants.kIntakePivotCancoderOffset;
         kIntakePivotConfig.cancoderToUnitsRatio = Units.rotationsToRadians(1);

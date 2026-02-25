@@ -1,6 +1,6 @@
 package com.team900.frc2026.subsystems.Intake;
 
-import com.team254.lib.subsystems.*;
+import com.team900.lib.subsystems.*;
 import com.team900.frc2026.RobotState;
 
 public class IntakeRollerSubsystem extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO>{
@@ -8,7 +8,7 @@ public class IntakeRollerSubsystem extends ServoMotorSubsystem<MotorInputsAutoLo
     public MotorIO motorIO;
 
     public IntakeRollerSubsystem(final ServoMotorSubsystemConfig motorConfig, final MotorIO motorIO, RobotState state){
-        super(motorConfig, new MotorInputsAutoLogged, motorIO);
+        super(motorConfig, new MotorInputsAutoLogged(), motorIO);
         this.state = state;
         this.motorIO = motorIO;
     }
