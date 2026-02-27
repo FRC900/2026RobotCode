@@ -71,7 +71,6 @@ public interface HoodIO {
         double motorRot = position.getValue();
         double motorRPS = velocity.getValue();
 
-        // Convert motor → hood
         double hoodRot = motorRot / GEAR_RATIO;
         double hoodRad = hoodRot * 2.0 * Math.PI;
         double hoodRadPerSec = (motorRPS / GEAR_RATIO) * 2.0 * Math.PI;
