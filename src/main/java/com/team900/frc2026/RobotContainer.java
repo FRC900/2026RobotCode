@@ -4,21 +4,18 @@
 
 package com.team900.frc2026;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-
-import java.util.function.Consumer;
-
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.function.Consumer;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class RobotContainer {
     private static volatile RobotContainer instance;
     private final RobotState robotState;
     public SwerveDriveSimulation driveSimulation = null;
-    public  DriveSubsystem driveSubsystem; 
+    public DriveSubsystem driveSubsystem;
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
@@ -30,7 +27,7 @@ public class RobotContainer {
 
     private RobotContainer() {
         robotState = RobotState.getInstance(visionEstimateConsumer);
-        
+
         configureBindings();
     }
 

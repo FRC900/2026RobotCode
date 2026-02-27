@@ -72,8 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private double rawYawVelocity = 0.0;
 
-    private double rawAccelX = 0.0;
-    private double rawAccelY = 0.0;
+
 
     private SwerveModulePosition[] lastModulePositions = // For delta tracking
             new SwerveModulePosition[] {
@@ -147,7 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         odometryLock.lock(); // Prevents odometry updates while reading data
-        gyroIO.updateInputs(gyroInputs);
+        gyroIO.readInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
 
         for (var module : modules) {
@@ -169,6 +168,16 @@ public class DriveSubsystem extends SubsystemBase {
             Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
             Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
         }
+        // instantiate fields for drive measurements 
+             double rawAccelX = 0.0;
+            double rawAccelY = 0.0;
+
+            double rawRollVelocity = 0.0;
+            double rawPitchVelocity = 0.0;
+            
+            double rawRoll = 0.0;
+            double rawPitch = 0.0;
+
 
         // Update odometry
         double[] sampleTimestamps =
@@ -192,9 +201,16 @@ public class DriveSubsystem extends SubsystemBase {
             if (gyroInputs.connected) {
                 // Use the real gyro angle
                 rawYawRotation = gyroInputs.odometryYawPositions[i];
+                rawRoll = gyroInputs.odometryRollPositions[i].getRadians();
+                                rawPitch = gyroInputs.odometryPitchPositions[i].getRadians();
+
+
                 // too lazy to update gyro sim so here's the solution
                 if (Constants.currentMode == Mode.REAL) {
-                    rawYawVelocity = gyroInputs.odometryYawVelocityRadPerSecs[i];
+                    rawYawVelocity = gyroInputs.odometryYawVelocitys[i];
+                    rawRollVelocity = gyroInputs.odometryRollVelocitys[i];
+                                        rawPitchVelocity = gyroInputs.odometryPitchVelocitys[i];
+
 
                     rawAccelX = gyroInputs.odometryAccelXs[i];
                     rawAccelY = gyroInputs.odometryAccelYs[i];
@@ -220,25 +236,22 @@ public class DriveSubsystem extends SubsystemBase {
                             measuredFieldRelativeChassisSpeeds.vxMetersPerSecond,
                             measuredFieldRelativeChassisSpeeds.vyMetersPerSecond,
                             rawYawVelocity);
-            // TODO: convert units all to radians then add the methods to get these measurements
-            // also I think you need the the lock and the queues to update the
-            // drivemotionmeasurements at 250 hertz to use for shooting but confirm tm
-            // RobotState.getInstance().addDriveMotionMeasurements(
-            //     sampleTimestamps[i],
-            //     rawRollVelocity,
-            //     rawPitchVelocity,
-            //     rawYawVelocity,
-            //     rawPitch,
-            //     rawRoll,
-            //     rawAccelX,
-            //     rawAccelY,
-            //     setpoint.robotRelativeSpeeds(),
-            //     desiredFieldRelativeChassisSpeeds,
-            //     measuredRobotRelativeChassisSpeeds,
-            //     measuredFieldRelativeChassisSpeeds,
-            //     fusedFieldRelativeChassisSpeeds);
-
-            //  RobotState.getInstance().addYawMeasurements(rawYawRads, sampleTimestamps[i]);
+        
+            RobotState.getInstance()
+                    .addDriveMotionMeasurements(
+                            sampleTimestamps[i],
+                            rawRollVelocity,
+                            rawPitchVelocity,
+                            rawYawVelocity,
+                            rawPitch,
+                            rawRoll,
+                            rawAccelX,
+                            rawAccelY,
+                            setpoint.robotRelativeSpeeds(),
+                            desiredFieldRelativeChassisSpeeds,
+                            measuredRobotRelativeChassisSpeeds,
+                            measuredFieldRelativeChassisSpeeds,
+                            fusedFieldRelativeChassisSpeeds);
         }
 
         // Update gyro alert

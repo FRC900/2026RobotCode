@@ -17,7 +17,7 @@ import java.nio.ByteBuffer;
  * @param quality Quality score of the pose estimate (0-1)
  * @param fiducialIds IDs of fiducials used for this estimate
  */
-public record PNPPoseEstimate(
+public record TagPoseEstimate(
         Pose2d fieldToRobot,
         double timestampSeconds,
         double latency,
@@ -26,7 +26,7 @@ public record PNPPoseEstimate(
         int[] fiducialIds)
         implements StructSerializable {
 
-    public PNPPoseEstimate {
+    public TagPoseEstimate {
         if (fieldToRobot == null) {
             fieldToRobot = MathHelpers.kPose2dZero;
         }
@@ -36,7 +36,7 @@ public record PNPPoseEstimate(
     }
 
     /** Converts a Limelight pose estimate to a MegatagPoseEstimate. */
-    public static PNPPoseEstimate fromLimelight(LimelightHelpers.PoseEstimate poseEstimate) {
+    public static TagPoseEstimate fromLimelight(LimelightHelpers.PoseEstimate poseEstimate) {
         Pose2d fieldToRobot = poseEstimate.pose;
         if (fieldToRobot == null) {
             fieldToRobot = MathHelpers.kPose2dZero;
@@ -47,7 +47,7 @@ public record PNPPoseEstimate(
                 fiducialIds[i] = poseEstimate.rawFiducials[i].id;
             }
         }
-        return new PNPPoseEstimate(
+        return new TagPoseEstimate(
                 fieldToRobot,
                 poseEstimate.timestampSeconds,
                 poseEstimate.latency,
@@ -58,11 +58,11 @@ public record PNPPoseEstimate(
 
     public static final MegatagPoseEstimateStruct struct = new MegatagPoseEstimateStruct();
 
-    public static class MegatagPoseEstimateStruct implements Struct<PNPPoseEstimate> {
+    public static class MegatagPoseEstimateStruct implements Struct<TagPoseEstimate> {
 
         @Override
-        public Class<PNPPoseEstimate> getTypeClass() {
-            return PNPPoseEstimate.class;
+        public Class<TagPoseEstimate> getTypeClass() {
+            return TagPoseEstimate.class;
         }
 
         @Override
@@ -86,19 +86,19 @@ public record PNPPoseEstimate(
         }
 
         @Override
-        public PNPPoseEstimate unpack(ByteBuffer bb) {
+        public TagPoseEstimate unpack(ByteBuffer bb) {
             Pose2d fieldToRobot = Pose2d.struct.unpack(bb);
             double timestampSeconds = bb.getDouble();
             double latency = bb.getDouble();
             double avgTagArea = bb.getDouble();
             double quality = bb.getDouble();
             int[] fiducialIds = new int[0];
-            return new PNPPoseEstimate(
+            return new TagPoseEstimate(
                     fieldToRobot, timestampSeconds, latency, avgTagArea, quality, fiducialIds);
         }
 
         @Override
-        public void pack(ByteBuffer bb, PNPPoseEstimate value) {
+        public void pack(ByteBuffer bb, TagPoseEstimate value) {
             Pose2d.struct.pack(bb, value.fieldToRobot());
             bb.putDouble(value.timestampSeconds());
             bb.putDouble(value.latency());

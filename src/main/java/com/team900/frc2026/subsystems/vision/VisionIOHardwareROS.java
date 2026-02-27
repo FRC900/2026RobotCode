@@ -1,11 +1,10 @@
 package com.team900.frc2026.subsystems.vision;
 
+import com.team900.frc2026.RobotState;
+import com.team900.lib.limelight.LimelightHelpers;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import java.util.concurrent.atomic.AtomicReference;
-
-import com.team900.frc2026.RobotState;
-import com.team900.lib.limelight.LimelightHelpers;
 
 /** Hardware implementation of VisionIO using Limelight cameras. */
 public class VisionIOHardwareROS implements VisionIO {
@@ -13,9 +12,9 @@ public class VisionIOHardwareROS implements VisionIO {
             NetworkTableInstance.getDefault().getTable(VisionConstants.kROSATableName);
     NetworkTable tableB =
             NetworkTableInstance.getDefault().getTable(VisionConstants.kROSBTableName);
-    NetworkTable tableT = NetworkTableInstance.getDefault().getTable(VisionConstants.kROSTTableName);
-    
-    
+    NetworkTable tableT =
+            NetworkTableInstance.getDefault().getTable(VisionConstants.kROSTTableName);
+
     RobotState robotState;
     AtomicReference<VisionIOInputs> latestInputs = new AtomicReference<>(new VisionIOInputs());
     int imuMode = 1;
