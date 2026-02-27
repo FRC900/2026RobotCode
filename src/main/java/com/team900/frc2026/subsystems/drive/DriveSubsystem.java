@@ -20,6 +20,7 @@ import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Mode;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
+import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.util.Util;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
@@ -145,8 +146,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: Do the chassis speeds and gyro data really need to be read at 250 hertz when not
-        // doing odometry?
         odometryLock.lock(); // Prevents odometry updates while reading data
         gyroIO.updateInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -427,5 +426,10 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         return states;
+    }
+
+    public void addVisionMeasurement(VisionFieldPoseEstimate estimate) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addVisionMeasurement'");
     }
 }
