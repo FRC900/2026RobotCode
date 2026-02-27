@@ -2,6 +2,10 @@ package com.team900.frc2026.subsystems.Hood;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.team900.frc2026.Constants;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.CANcoder;
+
 import org.littletonrobotics.junction.AutoLog;
 
 import java.util.Arrays;
@@ -15,35 +19,102 @@ import java.util.List;
  */
 
 public interface HoodIO {
-    @AutoLog
-    class HoodInputs {
-        public double positionRad = 0.0;
+    public final TalonFX motor;
 
-        public double positionRotations = 0.0;
-        public double velocityRadPerSec = 0.0;
-        public double appliedVolts = 0.0;
-        public double currentStatorAmps = 0.0;
-        public double currentSupplyAmps = 0.0;
+    // Phoenix control requests (reuse!)
+    public final DutyCycleOut dutyRequest = new DutyCycleOut(0.0);
+    public final PositionVoltage positionRequest = new PositionVoltage(0.0);
+
+    // Status signals
+    public final StatusSignal<Double> position;
+    public final StatusSignal<Double> velocity;
+    public final StatusSignal<Double> appliedVolts;
+    public final StatusSignal<Double> statorCurrent;
+    public final StatusSignal<Double> supplyCurrent;
+
+    public static final double GEAR_RATIO = Constants.HoodConstants.kHoodGearRatio;
+
+    public HoodIOTalonFX(int motorID) {
+        motor = new TalonFX(motorID);
+
+        position = motor.getPosition();
+        velocity = motor.getVelocity();
+        appliedVolts = motor.getMotorVoltage();
+        statorCurrent = motor.getStatorCurrent();
+        supplyCurrent = motor.getSupplyCurrent();
     }
 
+    @Override
     default List<BaseStatusSignal> getStatusSignals() {
-        return Arrays.asList();
+        return Arrays.asList(
+                position,
+                velocity,
+                appliedVolts,
+                statorCurrent,
+                supplyCurrent
+        );
     }
 
-    default void readInputs(HoodIO.HoodInputs inputs) {
+    @Override
+    default void readInputs(HoodInputs inputs) {
+        BaseStatusSignal.refreshAll(
+                position,
+                velocity,
+                appliedVolts,
+                statorCurrent,
+                supplyCurrent
+        );
+
+        double motorRot = position.getValue();
+        double motorRPS = velocity.getValue();
+
+        // Convert motor → hood
+        double hoodRot = motorRot / GEAR_RATIO;
+        double hoodRad = hoodRot * 2.0 * Math.PI;
+        double hoodRadPerSec = (motorRPS / GEAR_RATIO) * 2.0 * Math.PI;
+
+        inputs.positionRotations = hoodRot;
+        inputs.positionRad = hoodRad;
+        inputs.velocityRadPerSec = hoodRadPerSec;
+        inputs.appliedVolts = appliedVolts.getValue();
+        inputs.currentStatorAmps = statorCurrent.getValue();
+        inputs.currentSupplyAmps = supplyCurrent.getValue();
     }
 
-    default void update(final HoodIO.HoodInputs inputs) {
+    @Override
+    default void update(HoodInputs inputs) {
+        readInputs(inputs);
     }
 
+    @Override
     default void setNeutralMode(NeutralModeValue neutralMode) {
+        motor.setNeutralMode(neutralMode);
     }
 
+    @Override
     default void setPositionSetpoint(double radiansFromCenter, double radsPerSec) {
+
+        // Convert hood radians → motor rotations
+        double hoodRot = radiansFromCenter / (2.0 * Math.PI);
+        double motorRot = hoodRot * GEAR_RATIO;
+
+        double hoodRPS = radsPerSec / (2.0 * Math.PI);
+        double motorRPS = hoodRPS * GEAR_RATIO;
+
+        motor.setControl(
+                positionRequest
+                        .withPosition(motorRot)
+                        .withVelocity(motorRPS)
+        );
     }
 
+    @Override
     default void setDutyCycleOut(double percentOutput) {
+        motor.setControl(dutyRequest.withOutput(percentOutput));
     }
 
-    void resetZeroPoint();
+    @Override
+    default void resetZeroPoint() {
+        motor.setPosition(0.0);
+    }
 }
