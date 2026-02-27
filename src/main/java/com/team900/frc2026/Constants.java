@@ -16,6 +16,7 @@ public class Constants {
     public static final double kRealDt = 0.02;
 
     public static final double kMidlineBuffer = 1;
+
     public enum SimControllerType {
         XBOX,
         DUAL_SENSE

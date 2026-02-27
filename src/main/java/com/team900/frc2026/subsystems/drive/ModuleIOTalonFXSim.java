@@ -44,8 +44,8 @@ public class ModuleIOTalonFXSim extends ModuleIOTalonFX {
     }
 
     @Override
-    public void updateInputs(ModuleIOInputs inputs) {
-        super.updateInputs(inputs);
+    public void readInputs(ModuleIOInputs inputs) {
+        super.readInputs(inputs);
 
         // Update odometry inputs
         inputs.odometryTimestamps = CTREUtil.getSimulationOdometryTimeStamps();

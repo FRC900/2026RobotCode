@@ -1,6 +1,5 @@
 package com.team900.frc2026.subsystems.vision;
 
-
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;

@@ -5,11 +5,9 @@ import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.MathHelpers;
 import com.team900.lib.util.Util;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,13 +15,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 /** Tracks robot state including pose, velocities, and mechanism positions. */
 public class RobotState {
 
-        private static volatile RobotState instance;
+    private static volatile RobotState instance;
 
     public static final double LOOKBACK_TIME = 1.0;
 
@@ -40,7 +37,6 @@ public class RobotState {
         intakeRollerRotations.set(0.0);
         clawRollerRotations.set(0.0);
     }
-
 
     // State of robot.
 
@@ -318,7 +314,6 @@ public class RobotState {
         Logger.recordOutput("RobotState/WristRadians", getWristRadians());
         Logger.recordOutput("RobotState/IntakeRollerRotations", getIntakeRollerRotations());
         Logger.recordOutput("RobotState/CoralRollerRotations", getClawRollerRotations());
-
     }
 
     private final AtomicReference<Optional<Integer>> exclusiveTag =
@@ -471,9 +466,10 @@ public class RobotState {
         return 0.0;
     }
 
-//     public void logControllerMode() {
-//         Logger.recordOutput("Controller Mode", ModalControls.getInstance().getMode().toString());
-//     }
+    //     public void logControllerMode() {
+    //         Logger.recordOutput("Controller Mode",
+    // ModalControls.getInstance().getMode().toString());
+    //     }
 
     public static boolean onOpponentSide(boolean isRedAlliance, Pose2d pose) {
         return (isRedAlliance
@@ -489,20 +485,18 @@ public class RobotState {
     }
 
     public static RobotState getInstance() {
-return instance;
-}
+        return instance;
+    }
 
-public static RobotState getInstance(Consumer<VisionFieldPoseEstimate> estimateConsumer) {
-if (instance == null) {
-        synchronized (RobotState.class) {
+    public static RobotState getInstance(Consumer<VisionFieldPoseEstimate> estimateConsumer) {
+        if (instance == null) {
+            synchronized (RobotState.class) {
                 if (instance == null) {
 
-                        instance = new RobotState(estimateConsumer);
-
+                    instance = new RobotState(estimateConsumer);
+                }
+            }
         }
-        }
-}
-return instance;
-}
-
+        return instance;
+    }
 }

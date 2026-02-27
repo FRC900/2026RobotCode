@@ -10,11 +10,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
-    
+
     private Command m_autonomousCommand;
 
-    public Robot() {
-    }
+    public Robot() {}
 
     @Override
     public void robotPeriodic() {
