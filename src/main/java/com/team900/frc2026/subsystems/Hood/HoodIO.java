@@ -11,17 +11,14 @@ import org.littletonrobotics.junction.AutoLog;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Interface representing the hood subsystem.
- * Defines the structure for interacting with the hood mechanism, including
- * methods for reading input signals and controlling various aspects such as
- * position, neutral mode, and output to the motor.
- */
-
 public interface HoodIO {
+    // TalonFX motor
     public final TalonFX motor;
 
-    // Phoenix control requests (reuse!)
+    // CANcoder for absolute hood position
+    public final CANcoder canCoder;
+
+    // Phoenix control requests
     public final DutyCycleOut dutyRequest = new DutyCycleOut(0.0);
     public final PositionVoltage positionRequest = new PositionVoltage(0.0);
 
@@ -31,17 +28,21 @@ public interface HoodIO {
     public final StatusSignal<Double> appliedVolts;
     public final StatusSignal<Double> statorCurrent;
     public final StatusSignal<Double> supplyCurrent;
+    public final StatusSignal<Double> absolutePosition;  // new CANcoder signal
 
     public static final double GEAR_RATIO = Constants.HoodConstants.kHoodGearRatio;
 
-    public HoodIOTalonFX(int motorID) {
+    // Constructor
+    public HoodIOTalonFX(int motorID, int canCoderID) {
         motor = new TalonFX(motorID);
+        canCoder = new CANcoder(canCoderID);
 
         position = motor.getPosition();
         velocity = motor.getVelocity();
         appliedVolts = motor.getMotorVoltage();
         statorCurrent = motor.getStatorCurrent();
         supplyCurrent = motor.getSupplyCurrent();
+        absolutePosition = canCoder.getAbsolutePosition(); // CANcoder signal
     }
 
     @Override
@@ -51,7 +52,8 @@ public interface HoodIO {
                 velocity,
                 appliedVolts,
                 statorCurrent,
-                supplyCurrent
+                supplyCurrent,
+                absolutePosition  // include CANcoder
         );
     }
 
@@ -62,7 +64,8 @@ public interface HoodIO {
                 velocity,
                 appliedVolts,
                 statorCurrent,
-                supplyCurrent
+                supplyCurrent,
+                absolutePosition  // refresh CANcoder
         );
 
         double motorRot = position.getValue();
@@ -79,6 +82,10 @@ public interface HoodIO {
         inputs.appliedVolts = appliedVolts.getValue();
         inputs.currentStatorAmps = statorCurrent.getValue();
         inputs.currentSupplyAmps = supplyCurrent.getValue();
+
+        // CANcoder absolute hood angle in radians
+        double hoodAbsRot = absolutePosition.getValue();
+        inputs.absolutePositionRad = hoodAbsRot * 2.0 * Math.PI;
     }
 
     @Override
@@ -93,8 +100,6 @@ public interface HoodIO {
 
     @Override
     default void setPositionSetpoint(double radiansFromCenter, double radsPerSec) {
-
-        // Convert hood radians → motor rotations
         double hoodRot = radiansFromCenter / (2.0 * Math.PI);
         double motorRot = hoodRot * GEAR_RATIO;
 
