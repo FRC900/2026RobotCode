@@ -59,7 +59,7 @@ class RungeKutta4:
     def sim(self, timelen=10, stop_on_y=None):
         while self.t <= timelen: # stop RK4 when it reaches specified simulation time
             if stop_on_y is not None: # stop RK4 when y-position < target y position
-                if self.a[1] < stop_on_y and np.sign(self.dadt(self.t, self.a)[1]) == -1: # make sure projectile is falling before stopping
+                if self.a[1] < stop_on_y and np.sign(self.dadt(self.t, self.a)[1]) == -1: # make sure projectile is falling before stopping 
                     break 
 
             self.rk4()
