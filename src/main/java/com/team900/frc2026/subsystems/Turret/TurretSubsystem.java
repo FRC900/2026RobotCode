@@ -5,10 +5,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 import com.team900.frc2026.Constants;
-import com.team900.lib.subsystems.ServoMotorSubsystem;
-import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 
-public class TurretSubsystem extends ServoMotorSubsystem<TurretMotorInputsAutoLogged,TurretMotorIO> {
+public class TurretSubsystem extends SubsystemBase {
+    private final TurretIO io;
     private final FastTurretInputsAutoLogged fastInputs =
             new FastTurretInputsAutoLogged();
 
@@ -17,17 +16,13 @@ public class TurretSubsystem extends ServoMotorSubsystem<TurretMotorInputsAutoLo
 
     private double positionSetpointRad = 0.0;
     private double velocitySetpointRadPerSec = 0.0;
-    private boolean isOpenLoop = false;
-    private double openLoopDutyCycle = 0.0;
     
-    public TurretSubsystem(ServoMotorSubsystemConfig config, TurretMotorInputsAutoLogged inputs, TurretMotorIO io) {
-        super(config, inputs, io);
+    public TurretSubsystem(final TurretIO io) {
+        this.io = io;
     }
 
     @Override
     public void periodic() {
-        super.periodic();
-
         io.readFastInputs(fastInputs);
         io.readInputs(inputs);
 
@@ -38,39 +33,51 @@ public class TurretSubsystem extends ServoMotorSubsystem<TurretMotorInputsAutoLo
             Math.max(Constants.TurretConstants.kTurretMinPositionRadians,
             Math.min(Constants.TurretConstants.kTurretMaxPositionRadians, positionSetpointRad));
 
-        setPositionSetpointImpl(positionSetpointRad);
+        io.setPositionSetpoint(positionSetpointRad, velocitySetpointRadPerSec);
     }
 
     public void setPositionRadians(double radians) {
         positionSetpointRad = radians;
+        velocitySetpointRadPerSec = 0.0;
+    }
+
+    public void setPositionRadians(double radians, double velocityRadPerSec) {
+        positionSetpointRad = radians;
+        velocitySetpointRadPerSec = velocityRadPerSec;
     }
 
     public void setPositionDegrees(double degrees) {
         positionSetpointRad = Math.toRadians(degrees);
+        velocitySetpointRadPerSec = 0.0;
+    }
+
+    public void setPositionDegrees(double degrees, double velocitySetpointDegPerSec) {
+        positionSetpointRad = Math.toRadians(degrees);
+        velocitySetpointRadPerSec = Math.toRadians(velocitySetpointDegPerSec);
     }
 
     public void setOpenLoop(double dutyCycle) {
-        setOpenLoopDutyCycleImpl(dutyCycle);
+        io.setOpenLoopDutyCycle(dutyCycle);
     }
 
     public void stop() {
-        setOpenLoopDutyCycleImpl(0.0);
+        io.setOpenLoopDutyCycle(0.0);
     }
 
     public double getPositionRadians() {
-        return getCurrentPosition();
+        return fastInputs.positionRad;
     }
 
     public double getVelocityRadPerSec() {
-        return getCurrentVelocity(); 
+        return fastInputs.velocityRadPerSec;
     }
 
     public double getVelocityDegPerSec() {
-        return Math.toDegrees(getCurrentVelocity());
+        return Math.toDegrees(fastInputs.velocityRadPerSec);
     }
 
     public boolean atSetpoint() {
-        return Math.abs(getCurrentPosition() - positionSetpointRad) < Constants.TurretConstants.toleranceRad;
+        return Math.abs(fastInputs.positionRad - positionSetpointRad) < Constants.TurretConstants.toleranceRad;
     }
 
 }
