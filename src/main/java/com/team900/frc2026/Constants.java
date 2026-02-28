@@ -1,18 +1,15 @@
 package com.team900.frc2026;
 
-import edu.wpi.first.math.util.Units;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.team254.lib.drivers.CANDeviceId;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.RobotBase;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Arrays;
+import java.util.Enumeration;
 
 public class Constants {
 
@@ -69,7 +66,8 @@ public class Constants {
     public record Gains(
             double kP, double kI, double kD, double ffkS, double ffkV, double ffkA, double ffkG) {}
 
-    public static final String kCanBusCanivore = "canivore";
+    public static final CANBus kCanBusCanivoreDrive = new CANBus("drive");
+    public static final CANBus kCanBusCanivoreMech = new CANBus("mech");
     public static final String kPracticeBotMacAddress = "00:80:2F:33:D1:4B";
     public static boolean kIsPracticeBot = hasMacAddress(kPracticeBotMacAddress);
 
@@ -87,38 +85,6 @@ public class Constants {
                 .withVoltageOpenLoopRampPeriod(0.02);
     }
 
-    public static final class HoodConstants {
-        public static final CANDeviceId kHoodTalonCanID = new CANDeviceId(19, kCanBusCanivore);
-        public static final double kHoodGearRatio = (14.0 / 48.0) * (15.0 / 36.0) * (10.0 / 160.0);
-        public static final double kHoodRotorMaxPosition = 15.368164;
-        public static final double kHoodRotorMinPosition = 0.0;
-        public static final double kHoodPositionTolerance = 0.1;
-        public static final double kHoodMinPositionRadians = 0.0;
-        public static final double kHoodMaxPositionRadians = Units
-                .rotationsToRadians(kHoodRotorMaxPosition * kHoodGearRatio);
-        public static final double kHoodZeroedAngleDegrees = 51.7;
-        public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
-        public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
-
-        public static final double kFenderShotRadians = Units.degreesToRadians(0);
-    }
-    
-    public static final class TurretConstants {
-        public static final double kTurretGearRatio = (14. / 52.) * (10. / 125.);
-        public static final CANDeviceId kTurretTalonCanID = new CANDeviceId(21, kCanBusCanivore);
-        public static final CANDeviceId kTurret1To1CANCoder = new CANDeviceId(13, kCanBusCanivore);
-        public static final CANDeviceId kTurret3To1CANCoder = new CANDeviceId(14, kCanBusCanivore);
-        public static final double k3To1TurretCancoderOffset = kIsPracticeBot ? -0.254150 : -0.057617;
-        public static final double k1To1TurretCancoderOffset = kIsPracticeBot ? 0.270996 : 0.482178;
-        public static final double kTurretMinPositionRadians = -2. * Math.PI;
-        public static final double kTurretMaxPositionRadians = 2. * Math.PI;
-
-        public static final double kTurretEpsilon = Units.degreesToRadians(2.0);
-        public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);
-    
-        public static final double toleranceRad = 0.1;
-    }
-
     public static boolean hasMacAddress(final String mac_address) {
         try {
             Enumeration<NetworkInterface> nwInterface = NetworkInterface.getNetworkInterfaces();
@@ -132,10 +98,15 @@ public class Constants {
                 byte[] mac = nis.getHardwareAddress();
                 if (mac != null) {
                     for (int i = 0; i < mac.length; i++) {
-                        device_mac_sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+                        device_mac_sb.append(
+                                String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
                     }
                     String device_mac = device_mac_sb.toString();
-                    System.out.println("hasMacAddress: NIS " + nis.getDisplayName() + " device_mac: " + device_mac);
+                    System.out.println(
+                            "hasMacAddress: NIS "
+                                    + nis.getDisplayName()
+                                    + " device_mac: "
+                                    + device_mac);
                     if (mac_address.equals(device_mac)) {
                         System.out.println("hasMacAddress: ** Mac address match! " + device_mac);
                         return true;
@@ -149,5 +120,5 @@ public class Constants {
             e.printStackTrace();
         }
         return false;
-        }
+    }
 }

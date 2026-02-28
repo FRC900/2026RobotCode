@@ -77,7 +77,8 @@
 
 //         @Override
 //         public String getSchema() {
-//             return "Pose2d fieldToRobot; double timestampSeconds; double latency; double avgTagArea";
+//             return "Pose2d fieldToRobot; double timestampSeconds; double latency; double
+// avgTagArea";
 //         }
 
 //         @Override

@@ -1,81 +1,47 @@
-package com.team900.frc2026.subsystems.Hood;
+package com.team900.frc2026.subsystems.hood;
 
-import com.team254.lib.time.RobotTime;
+import com.team900.frc2026.RobotState;
+import com.team900.lib.subsystems.CanCoderIO;
+import com.team900.lib.subsystems.CanCoderInputsAutoLogged;
+import com.team900.lib.subsystems.MotorIO;
+import com.team900.lib.subsystems.MotorInputsAutoLogged;
+import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoder;
+import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
+import edu.wpi.first.math.MathUtil;
 
-import com.team900.frc2026.Constants;
+public class HoodSubsystem
+        extends ServoMotorSubsystemWithCanCoder<
+                MotorInputsAutoLogged, MotorIO, CanCoderInputsAutoLogged, CanCoderIO> {
+    private final RobotState state = RobotState.getInstance();
 
-import org.littletonrobotics.junction.Logger;
+    public HoodSubsystem(
+            ServoMotorSubsystemWithCanCoderConfig c,
+            MotorIO motorIO,
+            CanCoderIO cancoderIO,
+            RobotState state) {
+        super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
+        this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
+        setDefaultCommand(
+                motionMagicSetpointCommand(this::getPositionSetpointUnits)
+                        .withName("Hood Maintain Setpoint (default)")
+                        .ignoringDisable(true));
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.Command;
+        // Update frequency for feedback.
+        cancoderIO.updateFrequency(500);
+    }
 
-import java.util.function.Supplier;
-
-
-public class HoodSubsystem extends SubsystemBase {
-    private final HoodInputsAutoLogged inputs = new HoodInputsAutoLogged();
-    private final HoodIO io;
-
-    private double positionSetpointRad = 0.0;
-    private double velocitySetpointRadPerSec = 0.0;
-
-    public HoodSubsystem(final HoodIO io) {
-        this.io = io;
-    } 
-
+    // Updates robot state with current Hood angle
     @Override
     public void periodic() {
-        double timestamp = RobotTime.getTimestampSeconds();
-
-        io.readInputs(inputs);
-        Logger.processInputs("Hood", inputs);
-        io.update(inputs);
-    
-        double clamped =
-            Math.max(Constants.HoodConstants.kHoodMinPositionRadians,
-            Math.min(Constants.HoodConstants.kHoodMaxPositionRadians, positionSetpointRad));
-        
-        positionSetpointRad = clamped;
-        io.setPositionSetpoint(positionSetpointRad, velocitySetpointRadPerSec);
-
-        Logger.recordOutput("Hood/positionRad", inputs.positionRad);
-        Logger.recordOutput("Hood/latencyPeriodicSec", RobotTime.getTimestampSeconds() - timestamp);
+        super.periodic();
+        state.setHoodRadians(inputs.unitPosition);
     }
 
-    public Command angleCommand(Supplier<Double> angleRadSupplier) {
-    return run(() -> positionSetpointRad = angleRadSupplier.get())
-            .withName("Hood Track Setpoint");
-    }
-
-    public Command angleDegreesCommand(Supplier<Double> angleDegSupplier) {
-        return run(() ->
-            positionSetpointRad = Units.degreesToRadians(angleDegSupplier.get())
-        ).withName("Hood Track Setpoint (deg)");
-    }
-
-    public void resetZero() {
-        io.resetZeroPoint();
-        positionSetpointRad = 0.0;
-    }
-
-    public boolean atSetpoint() {
-        return Math.abs(inputs.positionRad - positionSetpointRad) < Constants.HoodConstants.kHoodPositionTolerance;
-    }
-
-    public double getPositionRadians() {
-        return inputs.positionRad;
-    }
-
-    public double getPositionDegrees() {
-        return Math.toDegrees(inputs.positionRad);
-    }
-
-    public double getSetpointRadians() {
-        return positionSetpointRad;
-    }
-
-    public double getSetpointDegrees() {
-        return Math.toDegrees(positionSetpointRad);
+    public boolean isStowed() {
+        // Returns true if Hood is in stowed position
+        return MathUtil.isNear(
+                HoodConstants.kHoodStowTrenchPositionRadians,
+                getCurrentPosition(),
+                HoodConstants.kHoodToleranceRadians);
     }
 }
