@@ -18,14 +18,14 @@ import FuelClearance as fc
 import time
 
 hub_height = 2.0
-shot_speed = 14.0
-shot_spin = 3 * 2*np.pi
+shot_speed = 23 # 26.2
+shot_spin = 8 * 2*np.pi
 
 fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
-r_vals  = np.linspace(0, 12, 20) # radial distance to target
-vf_vals = np.linspace(-10, 10, 20) # forward (radial) velocity
-vl_vals = np.linspace(-10, 10, 20) # lateral (tangential) velocity
+r_vals  = np.linspace(0, 12, 48) # radial distance to target
+vf_vals = np.linspace(-10, 10, 40) # forward (radial) velocity
+vl_vals = np.linspace(-10, 10, 40) # lateral (tangential) velocity
 
 theta_surface = np.zeros((len(r_vals),
                           len(vf_vals),
