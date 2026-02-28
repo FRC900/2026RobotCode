@@ -1,30 +1,30 @@
-package com.team900.frc2026.subsystems.vision;
+// package com.team900.frc2026.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose3d;
+// import edu.wpi.first.math.geometry.Pose3d;
 
-/** Interface for vision system hardware abstraction. */
-public interface VisionIO {
+// /** Interface for vision system hardware abstraction. */
+// public interface VisionIO {
 
-    /** Container for all vision input data. */
-    class VisionIOInputs {
-        /** Input data from a single camera. */
-        public static class CameraInputs {
-            public boolean seesTarget;
-            public FiducialObservation[] fiducialObservations;
-            public TagPoseEstimate trigPoseEstimate;
-            public TagPoseEstimate PNPPoseEstimate;
-            public int trigCount;
-            public int PNPCount;
-            public Pose3d pose3d;
-            public double[] standardDeviations =
-                    new double[12]; // [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x,
-            // MT2y, MT2z, MT2roll, MT2pitch, MT2yaw]
-        }
+//     /** Container for all vision input data. */
+//     class VisionIOInputs {
+//         /** Input data from a single camera. */
+//         public static class CameraInputs {
+//             public boolean seesTarget;
+//             public FiducialObservation[] fiducialObservations;
+//             public TagPoseEstimate trigPoseEstimate;
+//             public TagPoseEstimate PNPPoseEstimate;
+//             public int trigCount;
+//             public int PNPCount;
+//             public Pose3d pose3d;
+//             public double[] standardDeviations =
+//                     new double[12]; // [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x,
+//             // MT2y, MT2z, MT2roll, MT2pitch, MT2yaw]
+//         }
 
-        public CameraInputs cameraA = new CameraInputs();
-        public CameraInputs cameraB = new CameraInputs();
-        public CameraInputs cameraT = new CameraInputs();
-    }
+//         public CameraInputs cameraA = new CameraInputs();
+//         public CameraInputs cameraB = new CameraInputs();
+//         public CameraInputs cameraT = new CameraInputs();
+//     }
 
-    void readInputs(VisionIOInputs inputs);
-}
+//     void readInputs(VisionIOInputs inputs);
+// }
