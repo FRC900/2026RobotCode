@@ -17,7 +17,8 @@
 // import org.photonvision.targeting.PhotonPipelineResult;
 
 // /**
-//  * Simulation implementation of VisionIO using PhotonVision simulation. Extends Limelight hardware
+//  * Simulation implementation of VisionIO using PhotonVision simulation. Extends Limelight
+// hardware
 //  * implementation to reuse data processing logic.
 //  */
 // public class VisionIOSimPhoton extends VisionIOHardwareROS {
@@ -124,7 +125,8 @@
 //                             .transformBy(cameraToRobot);
 //             fieldToRobot = robotPose3d;
 //         } else {
-//             fieldToRobot = new Pose3d(fieldToCamera.getTranslation(), fieldToCamera.getRotation());
+//             fieldToRobot = new Pose3d(fieldToCamera.getTranslation(),
+// fieldToCamera.getRotation());
 //         }
 
 //         List<Double> pose_data =
@@ -158,7 +160,8 @@
 //     }
 
 //     /**
-//      * Writes simulated vision data to NetworkTables for consumption by Limelight processing code.
+//      * Writes simulated vision data to NetworkTables for consumption by Limelight processing
+// code.
 //      */
 //     private void writeToTable(
 //             List<PhotonPipelineResult> results, NetworkTable table, PhotonCameraSim cameraSim) {
@@ -170,7 +173,8 @@
 //                 Transform3d best = multiTagResult.estimatedPose.best;
 
 //                 pose_data =
-//                         getBotpose(best, multiTagResult.fiducialIDsUsed.size(), result, cameraSim);
+//                         getBotpose(best, multiTagResult.fiducialIDsUsed.size(), result,
+// cameraSim);
 //             } else if (result.hasTargets()) {
 //                 var bestTarget = result.getBestTarget();
 //                 Transform3d best =

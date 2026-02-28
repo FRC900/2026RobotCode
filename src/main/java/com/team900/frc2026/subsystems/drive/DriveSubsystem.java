@@ -72,8 +72,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     private double rawYawVelocity = 0.0;
 
-
-
     private SwerveModulePosition[] lastModulePositions = // For delta tracking
             new SwerveModulePosition[] {
                 new SwerveModulePosition(),
@@ -168,16 +166,15 @@ public class DriveSubsystem extends SubsystemBase {
             Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
             Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
         }
-        // instantiate fields for drive measurements 
-             double rawAccelX = 0.0;
-            double rawAccelY = 0.0;
+        // instantiate fields for drive measurements
+        double rawAccelX = 0.0;
+        double rawAccelY = 0.0;
 
-            double rawRollVelocity = 0.0;
-            double rawPitchVelocity = 0.0;
-            
-            double rawRoll = 0.0;
-            double rawPitch = 0.0;
+        double rawRollVelocity = 0.0;
+        double rawPitchVelocity = 0.0;
 
+        double rawRoll = 0.0;
+        double rawPitch = 0.0;
 
         // Update odometry
         double[] sampleTimestamps =
@@ -202,15 +199,13 @@ public class DriveSubsystem extends SubsystemBase {
                 // Use the real gyro angle
                 rawYawRotation = gyroInputs.odometryYawPositions[i];
                 rawRoll = gyroInputs.odometryRollPositions[i].getRadians();
-                                rawPitch = gyroInputs.odometryPitchPositions[i].getRadians();
-
+                rawPitch = gyroInputs.odometryPitchPositions[i].getRadians();
 
                 // too lazy to update gyro sim so here's the solution
                 if (Constants.currentMode == Mode.REAL) {
                     rawYawVelocity = gyroInputs.odometryYawVelocitys[i];
                     rawRollVelocity = gyroInputs.odometryRollVelocitys[i];
-                                        rawPitchVelocity = gyroInputs.odometryPitchVelocitys[i];
-
+                    rawPitchVelocity = gyroInputs.odometryPitchVelocitys[i];
 
                     rawAccelX = gyroInputs.odometryAccelXs[i];
                     rawAccelY = gyroInputs.odometryAccelYs[i];
@@ -236,7 +231,7 @@ public class DriveSubsystem extends SubsystemBase {
                             measuredFieldRelativeChassisSpeeds.vxMetersPerSecond,
                             measuredFieldRelativeChassisSpeeds.vyMetersPerSecond,
                             rawYawVelocity);
-        
+
             RobotState.getInstance()
                     .addDriveMotionMeasurements(
                             sampleTimestamps[i],

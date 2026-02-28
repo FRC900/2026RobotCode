@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.Turret;
+package com.team900.frc2026.subsystems.turret;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -23,7 +23,7 @@ public class TurretIOSim implements TurretIO {
         }
         return motorVoltage;
     }
-    
+
     @Override
     public void readInputs(TurretInputs inputs) {
         double appliedVoltsWithoutFriction = appliedDutyCycle * 12.0;
@@ -32,13 +32,13 @@ public class TurretIOSim implements TurretIO {
 
         inputs.currentStatorAmps = Math.abs(appliedDutyCycle) * 10.0;
         inputs.currentSupplyAmps = Math.abs(appliedDutyCycle) * 5.0;
-        inputs.cancoder1AbsolutePosition = Units.radiansToRotations(simulatedPositionRad);
-        inputs.cancoder2AbsolutePosition = Units.radiansToRotations(simulatedPositionRad);
+        inputs.cancoder33AbsolutePosition = Units.radiansToRotations(simulatedPositionRad);
+        inputs.cancoder29AbsolutePosition = Units.radiansToRotations(simulatedPositionRad);
 
         // Logging
         Logger.recordOutput("Turret/Sim/AppliedVolts", inputs.appliedVolts);
         Logger.recordOutput("Turret/Sim/CurrentStator", inputs.currentStatorAmps);
-        Logger.recordOutput("Turret/Sim/PositionRotations", inputs.cancoder1AbsolutePosition);
+        Logger.recordOutput("Turret/Sim/PositionRotations", inputs.cancoder33AbsolutePosition);
     }
 
     @Override

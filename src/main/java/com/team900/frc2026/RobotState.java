@@ -33,7 +33,7 @@ public class RobotState {
 
         // Initialize mechanism positions
         elevatorHeightMeters.set(0.0);
-        wristRadians.set(0.0);
+        hoodRadians.set(0.0);
         intakeRollerRotations.set(0.0);
         clawRollerRotations.set(0.0);
     }
@@ -311,7 +311,7 @@ public class RobotState {
 
         // Add mechanism logging
         Logger.recordOutput("RobotState/ElevatorHeightMeters", getElevatorHeightMeters());
-        Logger.recordOutput("RobotState/WristRadians", getWristRadians());
+        Logger.recordOutput("RobotState/HoodRadians", getHoodRadians());
         Logger.recordOutput("RobotState/IntakeRollerRotations", getIntakeRollerRotations());
         Logger.recordOutput("RobotState/CoralRollerRotations", getClawRollerRotations());
     }
@@ -320,44 +320,42 @@ public class RobotState {
             new AtomicReference<>(Optional.empty());
 
     private final AtomicReference<Double> elevatorHeightMeters = new AtomicReference<>(0.0);
-    private final AtomicReference<Double> wristRadians = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> hoodRadians = new AtomicReference<>(0.0);
     private final AtomicReference<Double> clawRollerRotations = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> intakeRollerRotations = new AtomicReference<>(0.0);
     private final AtomicReference<Double> intakeRollerRPS = new AtomicReference<>(0.0);
     private final AtomicReference<Double> intakePivotRadians = new AtomicReference<>(0.0);
 
-    private final AtomicReference<Double> indexerRotations = new AtomicReference<>(0.0);
-    private final AtomicReference<Double> indexerRPS = new AtomicReference<>(0.0);
-
-    private final AtomicReference<Double> climberPivotRadians = new AtomicReference<>(0.0);
-
-    private final AtomicReference<Double> climberRollerRotations = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> spindexerRotations = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> spindexerRPS = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> clawRollerRPS = new AtomicReference<>(0.0);
 
-    public void setClimberRollerRotations(double rotations) {
-        climberRollerRotations.set(rotations);
+    private final AtomicReference<Double> shooterRPS = new AtomicReference<>(0.0);
+
+    public void setShooterRPS(double rps) {
+        shooterRPS.set(rps);
     }
 
-    public void setClimberPivotRadians(double radians) {
-        climberPivotRadians.set(radians);
+    public double getShooterRPS() {
+        return shooterRPS.get();
     }
 
-    public void setIndexerRotations(double rotations) {
-        indexerRotations.set(rotations);
+    public void setSpindexerRotations(double rotations) {
+        spindexerRotations.set(rotations);
     }
 
-    public void setIndexerRPS(double rps) {
-        indexerRPS.set(rps);
+    public void setSpindexerRPS(double rps) {
+        spindexerRPS.set(rps);
     }
 
-    public double getIndexerRotations() {
-        return indexerRotations.get();
+    public double getSpindexerRotations() {
+        return spindexerRotations.get();
     }
 
-    public double getIndexerRPS() {
-        return indexerRPS.get();
+    public double getSpindexerRPS() {
+        return spindexerRPS.get();
     }
 
     public void setIntakePivotRadians(double radians) {
@@ -372,8 +370,8 @@ public class RobotState {
         elevatorHeightMeters.set(heightMeters);
     }
 
-    public void setWristRadians(double radians) {
-        wristRadians.set(radians);
+    public void setHoodRadians(double radians) {
+        hoodRadians.set(radians);
     }
 
     public void setIntakeRollerRotations(double rotations) {
@@ -392,8 +390,8 @@ public class RobotState {
         return elevatorHeightMeters.get();
     }
 
-    public double getWristRadians() {
-        return wristRadians.get();
+    public double getHoodRadians() {
+        return hoodRadians.get();
     }
 
     public double getIntakeRollerRotations() {
@@ -406,14 +404,6 @@ public class RobotState {
 
     public double getClawRollerRotations() {
         return clawRollerRotations.get();
-    }
-
-    public double getClimberRollerRotations() {
-        return climberRollerRotations.get();
-    }
-
-    public double getClimberPivotRadians() {
-        return climberPivotRadians.get();
     }
 
     public void setClawRollerRPS(double rps) {

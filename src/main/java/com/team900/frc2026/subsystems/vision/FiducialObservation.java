@@ -15,7 +15,8 @@
 //  * @param ambiguity Pose ambiguity score (0 = confident, 1 = ambiguous)
 //  * @param area Target area as percentage of image
 //  */
-// public record FiducialObservation(int id, double txnc, double tync, double ambiguity, double area)
+// public record FiducialObservation(int id, double txnc, double tync, double ambiguity, double
+// area)
 //         implements StructSerializable {
 
 //     /** Converts a Limelight raw fiducial to a FiducialObservation. */

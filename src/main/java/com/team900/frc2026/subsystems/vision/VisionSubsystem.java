@@ -18,7 +18,8 @@
 // import org.littletonrobotics.junction.Logger;
 
 // /**
-//  * Vision subsystem that processes AprilTag detections and provides robot pose estimates. Supports
+//  * Vision subsystem that processes AprilTag detections and provides robot pose estimates.
+// Supports
 //  * multiple cameras and various pose estimation algorithms including MegaTag.
 //  */
 // public class VisionSubsystem extends SubsystemBase {
@@ -91,7 +92,8 @@
 //                 VecBuilder.fill(
 //                         Math.sqrt(1.0 / (weightAx + weightBx)),
 //                         Math.sqrt(1.0 / (weightAy + weightBy)),
-//                         Math.sqrt(1.0 / (1.0 / varianceA.get(2, 0) + 1.0 / varianceB.get(2, 0))));
+//                         Math.sqrt(1.0 / (1.0 / varianceA.get(2, 0) + 1.0 / varianceB.get(2,
+// 0))));
 
 //         int numTags = a.getNumTags() + b.getNumTags();
 //         double time = b.getTimestampSeconds();
@@ -342,8 +344,10 @@
 //         Pose2d estimatePose = poseEstimate.fieldToRobot();
 
 //         double scaleFactor = 1.0 / poseEstimate.quality();
-//         double xStd = cam.standardDeviations[VisionConstants.kMegatag1XStdDevIndex] * scaleFactor;
-//         double yStd = cam.standardDeviations[VisionConstants.kMegatag1YStdDevIndex] * scaleFactor;
+//         double xStd = cam.standardDeviations[VisionConstants.kMegatag1XStdDevIndex] *
+// scaleFactor;
+//         double yStd = cam.standardDeviations[VisionConstants.kMegatag1YStdDevIndex] *
+// scaleFactor;
 //         double rotStd =
 //                 cam.standardDeviations[VisionConstants.kMegatag1YawStdDevIndex] * scaleFactor;
 

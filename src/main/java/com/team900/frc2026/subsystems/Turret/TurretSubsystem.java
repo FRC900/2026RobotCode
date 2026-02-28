@@ -1,24 +1,21 @@
-package com.team900.frc2026.subsystems.Turret;
+package com.team900.frc2026.subsystems.turret;
 
+import com.team900.frc2026.subsystems.Turret.FastTurretInputsAutoLogged;
+import com.team900.frc2026.subsystems.Turret.TurretInputsAutoLogged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.team900.frc2026.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
     private final TurretIO io;
-    private final FastTurretInputsAutoLogged fastInputs =
-            new FastTurretInputsAutoLogged();
+    private final FastTurretInputsAutoLogged fastInputs = new FastTurretInputsAutoLogged();
 
-    private final TurretInputsAutoLogged inputs =
-            new TurretInputsAutoLogged();
+    private final TurretInputsAutoLogged inputs = new TurretInputsAutoLogged();
 
     private double positionSetpointRad = 0.0;
     private double velocitySetpointRadPerSec = 0.0;
     private boolean isOpenLoop = false;
     private double openLoopDutyCycle = 0.0;
-    
+
     public TurretSubsystem(final TurretIO io) {
         this.io = io;
     }
@@ -32,8 +29,9 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.processInputs("Turret", inputs);
 
         positionSetpointRad =
-            Math.max(Constants.TurretConstants.kTurretMinPositionRadians,
-            Math.min(Constants.TurretConstants.kTurretMaxPositionRadians, positionSetpointRad));
+                Math.max(
+                        TurretConstants.kTurretMinPositionRadians,
+                        Math.min(TurretConstants.kTurretMaxPositionRadians, positionSetpointRad));
 
         if (isOpenLoop) {
             io.setOpenLoopDutyCycle(openLoopDutyCycle);
@@ -89,7 +87,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public boolean atSetpoint() {
-        return Math.abs(fastInputs.positionRad - positionSetpointRad) < Constants.TurretConstants.toleranceRad;
+        return Math.abs(fastInputs.positionRad - positionSetpointRad)
+                < TurretConstants.toleranceRad;
     }
-
 }
