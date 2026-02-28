@@ -13,9 +13,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj.RobotBase;
 import com.team900.frc2026.subsystems.Hood.HoodIOSim;
 
+import com.team900.frc2026.subsystems.Turret.TurretIOHardware;
+import com.team900.frc2026.subsystems.Turret.TurretIOSim;
+import com.team900.frc2026.subsystems.Turret.TurretSubsystem;
 
 public class RobotContainer {
+
   private final HoodSubsystem Hood;
+  private final TurretSubsystem Turret;
 
   public RobotContainer() {
 
@@ -23,6 +28,12 @@ public class RobotContainer {
       Hood = new HoodSubsystem(new HoodIOHardware());
     } else {
       Hood = new HoodSubsystem(new HoodIOSim());
+    }
+
+    if (RobotBase.isReal()) {
+      Turret = new TurretSubsystem(new TurretIOHardware());
+    } else {
+      Turret = new TurretSubsystem(new TurretIOSim());
     }
 
     configureBindings();
@@ -36,5 +47,9 @@ public class RobotContainer {
 
   public HoodSubsystem getHood() {
     return Hood;
+  }
+  
+  public TurretSubsystem getTurret() {
+    return Turret;
   }
 }
