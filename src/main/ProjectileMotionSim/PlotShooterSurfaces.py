@@ -21,7 +21,7 @@ ax1.set_ylabel('Forward Robot Velocity vf (m/s)')
 ax1.set_zlabel('Launch Angle θ (rad)')
 ax1.set_title('Theta Surface vs Distance and Forward Velocity')
 fig1.colorbar(surf1, ax=ax1, shrink=0.5, aspect=10)
-fig1.savefig("theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
+fig1.savefig("/Users/anshmenghani/Documents/GitHub/2026RobotCode/src/main/ProjectileMotionSim/theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
 
 # lateral (tangential) velocity, distance to target --> phi
 phi_slice = phi_surface[:, 0, :]
@@ -35,6 +35,6 @@ ax2.set_ylabel('Lateral Robot Velocity vl (m/s)')
 ax2.set_zlabel('Azimuth Angle φ (rad)')
 ax2.set_title('Phi Surface vs Distance and Lateral Velocity')
 fig2.colorbar(surf2, ax=ax2, shrink=0.5, aspect=10)
-fig2.savefig("phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
+fig2.savefig("/Users/anshmenghani/Documents/GitHub/2026RobotCode/src/main/ProjectileMotionSim/phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
 
 plt.show()
