@@ -4,8 +4,9 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig.FollowerConfig;
 
 public class ShooterConstants {
-    
-   public static ServoMotorSubsystemWithFollowersConfig kShooterConfig = new ServoMotorSubsystemWithFollowersConfig();
+
+    public static ServoMotorSubsystemWithFollowersConfig kShooterConfig =
+            new ServoMotorSubsystemWithFollowersConfig();
 
     static {
         // kShooterConfig.fxConfig = ;

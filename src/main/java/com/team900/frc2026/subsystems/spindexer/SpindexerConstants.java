@@ -6,13 +6,12 @@ import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 
 public class SpindexerConstants {
-    
-   public static ServoMotorSubsystemConfig kSpindexerConfig = new ServoMotorSubsystemConfig();
 
-     static {
+    public static ServoMotorSubsystemConfig kSpindexerConfig = new ServoMotorSubsystemConfig();
 
+    static {
         kSpindexerConfig.fxConfig = new TalonFXConfiguration();
-        //TODO: upate can id here
+        // TODO: upate can id here
         kSpindexerConfig.name = "Spindexer";
         kSpindexerConfig.talonCANID = new CANDeviceId(0, new CANBus(null));
     }

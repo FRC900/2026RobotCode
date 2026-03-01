@@ -6,18 +6,16 @@ import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 
 public class IntakeRollerConstants {
-    
-   public static ServoMotorSubsystemConfig kIntakeRollerConfig = new ServoMotorSubsystemConfig();
 
-       static {
+    public static ServoMotorSubsystemConfig kIntakeRollerConfig = new ServoMotorSubsystemConfig();
 
+    static {
         kIntakeRollerConfig.fxConfig = new TalonFXConfiguration();
-        //TODO: upate can id here
+        // TODO: upate can id here
         kIntakeRollerConfig.name = "Intake";
         kIntakeRollerConfig.talonCANID = new CANDeviceId(0, new CANBus(null));
     }
 
-     public static final double kIntakeDutyCycle = 0.5;
+    public static final double kIntakeDutyCycle = 0.5;
     public static final double kIntakeDutyCycleExhaust = -0.5;
-    
 }
