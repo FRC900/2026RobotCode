@@ -11,14 +11,11 @@ import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
  * the speed and direction of the handoff rollers to feed game pieces to the shooter.
  */
 public class HandoffSubsystem extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO> {
-    private final RobotState state;
-    public MotorIO motorIO;
+    private final RobotState state = RobotState.getInstance();
 
     public HandoffSubsystem(
-            final ServoMotorSubsystemConfig motorConfig, final MotorIO motorIO, RobotState state) {
+            final ServoMotorSubsystemConfig motorConfig, final MotorIO motorIO) {
         super(motorConfig, new MotorInputsAutoLogged(), motorIO);
-        this.state = state;
-        this.motorIO = motorIO;
     }
 
     public double getPositionRotations() {

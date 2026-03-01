@@ -2,9 +2,19 @@ package com.team900.frc2026.subsystems.hood;
 
 import com.team900.frc2026.Constants;
 import com.team900.lib.drivers.CANDeviceId;
+import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
+import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
+
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
+        //TODO: in static just do khoodconfig. and then try to fill out as many of the fields with the info you have
+   public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig = new ServoMotorSubsystemWithCanCoderConfig();
+   static {
+        
+   }
+
+   // this should all lowkey go into the khoodconfig bc none of the below constants are actually used
     public static final CANDeviceId kHoodTalonCanID =
             new CANDeviceId(19, Constants.kCanBusCanivoreMech);
     public static final double kHoodGearRatio = 0;

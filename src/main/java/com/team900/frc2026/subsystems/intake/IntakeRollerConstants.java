@@ -1,18 +1,23 @@
 package com.team900.frc2026.subsystems.intake;
 
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 
 public class IntakeRollerConstants {
     
    public static ServoMotorSubsystemConfig kIntakeRollerConfig = new ServoMotorSubsystemConfig();
 
-    static {
-        // kIntakeRollerConfig.fxConfig = ;
-        // kIntakeRollerConfig.kMaxPositionUnits;
-        // kIntakeRollerConfig.kMinPositionUnits;
-        // kIntakeRollerConfig.momentOfInertia;
-        // kIntakeRollerConfig.name;
-        // kIntakeRollerConfig.talonCANID;
-        // kIntakeRollerConfig.unitToRotorRatio;
+       static {
+
+        kIntakeRollerConfig.fxConfig = new TalonFXConfiguration();
+        //TODO: upate can id here
+        kIntakeRollerConfig.name = "Intake";
+        kIntakeRollerConfig.talonCANID = new CANDeviceId(0, new CANBus(null));
     }
+
+     public static final double kIntakeDutyCycle = 0.5;
+    public static final double kIntakeDutyCycleExhaust = -0.5;
+    
 }
