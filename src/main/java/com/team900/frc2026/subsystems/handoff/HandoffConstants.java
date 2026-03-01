@@ -11,9 +11,8 @@ public class HandoffConstants {
 
     static {
         kHandoffConfig.fxConfig = new TalonFXConfiguration();
-        // TODO: upate can id here
         kHandoffConfig.name = "Handoff";
-        kHandoffConfig.talonCANID = new CANDeviceId(0, new CANBus(null));
+        kHandoffConfig.talonCANID = new CANDeviceId(40, new CANBus(null));
     }
 
     public static final double kHandoffDutyCycle = 0.5;

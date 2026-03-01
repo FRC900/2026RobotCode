@@ -12,6 +12,7 @@ public class HoodConstants {
             new ServoMotorSubsystemWithCanCoderConfig();
 
     static {
+        kHoodConfig.fxConfig.
     }
 
     // this should all lowkey go into the khoodconfig bc none of the below constants are actually
