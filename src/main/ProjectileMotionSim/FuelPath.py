@@ -7,7 +7,7 @@ from tabulate import tabulate
 import time 
 
 # define targets and initial condition guesses
-xt = 3
+xt = 4.445
 yt = 2
 zt = 0
 
@@ -19,14 +19,14 @@ vz_robot = 0
 v_mag_robot = linalg.norm(array([vx_robot, vy_robot, vz_robot]))
 
 # define initial solution guesses
-vxi0 = 10
-vyi0 = 10
-vzi0 = 10
-omegai0 = 3 * 2*pi
+vxi0 = 8.083
+vyi0 = 8.083
+vzi0 = 8.083
+omegai0 = 94
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
-fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, vx_frame=vx_robot, vy_frame=vy_robot, vz_frame=vz_robot, fix_speed=False, fix_omega=True, lm_iters=15, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance, theta_bounds=(0, 0), phi_bounds=(0.52, 1.04))
+fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, vx_frame=vx_robot, vy_frame=vy_robot, vz_frame=vz_robot, fix_speed=False, fix_omega=True, lm_iters=15, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance, theta_bounds=(0, 0), phi_bounds=(0.785, 1.309))
 
 # solve for valid inputs and time the solver
 start = time.perf_counter()
