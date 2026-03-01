@@ -185,5 +185,12 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
-/RobotCode/build
-/RobotCode/build
+
+# Build constants file
+src/main/java/com/team900/frc2026/BuildConstants.java
+
+# Sim GUI configs
+# simgui-ds.json
+simgui-window.json
+simgui.json
+
