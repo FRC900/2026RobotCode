@@ -11,13 +11,12 @@ import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
  * the speed and direction of the intake rollers to collect and feed game pieces.
  */
 public class IntakeRollerSubsystem extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO> {
-    private final RobotState state;
+    private final RobotState state = RobotState.getInstance();
     public MotorIO motorIO;
 
     public IntakeRollerSubsystem(
-            final ServoMotorSubsystemConfig motorConfig, final MotorIO motorIO, RobotState state) {
+            final ServoMotorSubsystemConfig motorConfig, final MotorIO motorIO) {
         super(motorConfig, new MotorInputsAutoLogged(), motorIO);
-        this.state = state;
         this.motorIO = motorIO;
     }
 

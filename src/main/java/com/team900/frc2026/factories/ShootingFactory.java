@@ -14,12 +14,4 @@ public class ShootingFactory {
 
         return null;
     }
-
-    public static Command SpinBottom() {
-        return null;
-    }
-
-    public static Command SpinTop() {
-        return null;
-    }
 }
