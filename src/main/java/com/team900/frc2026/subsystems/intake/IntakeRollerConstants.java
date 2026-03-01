@@ -11,9 +11,8 @@ public class IntakeRollerConstants {
 
     static {
         kIntakeRollerConfig.fxConfig = new TalonFXConfiguration();
-        // TODO: upate can id here
         kIntakeRollerConfig.name = "Intake";
-        kIntakeRollerConfig.talonCANID = new CANDeviceId(0, new CANBus(null));
+        kIntakeRollerConfig.talonCANID = new CANDeviceId(60, new CANBus(null));
     }
 
     public static final double kIntakeDutyCycle = 0.5;

@@ -11,9 +11,8 @@ public class SpindexerConstants {
 
     static {
         kSpindexerConfig.fxConfig = new TalonFXConfiguration();
-        // TODO: upate can id here
         kSpindexerConfig.name = "Spindexer";
-        kSpindexerConfig.talonCANID = new CANDeviceId(0, new CANBus(null));
+        kSpindexerConfig.talonCANID = new CANDeviceId(50, new CANBus(null));
     }
 
     public static final double kSpindexerDutyCycle = 0.5;
