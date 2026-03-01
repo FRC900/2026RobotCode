@@ -1,5 +1,4 @@
 package com.team900.frc2026.subsystems.hood;
-
 import com.team900.frc2026.Constants;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
@@ -10,10 +9,6 @@ public class HoodConstants {
     // info you have
     public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
-
-    static {
-        kHoodConfig.fxConfig.
-    }
 
     // this should all lowkey go into the khoodconfig bc none of the below constants are actually
     // used
