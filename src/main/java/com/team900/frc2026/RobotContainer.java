@@ -78,6 +78,9 @@ public class RobotContainer {
 
     private static volatile RobotContainer instance;
 
+    public SwerveDriveSimulation driveSimulation = null;
+    @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
+    
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
                 @Override
@@ -86,8 +89,6 @@ public class RobotContainer {
                 }
             };
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
-    public SwerveDriveSimulation driveSimulation = null;
-    @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
     private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
