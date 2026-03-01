@@ -330,6 +330,9 @@ public class RobotState {
     private final AtomicReference<Double> spindexerRotations = new AtomicReference<>(0.0);
     private final AtomicReference<Double> spindexerRPS = new AtomicReference<>(0.0);
 
+    private final AtomicReference<Double> handoffRotations = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> handoffRPS = new AtomicReference<>(0.0);
+
     private final AtomicReference<Double> clawRollerRPS = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> shooterRPS = new AtomicReference<>(0.0);
@@ -356,6 +359,22 @@ public class RobotState {
 
     public double getSpindexerRPS() {
         return spindexerRPS.get();
+    }
+
+    public void setHandoffRotations(double rotations) {
+        handoffRotations.set(rotations);
+    }
+
+    public void setHandoffRPS(double rps) {
+        handoffRPS.set(rps);
+    }
+
+    public double getHandoffRotations() {
+        return handoffRotations.get();
+    }
+
+    public double getHandoffRPS() {
+        return handoffRPS.get();
     }
 
     public void setIntakePivotRadians(double radians) {
