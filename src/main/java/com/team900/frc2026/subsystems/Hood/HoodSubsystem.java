@@ -15,9 +15,7 @@ public class HoodSubsystem
     private final RobotState state = RobotState.getInstance();
 
     public HoodSubsystem(
-            ServoMotorSubsystemWithCanCoderConfig c,
-            MotorIO motorIO,
-            CanCoderIO cancoderIO) {
+            ServoMotorSubsystemWithCanCoderConfig c, MotorIO motorIO, CanCoderIO cancoderIO) {
         super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
         this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
         setDefaultCommand(

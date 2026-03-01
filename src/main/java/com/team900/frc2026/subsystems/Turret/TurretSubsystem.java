@@ -3,9 +3,6 @@ package com.team900.frc2026.subsystems.turret;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-import com.team900.frc2026.subsystems.turret.FastTurretInputsAutoLogged;
-import com.team900.frc2026.subsystems.turret.TurretInputsAutoLogged;
-
 public class TurretSubsystem extends SubsystemBase {
     private final TurretIO io;
     private final FastTurretInputsAutoLogged fastInputs = new FastTurretInputsAutoLogged();

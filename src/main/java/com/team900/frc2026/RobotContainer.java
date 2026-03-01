@@ -24,50 +24,57 @@ import com.team900.frc2026.subsystems.spindexer.SpindexerSubsystem;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.subsystems.CanCoderIOHardware;
 import com.team900.lib.subsystems.TalonFXIO;
-
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import lombok.Getter;
-
 import java.util.function.Consumer;
+import lombok.Getter;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class RobotContainer {
     private DriveSubsystem buildDriveSystem() {
 
-            return new DriveSubsystem(
-                    new GyroIOPigeon2(),
-                    new ModuleIOTalonFXReal(CompTunerConstants.FrontLeft),
-                    new ModuleIOTalonFXReal(CompTunerConstants.FrontRight),
-                    new ModuleIOTalonFXReal(CompTunerConstants.BackLeft),
-                    new ModuleIOTalonFXReal(CompTunerConstants.BackRight));
-    }
-    private SpindexerSubsystem buildSpindexerSubsystem()    {
-            return new SpindexerSubsystem(SpindexerConstants.kSpindexerConfig, new TalonFXIO(SpindexerConstants.kSpindexerConfig));
+        return new DriveSubsystem(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFXReal(CompTunerConstants.FrontLeft),
+                new ModuleIOTalonFXReal(CompTunerConstants.FrontRight),
+                new ModuleIOTalonFXReal(CompTunerConstants.BackLeft),
+                new ModuleIOTalonFXReal(CompTunerConstants.BackRight));
     }
 
-    private HoodSubsystem buildHoodSubsystem()   {
-        return new HoodSubsystem(HoodConstants.kHoodConfig, new TalonFXIO(HoodConstants.kHoodConfig), new CanCoderIOHardware(HoodConstants.kHoodConfig.canCoderConfig));
+    private SpindexerSubsystem buildSpindexerSubsystem() {
+        return new SpindexerSubsystem(
+                SpindexerConstants.kSpindexerConfig,
+                new TalonFXIO(SpindexerConstants.kSpindexerConfig));
     }
 
-    private IntakeRollerSubsystem buildIntakeRollerSubsystem()  {
-        return new IntakeRollerSubsystem(IntakeRollerConstants.kIntakeRollerConfig, new TalonFXIO(IntakeRollerConstants.kIntakeRollerConfig));
+    private HoodSubsystem buildHoodSubsystem() {
+        return new HoodSubsystem(
+                HoodConstants.kHoodConfig,
+                new TalonFXIO(HoodConstants.kHoodConfig),
+                new CanCoderIOHardware(HoodConstants.kHoodConfig.canCoderConfig));
     }
 
-    private HandoffSubsystem buildHandoffSubsystem()    {
-        return new HandoffSubsystem(HandoffConstants.kHandoffConfig, new TalonFXIO(HandoffConstants.kHandoffConfig));
+    private IntakeRollerSubsystem buildIntakeRollerSubsystem() {
+        return new IntakeRollerSubsystem(
+                IntakeRollerConstants.kIntakeRollerConfig,
+                new TalonFXIO(IntakeRollerConstants.kIntakeRollerConfig));
     }
 
-    private ShooterSubsystem buildShooterSubsystem()    {
-        return new ShooterSubsystem(ShooterConstants.kShooterConfig, new TalonFXIO(ShooterConstants.kShooterConfig), new TalonFXIO[] {new TalonFXIO(ShooterConstants.kShooterConfig.followers[0].config)});
-    } 
-    
+    private HandoffSubsystem buildHandoffSubsystem() {
+        return new HandoffSubsystem(
+                HandoffConstants.kHandoffConfig, new TalonFXIO(HandoffConstants.kHandoffConfig));
+    }
 
-    
+    private ShooterSubsystem buildShooterSubsystem() {
+        return new ShooterSubsystem(
+                ShooterConstants.kShooterConfig,
+                new TalonFXIO(ShooterConstants.kShooterConfig),
+                new TalonFXIO[] {
+                    new TalonFXIO(ShooterConstants.kShooterConfig.followers[0].config)
+                });
+    }
 
     private static volatile RobotContainer instance;
 
@@ -80,25 +87,18 @@ public class RobotContainer {
             };
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
     public SwerveDriveSimulation driveSimulation = null;
-@Getter
-    private final DriveSubsystem driveSubsystem = buildDriveSystem();
+    @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-      private final CommandPS5Controller driveController = new CommandPS5Controller(0);
+    private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
+    @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
 
-@Getter
-
-    private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     // private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
     @Getter
-
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
-    @Getter
 
-    private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
-    @Getter
-
-    private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
+    @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
+    @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
@@ -109,18 +109,29 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-            // Swerve Drive
-    driveSubsystem.setDefaultCommand(
-        driveSubsystem.run(
-            () ->
-                driveSubsystem.teleopControl(
-                    -driveController.getLeftY(),
-                    -driveController.getLeftX(),
-                    -driveController.getRightX())));
+        // Swerve Drive
+        driveSubsystem.setDefaultCommand(
+                driveSubsystem.run(
+                        () ->
+                                driveSubsystem.teleopControl(
+                                        -driveController.getLeftY(),
+                                        -driveController.getLeftX(),
+                                        -driveController.getRightX())));
 
-driveController.R1().whileTrue(new ParallelCommandGroup(IntakeFactory.runIntake(instance), HandoffFactory.runHandoff(instance), SpindexerFactory.runSpindexer(instance)));
-driveController.L1().whileTrue(new ParallelCommandGroup(IntakeFactory.exhaustIntake(instance), HandoffFactory.exhaustHandoff(instance), SpindexerFactory.exhaustSpindexer(instance)));
-
+        driveController
+                .R1()
+                .whileTrue(
+                        new ParallelCommandGroup(
+                                IntakeFactory.runIntake(instance),
+                                HandoffFactory.runHandoff(instance),
+                                SpindexerFactory.runSpindexer(instance)));
+        driveController
+                .L1()
+                .whileTrue(
+                        new ParallelCommandGroup(
+                                IntakeFactory.exhaustIntake(instance),
+                                HandoffFactory.exhaustHandoff(instance),
+                                SpindexerFactory.exhaustSpindexer(instance)));
     }
 
     public Command getAutonomousCommand() {

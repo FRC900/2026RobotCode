@@ -2,11 +2,10 @@ package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.intake.IntakeRollerConstants;
-
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class IntakeFactory {
-     public static Command runIntake(RobotContainer container) {
+    public static Command runIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
@@ -17,5 +16,4 @@ public class IntakeFactory {
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
-    
 }
