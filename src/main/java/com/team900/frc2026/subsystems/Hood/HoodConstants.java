@@ -1,4 +1,5 @@
 package com.team900.frc2026.subsystems.hood;
+
 import com.team900.frc2026.Constants;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
