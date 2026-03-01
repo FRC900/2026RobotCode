@@ -23,7 +23,7 @@ shot_spin = 8 * 2*np.pi
 
 fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
-r_vals  = np.linspace(0, 12, 48) # radial distance to target
+r_vals  = np.linspace(0, 6.5, 26) # radial distance to target
 vf_vals = np.linspace(-10, 10, 40) # forward (radial) velocity
 vl_vals = np.linspace(-10, 10, 40) # lateral (tangential) velocity
 
