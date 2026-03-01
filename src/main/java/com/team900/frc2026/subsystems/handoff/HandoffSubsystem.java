@@ -7,8 +7,8 @@ import com.team900.lib.subsystems.ServoMotorSubsystem;
 import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 
 /**
- * The {@code IntakeRollerSubsystem} controls the roller mechanism of the robot's intake. It manages
- * the speed and direction of the intake rollers to collect and feed game pieces.
+ * The {@code HandoffSubsystem} controls the roller mechanism of the robot's handoff. It manages
+ * the speed and direction of the handoff rollers to feed game pieces to the shooter.
  */
 public class HandoffSubsystem extends ServoMotorSubsystem<MotorInputsAutoLogged, MotorIO> {
     private final RobotState state;
