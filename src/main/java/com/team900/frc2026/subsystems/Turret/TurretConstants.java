@@ -13,6 +13,7 @@ public class TurretConstants {
             new CANDeviceId(13, Constants.kCanBusCanivoreMech);
     public static final CANDeviceId kTurret29To1CANCoder =
             new CANDeviceId(14, Constants.kCanBusCanivoreMech);
+    // TODO: Update these offsets, 0 should be facing directly forward.
     public static final double k33To1TurretCancoderOffset = -0.057617;
     public static final double k29To1TurretCancoderOffset = 0.482178;
 
