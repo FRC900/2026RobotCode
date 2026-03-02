@@ -24,7 +24,7 @@ public class HandoffSubsystem extends ServoMotorSubsystem<MotorInputsAutoLogged,
     @Override
     public void periodic() {
         super.periodic();
-        state.setHandoffRotations(getPositionRotations());
-        state.setHandoffRPS(getCurrentVelocity());
+        state.setHandoffRotations(getPositionRotations() / HandoffConstants.kHandoffGearRatio);
+        state.setHandoffRPS(getCurrentVelocity() / HandoffConstants.kHandoffGearRatio);
     }
 }
