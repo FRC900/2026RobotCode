@@ -4,9 +4,9 @@
 
 package com.team900.frc2026;
 
-import com.team900.frc2026.factories.HandoffFactory;
-import com.team900.frc2026.factories.IntakeFactory;
-import com.team900.frc2026.factories.SpindexerFactory;
+// import com.team900.frc2026.factories.HandoffFactory;
+// import com.team900.frc2026.factories.IntakeFactory;
+// import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.drive.GyroIOPigeon2;
@@ -28,7 +28,7 @@ import com.team900.lib.subsystems.CanCoderIOHardware;
 import com.team900.lib.subsystems.TalonFXIO;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import java.util.function.Consumer;
 import lombok.Getter;
@@ -98,16 +98,16 @@ public class RobotContainer {
 
     private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
-    @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
-    @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
+    // @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
+    // @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    @Getter
-    private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
+    // @Getter
+    // private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
 
-    @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
-    @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
+    // @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
+    // @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
 
-    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
@@ -126,21 +126,24 @@ public class RobotContainer {
                                         -driveController.getLeftY(),
                                         -driveController.getLeftX(),
                                         -driveController.getRightX())));
+        driveController
+                .cross()
+                .onTrue(new InstantCommand(driveSubsystem::teleopResetRotation, driveSubsystem));
 
-        driveController
-                .R1()
-                .whileTrue(
-                        new ParallelCommandGroup(
-                                IntakeFactory.runIntake(instance),
-                                HandoffFactory.runHandoff(instance),
-                                SpindexerFactory.runSpindexer(instance)));
-        driveController
-                .L1()
-                .whileTrue(
-                        new ParallelCommandGroup(
-                                IntakeFactory.exhaustIntake(instance),
-                                HandoffFactory.exhaustHandoff(instance),
-                                SpindexerFactory.exhaustSpindexer(instance)));
+        // driveController
+        //         .R1()
+        //         .whileTrue(
+        //                 new ParallelCommandGroup(
+        //                         IntakeFactory.runIntake(),
+        //                         HandoffFactory.runHandoff(),
+        //                         SpindexerFactory.runSpindexer()));
+        // driveController
+        //         .L1()
+        //         .whileTrue(
+        //                 new ParallelCommandGroup(
+        //                         IntakeFactory.exhaustIntake(),
+        //                         HandoffFactory.exhaustHandoff(),
+        //                         SpindexerFactory.exhaustSpindexer()));
     }
 
     public Command getAutonomousCommand() {

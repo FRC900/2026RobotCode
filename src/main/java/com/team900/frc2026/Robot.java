@@ -12,10 +12,9 @@ import org.littletonrobotics.junction.LoggedRobot;
 public class Robot extends LoggedRobot {
 
     private Command m_autonomousCommand;
+    private RobotContainer container = RobotContainer.getInstance();
 
-    public Robot() {
-        RobotContainer.getInstance();
-    }
+    public Robot() {}
 
     @Override
     public void robotPeriodic() {

@@ -108,7 +108,7 @@ public class DriveSubsystem extends FullSubsystem {
                 tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
         // Start the Odometry Thread
-        PhoenixOdometryThread.getInstance().start();
+        // PhoenixOdometryThread.getInstance().start();
 
         // Configure AutoBuilder for PathPlanner
         AutoBuilder.configure(
@@ -422,7 +422,7 @@ public class DriveSubsystem extends FullSubsystem {
         double speedY =
                 getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveY, 0.05) * magnitude;
         // TODO: tune on MUSA's preference
-        double speedR = getMaxAngularSpeedRadPerSec() * MathUtil.applyDeadband(rotate, 0.05);
+        double speedR = 6 * MathUtil.applyDeadband(rotate, 0.05);
 
         if (Util.shouldFlip()) {
             speedX = -speedX;

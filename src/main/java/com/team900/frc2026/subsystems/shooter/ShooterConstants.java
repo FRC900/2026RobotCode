@@ -51,6 +51,14 @@ public class ShooterConstants {
         kShooterLeftConfig.config.talonCANID = new CANDeviceId(41, new CANBus("mech"));
         kShooterLeftConfig.config.unitToRotorRatio = 1;
 
+        kShooterLeftConfig.config.fxConfig.Slot0.kA = gains.ffkA();
+        kShooterLeftConfig.config.fxConfig.Slot0.kD = gains.kD();
+        kShooterLeftConfig.config.fxConfig.Slot0.kG = gains.ffkG();
+        kShooterLeftConfig.config.fxConfig.Slot0.kI = gains.kI();
+        kShooterLeftConfig.config.fxConfig.Slot0.kP = gains.kP();
+        kShooterLeftConfig.config.fxConfig.Slot0.kS = gains.ffkS();
+        kShooterLeftConfig.config.fxConfig.Slot0.kV = gains.ffkV();
+
         kShooterLeftConfig.config.fxConfig = new TalonFXConfiguration();
         kShooterLeftConfig.config.fxConfig.OpenLoopRamps =
                 Constants.makeDefaultOpenLoopRampConfig();
@@ -66,15 +74,8 @@ public class ShooterConstants {
         kShooterLeftConfig.config.fxConfig.TorqueCurrent.PeakForwardTorqueCurrent = 150;
         kShooterLeftConfig.config.fxConfig.TorqueCurrent.PeakReverseTorqueCurrent = 150;
 
-        kShooterConfig.followers[0] = kShooterLeftConfig;
-
-        kShooterLeftConfig.config.fxConfig.Slot0.kA = gains.ffkA();
-        kShooterLeftConfig.config.fxConfig.Slot0.kD = gains.kD();
-        kShooterLeftConfig.config.fxConfig.Slot0.kG = gains.ffkG();
-        kShooterLeftConfig.config.fxConfig.Slot0.kI = gains.kI();
-        kShooterLeftConfig.config.fxConfig.Slot0.kP = gains.kP();
-        kShooterLeftConfig.config.fxConfig.Slot0.kS = gains.ffkS();
-        kShooterLeftConfig.config.fxConfig.Slot0.kV = gains.ffkV();
+        kShooterConfig.followers =
+                new ServoMotorSubsystemWithFollowersConfig.FollowerConfig[] {kShooterLeftConfig};
     }
 
     public static final double kShooterGearRatio = 1;
