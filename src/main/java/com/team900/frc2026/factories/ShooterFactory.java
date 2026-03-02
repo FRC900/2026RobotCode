@@ -4,14 +4,19 @@
 
 package com.team900.frc2026.factories;
 
+import com.team900.frc2026.RobotContainer;
+import com.team900.frc2026.subsystems.shooter.ShooterConstants;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShooterFactory {
 
+    public static final RobotContainer container = RobotContainer.getInstance();
+
     /* Commands for shooting */
 
-    public static Command SpinBoth() {
+    public static Command idle() {
 
-        return null;
+        return container.getShooterSubsystem().setTorqueCurrentFOC(ShooterConstants.idleRPS);
     }
 }
