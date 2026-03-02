@@ -48,6 +48,8 @@ public class TurretIOHardware implements TurretIO {
                     TurretConstants.kTurret29To1CANCoder.getBus());
     private final DutyCycleOut dutyCycleControl = new DutyCycleOut(0);
     private final PositionVoltage positionVoltageControl = new PositionVoltage(0.0).withSlot(0);
+
+    
     private final StatusSignal<Angle> positionSignal = talon.getPosition();
     private final StatusSignal<AngularVelocity> velocitySignal = talon.getVelocity();
     private final StatusSignal<Voltage> voltsSignal = talon.getMotorVoltage();
@@ -98,10 +100,12 @@ public class TurretIOHardware implements TurretIO {
         config.Slot0.kD = 0.1;
         config.Slot0.kV = 0.120;
         config.Slot0.kA = 0.0001 * 12.0;
-
+        // find motion magic values
         config.MotionMagic.MotionMagicJerk = 0.0;
         config.MotionMagic.MotionMagicAcceleration = 900.0;
         config.MotionMagic.MotionMagicCruiseVelocity = 90.0;
+
+
         CTREUtil.applyConfiguration(talon, config);
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50,
@@ -148,7 +152,6 @@ public class TurretIOHardware implements TurretIO {
             cancoderOffset = true;
         }
         Logger.recordOutput("Turret/IO/cancoderOffset", cancoderOffset);
-        // TODO: check units for this john
         inputs.cancoder33AbsolutePosition = cancoder33AbsolutePosition.getValueAsDouble();
         inputs.cancoder29AbsolutePosition = cancoder29AbsolutePosition.getValueAsDouble();
         inputs.appliedVolts = voltsSignal.getValueAsDouble();

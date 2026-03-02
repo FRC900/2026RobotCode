@@ -1,10 +1,11 @@
 package com.team900.frc2026.subsystems.turret;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-public class TurretSubsystem extends SubsystemBase {
+import com.team900.lib.util.FullSubsystem;
+
+public class TurretSubsystem extends FullSubsystem {
     private final TurretIO io;
     private final FastTurretInputsAutoLogged fastInputs = new FastTurretInputsAutoLogged();
 
@@ -26,8 +27,11 @@ public class TurretSubsystem extends SubsystemBase {
 
         Logger.processInputs("Turret/Fast", fastInputs);
         Logger.processInputs("Turret", inputs);
+    }
 
-        if (isOpenLoop) {
+    @Override
+    public void periodicAfterScheduler()    {
+         if (isOpenLoop) {
             io.setOpenLoopDutyCycle(openLoopDutyCycle);
         } else {
             double safeSetpoint = constrainSetpoint(positionSetpointRad);
