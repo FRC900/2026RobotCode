@@ -49,7 +49,6 @@ public class TurretIOHardware implements TurretIO {
     private final DutyCycleOut dutyCycleControl = new DutyCycleOut(0);
     private final PositionVoltage positionVoltageControl = new PositionVoltage(0.0).withSlot(0);
 
-    
     private final StatusSignal<Angle> positionSignal = talon.getPosition();
     private final StatusSignal<AngularVelocity> velocitySignal = talon.getVelocity();
     private final StatusSignal<Voltage> voltsSignal = talon.getMotorVoltage();
@@ -104,7 +103,6 @@ public class TurretIOHardware implements TurretIO {
         config.MotionMagic.MotionMagicJerk = 0.0;
         config.MotionMagic.MotionMagicAcceleration = 900.0;
         config.MotionMagic.MotionMagicCruiseVelocity = 90.0;
-
 
         CTREUtil.applyConfiguration(talon, config);
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -168,15 +166,16 @@ public class TurretIOHardware implements TurretIO {
     /**
      * Uses the CRT(Chinese Remainder Theorem) to use 2 CANCoder readings into a absolute turret pos
      *
-     * Each CANCoder reads rotations from 0-1 (it is fractional within one CANCoder revolution)
-     * 
-     * 33:1 ratio - CANCoder wraps every 1/33rd of a turret rotation
-     * 29:1 ratio - CANCoder wraps every 1/29rd of a turret rotation
-     * 29 and 33 are coprime, the combination of readings is unique across 29*33 = 957 sectors.
+     * <p>Each CANCoder reads rotations from 0-1 (it is fractional within one CANCoder revolution)
      *
-     * CRT formula: x = (a1 * M1 * y1 + a2 * M2 * y2) mod M where a1, a2 are the remainders, M = M1 * M2, and y1, y2 are the modular inverses.
+     * <p>33:1 ratio - CANCoder wraps every 1/33rd of a turret rotation 29:1 ratio - CANCoder wraps
+     * every 1/29rd of a turret rotation 29 and 33 are coprime, the combination of readings is
+     * unique across 29*33 = 957 sectors.
      *
-     * Returns turret position in rotor rotations
+     * <p>CRT formula: x = (a1 * M1 * y1 + a2 * M2 * y2) mod M where a1, a2 are the remainders, M =
+     * M1 * M2, and y1, y2 are the modular inverses.
+     *
+     * <p>Returns turret position in rotor rotations
      */
     private double getTurretAngleOffset() {
         BaseStatusSignal.waitForAll(10.0, cancoder33AbsolutePosition, cancoder29AbsolutePosition);
