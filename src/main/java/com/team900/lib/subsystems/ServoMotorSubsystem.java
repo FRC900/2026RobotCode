@@ -66,6 +66,14 @@ public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends Moto
         io.setPositionSetpoint(units);
     }
 
+    
+    protected void setPositionSetpointImpl(double units, double ff) {
+        positionSetpointUnits = units;
+        Logger.recordOutput(getName() + "/API/setPositionSetpointImp/Units", units);
+        Logger.recordOutput(getName()+"/API/setPositionSetpointImp/FF", ff);
+        io.setPositionSetpoint(units);
+    }
+
     protected void setNeutralModeImpl(NeutralModeValue mode) {
         Logger.recordOutput(getName() + "/API/setNeutralModeImpl/Mode", mode);
         io.setNeutralMode(mode);
@@ -186,6 +194,15 @@ public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends Moto
     }
 
     public Command positionSetpointCommand(DoubleSupplier unitSupplier) {
+        return runEnd(
+                        () -> {
+                            setPositionSetpointImpl(unitSupplier.getAsDouble());
+                        },
+                        () -> {})
+                .withName(getName() + " positionSetpointCommand");
+    }
+
+    public Command positionSetpointCommand(DoubleSupplier unitSupplier, DoubleSupplier ff) {
         return runEnd(
                         () -> {
                             setPositionSetpointImpl(unitSupplier.getAsDouble());

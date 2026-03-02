@@ -6,7 +6,7 @@ package com.team900.frc2026.factories;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class ShootingFactory {
+public class ShooterFactory {
 
     /* Commands for shooting */
 
