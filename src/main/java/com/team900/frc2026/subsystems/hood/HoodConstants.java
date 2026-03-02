@@ -17,7 +17,7 @@ public class HoodConstants {
     // used
     public static final CANDeviceId kHoodTalonCanID =
             new CANDeviceId(19, Constants.kCanBusCanivoreMech);
-    public static final double kHoodGearRatio = 0;
+    public static final double kHoodGearRatio = 2125/8;
     // TODO: what should this even be what
     public static final double kHoodRotorMaxPosition = 0;
     public static final double kHoodRotorMinPosition = 0;
