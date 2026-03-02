@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 
 public class TurretConstants {
 
-    public static final double kTurretGearRatio = 1 / 22;
+    public static final double kTurretGearRatio = 1.0 / 21.25;
     public static final CANDeviceId kTurretTalonCanID =
             new CANDeviceId(21, Constants.kCanBusCanivoreMech);
     public static final CANDeviceId kTurret33To1CANCoder =
@@ -15,9 +15,24 @@ public class TurretConstants {
             new CANDeviceId(14, Constants.kCanBusCanivoreMech);
     public static final double k33To1TurretCancoderOffset = -0.057617;
     public static final double k29To1TurretCancoderOffset = 0.482178;
-    // TODO: add right thign here
-    public static final double kTurretMinPositionRadians = -2. * Math.PI;
-    public static final double kTurretMaxPositionRadians = 2. * Math.PI;
+
+    // 33to1 cancoder: 33 rotations to 170 turret rotations
+    // 29to1 cancoder: 29 rotations to 170 turret rotations
+    // Both are direct — no additional gear stages
+    public static final int kCRTRatio33 = 33;
+    public static final int kCRTRatio29 = 29;
+
+    // TODO: Measure the actual hard stop positions on the robot and set these values
+    // These are hard stop limits in radians from center (0 = forward)
+    public static final double kTurretMinPositionRadians = -2.0 * Math.PI;
+    public static final double kTurretMaxPositionRadians = 2.0 * Math.PI;
+
+    // Software buffer so we don't slam into the hard stops (back off by this amount)
+    public static final double kSoftwareLimitBufferRadians = Units.degreesToRadians(5.0);
+    public static final double kTurretSoftMinRadians =
+            kTurretMinPositionRadians + kSoftwareLimitBufferRadians;
+    public static final double kTurretSoftMaxRadians =
+            kTurretMaxPositionRadians - kSoftwareLimitBufferRadians;
 
     public static final double kTurretEpsilon = Units.degreesToRadians(2.0);
     public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);

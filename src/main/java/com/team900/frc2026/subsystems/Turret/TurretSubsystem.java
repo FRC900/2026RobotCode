@@ -1,5 +1,6 @@
 package com.team900.frc2026.subsystems.turret;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -26,16 +27,54 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.processInputs("Turret/Fast", fastInputs);
         Logger.processInputs("Turret", inputs);
 
-        positionSetpointRad =
-                Math.max(
-                        TurretConstants.kTurretMinPositionRadians,
-                        Math.min(TurretConstants.kTurretMaxPositionRadians, positionSetpointRad));
-
         if (isOpenLoop) {
             io.setOpenLoopDutyCycle(openLoopDutyCycle);
         } else {
-            io.setPositionSetpoint(positionSetpointRad, velocitySetpointRadPerSec);
+            double safeSetpoint = constrainSetpoint(positionSetpointRad);
+            io.setPositionSetpoint(safeSetpoint, velocitySetpointRadPerSec);
+            Logger.recordOutput("Turret/requestedSetpointRad", positionSetpointRad);
+            Logger.recordOutput("Turret/constrainedSetpointRad", safeSetpoint);
         }
+    }
+
+    /**
+     * Finds the best reachable angle for the turret target
+     * If the target is within limits, use it directly
+     * Otherwise check if rotating 360 degrees in either direction gives an equivalent that is in range
+     * And if no equivalent is in range go to the nearest limit
+     */
+    private double constrainSetpoint(double desiredRad) {
+        double min = TurretConstants.kTurretSoftMinRadians;
+        double max = TurretConstants.kTurretSoftMaxRadians;
+
+        // Already in range
+        if (desiredRad >= min && desiredRad <= max) {
+            return desiredRad;
+        }
+
+        // Try adding/subtracting full rotations to find an equivalent angle in range
+        double bestAngle = desiredRad;
+        double bestDistance = Double.MAX_VALUE;
+
+        // The turret range is at most ~2 full rotations, so checking ±1 rotation covers it
+        for (int i = -2; i <= 2; i++) {
+            double candidate = desiredRad + i * 2.0 * Math.PI;
+            if (candidate >= min && candidate <= max) {
+                double distance = Math.abs(candidate - fastInputs.positionRad);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    bestAngle = candidate;
+                }
+            }
+        }
+
+        // If we found a valid in-range spot, use it
+        if (bestDistance < Double.MAX_VALUE) {
+            return bestAngle;
+        }
+
+        // No equivalent is in range go to the nearest limit
+        return MathUtil.clamp(desiredRad, min, max);
     }
 
     public void setPositionRadians(double radians) {
