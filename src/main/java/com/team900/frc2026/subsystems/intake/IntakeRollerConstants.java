@@ -17,4 +17,5 @@ public class IntakeRollerConstants {
 
     public static final double kIntakeDutyCycle = 0.5;
     public static final double kIntakeDutyCycleExhaust = -0.5;
+    public static final double kRollerGearRatio = 15/32;
 }
