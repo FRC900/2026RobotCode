@@ -437,7 +437,6 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void addVisionMeasurement(VisionFieldPoseEstimate estimate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addVisionMeasurement'");
+        // TODO: Implement when vision is enabled
     }
 }

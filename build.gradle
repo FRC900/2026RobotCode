@@ -27,7 +27,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-def ROBOT_MAIN_CLASS = "com.team900.frc.Main"
+def ROBOT_MAIN_CLASS = "com.team900.frc2026.Main"
 
 final MAX_JAVA_HEAP_SIZE_MB = 100
 

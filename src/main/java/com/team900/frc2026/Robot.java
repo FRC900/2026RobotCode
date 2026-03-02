@@ -13,7 +13,9 @@ public class Robot extends LoggedRobot {
 
     private Command m_autonomousCommand;
 
-    public Robot() {}
+    public Robot() {
+        RobotContainer.getInstance();
+    }
 
     @Override
     public void robotPeriodic() {
