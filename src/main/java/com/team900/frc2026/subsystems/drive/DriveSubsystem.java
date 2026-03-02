@@ -21,6 +21,7 @@ import com.team900.frc2026.Constants.Mode;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import com.team900.lib.util.FullSubsystem;
 import com.team900.lib.util.Util;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
@@ -39,7 +40,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,7 +47,7 @@ import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends FullSubsystem {
 
     static final Lock odometryLock = new ReentrantLock();
 
@@ -56,6 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
     private ChassisSpeeds prePoofed = new ChassisSpeeds();
+    
     private final SysIdRoutine sysId;
 
     private final Alert gyroDisconnectedAlert =
@@ -106,29 +107,35 @@ public class DriveSubsystem extends SubsystemBase {
         HAL.report(
                 tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
+        // Start the Odometry Thread
+            PhoenixOdometryThread.getInstance().start();
+
         // Configure AutoBuilder for PathPlanner
         AutoBuilder.configure(
                 this::getPose,
-                this::setPose,
+                this::resetPose,
                 this::getChassisSpeeds,
                 this::runVelocity,
+                //TODO: tune pathfollowing constants
                 new PPHolonomicDriveController(
                         new PIDConstants(7, 0.0, 0), new PIDConstants(5.0, 0.0, 0.0)),
                 DriveConstants.PP_CONFIG,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
+        // Pathplanner Logging
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(
                             "Odometry/Trajectory",
                             activePath.toArray(new Pose2d[activePath.size()]));
                 });
+
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
 
-        // Configure SysId
+        //TODO: Configure SysId
         sysId =
                 new SysIdRoutine(
                         new SysIdRoutine.Config(
@@ -216,6 +223,10 @@ public class DriveSubsystem extends SubsystemBase {
                 rawYawRotation = rawYawRotation.plus(new Rotation2d(twist.dtheta));
             }
             // Apply update
+            RobotState.getInstance().addOdometryMeasurement(
+          sampleTimestamps[i],
+          poseEstimator.updateWithTime(sampleTimestamps[i], rawYawRotation, modulePositions));
+
 
             ChassisSpeeds measuredRobotRelativeChassisSpeeds =
                     kinematics.toChassisSpeeds(swerveModulePositionToState(modulePositions));
@@ -251,6 +262,15 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    }
+
+    @Override
+    public void periodicAfterScheduler()  {
+
+           Logger.recordOutput(
+                "Drive/currentCommand",
+                (getCurrentCommand() == null) ? "Default" : getCurrentCommand().getName());
+        
     }
 
     /**
@@ -373,7 +393,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /** Resets the current odometry pose. */
-    public void setPose(Pose2d pose) {
+    public void resetPose(Pose2d pose) {
         poseEstimator.resetPosition(rawYawRotation, getModulePositions(), pose);
         if (Constants.currentMode == Mode.SIM) {
             RobotContainer.getInstance().driveSimulation.setSimulationWorldPose(pose);
@@ -381,8 +401,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /** Resets the current odometry pose. */
-    public void setPose() {
-        setPose(Pose2d.kZero);
+    public void resetPose() {
+        resetPose(Pose2d.kZero);
     }
 
     /** Returns the maximum linear speed in meters per sec. */
@@ -398,14 +418,15 @@ public class DriveSubsystem extends SubsystemBase {
     public void teleopControl(double driveX, double driveY, double rotate) {
         double magnitude = Math.hypot(driveX, driveY);
         double speedX =
-                CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
+                getMaxLinearSpeedMetersPerSec()
                         * MathUtil.applyDeadband(driveX, 0.05)
                         * magnitude;
         double speedY =
-                CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
+                getMaxLinearSpeedMetersPerSec()
                         * MathUtil.applyDeadband(driveY, 0.05)
                         * magnitude;
-        double speedR = 6 * MathUtil.applyDeadband(rotate, 0.05);
+        //TODO: tune on MUSA's preference
+        double speedR = getMaxAngularSpeedRadPerSec() * MathUtil.applyDeadband(rotate, 0.05);
 
         if (Util.shouldFlip()) {
             speedX = -speedX;
