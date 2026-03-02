@@ -66,11 +66,10 @@ public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends Moto
         io.setPositionSetpoint(units);
     }
 
-    
     protected void setPositionSetpointImpl(double units, double ff) {
         positionSetpointUnits = units;
         Logger.recordOutput(getName() + "/API/setPositionSetpointImp/Units", units);
-        Logger.recordOutput(getName()+"/API/setPositionSetpointImp/FF", ff);
+        Logger.recordOutput(getName() + "/API/setPositionSetpointImp/FF", ff);
         io.setPositionSetpoint(units);
     }
 

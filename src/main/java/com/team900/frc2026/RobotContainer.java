@@ -21,6 +21,8 @@ import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterSubsystem;
 import com.team900.frc2026.subsystems.spindexer.SpindexerConstants;
 import com.team900.frc2026.subsystems.spindexer.SpindexerSubsystem;
+import com.team900.frc2026.subsystems.turret.TurretIOHardware;
+import com.team900.frc2026.subsystems.turret.TurretSubsystem;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.subsystems.CanCoderIOHardware;
 import com.team900.lib.subsystems.TalonFXIO;
@@ -76,11 +78,15 @@ public class RobotContainer {
                 });
     }
 
+    private TurretSubsystem buildTurretSubsystem() {
+        return new TurretSubsystem(new TurretIOHardware());
+    }
+
     private static volatile RobotContainer instance;
 
     public SwerveDriveSimulation driveSimulation = null;
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
-    
+
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
                 @Override
@@ -93,13 +99,15 @@ public class RobotContainer {
     private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
-@Getter
-    private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
+    @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
+
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
 
     @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
+
+    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
