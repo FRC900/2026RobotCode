@@ -1,6 +1,7 @@
 package com.team900.frc2026.subsystems.turret;
 
 import com.team900.frc2026.Constants;
+import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
 import edu.wpi.first.math.util.Units;
 
@@ -39,4 +40,15 @@ public class TurretConstants {
     public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);
 
     public static final double toleranceRad = 0.1;
+/*
+ * 
+ *         config.Slot0.kS = 0.18;
+        config.Slot0.kP = 6.0;
+        config.Slot0.kD = 0.1;
+        config.Slot0.kV = 0.120;
+        config.Slot0.kA = 0.0001 * 12.0;
+ */
+    public static final Gains COMP_GAINS = new Gains(0,0,0,0,0,0,0);
+        public static final Gains SIM_GAINS = new Gains(0,0,0,0,0,0,0);
+
 }
