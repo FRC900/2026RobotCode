@@ -1,19 +1,20 @@
-// package com.team900.frc2026.factories;
+package com.team900.frc2026.factories;
 
-// import com.team900.frc2026.RobotContainer;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import java.util.function.Supplier;
+import com.team900.frc2026.RobotContainer;
+import com.team900.lib.util.ShooterSetpoint;
 
-// public class HoodFactory {
+import edu.wpi.first.wpilibj2.command.Command;
+import java.util.function.Supplier;
 
-//     RobotContainer container;
+public class HoodFactory {
 
-//     public static Command aimHoodToPose(
-//             RobotContainer container, Supplier<Angle> setpointSupplier) {
-//         var hood = container.getHood();
-//         return hood.positionSetpointCommand(
-//                         () -> setpointSupplier.get().getHoodRadians(),
-//                         () -> setpointSupplier.get().getHoodFF())
-//                 .withName("Align Hood To Pose");
-//     }
-// }
+    static RobotContainer container = RobotContainer.getInstance();
+
+    public static Command aimHoodToPose(Supplier<ShooterSetpoint> setpointSupplier) {
+        var hood = container.getHoodSubsystem();
+        return hood.positionSetpointCommand(
+                        () -> setpointSupplier.get().getHoodRadians(),
+                        () -> setpointSupplier.get().getHoodFF())
+                .withName("Align Hood To Pose");
+    }
+}

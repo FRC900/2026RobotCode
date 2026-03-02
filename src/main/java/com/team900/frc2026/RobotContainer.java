@@ -93,8 +93,8 @@ public class RobotContainer {
     private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
-
-    // private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
+@Getter
+    private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
 

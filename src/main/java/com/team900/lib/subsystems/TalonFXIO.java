@@ -108,6 +108,12 @@ public class TalonFXIO implements MotorIO {
         talon.setControl(positionVoltageControl.withPosition(clampPosition(units)));
     }
 
+    
+    @Override
+    public void setPositionSetpoint(double units, double ff) {
+        talon.setControl(positionVoltageControl.withPosition(clampPosition(units)).withFeedForward(ff));
+    }
+
     @Override
     public void setMotionMagicConfig(MotionMagicConfigs config) {
         this.config.fxConfig.MotionMagic = config;
