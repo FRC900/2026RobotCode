@@ -77,10 +77,13 @@ public class TurretIOHardware implements TurretIO {
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // Convert from radians to rotor rotations for the TalonFX
         config.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-                1.0 / TurretConstants.kTurretGearRatio;
+                Units.radiansToRotations(TurretConstants.kTurretMaxPositionRadians)
+                        / TurretConstants.kTurretGearRatio;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-                -1.0 / TurretConstants.kTurretGearRatio;
+                Units.radiansToRotations(TurretConstants.kTurretMinPositionRadians)
+                        / TurretConstants.kTurretGearRatio;
 
         if (Robot.isReal()) {
             config.CurrentLimits.StatorCurrentLimit = 150.0;
@@ -159,22 +162,72 @@ public class TurretIOHardware implements TurretIO {
         Logger.recordOutput("Turret/IO/setOpenLoopDutyCycle/dutyCycle", dutyCycle);
     }
 
+    /**
+     * Uses the CRT(Chinese Remainder Theorem) to use 2 CANCoder readings into a absolute turret pos
+     *
+     * Each CANCoder reads rotations from 0-1 (it is fractional within one CANCoder revolution)
+     * 
+     * 33:1 ratio - CANCoder wraps every 1/33rd of a turret rotation
+     * 29:1 ratio - CANCoder wraps every 1/29rd of a turret rotation
+     * 29 and 33 are coprime, the combination of readings is unique across 29*33 = 957 sectors.
+     *
+     * CRT formula: x = (a1 * M1 * y1 + a2 * M2 * y2) mod M where a1, a2 are the remainders, M = M1 * M2, and y1, y2 are the modular inverses.
+     *
+     * Returns turret position in rotor rotations
+     */
     private double getTurretAngleOffset() {
         BaseStatusSignal.waitForAll(10.0, cancoder33AbsolutePosition, cancoder29AbsolutePosition);
-        double cancoder33To1 = cancoder33AbsolutePosition.getValueAsDouble();
-        // Make cancoder3to1 read true value.
-        double cancoder29To1 = cancoder29AbsolutePosition.getValueAsDouble() * (42.0 / 18.0);
 
-        double offset = cancoder33To1 - cancoder29To1;
-        while (Math.abs(offset) > 0.5) {
-            if (offset > 0.5) {
-                cancoder33To1 += 1.0;
-            } else if (offset < -0.5) {
-                cancoder33To1 -= 1.0;
-            }
-            offset = cancoder33To1 - cancoder29To1;
+        int n1 = TurretConstants.kCRTRatio33; // 33
+        int n2 = TurretConstants.kCRTRatio29; // 29
+
+        // CANCoder, [0, 1), Convert to index of sector [0,n)
+        double raw33 = cancoder33AbsolutePosition.getValueAsDouble();
+        double raw29 = cancoder29AbsolutePosition.getValueAsDouble();
+
+        // Wrap to [0,1) then convert to the index of the sector
+        int a1 = (int) Math.round(((raw33 % 1.0) + 1.0) % 1.0 * n1) % n1;
+        int a2 = (int) Math.round(((raw29 % 1.0) + 1.0) % 1.0 * n2) % n2;
+
+        // CRT
+        int M = n1 * n2; // 957
+        int M1 = n2; // 29
+        int M2 = n1; // 33
+        int y1 = modInverse(M1, n1); // inverse of 29 mod 33
+        int y2 = modInverse(M2, n2); // inverse of 33 mod 29
+
+        int sector = ((a1 * M1 * y1 + a2 * M2 * y2) % M + M) % M;
+
+        // Convert sector to turret rotations
+        // Sector 0 = pos 0 (forward).
+        // Each sector is 1/M of a turret rotation.
+        double turretRotations = (double) sector / M;
+
+        // Center around 0, so if turretRotations > 0.5, subtract 1 full rotation
+        // so the range is [-0.5, 0.5) turret rotations instead of [0, 1)
+        if (turretRotations > 0.5) {
+            turretRotations -= 1.0;
         }
-        return cancoder33To1 / TurretConstants.kTurretGearRatio;
+
+        Logger.recordOutput("Turret/CRT/raw33", raw33);
+        Logger.recordOutput("Turret/CRT/raw29", raw29);
+        Logger.recordOutput("Turret/CRT/sector", sector);
+        Logger.recordOutput("Turret/CRT/turretRotations", turretRotations);
+
+        // Return in rotor rotations (what the TalonFX encoder expects)
+        return turretRotations / TurretConstants.kTurretGearRatio;
+    }
+
+    /** Computes the modular inverse of a mod m using the extended Euclidean algorithm. */
+    private static int modInverse(int a, int m) {
+        a = ((a % m) + m) % m;
+        for (int x = 1; x < m; x++) {
+            if ((a * x) % m == 1) {
+                return x;
+            }
+        }
+        // Should never happen if a and m are coprime (29 and 33 are)
+        throw new ArithmeticException("No modular inverse exists for " + a + " mod " + m);
     }
 
     @Override
