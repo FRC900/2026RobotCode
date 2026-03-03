@@ -4,32 +4,36 @@ import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.turret.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import java.util.function.Supplier;
+import java.util.function.DoubleSupplier;
 
 public class TurretFactory {
 
-    // Continuously aims the turret radians
+    // Continuously aims the turret in radians
     public static Command aimTurretToPoseRadians(
-            RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
+            RobotContainer container,
+            DoubleSupplier turretRadiansFromCenter,
+            DoubleSupplier turretFF) {
         TurretSubsystem turret = container.getTurretSubsystem();
         return Commands.run(
                         () ->
                                 turret.setPositionRadians(
-                                        setpointSupplier.get().getTurretRadiansFromCenter(),
-                                        setpointSupplier.get().getTurretFF()),
+                                        turretRadiansFromCenter.getAsDouble(),
+                                        turretFF.getAsDouble()),
                         turret)
                 .withName("Aim Turret to Pose (rad)");
     }
 
-    // Continuously aims the turret degrees
+    // Continuously aims the turret in degrees
     public static Command aimTurretToPoseDegrees(
-            RobotContainer container, Supplier<ShooterSetpoint> setpointSupplier) {
+            RobotContainer container,
+            DoubleSupplier turretDegreesFromCenter,
+            DoubleSupplier turretFFDegrees) {
         TurretSubsystem turret = container.getTurretSubsystem();
         return Commands.run(
                         () ->
                                 turret.setPositionDegrees(
-                                        setpointSupplier.get().getTurretDegreesFromCenter(),
-                                        setpointSupplier.get().getTurretFFDegrees()),
+                                        turretDegreesFromCenter.getAsDouble(),
+                                        turretFFDegrees.getAsDouble()),
                         turret)
                 .withName("Aim Turret to Pose (deg)");
     }
