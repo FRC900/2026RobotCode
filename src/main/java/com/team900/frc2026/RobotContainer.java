@@ -15,6 +15,8 @@ import com.team900.frc2026.subsystems.handoff.HandoffConstants;
 import com.team900.frc2026.subsystems.handoff.HandoffSubsystem;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.hood.HoodSubsystem;
+import com.team900.frc2026.subsystems.intake.IntakePivotSubsystem;
+import com.team900.frc2026.subsystems.intake.IntakePivotConstants;
 import com.team900.frc2026.subsystems.intake.IntakeRollerConstants;
 import com.team900.frc2026.subsystems.intake.IntakeRollerSubsystem;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
@@ -60,7 +62,12 @@ public class RobotContainer {
     private IntakeRollerSubsystem buildIntakeRollerSubsystem() {
         return new IntakeRollerSubsystem(
                 IntakeRollerConstants.kIntakeRollerConfig,
-                new TalonFXIO(IntakeRollerConstants.kIntakeRollerConfig));
+                new TalonFXIO(IntakeRollerConstants.kIntakeRollerConfig),
+                robotState);
+    }
+
+    private IntakePivotSubsystem buildIntakePivotSubsystem() {
+        return new IntakePivotSubsystem(IntakePivotConstants.kIntakePivotConfig, new TalonFXIO(IntakePivotConstants.kIntakePivotConfig), null, robotState);
     }
 
     private HandoffSubsystem buildHandoffSubsystem() {
@@ -98,6 +105,8 @@ public class RobotContainer {
     // private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
+    @Getter
+    private final IntakePivotSubsystem intakePivotSubsystem = buildIntakePivotSubsystem();
 
     @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
@@ -125,6 +134,7 @@ public class RobotContainer {
                 .whileTrue(
                         new ParallelCommandGroup(
                                 IntakeFactory.runIntake(instance),
+                                IntakeFactory.extendIntake(instance),
                                 HandoffFactory.runHandoff(instance),
                                 SpindexerFactory.runSpindexer(instance)));
         driveController
@@ -132,6 +142,7 @@ public class RobotContainer {
                 .whileTrue(
                         new ParallelCommandGroup(
                                 IntakeFactory.exhaustIntake(instance),
+                                IntakeFactory.retractIntake(instance),
                                 HandoffFactory.exhaustHandoff(instance),
                                 SpindexerFactory.exhaustSpindexer(instance)));
     }

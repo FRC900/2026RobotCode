@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.Intake;
+package com.team900.frc2026.subsystems.intake;
 
 import com.team900.lib.subsystems.*;
 import com.team900.lib.util.Util;
@@ -8,6 +8,7 @@ import com.team900.lib.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakePivotSubsystem extends ServoMotorSubsystemWithCanCoder<
                 MotorInputsAutoLogged, MotorIO, CanCoderInputsAutoLogged, CanCoderIO>{

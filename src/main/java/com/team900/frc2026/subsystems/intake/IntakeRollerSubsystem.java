@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.Intake;
+package com.team900.frc2026.subsystems.intake;
 
 import com.team900.lib.subsystems.*;
 import com.team900.frc2026.RobotState;

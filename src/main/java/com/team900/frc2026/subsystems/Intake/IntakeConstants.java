@@ -1,4 +1,4 @@
-package com.team900.frc2026.subsystems.Intake;
+package com.team900.frc2026.subsystems.intake;
 
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
@@ -14,7 +14,7 @@ public class IntakeConstants {
     public static final CANBus kCANBus = new CANBus("enable-only", "./logs/example.hoot");
     //Actually put in all positions later
     public static final double kIntakeDutyCycleIntake = 1.0;
-    public static final double kIntakeDutyCycleOuttake = -1.0;
+    public static final double kIntakeDutyCycleExhaust = -1.0;
 
     public static final double kIntakePivotStowPositionRadians = Units.degreesToRadians(0);
     public static final double kIntakePivotDeployPositionRadians = 0.0;

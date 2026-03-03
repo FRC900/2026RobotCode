@@ -1,9 +1,9 @@
 package com.team900.frc2026.factories;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import com.team900.frc2026.subsystems.Intake.IntakePivotSubsystem;
-import com.team900.frc2026.subsystems.Intake.IntakeRollerSubsystem;
-import com.team900.frc2026.subsystems.Intake.IntakeConstants;
+import com.team900.frc2026.subsystems.intake.IntakePivotSubsystem;
+import com.team900.frc2026.subsystems.intake.IntakeRollerSubsystem;
+import com.team900.frc2026.subsystems.intake.IntakeConstants;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,32 +13,32 @@ public class IntakeFactory{
 
     private static final RobotContainer container = RobotContainer.getInstance();
 
-    public static Command runIntake() {
+    public static Command runIntake(RobotContainer container) {
         return container
-            .getIntakeRoller()
+            .getIntakeRollerSubsystem()
             .dutyCycleCommand(() -> IntakeConstants.kIntakeDutyCycleIntake)
             .withName("Duty Cycle Intake");
     }
 
-    public static Command Outtake() {
+    public static Command exhaustIntake(RobotContainer container) {
         return container
-            .getIntakeRoller()
-            .dutyCycleCommand(() -> IntakeConstants.kIntakeDutyCycleOuttake)
+            .getIntakeRollerSubsystem()
+            .dutyCycleCommand(() -> IntakeConstants.kIntakeDutyCycleExhaust)
             .withName("Duty Cycle Outtake");
     }
 
-    public static Command extendIntake() {
+    public static Command extendIntake(RobotContainer container) {
         return container
-            .getIntakePivot()
+            .getIntakePivotSubsystem()
             .motionMagicSetpointCommandBlocking(() -> 
                 IntakeConstants.kIntakePivotDeployPositionRadians,
                 IntakeConstants.kIntakePivotToleranceRadians)
             .withName("Extending Slapdown");
     }
 
-    public static Command retractIntake() {
+    public static Command retractIntake(RobotContainer container) {
         return container
-            .getIntakePivot()
+            .getIntakePivotSubsystem()
             .motionMagicSetpointCommandBlocking(() -> 
                 IntakeConstants.kIntakePivotStowPositionRadians,
                 IntakeConstants.kIntakePivotToleranceRadians)
