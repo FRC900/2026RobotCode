@@ -1,3 +1,4 @@
+/*
 import com.ctre.phoenix.led.CANdle;
 
 import com.team900.frc2026.Robot;
@@ -58,3 +59,4 @@ public class LedIOHardware implements LedIO{
         if(candle!=null) candle.setControl(newSolidColor(run.red, run.green, run.blue), 255, idx, pixels.length - idx);
     }
 }
+*/
