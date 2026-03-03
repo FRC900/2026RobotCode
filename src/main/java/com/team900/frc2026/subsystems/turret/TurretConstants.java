@@ -7,7 +7,8 @@ import edu.wpi.first.math.util.Units;
 
 public class TurretConstants {
 
-    public static final double kTurretGearRatio = 1.0 / 21.25;
+    // 14t:42t  24:176t  overall: 22:1 
+    public static final double kTurretGearRatio = 1.0 / 22.0;
     // TODO: Check this canID just for the Talon
     public static final CANDeviceId kTurretTalonCanID =
             new CANDeviceId(21, Constants.kCanBusCanivoreMech);

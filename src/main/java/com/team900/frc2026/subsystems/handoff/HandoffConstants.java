@@ -15,7 +15,11 @@ public class HandoffConstants {
     static {
         kHandoffConfig.name = "Handoff";
         kHandoffConfig.talonCANID = new CANDeviceId(40, new CANBus("mech"));
-        kHandoffConfig.unitToRotorRatio = 1;
+        // 1:1 for all wheels
+        // Above motor - 18t:18t 30t:30t
+        // First wheels - 18t:18t 18t:18t
+        // Second wheels - 18t:18t 18t:18t 18t:18t
+        kHandoffConfig.unitToRotorRatio = 1.0;
 
 
         kHandoffConfig.fxConfig = new TalonFXConfiguration();
