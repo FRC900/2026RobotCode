@@ -13,9 +13,9 @@ public class IntakePivotConstants {
     static {
         kIntakePivotConfig.fxConfig = new TalonFXConfiguration();
         kIntakePivotConfig.name = "IntakePivot";
-        kIntakePivotConfig.talonCANID = new CANDeviceId(61, new CANBus(null));
+        kIntakePivotConfig.talonCANID = new CANDeviceId(61, new CANBus("mech"));
         // TODO: Update this when the cancoder is added
-        kIntakePivotConfig.canCoderConfig.CANID = new CANDeviceId(0, new CANBus(null));
+        kIntakePivotConfig.canCoderConfig.CANID = new CANDeviceId(0, new CANBus("mech"));
         // Jackshaft overall gear ratio motor:pivot is ~42:1
         kIntakePivotConfig.unitToRotorRatio = 41.9894179894;
         kIntakePivotConfig.cancoderToUnitsRatio = 1.0;
