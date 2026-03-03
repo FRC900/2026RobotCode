@@ -1,5 +1,5 @@
 package com.team900.frc2026.subsystems.Led;
-
+/*
 public class LedState {
     public static final LedState kRed = new LedState(255,0,0);
     public static final LedState kGreen = new LedState(0,255,0);
@@ -35,3 +35,4 @@ public class LedState {
         return this.red==((LedState) other).red && this.green==((LedState) other).green && this.blue==((LedState) other).blue;
     }
 }
+*/
