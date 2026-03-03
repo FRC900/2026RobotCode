@@ -16,8 +16,14 @@ import org.littletonrobotics.junction.Logger;
 
 import com.team900.frc2026.RobotContainer;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import com.team900.lib.commands.ChezySequenceCommandGroup;
 
 import java.util.Set;
 
@@ -120,10 +126,136 @@ public class SuperstructureStateMachine {
             throw new IllegalArgumentException("State not registered: " + state);
         }
 
-
+        //TODO: Add something such that if the desired state is a shooting state, don't move to that state until a ball is in the handoff (assuming no manual override)
         
         desiredState = state;
+        if (!DriverStation.isAutonomous() && wipeFuture) futureDesiredState = null;
+        continueTransition();
     }
+
+    public void continueTransition() {
+        if (transitioning) {
+            return;
+        }
+
+        if (currentState == null) {
+            new ChezySequenceCommandGroup(
+                            desiredState.getCommand(container),
+                            new InstantCommand(
+                                    () -> {
+                                        setCurrentState(desiredState);
+                                        transitioning = false;
+                                        if (!currentState.equals(desiredState)) {
+                                            continueTransition();
+                                        }
+                                    }))
+                    .withName("SuperstructureMove")
+                    .ignoringDisable(true)
+                    .schedule();
+            return;
+        }
+
+        if (currentState.equals(desiredState)) {
+            return;
+        }
+
+        List<StateTransition> path = getPrecomputedPath(currentState, desiredState);
+        if (path == null || path.isEmpty()) {
+            setDesiredState(currentState);
+            return;
+        }
+
+
+
+        StateTransition nextTransitionTemp = path.get(0);
+        if (isTransitionBlocked(nextTransitionTemp)) {
+            Logger.recordOutput(
+                    "Superstructure/BlockedTransition",
+                    "Precomputed transition "
+                            + nextTransitionTemp.toString()
+                            + " is blocked. Searching for alternative.");
+            List<StateTransition> alternativePath =
+                    computeDynamicTransitionPath(currentState, desiredState);
+            if (alternativePath != null && !alternativePath.isEmpty()) {
+                nextTransitionTemp = alternativePath.get(0);
+            } else {
+                Logger.recordOutput(
+                        "Superstructure/BlockedTransition",
+                        "No alternative transition available from " + currentState);
+                return;
+            }
+        }
+        final StateTransition nextTransition = nextTransitionTemp;
+        Command transitionCommand = nextTransition.getCommand();
+        transitioning = true;
+        Command wrappedCommand =
+                new ChezySequenceCommandGroup(
+                        transitionCommand,
+                        new InstantCommand(
+                                () -> {
+                                    setCurrentState(nextTransition.getToState());
+                                    transitioning = false;
+                                    if (!currentState.equals(desiredState)) {
+                                        continueTransition();
+                                    }
+                                }));
+        wrappedCommand.withName("SuperstructureMove").ignoringDisable(true).schedule();
+    }
+
+
+    public List<StateTransition> computeDynamicTransitionPath(
+        SuperstructureState from, SuperstructureState to) {
+        Map<SuperstructureState, List<StateTransition>> dynamicGraph = new HashMap<>();
+        for (SuperstructureState state : states) {
+            dynamicGraph.put(state, new ArrayList<>());
+        }
+        for (StateTransition t : transitions) {
+            if (!t.hasCollision() && !isTransitionBlocked(t)) {
+                dynamicGraph.get(t.getFromState()).add(t);
+            }
+        }
+        AStarSolver<SuperstructureState> solver = new AStarSolver<>();
+        List<SuperstructureState> statePath =
+                solver.solve(
+                        from,
+                        to,
+                        (current, goal) -> current.equals(goal) ? 0 : 1,
+                        state -> {
+                            List<AStarSolver.Edge<SuperstructureState>> neighbors =
+                                    new ArrayList<>();
+                            for (StateTransition t : dynamicGraph.get(state)) {
+                                neighbors.add(
+                                        new AStarSolver.Edge<>(
+                                                t.getToState(), t.getTransitionTime()));
+                            }
+                            return neighbors;
+                        });
+        if (statePath == null) return null;
+        List<StateTransition> transitionPath = new ArrayList<>();
+        for (int i = 0; i < statePath.size() - 1; i++) {
+            SuperstructureState currentFrom = statePath.get(i);
+            SuperstructureState currentTo = statePath.get(i + 1);
+            Optional<StateTransition> transition =
+                    dynamicGraph.get(currentFrom).stream()
+                            .filter(t -> t.getToState().equals(currentTo))
+                            .findFirst();
+            if (transition.isPresent()) {
+                transitionPath.add(transition.get());
+            } else {
+                throw new IllegalStateException(
+                        "No dynamic transition found from " + currentFrom + " to " + currentTo);
+            }
+        }
+        return transitionPath;
+    }
+
+    
+    private boolean isTransitionBlocked(StateTransition transition) {
+        SuperstructureState toState = transition.getToState();
+        //TODO add stuff to see if the transition really is blocked
+        return false;
+    }
+
 
     private void setFutureDesiredState(SuperstructureState state) {
         if (!states.contains(state)) {
@@ -131,6 +263,12 @@ public class SuperstructureStateMachine {
         }
         futureDesiredState = state;
         futureDesiredStateTime = Timer.getFPGATimestamp();
+    }
+
+
+    private List<StateTransition> getPrecomputedPath(
+        SuperstructureState from, SuperstructureState to) {
+        return precomputedPaths[from.ordinal()][to.ordinal()];
     }
 
     public void wipeFutureDesiredState() {
@@ -212,6 +350,16 @@ public class SuperstructureStateMachine {
     }
 
 
+
+    private Boolean isShootingState(SuperstructureState state) {
+        return state == SuperstructureState.INTAKE_AND_SHOOT
+                || state == SuperstructureState.SHOOT;
+    }
+
+    private Boolean isIntakingState(SuperstructureState state) {
+        return state == SuperstructureState.INTAKE_AND_SHOOT 
+                || state == SuperstructureState.INTAKE;
+    }
 
 
 

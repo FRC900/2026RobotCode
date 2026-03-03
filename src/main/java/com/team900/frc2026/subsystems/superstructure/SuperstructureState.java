@@ -22,15 +22,12 @@ public enum SuperstructureState {
         //spins up shooter and exits once spun up to speed. Is intaking
     ),
     SHOOT(
-
         //empties all balls and scores or passes. Intake stowed
     ),
     INTAKE(
-        (container) -> Commands.none()
         //deploy and intakes
-        ),
-        IDLE_AND_DRIVING(
-        (container) -> Commands.none()
+    ),
+    IDLE_AND_DRIVING(
         //driving around. Still autoaims. Intake stowed
     );
 
