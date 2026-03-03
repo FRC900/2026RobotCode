@@ -67,8 +67,8 @@ public class RobotContainer {
 
     private IntakePivotSubsystem buildIntakePivotSubsystem() {
         return new IntakePivotSubsystem(
-                IntakePivotConstants.kIntakePivotConfig, 
-                new TalonFXIO(IntakePivotConstants.kIntakePivotConfig), 
+                IntakePivotConstants.kIntakePivotConfig,
+                new TalonFXIO(IntakePivotConstants.kIntakePivotConfig),
                 new CanCoderIOHardware(IntakePivotConstants.kIntakePivotConfig.canCoderConfig));
     }
 
@@ -107,8 +107,8 @@ public class RobotContainer {
     // private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
-    @Getter
-    private final IntakePivotSubsystem intakePivotSubsystem = buildIntakePivotSubsystem();
+
+    @Getter private final IntakePivotSubsystem intakePivotSubsystem = buildIntakePivotSubsystem();
 
     @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();

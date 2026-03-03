@@ -22,7 +22,7 @@ public class IntakeFactory {
         return container
                 .getIntakePivotSubsystem()
                 .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotDeployRadians, 
+                        () -> IntakePivotConstants.kIntakePivotDeployRadians,
                         IntakePivotConstants.kIntakePivotToleranceRadians);
     }
 
@@ -30,7 +30,7 @@ public class IntakeFactory {
         return container
                 .getIntakePivotSubsystem()
                 .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotStowRadians, 
+                        () -> IntakePivotConstants.kIntakePivotStowRadians,
                         IntakePivotConstants.kIntakePivotToleranceRadians);
     }
 }
