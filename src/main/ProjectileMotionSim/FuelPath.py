@@ -4,11 +4,14 @@ import ProjectilePath as pp
 import FuelClearance as fc
 from numpy import array, rad2deg, linalg, pi
 from tabulate import tabulate
-import time 
+import time
+
+def angle_to_900__hood_rot(angle_deg, hood_min, hood_max, hood_rest_angle_deg):
+    return hood_min + (hood_max - ((hood_rest_angle_deg-angle_deg) / 1.36))
 
 # define targets and initial condition guesses
-xt = 4.445
-yt = 2
+xt = 3.89382
+yt = 1.8288
 zt = 0
 
 # define robot's initial velocities and Fuel initial spin
@@ -19,14 +22,14 @@ vz_robot = 0
 v_mag_robot = linalg.norm(array([vx_robot, vy_robot, vz_robot]))
 
 # define initial solution guesses
-vxi0 = 8.083
-vyi0 = 8.083
-vzi0 = 8.083
-omegai0 = 94
+vxi0 = 8.5
+vyi0 = 8.5
+vzi0 = 8.5
+omegai0 = 100
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
-fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, vx_frame=vx_robot, vy_frame=vy_robot, vz_frame=vz_robot, fix_speed=False, fix_omega=True, lm_iters=15, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance, theta_bounds=(0, 0), phi_bounds=(0.785, 1.309))
+fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, vx_frame=vx_robot, vy_frame=vy_robot, vz_frame=vz_robot, fix_speed=True, fix_omega=True, lm_iters=20, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance, phi_bounds=(0.785, 1.309), theta_bounds=(0, 0))
 
 # solve for valid inputs and time the solver
 start = time.perf_counter()
@@ -47,11 +50,12 @@ table = [
     ["Total vx (m/s)", fuel_solver.vx + vx_robot],
     ["Total vy (m/s)", fuel_solver.vy + vy_robot],
     ["Total vz (m/s)", fuel_solver.vz + vz_robot],
-    ["Theta (deg)", rad2deg(fuel_solver.theta)],
-    ["Phi (deg)", rad2deg(fuel_solver.phi)],
+    ["Azimuthal Angle Theta (deg)", rad2deg(fuel_solver.theta)],
+    ["Launch Angle, Phi (deg)", rad2deg(fuel_solver.phi)],
     ["Final X (m)", sx_list[-1]],
     ["Final Y (m)", sy_list[-1]],
     ["Final Z (m)", sz_list[-1]],
+    ["900 Hood Motor Rotations", angle_to_900__hood_rot(rad2deg(fuel_solver.phi), -6, 22, 75)]
 ]
 
 print(tabulate(table, headers=["Parameter", "Value"], tablefmt="rounded_grid"))
