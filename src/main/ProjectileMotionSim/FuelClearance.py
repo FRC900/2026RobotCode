@@ -2,7 +2,7 @@ import numpy as np
 
 # clearance for Hub in 2026 FRC game
 def hub_clearance(vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf): # solver will pass all these parameters, not all are used
-    hub_height = 2 # 2 m, the target y
+    hub_height = 1.8288 # 6ft 6in, the target y, height of the Hub
     hub_half_diag = 0.5 # half diagonal distance from center of hub to corner
     fuel_diameter = 0.1524 
     extra_tolerance = 0.2 

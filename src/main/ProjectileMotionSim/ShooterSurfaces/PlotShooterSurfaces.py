@@ -19,7 +19,7 @@ surf1 = ax1.plot_surface(R, VL, theta_slice, cmap='viridis', edgecolor='k')
 ax1.set_xlabel('Distance to Hub r (m)')
 ax1.set_ylabel('Lateral Robot Velocity vl (m/s)')
 ax1.set_zlabel('Azimuthal Angle θ (rad)')
-ax1.set_title('Theta Surface vs Distance and Lateral Velocity')
+ax1.set_title('Azimuthal Angle (Theta) Surface vs Distance and\nLateral Velocity (launch speed = 23 m/s)')
 fig1.colorbar(surf1, ax=ax1, shrink=0.5, aspect=10)
 fig1.savefig("theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
 
@@ -33,7 +33,7 @@ surf2 = ax2.plot_surface(R, VF, phi_slice, cmap='plasma', edgecolor='k')
 ax2.set_xlabel('Distance to Hub r (m)')
 ax2.set_ylabel('Forward Robot Velocity vf (m/s)')
 ax2.set_zlabel('Launch Angle φ (rad)')
-ax2.set_title('Phi Surface vs Distance and Forward Velocity')
+ax2.set_title('Launch Angle (Phi) Surface vs Distance and\nForward Velocity (launch speed = 23 m/s)')
 fig2.colorbar(surf2, ax=ax2, shrink=0.5, aspect=10)
 fig2.savefig("phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
 
