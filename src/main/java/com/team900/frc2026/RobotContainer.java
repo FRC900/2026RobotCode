@@ -21,6 +21,7 @@ import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterSubsystem;
 import com.team900.frc2026.subsystems.spindexer.SpindexerConstants;
 import com.team900.frc2026.subsystems.spindexer.SpindexerSubsystem;
+import com.team900.frc2026.subsystems.turret.TurretSubsystem;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.subsystems.CanCoderIOHardware;
 import com.team900.lib.subsystems.TalonFXIO;
@@ -137,6 +138,14 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
+    }
+
+    public TurretSubsystem getTurretSubsystem() {
+        return null;
+    }
+
+    public HoodSubsystem getHoodSubsystem() {
+        return null;
     }
 
     public static RobotContainer getInstance() {
