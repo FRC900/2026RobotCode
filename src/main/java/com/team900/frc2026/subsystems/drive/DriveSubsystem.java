@@ -108,7 +108,7 @@ public class DriveSubsystem extends FullSubsystem {
                 tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
         // Start the Odometry Thread
-        // PhoenixOdometryThread.getInstance().start();
+        PhoenixOdometryThread.getInstance().start();
 
         // Configure AutoBuilder for PathPlanner
         AutoBuilder.configure(
