@@ -13,14 +13,8 @@ public class SpindexerConstants {
     public static ServoMotorSubsystemConfig kSpindexerConfig = new ServoMotorSubsystemConfig();
 
     static {
-        kSpindexerConfig.fxConfig = new TalonFXConfiguration();
         kSpindexerConfig.name = "Spindexer";
-        kSpindexerConfig.talonCANID = new CANDeviceId(50, new CANBus(null));
-    }
-
-    static {
-        kSpindexerConfig.name = "Spindexer";
-        kSpindexerConfig.talonCANID = new CANDeviceId(40, new CANBus("mech"));
+        kSpindexerConfig.talonCANID = new CANDeviceId(50, new CANBus("mech"));
         kSpindexerConfig.unitToRotorRatio = 1;
 
 

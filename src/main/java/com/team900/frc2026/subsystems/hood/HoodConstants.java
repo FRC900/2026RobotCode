@@ -16,7 +16,7 @@ public class HoodConstants {
     // this should all lowkey go into the khoodconfig bc none of the below constants are actually
     // used
     public static final CANDeviceId kHoodTalonCanID =
-            new CANDeviceId(19, Constants.kCanBusCanivoreMech);
+            new CANDeviceId(30, Constants.kCanBusCanivoreMech);
     public static final double kHoodGearRatio = 0;
     // TODO: what should this even be what
     public static final double kHoodRotorMaxPosition = 0;
