@@ -56,7 +56,7 @@ public class DriveSubsystem extends FullSubsystem {
     private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
     private ChassisSpeeds prePoofed = new ChassisSpeeds();
-
+    
     private final SysIdRoutine sysId;
 
     private final Alert gyroDisconnectedAlert =
@@ -108,7 +108,7 @@ public class DriveSubsystem extends FullSubsystem {
                 tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
         // Start the Odometry Thread
-        PhoenixOdometryThread.getInstance().start();
+            PhoenixOdometryThread.getInstance().start();
 
         // Configure AutoBuilder for PathPlanner
         AutoBuilder.configure(
@@ -116,7 +116,7 @@ public class DriveSubsystem extends FullSubsystem {
                 this::resetPose,
                 this::getChassisSpeeds,
                 this::runVelocity,
-                // TODO: tune pathfollowing constants
+                //TODO: tune pathfollowing constants
                 new PPHolonomicDriveController(
                         new PIDConstants(7, 0.0, 0), new PIDConstants(5.0, 0.0, 0.0)),
                 DriveConstants.PP_CONFIG,
@@ -135,7 +135,7 @@ public class DriveSubsystem extends FullSubsystem {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
 
-        // TODO: Configure SysId
+        //TODO: Configure SysId
         sysId =
                 new SysIdRoutine(
                         new SysIdRoutine.Config(
@@ -223,11 +223,10 @@ public class DriveSubsystem extends FullSubsystem {
                 rawYawRotation = rawYawRotation.plus(new Rotation2d(twist.dtheta));
             }
             // Apply update
-            RobotState.getInstance()
-                    .addOdometryMeasurement(
-                            sampleTimestamps[i],
-                            poseEstimator.updateWithTime(
-                                    sampleTimestamps[i], rawYawRotation, modulePositions));
+            RobotState.getInstance().addOdometryMeasurement(
+          sampleTimestamps[i],
+          poseEstimator.updateWithTime(sampleTimestamps[i], rawYawRotation, modulePositions));
+
 
             ChassisSpeeds measuredRobotRelativeChassisSpeeds =
                     kinematics.toChassisSpeeds(swerveModulePositionToState(modulePositions));
@@ -266,11 +265,12 @@ public class DriveSubsystem extends FullSubsystem {
     }
 
     @Override
-    public void periodicAfterScheduler() {
+    public void periodicAfterScheduler()  {
 
-        Logger.recordOutput(
+           Logger.recordOutput(
                 "Drive/currentCommand",
                 (getCurrentCommand() == null) ? "Default" : getCurrentCommand().getName());
+        
     }
 
     /**
@@ -418,10 +418,14 @@ public class DriveSubsystem extends FullSubsystem {
     public void teleopControl(double driveX, double driveY, double rotate) {
         double magnitude = Math.hypot(driveX, driveY);
         double speedX =
-                getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveX, 0.05) * magnitude;
+                getMaxLinearSpeedMetersPerSec()
+                        * MathUtil.applyDeadband(driveX, 0.05)
+                        * magnitude;
         double speedY =
-                getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveY, 0.05) * magnitude;
-        // TODO: tune on MUSA's preference
+                getMaxLinearSpeedMetersPerSec()
+                        * MathUtil.applyDeadband(driveY, 0.05)
+                        * magnitude;
+        //TODO: tune on MUSA's preference
         double speedR = getMaxAngularSpeedRadPerSec() * MathUtil.applyDeadband(rotate, 0.05);
 
         if (Util.shouldFlip()) {

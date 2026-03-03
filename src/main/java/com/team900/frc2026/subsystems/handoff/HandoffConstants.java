@@ -15,20 +15,26 @@ public class HandoffConstants {
     static {
         kHandoffConfig.name = "Handoff";
         kHandoffConfig.talonCANID = new CANDeviceId(40, new CANBus("mech"));
-        kHandoffConfig.unitToRotorRatio = 1;
+        // 1:1 for all wheels
+        // Above motor - 18t:18t 30t:30t
+        // First wheels - 18t:18t 18t:18t
+        // Second wheels - 18t:18t 18t:18t 18t:18t
+        kHandoffConfig.unitToRotorRatio = 1.0;
+
 
         kHandoffConfig.fxConfig = new TalonFXConfiguration();
         kHandoffConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
         kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 80;
-        kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 70;
-        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
-        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
+                kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+                        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 70;
+                                kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+                                        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
+                                        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
         kHandoffConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kHandoffConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    }
 
+
+    }
     public static final double kHandoffGearRatio = 1;
     public static final double kHandoffDutyCycle = 0.5;
     public static final double kHandoffDutyCycleExhaust = -0.5;

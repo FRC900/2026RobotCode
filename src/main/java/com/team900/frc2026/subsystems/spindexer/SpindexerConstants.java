@@ -1,5 +1,6 @@
 package com.team900.frc2026.subsystems.spindexer;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -13,8 +14,9 @@ public class SpindexerConstants {
 
     static {
         kSpindexerConfig.name = "Spindexer";
-        kSpindexerConfig.talonCANID = new CANDeviceId(50, Constants.kCanBusCanivoreMech);
-        kSpindexerConfig.unitToRotorRatio = 1;
+        kSpindexerConfig.talonCANID = new CANDeviceId(50, new CANBus("mech"));
+        // Motor:spindexer overall 10:1 (output turns 0.1 rev per motor rev)
+        kSpindexerConfig.unitToRotorRatio = 10.0;
 
         kSpindexerConfig.fxConfig = new TalonFXConfiguration();
         kSpindexerConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
@@ -28,7 +30,7 @@ public class SpindexerConstants {
         kSpindexerConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     }
 
-    public static final double kSpindexerGearRatio = 1;
+    public static final double kSpindexerGearRatio = 10.0;
     public static final double kSpindexerDutyCycle = 0.5;
     public static final double kSpindexerDutyCycleExhaust = -0.5;
 }

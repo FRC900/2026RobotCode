@@ -1,8 +1,9 @@
 package com.team900.frc2026.subsystems.turret;
 
-import com.team900.lib.util.FullSubsystem;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
+
+import com.team900.lib.util.FullSubsystem;
 
 public class TurretSubsystem extends FullSubsystem {
     private final TurretIO io;
@@ -29,8 +30,8 @@ public class TurretSubsystem extends FullSubsystem {
     }
 
     @Override
-    public void periodicAfterScheduler() {
-        if (isOpenLoop) {
+    public void periodicAfterScheduler()    {
+         if (isOpenLoop) {
             io.setOpenLoopDutyCycle(openLoopDutyCycle);
         } else {
             double safeSetpoint = constrainSetpoint(positionSetpointRad);
@@ -41,9 +42,10 @@ public class TurretSubsystem extends FullSubsystem {
     }
 
     /**
-     * Finds the best reachable angle for the turret target If the target is within limits, use it
-     * directly Otherwise check if rotating 360 degrees in either direction gives an equivalent that
-     * is in range And if no equivalent is in range go to the nearest limit
+     * Finds the best reachable angle for the turret target
+     * If the target is within limits, use it directly
+     * Otherwise check if rotating 360 degrees in either direction gives an equivalent that is in range
+     * And if no equivalent is in range go to the nearest limit
      */
     private double constrainSetpoint(double desiredRad) {
         double min = TurretConstants.kTurretSoftMinRadians;
