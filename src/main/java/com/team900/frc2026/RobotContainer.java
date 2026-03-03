@@ -124,16 +124,16 @@ public class RobotContainer {
                 .R1()
                 .whileTrue(
                         new ParallelCommandGroup(
-                                IntakeFactory.runIntake(instance),
-                                HandoffFactory.runHandoff(instance),
-                                SpindexerFactory.runSpindexer(instance)));
+                                IntakeFactory.runIntake(this),
+                                HandoffFactory.runHandoff(this),
+                                SpindexerFactory.runSpindexer(this)));
         driveController
                 .L1()
                 .whileTrue(
                         new ParallelCommandGroup(
-                                IntakeFactory.exhaustIntake(instance),
-                                HandoffFactory.exhaustHandoff(instance),
-                                SpindexerFactory.exhaustSpindexer(instance)));
+                                IntakeFactory.exhaustIntake(this),
+                                HandoffFactory.exhaustHandoff(this),
+                                SpindexerFactory.exhaustSpindexer(this)));
     }
 
     public Command getAutonomousCommand() {

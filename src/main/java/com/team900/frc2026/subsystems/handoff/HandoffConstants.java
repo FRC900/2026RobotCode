@@ -1,6 +1,5 @@
 package com.team900.frc2026.subsystems.handoff;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -14,7 +13,7 @@ public class HandoffConstants {
 
     static {
         kHandoffConfig.name = "Handoff";
-        kHandoffConfig.talonCANID = new CANDeviceId(40, new CANBus("mech"));
+        kHandoffConfig.talonCANID = new CANDeviceId(40, Constants.kCanBusCanivoreMech);
         // 1:1 for all wheels
         // Above motor - 18t:18t 30t:30t
         // First wheels - 18t:18t 18t:18t

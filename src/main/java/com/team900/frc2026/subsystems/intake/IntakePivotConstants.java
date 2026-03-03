@@ -1,7 +1,7 @@
 package com.team900.frc2026.subsystems.intake;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.team900.frc2026.Constants;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 
@@ -13,9 +13,8 @@ public class IntakePivotConstants {
     static {
         kIntakePivotConfig.fxConfig = new TalonFXConfiguration();
         kIntakePivotConfig.name = "IntakePivot";
-        kIntakePivotConfig.talonCANID = new CANDeviceId(61, new CANBus("mech"));
-        // TODO: Update this when the cancoder is added
-        kIntakePivotConfig.canCoderConfig.CANID = new CANDeviceId(0, new CANBus("mech"));
+        kIntakePivotConfig.talonCANID = new CANDeviceId(61, Constants.kCanBusCanivoreMech);
+        kIntakePivotConfig.canCoderConfig.CANID = new CANDeviceId(0, Constants.kCanBusCanivoreMech);
         // Jackshaft overall gear ratio motor:pivot is ~42:1
         kIntakePivotConfig.unitToRotorRatio = 41.9894179894;
         kIntakePivotConfig.cancoderToUnitsRatio = 1.0;
