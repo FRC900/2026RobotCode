@@ -1,5 +1,5 @@
 package com.team900.frc2026.subsystems.Led;
-
+/*
 import com.ctre.phoenix6.CANBus;
 import com.team900.lib.drivers.CANDeviceId;
 
@@ -13,3 +13,4 @@ public class LedConstants {
     public static final int kMaxLEDCount = kNonCandleLEDCount + kCandleLEDCount;
     public static final double kLowBatteryThresholdVolts = 12;
 }
+*/
