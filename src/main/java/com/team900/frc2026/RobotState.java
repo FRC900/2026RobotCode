@@ -1,20 +1,44 @@
 package com.team900.frc2026;
 
+import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
+import com.team900.lib.util.FieldConstants;
+import com.team900.lib.util.MathHelpers;
+import com.team900.lib.util.Util;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.IntSupplier;
+import org.littletonrobotics.junction.Logger;
 
-import com.team900.frc2026.subsystems.Led.LedState;
-
+/** Tracks robot state including pose, velocities, and mechanism positions. */
 public class RobotState {
+
     private static volatile RobotState instance;
+
     public static final double LOOKBACK_TIME = 1.0;
 
-    private RobotState() {}
+    private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer;
 
-    public void buildState() {}
+    private RobotState(Consumer<VisionFieldPoseEstimate> visionEstimateConsumer) {
+        this.visionEstimateConsumer = visionEstimateConsumer;
+        fieldToRobot.addSample(0.0, MathHelpers.kPose2dZero);
+        driveYawAngularVelocity.addSample(0.0, 0.0);
+
+        // Initialize mechanism positions
+        elevatorHeightMeters.set(0.0);
+        hoodRadians.set(0.0);
+        intakeRollerRotations.set(0.0);
+        clawRollerRotations.set(0.0);
+    }
+
+    // State of robot.
 
     // Kinematic Frames
     // Robot's pose in field coordinates over time
@@ -37,6 +61,8 @@ public class RobotState {
 
     private final AtomicInteger iteration = new AtomicInteger(0);
 
+    private double lastUsedMegatagTimestamp = 0;
+    private Pose2d lastUsedMegatagPose = Pose2d.kZero;
     private final ConcurrentTimeInterpolatableBuffer<Double> driveYawAngularVelocity =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
     private final ConcurrentTimeInterpolatableBuffer<Double> driveRollAngularVelocity =
@@ -52,6 +78,49 @@ public class RobotState {
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
     private final ConcurrentTimeInterpolatableBuffer<Double> accelY =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
+
+    private final AtomicBoolean enablePathCancel = new AtomicBoolean(false);
+
+    private double autoStartTime;
+
+    private Optional<Pose2d> trajectoryTargetPose = Optional.empty();
+    private Optional<Pose2d> trajectoryCurrentPose = Optional.empty();
+
+    public void setAutoStartTime(double timestamp) {
+        autoStartTime = timestamp;
+    }
+
+    public double getAutoStartTime() {
+        return autoStartTime;
+    }
+
+    public void enablePathCancel() {
+        enablePathCancel.set(true);
+    }
+
+    public void disablePathCancel() {
+        enablePathCancel.set(false);
+    }
+
+    public boolean getPathCancel() {
+        return enablePathCancel.get();
+    }
+
+    public void addOdometryMeasurement(double timestamp, Pose2d pose) {
+        fieldToRobot.addSample(timestamp, pose);
+    }
+
+    public void incrementIterationCount() {
+        iteration.incrementAndGet();
+    }
+
+    public int getIteration() {
+        return iteration.get();
+    }
+
+    public IntSupplier getIterationSupplier() {
+        return () -> getIteration();
+    }
 
     public void addDriveMotionMeasurements(
             double timestamp,
@@ -81,40 +150,362 @@ public class RobotState {
         this.fusedFieldRelativeChassisSpeeds.set(fusedFieldRelativeSpeeds);
     }
 
-    public void incrementIterationCount() {
-        iteration.incrementAndGet();
+    public Map.Entry<Double, Pose2d> getLatestFieldToRobot() {
+        return fieldToRobot.getLatest();
+    }
+
+    /**
+     * Predicts robot's future pose based on current velocity.
+     *
+     * @param lookaheadTimeS How far ahead to predict (seconds)
+     * @return Predicted pose
+     */
+    public Pose2d getPredictedFieldToRobot(double lookaheadTimeS) {
+        var maybeFieldToRobot = getLatestFieldToRobot();
+        Pose2d fieldToRobot =
+                maybeFieldToRobot == null ? MathHelpers.kPose2dZero : maybeFieldToRobot.getValue();
+        var delta = getLatestRobotRelativeChassisSpeed();
+        delta = delta.times(lookaheadTimeS);
+        return fieldToRobot.exp(
+                new Twist2d(
+                        delta.vxMetersPerSecond,
+                        delta.vyMetersPerSecond,
+                        delta.omegaRadiansPerSecond));
+    }
+
+    /**
+     * Like getPredictedFieldToRobot but caps negative velocities to zero. Used for non-holonomic
+     * path planning.
+     */
+    public Pose2d getPredictedCappedFieldToRobot(double lookaheadTimeS) {
+        var maybeFieldToRobot = getLatestFieldToRobot();
+        Pose2d fieldToRobot =
+                maybeFieldToRobot == null ? MathHelpers.kPose2dZero : maybeFieldToRobot.getValue();
+        var delta = getLatestRobotRelativeChassisSpeed();
+        delta = delta.times(lookaheadTimeS);
+        return fieldToRobot.exp(
+                new Twist2d(
+                        Math.max(0.0, delta.vxMetersPerSecond),
+                        Math.max(0.0, delta.vyMetersPerSecond),
+                        delta.omegaRadiansPerSecond));
+    }
+
+    public Optional<Pose2d> getFieldToRobot(double timestamp) {
+        return fieldToRobot.getSample(timestamp);
+    }
+
+    public ChassisSpeeds getLatestMeasuredFieldRelativeChassisSpeeds() {
+        return measuredFieldRelativeChassisSpeeds.get();
+    }
+
+    public ChassisSpeeds getLatestRobotRelativeChassisSpeed() {
+        return measuredRobotRelativeChassisSpeeds.get();
+    }
+
+    public ChassisSpeeds getLatestDesiredRobotRelativeChassisSpeeds() {
+        return desiredRobotRelativeChassisSpeeds.get();
+    }
+
+    public ChassisSpeeds getLatestDesiredFieldRelativeChassisSpeed() {
+        return desiredFieldRelativeChassisSpeeds.get();
+    }
+
+    public ChassisSpeeds getLatestFusedFieldRelativeChassisSpeed() {
+        return fusedFieldRelativeChassisSpeeds.get();
+    }
+
+    public ChassisSpeeds getLatestFusedRobotRelativeChassisSpeed() {
+        var speeds = getLatestRobotRelativeChassisSpeed();
+        speeds.omegaRadiansPerSecond =
+                getLatestFusedFieldRelativeChassisSpeed().omegaRadiansPerSecond;
+        return speeds;
+    }
+
+    private Optional<Double> getMaxAbsValueInRange(
+            ConcurrentTimeInterpolatableBuffer<Double> buffer, double minTime, double maxTime) {
+        var submap = buffer.getInternalBuffer().subMap(minTime, maxTime).values();
+        var max = submap.stream().max(Double::compare);
+        var min = submap.stream().min(Double::compare);
+        if (max.isEmpty() || min.isEmpty()) return Optional.empty();
+        if (Math.abs(max.get()) >= Math.abs(min.get())) return max;
+        else return min;
+    }
+
+    public Optional<Double> getMaxAbsDriveYawAngularVelocityInRange(
+            double minTime, double maxTime) {
+        // Gyro yaw rate not set in sim.
+        if (Robot.isReal()) return getMaxAbsValueInRange(driveYawAngularVelocity, minTime, maxTime);
+        return Optional.of(measuredRobotRelativeChassisSpeeds.get().omegaRadiansPerSecond);
+    }
+
+    public Optional<Double> getMaxAbsDrivePitchAngularVelocityInRange(
+            double minTime, double maxTime) {
+        return getMaxAbsValueInRange(drivePitchAngularVelocity, minTime, maxTime);
+    }
+
+    public Optional<Double> getMaxAbsDriveRollAngularVelocityInRange(
+            double minTime, double maxTime) {
+        return getMaxAbsValueInRange(driveRollAngularVelocity, minTime, maxTime);
+    }
+
+    public void updateMegatagEstimate(VisionFieldPoseEstimate megatagEstimate) {
+        lastUsedMegatagTimestamp = megatagEstimate.getTimestampSeconds();
+        lastUsedMegatagPose = megatagEstimate.getVisionRobotPoseMeters();
+        visionEstimateConsumer.accept(megatagEstimate);
+    }
+
+    public double lastUsedMegatagTimestamp() {
+        return lastUsedMegatagTimestamp;
+    }
+
+    public Pose2d lastUsedMegatagPose() {
+        return lastUsedMegatagPose;
+    }
+
+    public void updateLogger() {
+        if (this.driveYawAngularVelocity.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/YawAngularVelocity",
+                    this.driveYawAngularVelocity.getInternalBuffer().lastEntry().getValue());
+        }
+        if (this.driveRollAngularVelocity.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/RollAngularVelocity",
+                    this.driveRollAngularVelocity.getInternalBuffer().lastEntry().getValue());
+        }
+        if (this.drivePitchAngularVelocity.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/PitchAngularVelocity",
+                    this.drivePitchAngularVelocity.getInternalBuffer().lastEntry().getValue());
+        }
+        if (this.drivePitchRads.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/PitchRads",
+                    this.drivePitchRads.getInternalBuffer().lastEntry().getValue());
+        }
+        if (this.driveRollRads.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/RollRads",
+                    this.driveRollRads.getInternalBuffer().lastEntry().getValue());
+        }
+        if (this.accelX.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/AccelX", this.accelX.getInternalBuffer().lastEntry().getValue());
+        }
+        if (this.accelY.getInternalBuffer().lastEntry() != null) {
+            Logger.recordOutput(
+                    "RobotState/AccelY", this.accelY.getInternalBuffer().lastEntry().getValue());
+        }
+        Logger.recordOutput(
+                "RobotState/DesiredChassisSpeedFieldFrame",
+                getLatestDesiredFieldRelativeChassisSpeed());
+        Logger.recordOutput(
+                "RobotState/DesiredChassisSpeedRobotFrame",
+                getLatestDesiredRobotRelativeChassisSpeeds());
+        Logger.recordOutput(
+                "RobotState/MeasuredChassisSpeedFieldFrame",
+                getLatestMeasuredFieldRelativeChassisSpeeds());
+        Logger.recordOutput(
+                "RobotState/FusedChassisSpeedFieldFrame",
+                getLatestFusedFieldRelativeChassisSpeed());
+
+        // Add mechanism logging
+        Logger.recordOutput("RobotState/ElevatorHeightMeters", getElevatorHeightMeters());
+        Logger.recordOutput("RobotState/HoodRadians", getHoodRadians());
+        Logger.recordOutput("RobotState/IntakeRollerRotations", getIntakeRollerRotations());
+        Logger.recordOutput("RobotState/CoralRollerRotations", getClawRollerRotations());
+    }
+
+    private final AtomicReference<Optional<Integer>> exclusiveTag =
+            new AtomicReference<>(Optional.empty());
+
+    private final AtomicReference<Double> elevatorHeightMeters = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> hoodRadians = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> clawRollerRotations = new AtomicReference<>(0.0);
+
+    private final AtomicReference<Double> intakeRollerRotations = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> intakeRollerRPS = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> intakePivotRadians = new AtomicReference<>(0.0);
+
+    private final AtomicReference<Double> spindexerRotations = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> spindexerRPS = new AtomicReference<>(0.0);
+
+    private final AtomicReference<Double> handoffRotations = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> handoffRPS = new AtomicReference<>(0.0);
+
+    private final AtomicReference<Double> clawRollerRPS = new AtomicReference<>(0.0);
+
+    private final AtomicReference<Double> shooterRPS = new AtomicReference<>(0.0);
+
+    public void setShooterRPS(double rps) {
+        shooterRPS.set(rps);
+    }
+
+    public double getShooterRPS() {
+        return shooterRPS.get();
+    }
+
+    public void setSpindexerRotations(double rotations) {
+        spindexerRotations.set(rotations);
+    }
+
+    public void setSpindexerRPS(double rps) {
+        spindexerRPS.set(rps);
+    }
+
+    public double getSpindexerRotations() {
+        return spindexerRotations.get();
+    }
+
+    public double getSpindexerRPS() {
+        return spindexerRPS.get();
+    }
+
+    public void setHandoffRotations(double rotations) {
+        handoffRotations.set(rotations);
+    }
+
+    public void setHandoffRPS(double rps) {
+        handoffRPS.set(rps);
+    }
+
+    public double getHandoffRotations() {
+        return handoffRotations.get();
+    }
+
+    public double getHandoffRPS() {
+        return handoffRPS.get();
+    }
+
+    public void setIntakePivotRadians(double radians) {
+        intakePivotRadians.set(radians);
+    }
+
+    public double getIntakePivotRadians() {
+        return intakePivotRadians.get();
+    }
+
+    public void setElevatorHeightMeters(double heightMeters) {
+        elevatorHeightMeters.set(heightMeters);
+    }
+
+    public void setHoodRadians(double radians) {
+        hoodRadians.set(radians);
+    }
+
+    public void setIntakeRollerRotations(double rotations) {
+        intakeRollerRotations.set(rotations);
+    }
+
+    public void setIntakeRollerRPS(double rps) {
+        intakeRollerRPS.set(rps);
+    }
+
+    public void setClawRollerRotations(double rotations) {
+        clawRollerRotations.set(rotations);
+    }
+
+    public double getElevatorHeightMeters() {
+        return elevatorHeightMeters.get();
+    }
+
+    public double getHoodRadians() {
+        return hoodRadians.get();
+    }
+
+    public double getIntakeRollerRotations() {
+        return intakeRollerRotations.get();
+    }
+
+    public double getIntakeRollerRPS() {
+        return intakeRollerRPS.get();
+    }
+
+    public double getClawRollerRotations() {
+        return clawRollerRotations.get();
+    }
+
+    public void setClawRollerRPS(double rps) {
+        clawRollerRPS.set(rps);
+    }
+
+    public double getClawRollerRPS() {
+        return clawRollerRPS.get();
+    }
+
+    public void setExclusiveTag(int id) {
+        exclusiveTag.set(Optional.of(id));
+    }
+
+    public void clearExclusiveTag() {
+        exclusiveTag.set(Optional.empty());
+    }
+
+    public Optional<Integer> getExclusiveTag() {
+        return exclusiveTag.get();
+    }
+
+    public void setTrajectoryTargetPose(Pose2d pose) {
+        trajectoryTargetPose = Optional.of(pose);
+    }
+
+    public Optional<Pose2d> getTrajectoryTargetPose() {
+        return trajectoryTargetPose;
+    }
+
+    public void setTrajectoryCurrentPose(Pose2d pose) {
+        trajectoryCurrentPose = Optional.of(pose);
+    }
+
+    public Optional<Pose2d> getTrajectoryCurrentPose() {
+        return trajectoryCurrentPose;
+    }
+
+    public double getDrivePitchRadians() {
+        if (this.drivePitchRads.getInternalBuffer().lastEntry() != null) {
+            return drivePitchRads.getInternalBuffer().lastEntry().getValue();
+        }
+        return 0.0;
+    }
+
+    public double getDriveRollRadians() {
+        if (this.driveRollRads.getInternalBuffer().lastEntry() != null) {
+            return driveRollRads.getInternalBuffer().lastEntry().getValue();
+        }
+        return 0.0;
+    }
+
+    //     public void logControllerMode() {
+    //         Logger.recordOutput("Controller Mode",
+    // ModalControls.getInstance().getMode().toString());
+    //     }
+
+    public static boolean onOpponentSide(boolean isRedAlliance, Pose2d pose) {
+        return (isRedAlliance
+                        && pose.getTranslation().getX()
+                                < FieldConstants.fieldLength / 2 - Constants.kMidlineBuffer)
+                || (!isRedAlliance
+                        && pose.getTranslation().getX()
+                                > FieldConstants.fieldLength / 2 + Constants.kMidlineBuffer);
+    }
+
+    public boolean onOpponentSide() {
+        return onOpponentSide(Util.shouldFlip(), this.getLatestFieldToRobot().getValue());
     }
 
     public static RobotState getInstance() {
+        return instance;
+    }
+
+    public static RobotState getInstance(Consumer<VisionFieldPoseEstimate> estimateConsumer) {
         if (instance == null) {
             synchronized (RobotState.class) {
                 if (instance == null) {
-                    instance = new RobotState();
+
+                    instance = new RobotState(estimateConsumer);
                 }
             }
         }
         return instance;
     }
-
-    //Led State
-    public void setLedState(LedState state){
-        ledState.set(state);
-    }
-
-    public LedState getLedState() {
-        return ledState.get();
-    }
-
-    public void updateLogger(){
-        LedState currentLedState = getLedState();
-        Logger.recordOutput(
-                "RobotState/LEDState",
-                String.format(
-                        "R:%d,G:%d,B:%d",
-                        currentLedState.red,
-                        currentLedState.green,
-                        currentLedState.blue));
-    }
-
-    private final AtomicReference<LedState> ledState = new AtomicReference<>(LedState.kOff);
 }

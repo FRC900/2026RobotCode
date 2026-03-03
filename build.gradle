@@ -7,6 +7,11 @@ plugins {
       id("io.freefair.lombok") version "9.2.0"
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
 spotless {
     java {
         googleJavaFormat().aosp()
@@ -22,7 +27,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-def ROBOT_MAIN_CLASS = "com.team900.frc.Main"
+def ROBOT_MAIN_CLASS = "com.team900.frc2026.Main"
 
 final MAX_JAVA_HEAP_SIZE_MB = 100
 
@@ -138,6 +143,8 @@ dependencies {
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.github.frc-88:ROSNetworkTablesBridge:2024-03-21'
 }
 
 test {

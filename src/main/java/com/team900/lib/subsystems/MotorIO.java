@@ -13,6 +13,8 @@ public interface MotorIO {
     // These are in the "units" of the subsystem (rad, m).
     void setPositionSetpoint(double units);
 
+    void setPositionSetpoint(double units, double ff);
+
     default void setMotionMagicSetpoint(double units) {
         setMotionMagicSetpoint(units, 0);
     }
