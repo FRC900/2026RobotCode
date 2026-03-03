@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.littletonrobotics.junction.Logger;
@@ -16,6 +17,8 @@ import org.littletonrobotics.junction.Logger;
 import com.team900.frc2026.RobotContainer;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
+
 import java.util.Set;
 
 import com.team900.frc2026.RobotContainer;
@@ -32,6 +35,7 @@ public class SuperstructureStateMachine {
     private boolean transitioning = false;
     private List<StateTransition>[][] precomputedPaths;
     private Map<String, Double> transitionCostMap = new HashMap<>();
+    private double futureDesiredStateTime = 0;
 
 
     private String getTransitionKey(SuperstructureState from, SuperstructureState to) {
@@ -116,8 +120,99 @@ public class SuperstructureStateMachine {
             throw new IllegalArgumentException("State not registered: " + state);
         }
 
+
         
         desiredState = state;
     }
+
+    private void setFutureDesiredState(SuperstructureState state) {
+        if (!states.contains(state)) {
+            throw new IllegalArgumentException("State not registered: " + state);
+        }
+        futureDesiredState = state;
+        futureDesiredStateTime = Timer.getFPGATimestamp();
+    }
+
+    public void wipeFutureDesiredState() {
+        futureDesiredState = null;
+    }
+
+    public void autoGenerateTransitions() {
+        for (SuperstructureState from : SuperstructureState.values()) {
+            for (SuperstructureState to : from.allowedNextStates()) {
+                double cost = getTransitionCost(from, to);
+                addTransition(
+                        new StateTransition(from, to, () -> to.getCommand(container), cost, false));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void precomputeAllPaths() {
+        int numStates = SuperstructureState.values().length;
+        precomputedPaths = new ArrayList[numStates][numStates];
+
+        for (SuperstructureState from : SuperstructureState.values()) {
+            for (SuperstructureState to : SuperstructureState.values()) {
+                if (from.equals(to)) {
+                    precomputedPaths[from.ordinal()][to.ordinal()] = new ArrayList<>();
+                } else {
+                    precomputedPaths[from.ordinal()][to.ordinal()] =
+                            computeTransitionPath(from, to);
+                }
+            }
+        }
+    }
+
+
+     public List<StateTransition> computeTransitionPath(
+            SuperstructureState from, SuperstructureState to) {
+        graph = new HashMap<>();
+        for (SuperstructureState state : states) {
+            graph.put(state, new ArrayList<>());
+        }
+        for (StateTransition t : transitions) {
+            if (!t.hasCollision()) {
+                graph.get(t.getFromState()).add(t);
+            }
+        }
+        AStarSolver<SuperstructureState> solver = new AStarSolver<>();
+        List<SuperstructureState> statePath =
+                solver.solve(
+                        from,
+                        to,
+                        (current, goal) -> current != null && current.equals(goal) ? 0 : 1,
+                        state -> {
+                            List<AStarSolver.Edge<SuperstructureState>> neighbors =
+                                    new ArrayList<>();
+                            for (StateTransition t : graph.get(state)) {
+                                neighbors.add(
+                                        new AStarSolver.Edge<>(
+                                                t.getToState(), t.getTransitionTime()));
+                            }
+                            return neighbors;
+                        });
+        if (statePath == null) return null;
+        List<StateTransition> transitionPath = new ArrayList<>();
+        for (int i = 0; i < statePath.size() - 1; i++) {
+            SuperstructureState currentFrom = statePath.get(i);
+            SuperstructureState currentTo = statePath.get(i + 1);
+            Optional<StateTransition> transition =
+                    graph.get(currentFrom).stream()
+                            .filter(t -> t.getToState().equals(currentTo))
+                            .findFirst();
+            if (transition.isPresent()) {
+                transitionPath.add(transition.get());
+            } else {
+                throw new IllegalStateException(
+                        "No transition found from " + currentFrom + " to " + currentTo);
+            }
+        }
+        return transitionPath;
+    }
+
+
+
+
 
 }
