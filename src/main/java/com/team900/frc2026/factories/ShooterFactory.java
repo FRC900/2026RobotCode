@@ -17,7 +17,6 @@ public class ShooterFactory {
     /* Commands for shooting */
 
     public static Command idle() {
-
         return container.getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
     }
 

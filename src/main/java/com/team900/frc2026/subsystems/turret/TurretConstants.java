@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 
 public class TurretConstants {
 
-    // 14t:42t  24:176t  overall: 22:1 
+    // 14t:42t  24:176t  overall: 22:1
     public static final double kTurretGearRatio = 1.0 / 22.0;
     // TODO: Check this canID just for the Talon
     public static final CANDeviceId kTurretTalonCanID =
@@ -42,15 +42,14 @@ public class TurretConstants {
     public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);
 
     public static final double toleranceRad = 0.1;
-/*
- * 
- *         config.Slot0.kS = 0.18;
-        config.Slot0.kP = 6.0;
-        config.Slot0.kD = 0.1;
-        config.Slot0.kV = 0.120;
-        config.Slot0.kA = 0.0001 * 12.0;
- */
-    public static final Gains COMP_GAINS = new Gains(0,0,0,0,0,0,0);
-        public static final Gains SIM_GAINS = new Gains(0,0,0,0,0,0,0);
-
+    /*
+    *
+    *         config.Slot0.kS = 0.18;
+           config.Slot0.kP = 6.0;
+           config.Slot0.kD = 0.1;
+           config.Slot0.kV = 0.120;
+           config.Slot0.kA = 0.0001 * 12.0;
+    */
+    public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
+    public static final Gains SIM_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
 }

@@ -81,7 +81,7 @@ public class RobotContainer {
 
     public SwerveDriveSimulation driveSimulation = null;
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
-    
+
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
                 @Override

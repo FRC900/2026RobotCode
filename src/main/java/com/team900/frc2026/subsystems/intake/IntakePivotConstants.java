@@ -20,6 +20,7 @@ public class IntakePivotConstants {
         kIntakePivotConfig.unitToRotorRatio = 41.9894179894;
         kIntakePivotConfig.cancoderToUnitsRatio = 1.0;
     }
+
     // TODO: update this after they put on cancoder
     public static final double kIntakePivotMinRadians = 0.0;
     public static final double kIntakePivotMaxRadians = 0.0;

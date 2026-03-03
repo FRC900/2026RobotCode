@@ -11,8 +11,6 @@ public class HoodConstants {
     public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
 
-            
-
     // this should all lowkey go into the khoodconfig bc none of the below constants are actually
     // used
     public static final CANDeviceId kHoodTalonCanID =

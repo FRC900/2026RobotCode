@@ -54,7 +54,7 @@ public class TurretFactory {
                 .withName("Turret Set Position (deg)");
     }
 
-   // Holds the turret at a fixed position in radians until it's interrupted
+    // Holds the turret at a fixed position in radians until it's interrupted
     public static Command holdPositionRadians(RobotContainer container, double radians) {
         TurretSubsystem turret = container.getTurretSubsystem();
         return Commands.run(() -> turret.setPositionRadians(radians), turret)
@@ -70,8 +70,7 @@ public class TurretFactory {
 
     public static Command moveTurret(RobotContainer container, double dutyCycle) {
         TurretSubsystem turret = container.getTurretSubsystem();
-        return Commands.run(() -> turret.setOpenLoop(dutyCycle), turret)
-                .withName("Move Turret");
+        return Commands.run(() -> turret.setOpenLoop(dutyCycle), turret).withName("Move Turret");
     }
 
     public static Command stop(RobotContainer container) {

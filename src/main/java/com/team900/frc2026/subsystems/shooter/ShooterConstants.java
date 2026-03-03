@@ -18,4 +18,6 @@ public class ShooterConstants {
         // kShooterConfig.unitToRotorRatio;
         kShooterConfig.followers[0] = new FollowerConfig();
     }
+
+    public static final double kIdleRPM = 2000.0;
 }

@@ -1,5 +1,12 @@
 package com.team900.frc2026.subsystems.superstructure;
 
+import com.team900.frc2026.RobotContainer;
+import com.team900.lib.commands.ChezySequenceCommandGroup;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,27 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.team900.frc2026.RobotContainer;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import com.team900.lib.commands.ChezySequenceCommandGroup;
-
-import java.util.Set;
-
-import com.team900.frc2026.RobotContainer;
 
 public class SuperstructureStateMachine {
 
-    Map<SuperstructureState,List<StateTransition>> graph = new HashMap<>();
+    Map<SuperstructureState, List<StateTransition>> graph = new HashMap<>();
     private final Set<SuperstructureState> states = new HashSet<>();
     private final List<StateTransition> transitions = new ArrayList<>();
     private SuperstructureState currentState;
@@ -43,7 +34,6 @@ public class SuperstructureStateMachine {
     private Map<String, Double> transitionCostMap = new HashMap<>();
     private double futureDesiredStateTime = 0;
 
-
     private String getTransitionKey(SuperstructureState from, SuperstructureState to) {
         return from.name() + "->" + to.name();
     }
@@ -52,7 +42,7 @@ public class SuperstructureStateMachine {
         return transitionCostMap.getOrDefault(getTransitionKey(from, to), 1.0);
     }
 
-        private void loadTransitionCosts() {
+    private void loadTransitionCosts() {
         transitionCostMap.clear();
         File costFile = new File(Filesystem.getDeployDirectory(), "transition_costs.txt");
         try (BufferedReader br = new BufferedReader(new FileReader(costFile))) {
@@ -72,7 +62,6 @@ public class SuperstructureStateMachine {
             Logger.recordOutput("Using Transition Costs", false);
         }
     }
-
 
     public SuperstructureStateMachine(RobotContainer container) {
         this.currentState = null;
@@ -97,7 +86,7 @@ public class SuperstructureStateMachine {
         states.add(transition.getToState());
         transitions.add(transition);
     }
-    
+
     public SuperstructureState getCurrentState() {
         return currentState;
     }
@@ -117,8 +106,8 @@ public class SuperstructureStateMachine {
         setDesiredState(state, true, true);
     }
 
-    public void setDesiredState(SuperstructureState state, boolean setFuture, boolean wipeFuture){
-        if (currentState == null && desiredState != null){
+    public void setDesiredState(SuperstructureState state, boolean setFuture, boolean wipeFuture) {
+        if (currentState == null && desiredState != null) {
             if (setFuture) setFutureDesiredState(state);
             return;
         }
@@ -126,8 +115,9 @@ public class SuperstructureStateMachine {
             throw new IllegalArgumentException("State not registered: " + state);
         }
 
-        //TODO: Add something such that if the desired state is a shooting state, don't move to that state until a ball is in the handoff (assuming no manual override)
-        
+        // TODO: Add something such that if the desired state is a shooting state, don't move to
+        // that state until a ball is in the handoff (assuming no manual override)
+
         desiredState = state;
         if (!DriverStation.isAutonomous() && wipeFuture) futureDesiredState = null;
         continueTransition();
@@ -165,8 +155,6 @@ public class SuperstructureStateMachine {
             return;
         }
 
-
-
         StateTransition nextTransitionTemp = path.get(0);
         if (isTransitionBlocked(nextTransitionTemp)) {
             Logger.recordOutput(
@@ -202,9 +190,8 @@ public class SuperstructureStateMachine {
         wrappedCommand.withName("SuperstructureMove").ignoringDisable(true).schedule();
     }
 
-
     public List<StateTransition> computeDynamicTransitionPath(
-        SuperstructureState from, SuperstructureState to) {
+            SuperstructureState from, SuperstructureState to) {
         Map<SuperstructureState, List<StateTransition>> dynamicGraph = new HashMap<>();
         for (SuperstructureState state : states) {
             dynamicGraph.put(state, new ArrayList<>());
@@ -249,13 +236,11 @@ public class SuperstructureStateMachine {
         return transitionPath;
     }
 
-    
     private boolean isTransitionBlocked(StateTransition transition) {
         SuperstructureState toState = transition.getToState();
-        //TODO add stuff to see if the transition really is blocked
+        // TODO add stuff to see if the transition really is blocked
         return false;
     }
-
 
     private void setFutureDesiredState(SuperstructureState state) {
         if (!states.contains(state)) {
@@ -265,9 +250,8 @@ public class SuperstructureStateMachine {
         futureDesiredStateTime = Timer.getFPGATimestamp();
     }
 
-
     private List<StateTransition> getPrecomputedPath(
-        SuperstructureState from, SuperstructureState to) {
+            SuperstructureState from, SuperstructureState to) {
         return precomputedPaths[from.ordinal()][to.ordinal()];
     }
 
@@ -302,8 +286,7 @@ public class SuperstructureStateMachine {
         }
     }
 
-
-     public List<StateTransition> computeTransitionPath(
+    public List<StateTransition> computeTransitionPath(
             SuperstructureState from, SuperstructureState to) {
         graph = new HashMap<>();
         for (SuperstructureState state : states) {
@@ -349,18 +332,11 @@ public class SuperstructureStateMachine {
         return transitionPath;
     }
 
-
-
     private Boolean isShootingState(SuperstructureState state) {
-        return state == SuperstructureState.INTAKE_AND_SHOOT
-                || state == SuperstructureState.SHOOT;
+        return state == SuperstructureState.INTAKE_AND_SHOOT || state == SuperstructureState.SHOOT;
     }
 
     private Boolean isIntakingState(SuperstructureState state) {
-        return state == SuperstructureState.INTAKE_AND_SHOOT 
-                || state == SuperstructureState.INTAKE;
+        return state == SuperstructureState.INTAKE_AND_SHOOT || state == SuperstructureState.INTAKE;
     }
-
-
-
 }
