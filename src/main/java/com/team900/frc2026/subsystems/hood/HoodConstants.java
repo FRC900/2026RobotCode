@@ -18,13 +18,15 @@ public class HoodConstants {
     public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
-    public static final double kHoodRotorMaxPosition =
-            Units.radiansToRotations(kHoodGearRatio / kHoodGearRatio);
-    public static final double kHoodRotorMinPosition = 0;
+    
     public static final double kHoodToleranceRadians = 0.1;
     public static final double kHoodMinPositionRadians = Math.PI / 12;
     public static final double kHoodMaxPositionRadians = Math.PI / 4;
     public static final double kHoodZeroedAngleDegrees = 15;
+
+    public static final double kHoodRotorMaxPosition =
+            Units.radiansToRotations(kHoodMaxPositionRadians / kHoodGearRatio);
+    public static final double kHoodRotorMinPosition = Units.radiansToRotations(kHoodMinPositionRadians);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
@@ -39,10 +41,10 @@ public class HoodConstants {
         // subsystem configs
         kHoodConfig.name = "Hood";
 
-        kHoodConfig.cancoderToUnitsRatio = 170. / 10.;
+        kHoodConfig.cancoderToUnitsRatio =   170. / 10.;
         kHoodConfig.isFusedCancoder = true;
-        kHoodConfig.kMaxPositionUnits = Math.PI / 4;
-        kHoodConfig.kMinPositionUnits = Math.PI / 12;
+        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
+        kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
         kHoodConfig.unitToRotorRatio = 15.625 * 170. / 10.;
@@ -53,7 +55,7 @@ public class HoodConstants {
 
         // cancoder config TODO: add the freaking cancoder debicve id
         kHoodCanCoderConfig.CANID = new CANDeviceId(0, Constants.kCanBusCanivoreMech);
-        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
@@ -75,7 +77,7 @@ public class HoodConstants {
         kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 170. / 10.;
 
         kHoodConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
-        kHoodConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kHoodConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kHoodConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kHoodConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
@@ -90,7 +92,7 @@ public class HoodConstants {
         kHoodConfig.fxConfig.Slot0.kV = COMP_GAINS.ffkV();
 
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-                kHoodRotorMaxPosition - 3;
+                kHoodRotorMaxPosition - Units.degreesToRotations(3);
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kHoodRotorMinPosition;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
