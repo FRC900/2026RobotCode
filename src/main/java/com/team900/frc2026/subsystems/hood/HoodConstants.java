@@ -25,7 +25,6 @@ public class HoodConstants {
     public static final double kHoodMinPositionRadians = Math.PI / 12;
     public static final double kHoodMaxPositionRadians = Math.PI / 4;
     public static final double kHoodZeroedAngleDegrees = 15;
-
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
         //TODO: find this experimetnatlly
