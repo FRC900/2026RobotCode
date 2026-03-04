@@ -20,6 +20,13 @@ public class ShooterFactory {
         return container.getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
     }
 
+    public static Command spinUp() {
+        return container
+                .getShooterSubsystem()
+                .dutyCycleCommand(() -> 0.3)
+                .withName("Shooter Spin Up");
+    }
+
     public static Command setShooterRPS(Supplier<ShooterSetpoint> setpointSupplier) {
         var shooter = container.getShooterSubsystem();
         return shooter.velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
