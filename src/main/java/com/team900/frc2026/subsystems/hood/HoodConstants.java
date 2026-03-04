@@ -46,7 +46,7 @@ public class HoodConstants {
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
-        kHoodConfig.talonCANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
+        kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
         kHoodConfig.unitToRotorRatio = 15.625 * 170. / 10.;
 
         // configs for sim
@@ -54,7 +54,7 @@ public class HoodConstants {
         kHoodConfig.cancoderUnitsForSim = 1;
 
         // cancoder config TODO: add the freaking cancoder debicve id
-        kHoodCanCoderConfig.CANID = new CANDeviceId(31, Constants.kCanBusCanivoreMech);
+        kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
         kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =

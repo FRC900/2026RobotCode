@@ -11,7 +11,7 @@ public class TurretConstants {
     public static final double kTurretGearRatio = 1.0 / 22.0;
     // TODO: Check this canID just for the Talon
     public static final CANDeviceId kTurretTalonCanID =
-            new CANDeviceId(21, Constants.kCanBusCanivoreMech);
+            new CANDeviceId(41, Constants.kCanBusCanivoreMech);
     public static final CANDeviceId kTurret33To1CANCoder =
             new CANDeviceId(32, Constants.kCanBusCanivoreMech);
     public static final CANDeviceId kTurret29To1CANCoder =
