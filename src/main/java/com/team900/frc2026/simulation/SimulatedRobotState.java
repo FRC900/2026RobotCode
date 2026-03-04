@@ -51,8 +51,7 @@ public class SimulatedRobotState {
         // Publish to telemetry using AdvantageKit
         Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
 
-        Logger.recordOutput(
-        "FieldSimulation/RobotPosition", robotPose);
+        Logger.recordOutput("FieldSimulation/RobotPosition", robotPose);
 
         lastTimestamp = Timer.getFPGATimestamp();
     }

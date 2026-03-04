@@ -98,6 +98,5 @@ public class DriveConstants {
         };
     }
 
-    public static final Gains kHeadingController = new Gains(0,0 , 0, 0, 0, 0, 0);
-
+    public static final Gains kHeadingController = new Gains(0, 0, 0, 0, 0, 0, 0);
 }

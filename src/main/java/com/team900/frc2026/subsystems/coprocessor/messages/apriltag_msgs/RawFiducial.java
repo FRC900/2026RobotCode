@@ -15,11 +15,10 @@ public class RawFiducial extends frc.team88.ros.messages.RosMessage {
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "apriltag_msgs/RawFiducial";
 
-    public RawFiducial() {
+    public RawFiducial() {}
 
-    }
-
-    public RawFiducial(int id, double txnc, double tync, double ta, double distToCamera, double ambiguity) {
+    public RawFiducial(
+            int id, double txnc, double tync, double ta, double distToCamera, double ambiguity) {
         this.id = id;
         this.txnc = txnc;
         this.tync = tync;
@@ -40,18 +39,23 @@ public class RawFiducial extends frc.team88.ros.messages.RosMessage {
     public int getId() {
         return this.id;
     }
+
     public double getTxnc() {
         return this.txnc;
     }
+
     public double getTync() {
         return this.tync;
     }
+
     public double getTa() {
         return this.ta;
     }
+
     public double getDistToCamera() {
         return this.distToCamera;
     }
+
     public double getAmbiguity() {
         return this.ambiguity;
     }
@@ -59,18 +63,23 @@ public class RawFiducial extends frc.team88.ros.messages.RosMessage {
     public void setId(int id) {
         this.id = id;
     }
+
     public void setTxnc(double txnc) {
         this.txnc = txnc;
     }
+
     public void setTync(double tync) {
         this.tync = tync;
     }
+
     public void setTa(double ta) {
         this.ta = ta;
     }
+
     public void setDistToCamera(double distToCamera) {
         this.distToCamera = distToCamera;
     }
+
     public void setAmbiguity(double ambiguity) {
         this.ambiguity = ambiguity;
     }
