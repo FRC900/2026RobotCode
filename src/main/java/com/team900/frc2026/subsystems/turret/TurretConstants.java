@@ -17,8 +17,8 @@ public class TurretConstants {
     public static final CANDeviceId kTurret29To1CANCoder =
             new CANDeviceId(31, Constants.kCanBusCanivoreMech);
     // TODO: Update these offsets, 0 should be facing directly forward.
-    public static final double k33To1TurretCancoderOffset = -0.057617;
-    public static final double k29To1TurretCancoderOffset = 0.482178;
+    public static final double k33To1TurretCancoderOffset = 0;
+    public static final double k29To1TurretCancoderOffset = 0;
 
     // 33to1 cancoder: 33 rotations to 170 turret rotations
     // 29to1 cancoder: 29 rotations to 170 turret rotations
@@ -42,14 +42,6 @@ public class TurretConstants {
     public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);
 
     public static final double toleranceRad = 0.1;
-    /*
-    *
-    *         config.Slot0.kS = 0.18;
-           config.Slot0.kP = 6.0;
-           config.Slot0.kD = 0.1;
-           config.Slot0.kV = 0.120;
-           config.Slot0.kA = 0.0001 * 12.0;
-    */
+
     public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
-    public static final Gains SIM_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
 }
