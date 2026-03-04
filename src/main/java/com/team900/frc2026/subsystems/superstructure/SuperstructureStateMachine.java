@@ -6,11 +6,17 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,6 +82,75 @@ public class SuperstructureStateMachine {
     public void setTransitioning(boolean transitioning) {
         this.transitioning = transitioning;
     }
+    public Command buildCharacterizationCommand() {
+        Command overallSequence = Commands.none();
+        desiredState = SuperstructureState.IDLE_AND_DRIVING;
+        File costFile = new File(Filesystem.getDeployDirectory(), "transition_costs.txt");
+        for (StateTransition transition : transitions) {
+            final double[] startTime = new double[1];
+            Command transitionSequence =
+                    Commands.sequence(
+                                    new InstantCommand(
+                                            () -> {
+                                                currentState = transition.getFromState();
+                                                desiredState = transition.getFromState();
+                                                Logger.recordOutput(
+                                                        "Latest Characterization State",
+                                                        transition.getFromState()
+                                                                + " to "
+                                                                + transition.getToState());
+                                            }),
+                                    new WaitUntilCommand(() -> isStable()),
+                                    new InstantCommand(
+                                            () -> startTime[0] = Timer.getFPGATimestamp()),
+                                    Commands.sequence(
+                                                    transition.getCommand(),
+                                                    new InstantCommand(
+                                                            () ->
+                                                                    setCurrentState(
+                                                                            transition
+                                                                                    .getToState())))
+                                            .withTimeout(5),
+                                    new InstantCommand(
+                                            () -> {
+                                                double duration =
+                                                        Timer.getFPGATimestamp() - startTime[0];
+                                                String logMessage;
+                                                if (!getCurrentState()
+                                                        .equals(transition.getToState())) {
+                                                    logMessage =
+                                                            transition.getFromState()
+                                                                    + ","
+                                                                    + transition.getToState()
+                                                                    + ",100";
+                                                } else {
+                                                    logMessage =
+                                                            transition.getFromState()
+                                                                    + ","
+                                                                    + transition.getToState()
+                                                                    + ","
+                                                                    + duration;
+                                                }
+                                                try (FileWriter fw =
+                                                                new FileWriter(costFile, true);
+                                                        BufferedWriter bw = new BufferedWriter(fw);
+                                                        PrintWriter out = new PrintWriter(bw)) {
+                                                    out.println(logMessage);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }))
+                            .withTimeout(5);
+            overallSequence = Commands.sequence(overallSequence, transitionSequence);
+        }
+        overallSequence =
+                Commands.sequence(
+                        overallSequence,
+                        new InstantCommand(
+                                () -> Logger.recordOutput("Characterization Complete", true)));
+        return overallSequence;
+    }
+
 
     public void addState(SuperstructureState state) {
         states.add(state);
@@ -238,8 +313,12 @@ public class SuperstructureStateMachine {
 
     private boolean isTransitionBlocked(StateTransition transition) {
         SuperstructureState toState = transition.getToState();
-        // TODO add stuff to see if the transition really is blocked
+// if we try shooting and there's no balls in the robot, return true
         return false;
+    }
+
+    public boolean isStable() {
+        return !transitioning;
     }
 
     private void setFutureDesiredState(SuperstructureState state) {
@@ -257,6 +336,21 @@ public class SuperstructureStateMachine {
 
     public void wipeFutureDesiredState() {
         futureDesiredState = null;
+    }
+
+    public SuperstructureState getFutureDesiredState() {
+        if (futureDesiredState != null && Timer.getFPGATimestamp() - futureDesiredStateTime > 3) {
+            futureDesiredState = null;
+        }
+        return futureDesiredState;
+    }
+
+    public void applyFutureDesiredState() {
+        if (getFutureDesiredState() != null) {
+            Logger.recordOutput("LastApplyFutureDesiredState", Timer.getFPGATimestamp());
+            setDesiredState(futureDesiredState);
+            futureDesiredState = null;
+        }
     }
 
     public void autoGenerateTransitions() {
