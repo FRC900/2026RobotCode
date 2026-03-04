@@ -247,9 +247,9 @@ public class RobotContainer {
                 .cross()
                 .onTrue(new InstantCommand(driveSubsystem::teleopResetRotation, driveSubsystem));
 
-        // Intake pivot, r1 to retract and deploy intake
+        // Intake pivot, l1 to retract and deploy intake
         driveController
-                .R1()
+                .L1()
                 .onTrue(
                         Commands.either(
                                 IntakeFactory.retractSlapdown(this)
@@ -262,8 +262,8 @@ public class RobotContainer {
                                                         () -> intakeDeployed = true)),
                                 () -> intakeDeployed));
 
-        // Intake rollers, r2 to run rollers when held
-        driveController.R2().whileTrue(IntakeFactory.runIntake());
+        // Intake rollers, l2 to run rollers when hel
+        driveController.L2().whileTrue(IntakeFactory.runIntake());
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
