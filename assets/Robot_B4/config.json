@@ -1,27 +1,37 @@
 {
     "name": "B4",
-    "rotations": [],
+    "rotations": [
+        {"axis": "x", "degrees": 90},
+        {"axis": "z", "degrees": 90}
+        
+    ],
     "position": [
-        0,0,0
+        0,0,0.09525
     ],
     "cameras": [],
     "components": [
         {
-            "zeroedRotations": [],
+            "zeroedRotations": [ 
+            {"axis": "x", "degrees": 90},
+            {"axis": "z", "degrees": 90}],
             "zeroedPosition": [
-                0,0,0
+                -0.165101,0,-0.012717
             ]
         },
         {
-            "zeroedRotations": [],
+            "zeroedRotations": [  
+                {"axis": "x", "degrees": 90},
+            {"axis": "z", "degrees": 90}],
             "zeroedPosition": [
-                0,0,0
+                0.148908,0.152400,-0.260636
             ]
         },
         {
-            "zeroedRotations": [],
+              "zeroedRotations": [  
+                {"axis": "x", "degrees": 90},
+            {"axis": "z", "degrees": 90}],
             "zeroedPosition": [
-                0,0,0
+               0.223907,0.152400,-0.342476
             ]
         }
     ]
