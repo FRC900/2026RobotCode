@@ -28,7 +28,7 @@ public class SpindexerConstants {
         kSpindexerConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     }
 
-    public static final double kSpindexerGearRatio = 1;
+    public static final double kSpindexerGearRatio = 10.0;
     public static final double kSpindexerDutyCycle = 0.5;
     public static final double kSpindexerDutyCycleExhaust = -0.5;
 }
