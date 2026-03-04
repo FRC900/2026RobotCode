@@ -7,17 +7,21 @@ import com.team900.lib.subsystems.MotorIO;
 import com.team900.lib.subsystems.MotorInputsAutoLogged;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoder;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
+import com.team900.lib.subsystems.TalonFXIO;
+
 import edu.wpi.first.math.MathUtil;
 
 public class HoodSubsystem
         extends ServoMotorSubsystemWithCanCoder<
-                MotorInputsAutoLogged, MotorIO, CanCoderInputsAutoLogged, CanCoderIO> {
+                MotorInputsAutoLogged, TalonFXIO, CanCoderInputsAutoLogged, CanCoderIO> {
     private final RobotState state = RobotState.getInstance();
-
-    public HoodSubsystem(
-            ServoMotorSubsystemWithCanCoderConfig c, MotorIO motorIO, CanCoderIO cancoderIO) {
-        super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
-        this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
+    private TalonFXIO motorIO;
+    
+        public HoodSubsystem(
+                ServoMotorSubsystemWithCanCoderConfig c, TalonFXIO motorIO, CanCoderIO cancoderIO) {
+            super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
+            this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
+            this.motorIO = motorIO;
 
         // Update frequency for feedback.
         cancoderIO.updateFrequency(500);
@@ -37,5 +41,32 @@ public class HoodSubsystem
                 HoodConstants.kHoodStowTrenchPositionRadians,
                 getCurrentPosition(),
                 HoodConstants.kHoodToleranceRadians);
+    }
+
+    public void setPositionRadians(double radians){
+        double safeSetpoint = constrainSetpoint(radians);
+        motorIO.setPositionSetpoint(safeSetpoint,0.0);
+    }
+
+    public void setPositionRadians(double radians, double velocityRadPerSec){
+        double safeSetpoint = constrainSetpoint(radians);
+        motorIO.setPositionSetpoint(safeSetpoint, velocityRadPerSec);
+
+    }
+
+
+
+
+    private double constrainSetpoint(double desiredRad) {
+        double min = HoodConstants.kHoodMinPositionRadians;
+        double max = HoodConstants.kHoodMaxPositionRadians;
+
+        // Already in range
+        if (desiredRad >= min && desiredRad <= max) {
+            return desiredRad;
+        }
+
+        // If out of range, go to nearest limit
+        return desiredRad < min ? min : max;
     }
 }
