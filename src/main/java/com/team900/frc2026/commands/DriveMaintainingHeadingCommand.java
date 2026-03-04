@@ -101,7 +101,7 @@
 //         } else {
 //             if (mHeadingSetpoint.isEmpty()) {
 //                 mHeadingSetpoint =
-//
+
 // Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
 //             }
 //             Logger.recordOutput("DriveMaintainHeading/throttleFieldFrame", throttleFieldFrame);
@@ -132,7 +132,7 @@
 //                 // update heading setpoint to avoid snapping back to previous setpoint after
 // scoring
 //                 mHeadingSetpoint =
-//
+
 // Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
 
 //                 // barge heading lock

@@ -41,19 +41,18 @@ public class HoodConstants {
         // subsystem configs
         kHoodConfig.name = "Hood";
 
-        kHoodConfig.cancoderToUnitsRatio = 170. / 10.;
+        kHoodConfig.cancoderToUnitsRatio =1;
         kHoodConfig.isFusedCancoder = true;
-        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
+        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians + Units.degreesToRotations(5);
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
-        kHoodConfig.unitToRotorRatio = 15.625 * 170. / 10.;
+        kHoodConfig.unitToRotorRatio = 1;
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;
         kHoodConfig.cancoderUnitsForSim = 1;
 
-        // cancoder config TODO: add the freaking cancoder debicve id
         kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
         kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
@@ -70,10 +69,9 @@ public class HoodConstants {
 
         kHoodConfig.fxConfig.Feedback.FeedbackRemoteSensorID =
                 kHoodCanCoderConfig.CANID.getDeviceNumber();
-        kHoodConfig.fxConfig.Feedback.FeedbackRotorOffset = 0;
         kHoodConfig.fxConfig.Feedback.FeedbackSensorSource =
                 FeedbackSensorSourceValue.FusedCANcoder;
-        kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = kHoodConfig.getCanCodertoRotorRatio();
+        kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = 15.625;
         kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 170. / 10.;
 
         kHoodConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;

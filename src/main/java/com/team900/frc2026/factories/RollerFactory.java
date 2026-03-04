@@ -5,7 +5,7 @@ import com.team900.frc2026.subsystems.intake.IntakePivotConstants;
 import com.team900.frc2026.subsystems.intake.IntakeRollerConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class IntakeFactory {
+public class RollerFactory {
     static RobotContainer container = RobotContainer.getInstance();
 
     public static Command runIntake() {
@@ -20,19 +20,5 @@ public class IntakeFactory {
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
 
-    public static Command deploySlapdown(RobotContainer container) {
-        return container
-                .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotDeployRadians,
-                        IntakePivotConstants.kIntakePivotToleranceRadians);
-    }
-
-    public static Command retractSlapdown(RobotContainer container) {
-        return container
-                .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotStowRadians,
-                        IntakePivotConstants.kIntakePivotToleranceRadians);
-    }
+   
 }
