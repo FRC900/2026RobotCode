@@ -1,7 +1,12 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.RobotState;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 import java.util.Optional;
+
 
 public class ShooterSetpoint {
 
@@ -58,6 +63,22 @@ public class ShooterSetpoint {
         return this.isValid;
     }
 
+    private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
+            Translation3d robotToTargetTranslation) {
+
+            //turret
+
+            //turretFeedForward
+
+            //hood
+
+            //hoodFeedForward
+
+            //shooterRPS
+
+            
+}
+
     // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
     //         Translation3d robotToTargetTranslation,
     //         double pitchAngleRads, double launchSpeedMetersPerSec) {
@@ -65,7 +86,7 @@ public class ShooterSetpoint {
     //     Rotation2d turretRotationRobotFrame = robotToTargetRotation
     //             .minus(robotState.getLatestFieldToRobot().getValue().getRotation());
     //     Rotation2d turretRotationTurretFrame = turretRotationRobotFrame
-    //
+    
     // .rotateBy(MathHelpers.kRotation2dPi).rotateBy(ShooterConstants.kTurretToShotCorrection);
 
     //     // hood
