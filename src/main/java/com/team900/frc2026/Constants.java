@@ -68,6 +68,7 @@ public class Constants {
     public static final CANBus kCanBusCanivoreMech = new CANBus("mech");
     public static final String kPracticeBotMacAddress = "00:80:2F:33:D1:4B";
     public static boolean kIsPracticeBot = hasMacAddress(kPracticeBotMacAddress);
+    public static boolean kIsReplay = false;
 
     public static final ClosedLoopRampsConfigs makeDefaultClosedLoopRampConfig() {
         return new ClosedLoopRampsConfigs()

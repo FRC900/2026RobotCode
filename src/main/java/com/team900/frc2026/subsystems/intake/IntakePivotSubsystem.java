@@ -33,6 +33,6 @@ public class IntakePivotSubsystem
     @Override
     public void periodic() {
         super.periodic();
-        state.setIntakePivotRadians(inputs.unitPosition);
+        state.setIntakePivotRotations(inputs.unitPosition);
     }
 }

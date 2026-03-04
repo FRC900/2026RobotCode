@@ -31,7 +31,8 @@ public class HoodSubsystem
     @Override
     public void periodic() {
         super.periodic();
-        state.setHoodRadians(inputs.unitPosition);
+        state.setHoodRotations(inputs.unitPosition);
+        state.setHoodRPS(inputs.velocityUnitsPerSecond);
     }
 
     public boolean isStowed() {

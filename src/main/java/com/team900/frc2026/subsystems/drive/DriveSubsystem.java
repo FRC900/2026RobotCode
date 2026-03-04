@@ -9,6 +9,7 @@ package com.team900.frc2026.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -50,6 +51,8 @@ import org.littletonrobotics.junction.Logger;
 public class DriveSubsystem extends FullSubsystem {
 
     static final Lock odometryLock = new ReentrantLock();
+
+    DriveViz telemtry = new DriveViz(getMaxLinearSpeedMetersPerSec()); 
 
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -158,7 +161,6 @@ public class DriveSubsystem extends FullSubsystem {
             module.periodic();
         }
         odometryLock.unlock();
-
         RobotState.getInstance().incrementIterationCount();
 
         // Stop moving when disabled
@@ -263,6 +265,9 @@ public class DriveSubsystem extends FullSubsystem {
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+        telemtry.telemeterize(poseEstimator.getEstimatedPosition() ,getModuleStates(), 1./ DriveConstants.ODOMETRY_FREQUENCY);
+        
     }
 
     @Override
