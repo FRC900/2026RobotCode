@@ -35,7 +35,7 @@ public class HoodConstants {
     public static CanCoderConfig kHoodCanCoderConfig = new CanCoderConfig();
 
     static {
-        // subsystem configs
+        // subsystem configs, TODO: add the freaking talon debicve id
         kHoodConfig.name = "Hood";
 
         kHoodConfig.cancoderToUnitsRatio = 170. / 10.;
@@ -43,15 +43,15 @@ public class HoodConstants {
         kHoodConfig.kMaxPositionUnits = Math.PI / 4;
         kHoodConfig.kMinPositionUnits = Math.PI / 12;
         kHoodConfig.momentOfInertia = 0.0255356814;
-        kHoodConfig.talonCANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
+        kHoodConfig.talonCANID = new CANDeviceId(0, Constants.kCanBusCanivoreMech);
         kHoodConfig.unitToRotorRatio = 15.625 * 170. / 10.;
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;
         kHoodConfig.cancoderUnitsForSim = 1;
 
-        // cancoder config TODO: add the freaking cancoder debicve id
-        kHoodCanCoderConfig.CANID = new CANDeviceId(0, Constants.kCanBusCanivoreMech);
+        // cancoder config
+        kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
         kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
         kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =

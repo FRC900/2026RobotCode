@@ -44,7 +44,7 @@ public class TurretConstants {
     public static final double toleranceRad = 0.1;
     /*
     *
-    *         config.Slot0.kS = 0.18;
+    *      config.Slot0.kS = 0.18;
            config.Slot0.kP = 6.0;
            config.Slot0.kD = 0.1;
            config.Slot0.kV = 0.120;
