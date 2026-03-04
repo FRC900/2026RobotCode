@@ -12,14 +12,13 @@ import static edu.wpi.first.units.Units.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.util.swerve.SwerveSetpoint;
-import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Mode;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
+import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import com.team900.lib.util.FullSubsystem;
 import com.team900.lib.util.Util;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
@@ -38,7 +37,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -46,33 +44,29 @@ import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends FullSubsystem {
 
     static final Lock odometryLock = new ReentrantLock();
+
+    DriveViz telemtry = new DriveViz(getMaxLinearSpeedMetersPerSec());
 
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
     private ChassisSpeeds prePoofed = new ChassisSpeeds();
+
     private final SysIdRoutine sysId;
 
     private final Alert gyroDisconnectedAlert =
             new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
-    private SwerveSetpoint setpoint;
     private SwerveDriveKinematics kinematics =
             new SwerveDriveKinematics(DriveConstants.getModuleTranslations());
-    private final SwerveSetpointGenerator generator =
-            new SwerveSetpointGenerator(
-                    DriveConstants.PP_CONFIG, DriveConstants.MAX_STEER_VEL_RAD_PER_SEC);
 
     private Rotation2d rawYawRotation = new Rotation2d();
 
     private double rawYawVelocity = 0.0;
-
-    private double rawAccelX = 0.0;
-    private double rawAccelY = 0.0;
 
     private SwerveModulePosition[] lastModulePositions = // For delta tracking
             new SwerveModulePosition[] {
@@ -100,37 +94,39 @@ public class DriveSubsystem extends SubsystemBase {
         modules[2] = new Module(blModuleIO, 2, CompTunerConstants.BackLeft);
         modules[3] = new Module(brModuleIO, 3, CompTunerConstants.BackRight);
 
-        setpoint =
-                new SwerveSetpoint(
-                        getChassisSpeeds(), getModuleStates(), DriveFeedforwards.zeros(4));
-
         // Usage reporting for swerve template
         HAL.report(
                 tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
+        // Start the Odometry Thread
+        PhoenixOdometryThread.getInstance().start();
+
         // Configure AutoBuilder for PathPlanner
         AutoBuilder.configure(
                 this::getPose,
-                this::setPose,
+                this::resetPose,
                 this::getChassisSpeeds,
                 this::runVelocity,
+                // TODO: tune pathfollowing constants
                 new PPHolonomicDriveController(
                         new PIDConstants(7, 0.0, 0), new PIDConstants(5.0, 0.0, 0.0)),
                 DriveConstants.PP_CONFIG,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
+        // Pathplanner Logging
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(
                             "Odometry/Trajectory",
                             activePath.toArray(new Pose2d[activePath.size()]));
                 });
+
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
 
-        // Configure SysId
+        // TODO: Configure SysId
         sysId =
                 new SysIdRoutine(
                         new SysIdRoutine.Config(
@@ -145,17 +141,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: Do the chassis speeds and gyro data really need to be read at 250 hertz when not
-        // doing odometry?
         odometryLock.lock(); // Prevents odometry updates while reading data
-        gyroIO.updateInputs(gyroInputs);
+        gyroIO.readInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
 
         for (var module : modules) {
             module.periodic();
         }
         odometryLock.unlock();
-
         RobotState.getInstance().incrementIterationCount();
 
         // Stop moving when disabled
@@ -170,6 +163,15 @@ public class DriveSubsystem extends SubsystemBase {
             Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
             Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
         }
+        // instantiate fields for drive measurements
+        double rawAccelX = 0.0;
+        double rawAccelY = 0.0;
+
+        double rawRollVelocity = 0.0;
+        double rawPitchVelocity = 0.0;
+
+        double rawRoll = 0.0;
+        double rawPitch = 0.0;
 
         // Update odometry
         double[] sampleTimestamps =
@@ -193,9 +195,15 @@ public class DriveSubsystem extends SubsystemBase {
             if (gyroInputs.connected) {
                 // Use the real gyro angle
                 rawYawRotation = gyroInputs.odometryYawPositions[i];
+
                 // too lazy to update gyro sim so here's the solution
                 if (Constants.currentMode == Mode.REAL) {
-                    rawYawVelocity = gyroInputs.odometryYawVelocityRadPerSecs[i];
+                    rawYawVelocity = gyroInputs.odometryYawVelocitys[i];
+                    rawRollVelocity = gyroInputs.odometryRollVelocitys[i];
+                    rawPitchVelocity = gyroInputs.odometryPitchVelocitys[i];
+
+                    rawRoll = gyroInputs.odometryRollPositions[i].getRadians();
+                    rawPitch = gyroInputs.odometryPitchPositions[i].getRadians();
 
                     rawAccelX = gyroInputs.odometryAccelXs[i];
                     rawAccelY = gyroInputs.odometryAccelYs[i];
@@ -206,6 +214,11 @@ public class DriveSubsystem extends SubsystemBase {
                 rawYawRotation = rawYawRotation.plus(new Rotation2d(twist.dtheta));
             }
             // Apply update
+            RobotState.getInstance()
+                    .addOdometryMeasurement(
+                            sampleTimestamps[i],
+                            poseEstimator.updateWithTime(
+                                    sampleTimestamps[i], rawYawRotation, modulePositions));
 
             ChassisSpeeds measuredRobotRelativeChassisSpeeds =
                     kinematics.toChassisSpeeds(swerveModulePositionToState(modulePositions));
@@ -213,37 +226,46 @@ public class DriveSubsystem extends SubsystemBase {
                     ChassisSpeeds.fromRobotRelativeSpeeds(
                             measuredRobotRelativeChassisSpeeds, rawYawRotation);
             ChassisSpeeds desiredFieldRelativeChassisSpeeds =
-                    ChassisSpeeds.fromRobotRelativeSpeeds(
-                            setpoint.robotRelativeSpeeds(), rawYawRotation);
+                    ChassisSpeeds.fromRobotRelativeSpeeds(prePoofed, rawYawRotation);
 
             ChassisSpeeds fusedFieldRelativeChassisSpeeds =
                     new ChassisSpeeds(
                             measuredFieldRelativeChassisSpeeds.vxMetersPerSecond,
                             measuredFieldRelativeChassisSpeeds.vyMetersPerSecond,
                             rawYawVelocity);
-            // TODO: convert units all to radians then add the methods to get these measurements
-            // also I think you need the the lock and the queues to update the
-            // drivemotionmeasurements at 250 hertz to use for shooting but confirm tm
-            // RobotState.getInstance().addDriveMotionMeasurements(
-            //     sampleTimestamps[i],
-            //     rawRollVelocity,
-            //     rawPitchVelocity,
-            //     rawYawVelocity,
-            //     rawPitch,
-            //     rawRoll,
-            //     rawAccelX,
-            //     rawAccelY,
-            //     setpoint.robotRelativeSpeeds(),
-            //     desiredFieldRelativeChassisSpeeds,
-            //     measuredRobotRelativeChassisSpeeds,
-            //     measuredFieldRelativeChassisSpeeds,
-            //     fusedFieldRelativeChassisSpeeds);
 
-            //  RobotState.getInstance().addYawMeasurements(rawYawRads, sampleTimestamps[i]);
+            RobotState.getInstance()
+                    .addDriveMotionMeasurements(
+                            sampleTimestamps[i],
+                            rawRollVelocity,
+                            rawPitchVelocity,
+                            rawYawVelocity,
+                            rawPitch,
+                            rawRoll,
+                            rawAccelX,
+                            rawAccelY,
+                            prePoofed,
+                            desiredFieldRelativeChassisSpeeds,
+                            measuredRobotRelativeChassisSpeeds,
+                            measuredFieldRelativeChassisSpeeds,
+                            fusedFieldRelativeChassisSpeeds);
         }
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+        telemtry.telemeterize(
+                poseEstimator.getEstimatedPosition(),
+                getModuleStates(),
+                1. / DriveConstants.ODOMETRY_FREQUENCY);
+    }
+
+    @Override
+    public void periodicAfterScheduler() {
+
+        Logger.recordOutput(
+                "Drive/currentCommand",
+                (getCurrentCommand() == null) ? "Default" : getCurrentCommand().getName());
     }
 
     /**
@@ -366,16 +388,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /** Resets the current odometry pose. */
-    public void setPose(Pose2d pose) {
+    public void resetPose(Pose2d pose) {
         poseEstimator.resetPosition(rawYawRotation, getModulePositions(), pose);
         if (Constants.currentMode == Mode.SIM) {
-            RobotContainer.getInstance().driveSimulation.setSimulationWorldPose(pose);
+            RobotContainer.getInstance()
+                    .getSimulatedRobotState()
+                    .getSimDrive()
+                    .setSimulationWorldPose(pose);
         }
     }
 
     /** Resets the current odometry pose. */
-    public void setPose() {
-        setPose(Pose2d.kZero);
+    public void resetPose() {
+        resetPose(Pose2d.kZero);
     }
 
     /** Returns the maximum linear speed in meters per sec. */
@@ -391,14 +416,11 @@ public class DriveSubsystem extends SubsystemBase {
     public void teleopControl(double driveX, double driveY, double rotate) {
         double magnitude = Math.hypot(driveX, driveY);
         double speedX =
-                CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
-                        * MathUtil.applyDeadband(driveX, 0.05)
-                        * magnitude;
+                getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveX, 0.05) * magnitude;
         double speedY =
-                CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond)
-                        * MathUtil.applyDeadband(driveY, 0.05)
-                        * magnitude;
-        double speedR = 6 * MathUtil.applyDeadband(rotate, 0.05);
+                getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveY, 0.05) * magnitude;
+        // TODO: tune on MUSA's preference
+        double speedR = 2 * Math.PI * MathUtil.applyDeadband(rotate, 0.05);
 
         if (Util.shouldFlip()) {
             speedX = -speedX;
@@ -406,9 +428,8 @@ public class DriveSubsystem extends SubsystemBase {
         }
         prePoofed = ChassisSpeeds.fromFieldRelativeSpeeds(speedX, speedY, speedR, getRotation());
         Logger.recordOutput("prePoofed", prePoofed);
-        setpoint = generator.generateSetpoint(setpoint, prePoofed, Constants.kRealDt);
-        Logger.recordOutput("Drive/Poofed/Setpoint", setpoint.robotRelativeSpeeds());
-        runVelocity(setpoint.robotRelativeSpeeds());
+
+        runVelocity(prePoofed);
     }
 
     public void teleopResetRotation() {
@@ -427,5 +448,9 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         return states;
+    }
+
+    public void addVisionMeasurement(VisionFieldPoseEstimate estimate) {
+        // TODO: Implement when vision is enabled
     }
 }

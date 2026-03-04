@@ -1,9 +1,7 @@
 package com.team900.frc2026.subsystems.coprocessor;
 
-import java.lang.ref.Reference;
 import java.util.Optional;
 
-import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.ApriltagArrayStamped;
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
 import com.team900.lib.util.VirtualSubsystem;
 
@@ -11,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.team88.ros.bridge.BridgePublisher;
 import frc.team88.ros.bridge.BridgeSubscriber;
 import frc.team88.ros.bridge.ROSNetworkTablesBridge;
-import frc.team88.ros.messages.geometry_msgs.Transform;
 import frc.team88.ros.messages.geometry_msgs.TransformStamped;
 import frc.team88.ros.messages.std_msgs.RosFloat64;
 import frc.team88.ros.messages.tf2_msgs.TFMessage;

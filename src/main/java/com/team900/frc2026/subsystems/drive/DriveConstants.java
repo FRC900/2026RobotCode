@@ -48,7 +48,7 @@ public class DriveConstants {
     // PathPlanner config constants
     public static final double ROBOT_MASS_KG = Units.lbsToKilograms(140);
     public static final double ROBOT_MOI = 5.645;
-    public static final double WHEEL_COF = 2.0;
+    public static final double WHEEL_COF = 1;
     public static final double MAX_STEER_VEL_RAD_PER_SEC = 2 * Math.PI;
     public static final RobotConfig PP_CONFIG =
             new RobotConfig(
@@ -98,10 +98,6 @@ public class DriveConstants {
         };
     }
 
-    public static final class RotationConfigs {
+    public static final Gains kHeadingController = new Gains(0,0 , 0, 0, 0, 0, 0);
 
-        public static final double kSwerveHeadingControllerErrorTolerance = 0.025;
-        public static final Gains gainsSnap = new Gains(30, 0, 0, 0, 0, 0, 0);
-        public static final Gains gainsMaintain = new Gains(30, 0, 0, 0, 0, 0, 0);
-    }
 }
