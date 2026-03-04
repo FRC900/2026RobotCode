@@ -1,6 +1,5 @@
 package com.team900.frc2026.subsystems.intake;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -12,12 +11,12 @@ import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.CanCoderConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
-
 import edu.wpi.first.math.util.Units;
 
 public class IntakePivotConstants {
-        // TODO: update this after they put on cancoder
-        // Intake radians will be measured from horizontal to avoid confusion where positive direction is up
+    // TODO: update this after they put on cancoder
+    // Intake radians will be measured from horizontal to avoid confusion where positive direction
+    // is up
     public static final double kIntakePivotMinRadians = 0.0;
     public static final double kIntakePivotMaxRadians = 0.0;
     public static final double kIntakePivotToleranceRadians = 0.1;
@@ -26,19 +25,20 @@ public class IntakePivotConstants {
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-    public static final Gains COMP_GAINS =  new Gains(0,0,0,0,0,0,0);
+    public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
     public static CanCoderConfig kIntakeCanCoderConfig = new CanCoderConfig();
-static {
-   kIntakePivotConfig.cancoderToUnitsRatio = 1;
+
+    static {
+        kIntakePivotConfig.cancoderToUnitsRatio = 1;
         kIntakePivotConfig.isFusedCancoder = true;
-        kIntakePivotConfig.kMaxPositionUnits =  kIntakePivotMaxRadians;
+        kIntakePivotConfig.kMaxPositionUnits = kIntakePivotMaxRadians;
         kIntakePivotConfig.kMinPositionUnits = kIntakePivotMinRadians;
         kIntakePivotConfig.momentOfInertia = 0.6065550876;
         kIntakePivotConfig.talonCANID = new CANDeviceId(61, Constants.kCanBusCanivoreMech);
-        kIntakePivotConfig.unitToRotorRatio = 1/ kIntakeGearRatio;
+        kIntakePivotConfig.unitToRotorRatio = 1 / kIntakeGearRatio;
 
         // configs for sim
         kIntakePivotConfig.ratioForSim = kIntakeGearRatio;
@@ -64,7 +64,8 @@ static {
         kIntakePivotConfig.fxConfig.Feedback.FeedbackRotorOffset = 0;
         kIntakePivotConfig.fxConfig.Feedback.FeedbackSensorSource =
                 FeedbackSensorSourceValue.FusedCANcoder;
-        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio = kIntakePivotConfig.getCanCodertoRotorRatio();
+        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio =
+                kIntakePivotConfig.getCanCodertoRotorRatio();
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 1;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
@@ -85,8 +86,10 @@ static {
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
                 Units.radiansToRotations(kIntakePivotMaxRadians);
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Units.radiansToRotations(kIntakePivotMinRadians);
+        kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+                Units.radiansToRotations(kIntakePivotMinRadians);
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-}
 
+        kIntakePivotConfig.canCoderConfig = kIntakeCanCoderConfig;
+    }
 }

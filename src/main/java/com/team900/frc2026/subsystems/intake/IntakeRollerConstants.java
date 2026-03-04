@@ -26,7 +26,7 @@ public class IntakeRollerConstants {
         kIntakeRollerConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kIntakeRollerConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-          // using arbitralily small value for not since handoff position and velocity isn't important
+        // using arbitralily small value for not since handoff position and velocity isn't important
         kIntakeRollerConfig.momentOfInertia = 0.00042474;
     }
 

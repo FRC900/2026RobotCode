@@ -33,7 +33,7 @@ public class RobotState {
         this.visionEstimateConsumer = visionEstimateConsumer;
         fieldToRobot.addSample(0.0, MathHelpers.kPose2dZero);
         robotToTurret.addSample(0.0, MathHelpers.kRotation2dZero);
-                turretAngularVelocity.addSample(0.0, 0.0);
+        turretAngularVelocity.addSample(0.0, 0.0);
         driveYawAngularVelocity.addSample(0.0, 0.0);
         turretPositionRadians.addSample(0.0, 0.0);
 
@@ -48,11 +48,13 @@ public class RobotState {
     // Robot's pose in field coordinates over time
     private final ConcurrentTimeInterpolatableBuffer<Pose2d> fieldToRobot =
             ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
-                private final ConcurrentTimeInterpolatableBuffer<Rotation2d> robotToTurret = ConcurrentTimeInterpolatableBuffer
-            .createBuffer(LOOKBACK_TIME);
-    private static final Transform2d TURRET_TO_CAMERA = new Transform2d(VisionConstants.kTurretToCameraX,
-            VisionConstants.kTurretToCameraY,
-            MathHelpers.kRotation2dZero);
+    private final ConcurrentTimeInterpolatableBuffer<Rotation2d> robotToTurret =
+            ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
+    private static final Transform2d TURRET_TO_CAMERA =
+            new Transform2d(
+                    VisionConstants.kTurretToCameraXMeters,
+                    VisionConstants.kTurretToCameraYMeters,
+                    MathHelpers.kRotation2dZero);
     // Current robot-relative chassis speeds (measured from encoders)
     private final AtomicReference<ChassisSpeeds> measuredRobotRelativeChassisSpeeds =
             new AtomicReference<>(new ChassisSpeeds());
@@ -72,10 +74,10 @@ public class RobotState {
 
     private double lastUsedTagSlamTimestamp = 0;
     private Pose2d lastUsedTagSlamPose = Pose2d.kZero;
-        private ConcurrentTimeInterpolatableBuffer<Double> turretAngularVelocity = ConcurrentTimeInterpolatableBuffer
-            .createDoubleBuffer(LOOKBACK_TIME);
-    private ConcurrentTimeInterpolatableBuffer<Double> turretPositionRadians = ConcurrentTimeInterpolatableBuffer
-            .createDoubleBuffer(LOOKBACK_TIME);
+    private ConcurrentTimeInterpolatableBuffer<Double> turretAngularVelocity =
+            ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
+    private ConcurrentTimeInterpolatableBuffer<Double> turretPositionRadians =
+            ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
     private final ConcurrentTimeInterpolatableBuffer<Double> driveYawAngularVelocity =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
     private final ConcurrentTimeInterpolatableBuffer<Double> driveRollAngularVelocity =
@@ -203,8 +205,9 @@ public class RobotState {
                         delta.omegaRadiansPerSecond));
     }
 
-      // This has rotation and radians to allow for wrapping tracking.
-    public void addTurretUpdates(double timestamp,
+    // This has rotation and radians to allow for wrapping tracking.
+    public void addTurretUpdates(
+            double timestamp,
             Rotation2d turretRotation,
             double turretRadians,
             double angularYawRadsPerS) {
@@ -214,7 +217,7 @@ public class RobotState {
         this.turretPositionRadians.addSample(timestamp, turretRadians);
     }
 
-     public double getLatestTurretPositionRadians() {
+    public double getLatestTurretPositionRadians() {
         return this.turretPositionRadians.getInternalBuffer().lastEntry().getValue();
     }
 
@@ -222,19 +225,17 @@ public class RobotState {
         return this.turretAngularVelocity.getInternalBuffer().lastEntry().getValue();
     }
 
-
     public Optional<Pose2d> getFieldToRobot(double timestamp) {
         return fieldToRobot.getSample(timestamp);
     }
 
-     public Transform2d getTurretToCamera() {
+    public Transform2d getTurretToCamera() {
         return TURRET_TO_CAMERA;
     }
 
     public Map.Entry<Double, Rotation2d> getLatestRobotToTurret() {
         return robotToTurret.getLatest();
     }
-
 
     public ChassisSpeeds getLatestMeasuredFieldRelativeChassisSpeeds() {
         return measuredFieldRelativeChassisSpeeds.get();
@@ -421,7 +422,7 @@ public class RobotState {
         intakePivotRotations.set(rotations);
     }
 
-    public void setIntakePivotRPS(double rps)   {
+    public void setIntakePivotRPS(double rps) {
         intakePivotRPS.set(0.0);
     }
 
@@ -429,7 +430,7 @@ public class RobotState {
         return intakePivotRotations.get();
     }
 
-    public double getIntakePivotRPS()   {
+    public double getIntakePivotRPS() {
         return intakePivotRPS.get();
     }
 
@@ -437,7 +438,7 @@ public class RobotState {
         hoodRotations.set(rotations);
     }
 
-    public void setHoodRPS(double rps)  {
+    public void setHoodRPS(double rps) {
         hoodRPS.set(rps);
     }
 
@@ -460,6 +461,7 @@ public class RobotState {
     public double getIntakeRollerRPS() {
         return intakeRollerRPS.get();
     }
+
     // not helpful for right now since we can't check tag ids with our estimates
     public void setExclusiveTag(int id) {
         exclusiveTag.set(Optional.of(id));

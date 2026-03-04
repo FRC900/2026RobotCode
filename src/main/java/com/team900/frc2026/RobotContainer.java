@@ -4,6 +4,7 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.simulation.SimulatedRobotState;
 // import com.team900.frc2026.factories.HandoffFactory;
 // import com.team900.frc2026.factories.IntakeFactory;
 // import com.team900.frc2026.factories.SpindexerFactory;
@@ -26,6 +27,7 @@ import com.team900.frc2026.subsystems.spindexer.SpindexerSubsystem;
 import com.team900.frc2026.subsystems.turret.TurretIOHardware;
 import com.team900.frc2026.subsystems.turret.TurretSubsystem;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import com.team900.frc2026.viz.RobotViz;
 import com.team900.lib.subsystems.CanCoderIOHardware;
 import com.team900.lib.subsystems.TalonFXIO;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,7 +36,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import java.util.function.Consumer;
 import lombok.Getter;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class RobotContainer {
     private DriveSubsystem buildDriveSystem() {
@@ -57,7 +58,7 @@ public class RobotContainer {
         return new HoodSubsystem(
                 HoodConstants.kHoodConfig,
                 new TalonFXIO(HoodConstants.kHoodConfig),
-                new CanCoderIOHardware(HoodConstants.kHoodConfig.canCoderConfig));
+                new CanCoderIOHardware(HoodConstants.kHoodCanCoderConfig));
     }
 
     private IntakeRollerSubsystem buildIntakeRollerSubsystem() {
@@ -70,7 +71,7 @@ public class RobotContainer {
         return new IntakePivotSubsystem(
                 IntakePivotConstants.kIntakePivotConfig,
                 new TalonFXIO(IntakePivotConstants.kIntakePivotConfig),
-                new CanCoderIOHardware(IntakePivotConstants.kIntakePivotConfig.canCoderConfig));
+                new CanCoderIOHardware(IntakePivotConstants.kIntakeCanCoderConfig));
     }
 
     private HandoffSubsystem buildHandoffSubsystem() {
@@ -93,7 +94,8 @@ public class RobotContainer {
 
     private static volatile RobotContainer instance;
 
-    public SwerveDriveSimulation driveSimulation = null;
+    @Getter private SimulatedRobotState simulatedRobotState = new SimulatedRobotState();
+
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
@@ -104,14 +106,15 @@ public class RobotContainer {
                 }
             };
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
+    @Getter private final RobotViz robotViz = new RobotViz();
 
     private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
-    // @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
-    // @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
+    @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
+    @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter
-    // private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
+    @Getter
+    private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
 
     @Getter private final IntakePivotSubsystem intakePivotSubsystem = buildIntakePivotSubsystem();
 

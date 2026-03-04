@@ -4,9 +4,8 @@
 
 package com.team900.frc2026;
 
-import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Arrays;
 
 public final class Main {
     private Main() {}

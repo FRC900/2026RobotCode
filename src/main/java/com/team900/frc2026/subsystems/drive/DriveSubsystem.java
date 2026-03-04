@@ -9,7 +9,6 @@ package com.team900.frc2026.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -52,7 +51,7 @@ public class DriveSubsystem extends FullSubsystem {
 
     static final Lock odometryLock = new ReentrantLock();
 
-    DriveViz telemtry = new DriveViz(getMaxLinearSpeedMetersPerSec()); 
+    DriveViz telemtry = new DriveViz(getMaxLinearSpeedMetersPerSec());
 
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -266,8 +265,10 @@ public class DriveSubsystem extends FullSubsystem {
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
 
-        telemtry.telemeterize(poseEstimator.getEstimatedPosition() ,getModuleStates(), 1./ DriveConstants.ODOMETRY_FREQUENCY);
-        
+        telemtry.telemeterize(
+                poseEstimator.getEstimatedPosition(),
+                getModuleStates(),
+                1. / DriveConstants.ODOMETRY_FREQUENCY);
     }
 
     @Override
@@ -401,7 +402,10 @@ public class DriveSubsystem extends FullSubsystem {
     public void resetPose(Pose2d pose) {
         poseEstimator.resetPosition(rawYawRotation, getModulePositions(), pose);
         if (Constants.currentMode == Mode.SIM) {
-            RobotContainer.getInstance().driveSimulation.setSimulationWorldPose(pose);
+            RobotContainer.getInstance()
+                    .getSimulatedRobotState()
+                    .getSimDrive()
+                    .setSimulationWorldPose(pose);
         }
     }
 

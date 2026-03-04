@@ -47,7 +47,8 @@ public class TurretIOHardware implements TurretIO {
                     TurretConstants.kTurret29To1CANCoder.getDeviceNumber(),
                     TurretConstants.kTurret29To1CANCoder.getBus());
     private final DutyCycleOut dutyCycleControl = new DutyCycleOut(0);
-    private final PositionTorqueCurrentFOC positionTorqueCurrentFOCControl = new PositionTorqueCurrentFOC(0.0).withSlot(0);
+    private final PositionTorqueCurrentFOC positionTorqueCurrentFOCControl =
+            new PositionTorqueCurrentFOC(0.0).withSlot(0);
 
     private final StatusSignal<Angle> positionSignal = talon.getPosition();
     private final StatusSignal<AngularVelocity> velocitySignal = talon.getVelocity();
@@ -242,7 +243,8 @@ public class TurretIOHardware implements TurretIO {
         double setpointRotations = Units.radiansToRotations(setpointRadians);
         double setpointRotor = setpointRotations / TurretConstants.kTurretGearRatio;
         double ffVel = Units.radiansToRotations(radsPerSecond) / TurretConstants.kTurretGearRatio;
-        talon.setControl(positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
+        talon.setControl(
+                positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radiansFromCenter", radiansFromCenter);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radsPerSecond", radsPerSecond);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/ffVel", ffVel);

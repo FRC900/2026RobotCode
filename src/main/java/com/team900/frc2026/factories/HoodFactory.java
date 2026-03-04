@@ -4,15 +4,13 @@ import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.hood.HoodSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import java.util.function.Supplier;
 
 public class HoodFactory {
 
     // Sets the hood to a fixed position in radians
     public static Command setPosition(RobotContainer container, double radians) {
         HoodSubsystem hood = container.getHoodSubsystem();
-        return hood.motionMagicSetpointCommand(() -> radians)
-                .withName("Hood Set Position");
+        return hood.motionMagicSetpointCommand(() -> radians).withName("Hood Set Position");
     }
 
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance

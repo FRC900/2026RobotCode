@@ -18,7 +18,6 @@ public class ShooterConstants {
 
     public static final Gains gains = new Gains(0, 0, 0, 0, 0, 0, 0);
 
-
     static {
         kShooterConfig.name = "Shooter Right";
         kShooterConfig.talonCANID = new CANDeviceId(40, Constants.kCanBusCanivoreMech);

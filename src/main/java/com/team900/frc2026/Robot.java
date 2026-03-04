@@ -4,6 +4,10 @@
 
 package com.team900.frc2026;
 
+import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.team900.lib.util.CANBusStatusLogger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -11,13 +15,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-
 import java.util.Optional;
-
+import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -26,13 +30,9 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.ctre.phoenix6.SignalLogger;
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.team900.lib.util.CANBusStatusLogger;
-
 public class Robot extends LoggedRobot {
 
-   static final int kRTPriority = 2;
+    static final int kRTPriority = 2;
     static final int kNonRTPriority = 1;
 
     private Command disabledCommand = Commands.none();
@@ -56,15 +56,13 @@ public class Robot extends LoggedRobot {
 
     private Command warmupCommand;
     // private PathfindingWarmupCommand pathfindingWarmupCommand;
-    private CANBusStatusLogger driverCAN =
-            new CANBusStatusLogger(Constants.kCanBusCanivoreDrive);
-    private CANBusStatusLogger mechanismCAN =
-            new CANBusStatusLogger(Constants.kCanBusCanivoreMech);
+    private CANBusStatusLogger driverCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreDrive);
+    private CANBusStatusLogger mechanismCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreMech);
 
     private RobotContainer container;
 
     public Robot() {
- Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+        Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
@@ -115,7 +113,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotPeriodic() {
 
-           if (DriverStation.isEnabled()) {
+        if (DriverStation.isEnabled()) {
             Threads.setCurrentThreadPriority(true, kRTPriority);
         } else {
             Threads.setCurrentThreadPriority(false, kNonRTPriority);
@@ -123,12 +121,17 @@ public class Robot extends LoggedRobot {
 
         CommandScheduler.getInstance().run();
 
- Threads.setCurrentThreadPriority(false, kNonRTPriority);    }
+        RobotState.getInstance().updateLogger();
+        robotContainer.getRobotViz().updateViz();
+        if (Robot.isSimulation()) {
+            robotContainer.getSimulatedRobotState().updateSim();
+        }
+
+        Threads.setCurrentThreadPriority(false, kNonRTPriority);
+    }
 
     @Override
-    public void disabledInit() {
-        
-    }
+    public void disabledInit() {}
 
     @Override
     public void disabledPeriodic() {}
@@ -138,7 +141,25 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-       
+        Threads.setCurrentThreadPriority(true, kRTPriority);
+
+        Pathfinding.ensureInitialized();
+        // Pathfinding.setCacheDistanceToleranceMeters(0.8);
+
+        if (Robot.isSimulation()) {
+            if (!hasEnabled) {
+                SimulatedArena.getInstance().placeGamePiecesOnField();
+            }
+        }
+        if (!hasEnabled) {
+            hasEnabled = true;
+        }
+
+        RobotState.getInstance().setAutoStartTime(Timer.getFPGATimestamp());
+
+        if (autonomousCommand != null) {
+            autonomousCommand.schedule();
+        }
     }
 
     @Override
@@ -148,9 +169,7 @@ public class Robot extends LoggedRobot {
     public void autonomousExit() {}
 
     @Override
-    public void teleopInit() {
-        
-    }
+    public void teleopInit() {}
 
     @Override
     public void teleopPeriodic() {}
@@ -168,4 +187,10 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testExit() {}
+
+    // simulation period method in your Robot.java
+    @Override
+    public void simulationPeriodic() {
+        SimulatedArena.getInstance().simulationPeriodic();
+    }
 }

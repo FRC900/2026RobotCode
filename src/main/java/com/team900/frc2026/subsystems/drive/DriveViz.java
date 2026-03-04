@@ -2,7 +2,6 @@ package com.team900.frc2026.subsystems.drive;
 
 import com.team900.frc2026.Robot;
 import com.team900.lib.util.MathHelpers;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -86,8 +85,9 @@ public class DriveViz {
             };
 
     /* Accept the swerve drive state and telemeterize it to smartdashboard */
-    public void telemeterize(Pose2d currentPose, SwerveModuleState[] moduleStates, double odometryPeriod) {
-       
+    public void telemeterize(
+            Pose2d currentPose, SwerveModuleState[] moduleStates, double odometryPeriod) {
+
         /* Telemeterize the pose */
         Pose2d pose = currentPose;
         Logger.recordOutput("Drive/Viz/Pose", pose);

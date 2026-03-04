@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
 
 public class VisionConstants {
 
@@ -64,9 +63,9 @@ public class VisionConstants {
             new Transform2d(
                     new Translation2d(kRobotToCameraBForward, kRobotToCameraBSide),
                     kCameraBYawOffset);
-public static final Distance kTurretToCameraX = null;
+    public static final double kTurretToCameraXMeters = 0;
 
-public static final Distance kTurretToCameraY = null;
+    public static final double kTurretToCameraYMeters = 0;
 
     // Vision processing constants
     public static final double kDefaultAmbiguityThreshold = 0.19;
@@ -86,6 +85,4 @@ public static final Distance kTurretToCameraY = null;
 
     // NetworkTables constants
     public static final String kBoundingBoxTableName = "BoundingBoxes";
-
-
 }

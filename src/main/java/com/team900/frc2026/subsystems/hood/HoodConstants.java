@@ -18,7 +18,6 @@ public class HoodConstants {
     public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
-    
     public static final double kHoodToleranceRadians = 0.1;
     public static final double kHoodMinPositionRadians = Math.PI / 12;
     public static final double kHoodMaxPositionRadians = Math.PI / 4;
@@ -26,11 +25,12 @@ public class HoodConstants {
 
     public static final double kHoodRotorMaxPosition =
             Units.radiansToRotations(kHoodMaxPositionRadians / kHoodGearRatio);
-    public static final double kHoodRotorMinPosition = Units.radiansToRotations(kHoodMinPositionRadians);
+    public static final double kHoodRotorMinPosition =
+            Units.radiansToRotations(kHoodMinPositionRadians);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
-        //TODO: find this experimetnatlly
+    // TODO: find this experimetnatlly
     public static final double kHoodStowTrenchPositionRadians = 15.0;
 
     public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
@@ -41,7 +41,7 @@ public class HoodConstants {
         // subsystem configs
         kHoodConfig.name = "Hood";
 
-        kHoodConfig.cancoderToUnitsRatio =   170. / 10.;
+        kHoodConfig.cancoderToUnitsRatio = 170. / 10.;
         kHoodConfig.isFusedCancoder = true;
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
@@ -96,5 +96,7 @@ public class HoodConstants {
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kHoodRotorMinPosition;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        kHoodConfig.canCoderConfig = kHoodCanCoderConfig;
     }
 }
