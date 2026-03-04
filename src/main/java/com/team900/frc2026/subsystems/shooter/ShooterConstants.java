@@ -18,7 +18,8 @@ public class ShooterConstants {
         kShooterConfig.fxConfig = new TalonFXConfiguration();
         kShooterConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
         kShooterConfig.followers = new FollowerConfig[] {new FollowerConfig()};
-        kShooterConfig.followers[0].config.talonCANID = new CANDeviceId(56, Constants.kCanBusCanivoreMech);
+        kShooterConfig.followers[0].config.talonCANID =
+                new CANDeviceId(56, Constants.kCanBusCanivoreMech);
         kShooterConfig.followers[0].config.fxConfig = new TalonFXConfiguration();
     }
 
