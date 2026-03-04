@@ -43,6 +43,7 @@ import com.team900.lib.subsystems.TalonFXIO;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.team900.frc2026.factories.IntakeFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -231,6 +232,8 @@ public class RobotContainer {
         configureBindings();
     }
 
+    private boolean intakeDeployed = false;
+
     private void configureBindings() {
         // Swerve Drive
         driveSubsystem.setDefaultCommand(
@@ -243,6 +246,24 @@ public class RobotContainer {
         driveController
                 .cross()
                 .onTrue(new InstantCommand(driveSubsystem::teleopResetRotation, driveSubsystem));
+
+        // Intake pivot, l1 to retract and deploy intake
+        driveController
+                .L1()
+                .onTrue(
+                        Commands.either(
+                                IntakeFactory.retractSlapdown(this)
+                                        .andThen(
+                                                new InstantCommand(
+                                                        () -> intakeDeployed = false)),
+                                IntakeFactory.deploySlapdown(this)
+                                        .andThen(
+                                                new InstantCommand(
+                                                        () -> intakeDeployed = true)),
+                                () -> intakeDeployed));
+
+        // Intake rollers, l2 to run rollers when hel
+        driveController.L2().whileTrue(IntakeFactory.runIntake());
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
