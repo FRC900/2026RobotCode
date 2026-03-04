@@ -50,7 +50,5 @@ public class RobotViz {
 
         Logger.recordOutput(
                 "ComponentsPoseArray", new Pose3d[] {intakePose3d, shooterPose3d, hoodPose3d});
-
-        
     }
 }

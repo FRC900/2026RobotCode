@@ -1,9 +1,6 @@
 package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
-import com.team900.frc2026.subsystems.shooter.ShooterConstants;
-import com.team900.lib.util.ShooterSetpoint;
-
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SuperstructureFactory {
@@ -19,13 +16,11 @@ public class SuperstructureFactory {
 
     }
 
-    public static Command aim(RobotContainer container){
+    public static Command aim(RobotContainer container) {
         return null;
         /*Command to aim at target
          * Aim turret
          * Aim hood
          */
     }
-
-
 }

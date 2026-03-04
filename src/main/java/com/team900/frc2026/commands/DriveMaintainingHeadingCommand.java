@@ -74,7 +74,8 @@
 
 //     @Override
 //     public void execute() {
-//         double throttle = mThrottleSupplier.getAsDouble() * Constants.DriveConstants.kDriveMaxSpeed;
+//         double throttle = mThrottleSupplier.getAsDouble() *
+// Constants.DriveConstants.kDriveMaxSpeed;
 //         double strafe = mStrafeSupplier.getAsDouble() * Constants.DriveConstants.kDriveMaxSpeed;
 //         double turnFieldFrame = mTurnSupplier.getAsDouble();
 //         double throttleFieldFrame = mRobotState.isRedAlliance() ? -throttle : throttle;
@@ -100,7 +101,8 @@
 //         } else {
 //             if (mHeadingSetpoint.isEmpty()) {
 //                 mHeadingSetpoint =
-//                         Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
+//
+// Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
 //             }
 //             Logger.recordOutput("DriveMaintainHeading/throttleFieldFrame", throttleFieldFrame);
 //             Logger.recordOutput("DriveMaintainHeading/strafeFieldFrame", strafeFieldFrame);
@@ -127,9 +129,11 @@
 //                                                 ? Util.flipRedBlue(new Rotation2d(targetAngle))
 //                                                 : new Rotation2d(targetAngle)));
 //                 Logger.recordOutput("DriveMaintainHeading/reefHeadingLock", targetAngle);
-//                 // update heading setpoint to avoid snapping back to previous setpoint after scoring
+//                 // update heading setpoint to avoid snapping back to previous setpoint after
+// scoring
 //                 mHeadingSetpoint =
-//                         Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
+//
+// Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
 
 //                 // barge heading lock
 //             } else if (mRobotContainer.getModalControls().algaeClimbMode().getAsBoolean()

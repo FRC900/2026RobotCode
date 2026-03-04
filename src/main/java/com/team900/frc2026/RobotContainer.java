@@ -134,8 +134,14 @@ public class RobotContainer {
 
     private IntakePivotSubsystem buildIntakePivotSubsystem() {
         if (RobotBase.isSimulation())
-        return new IntakePivotSubsystem(IntakePivotConstants.kIntakePivotConfig, simulatedIntakeMotor, new SimCanCoderIO(IntakePivotConstants.kIntakeCanCoderConfig, simulatedIntakeMotor.getSupplierForCancoder(IntakePivotConstants.kIntakePivotConfig)));
-        
+            return new IntakePivotSubsystem(
+                    IntakePivotConstants.kIntakePivotConfig,
+                    simulatedIntakeMotor,
+                    new SimCanCoderIO(
+                            IntakePivotConstants.kIntakeCanCoderConfig,
+                            simulatedIntakeMotor.getSupplierForCancoder(
+                                    IntakePivotConstants.kIntakePivotConfig)));
+
         return new IntakePivotSubsystem(
                 IntakePivotConstants.kIntakePivotConfig,
                 new TalonFXIO(IntakePivotConstants.kIntakePivotConfig),
@@ -144,16 +150,21 @@ public class RobotContainer {
 
     private HandoffSubsystem buildHandoffSubsystem() {
         if (RobotBase.isSimulation())
-        return new HandoffSubsystem(HandoffConstants.kHandoffConfig, new SimTalonFXIO(HandoffConstants.kHandoffConfig));
+            return new HandoffSubsystem(
+                    HandoffConstants.kHandoffConfig,
+                    new SimTalonFXIO(HandoffConstants.kHandoffConfig));
         return new HandoffSubsystem(
                 HandoffConstants.kHandoffConfig, new TalonFXIO(HandoffConstants.kHandoffConfig));
     }
 
     private ShooterSubsystem buildShooterSubsystem() {
         if (RobotBase.isSimulation())
-        return new ShooterSubsystem(ShooterConstants.kShooterConfig, new SimTalonFXIO(ShooterConstants.kShooterConfig),  new TalonFXIO[] {
-                    new SimTalonFXIO(ShooterConstants.kShooterConfig.followers[0].config)
-                });
+            return new ShooterSubsystem(
+                    ShooterConstants.kShooterConfig,
+                    new SimTalonFXIO(ShooterConstants.kShooterConfig),
+                    new TalonFXIO[] {
+                        new SimTalonFXIO(ShooterConstants.kShooterConfig.followers[0].config)
+                    });
         return new ShooterSubsystem(
                 ShooterConstants.kShooterConfig,
                 new TalonFXIO(ShooterConstants.kShooterConfig),
@@ -165,7 +176,10 @@ public class RobotContainer {
     private final SimTalonFXWithCancoder simulatedHoodMotor =
             Robot.isSimulation() ? new SimTalonFXWithCancoder(HoodConstants.kHoodConfig) : null;
 
-    private final SimTalonFXWithCancoder simulatedIntakeMotor = Robot.isSimulation() ? new SimTalonFXWithCancoder(IntakePivotConstants.kIntakePivotConfig) : null;
+    private final SimTalonFXWithCancoder simulatedIntakeMotor =
+            Robot.isSimulation()
+                    ? new SimTalonFXWithCancoder(IntakePivotConstants.kIntakePivotConfig)
+                    : null;
 
     private static volatile RobotContainer instance;
 
