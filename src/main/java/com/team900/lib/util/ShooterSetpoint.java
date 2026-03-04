@@ -1,6 +1,8 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.RobotState;
+import com.team900.frc2026.subsystems.hood.HoodConstants;
+import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -67,12 +69,17 @@ public class ShooterSetpoint {
             Translation3d robotToTargetTranslation) {
 
             //turret
+            Rotation2d turretRotationRobotFrame = robotToTargetRotation
+            .minus(robotState.getLatestFieldToRobot().getValue().getRotation());
+            Rotation2d turretRotationTurretFrame = turretRotationRobotFrame.
+            rotateBy(MathHelpers.kRotation2dPi).rotateBy(ShooterConstants.kTurretToShotCorrection);
 
-            //turretFeedForward
 
             //hood
+            // var hoodZeroedAngle = Rotation2d.fromDegrees(HoodConstants.kHoodZeroedAngleDegrees);
+            // double hoodAngle = hoodZeroedAngle.getRadians() - pitchAngleRads;
 
-            //hoodFeedForward
+            //feedforward
 
             //shooterRPS
 
