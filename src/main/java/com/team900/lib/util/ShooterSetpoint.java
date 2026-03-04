@@ -5,6 +5,7 @@ import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 import java.util.Optional;
@@ -64,8 +65,8 @@ public class ShooterSetpoint {
         return this.isValid;
     }
 
-    // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
-    //         Translation3d robotToTargetTranslation) {
+     private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
+             Translation3d robotToTargetTranslation, double launchSpeedMetersPerSec) {
 
             //turret
             Rotation2d turretRotationRobotFrame = robotToTargetRotation
@@ -73,16 +74,32 @@ public class ShooterSetpoint {
             Rotation2d turretRotationTurretFrame = turretRotationRobotFrame.
             rotateBy(MathHelpers.kRotation2dPi).rotateBy(ShooterConstants.kTurretToShotCorrection);
 
+            //feedforward turret
+            var robotSpeeds = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
 
-            //hood
-            // var hoodZeroedAngle = Rotation2d.fromDegrees(HoodConstants.kHoodZeroedAngleDegrees);
-            // double hoodAngle = hoodZeroedAngle.getRadians() - pitchAngleRads;
+            var robotToTargetXY = new Translation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
 
-            //feedforward
+            var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond,
+            robotSpeeds.vyMetersPerSecond)
+                .rotateBy(
+                    robotToTargetXY.getAngle());
 
-    // shooterRPS
+            var tangent = targetFrameToRobot.getY();
+            var angular = robotSpeeds.omegaRadiansPerSecond;
+            var distanceToTarget = robotToTargetXY.getNorm();
+            var turretFF = -(angular + tangent / distanceToTarget);
 
-    // }
+        // shooterRPS
+
+            boolean validSetpont = true;
+            double shooterRPS = launchSpeedMetersPerSec /
+            ShooterConstants.kLaunchVelMetersPerSecPerRotPerSec;
+            if (shooterRPS > ShooterConstants.kShooterRPSCap) {
+                shooterRPS = ShooterConstants.kShooterRPSCap;
+                validSetpont = false;
+            }
+        }
+
 
     // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
     //         Translation3d robotToTargetTranslation,

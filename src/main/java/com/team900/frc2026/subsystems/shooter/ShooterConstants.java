@@ -88,4 +88,7 @@ public class ShooterConstants {
     public static final double kShootingRPM = 3500;
     public static final double kFeedingRPM = 5500;
     public static final Rotation2d kTurretToShotCorrection = Rotation2d.fromRadians(Units.degreesToRadians(0));
+
+    public static final double kLaunchVelMetersPerSecPerRotPerSec = 0.141;
+    public static final double kShooterRPSCap = 35000;
 }
