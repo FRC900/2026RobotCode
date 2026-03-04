@@ -23,9 +23,9 @@ import ProjectilePath as pp
 import FuelClearance as fc
 import time
 
-hub_height = 2.0
-shot_speed = 23 # 26.2
-shot_spin = 8 * 2*np.pi
+hub_height = 1.8288 # m
+shot_speed = 14.7 # m/s
+shot_spin = 15.8 * 2*np.pi # rad/s
 
 fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
@@ -96,8 +96,8 @@ for i, r in enumerate(r_vals):
             end = time.perf_counter()
             runtime_counter += (end-start)
             runtime_samples += 1
-            if runtime_samples == 10:
-                print(f"ETA (s): {runtime_counter * (samples-(i+j+k))/runtime_samples}")
+            if runtime_samples == 100:
+                print(f"ETA (s): {runtime_counter/runtime_samples * (samples - (i*len(vf_vals)*len(vl_vals) + j*len(vl_vals) + k + 1)):.1f}")
                 runtime_samples = 0 
                 runtime_counter = 0
 
