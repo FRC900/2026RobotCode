@@ -12,10 +12,7 @@ import static edu.wpi.first.units.Units.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.util.swerve.SwerveSetpoint;
-import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Mode;
 import com.team900.frc2026.RobotContainer;
@@ -64,12 +61,8 @@ public class DriveSubsystem extends FullSubsystem {
     private final Alert gyroDisconnectedAlert =
             new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
-    private SwerveSetpoint setpoint;
     private SwerveDriveKinematics kinematics =
             new SwerveDriveKinematics(DriveConstants.getModuleTranslations());
-    private final SwerveSetpointGenerator generator =
-            new SwerveSetpointGenerator(
-                    DriveConstants.PP_CONFIG, DriveConstants.MAX_STEER_VEL_RAD_PER_SEC);
 
     private Rotation2d rawYawRotation = new Rotation2d();
 
@@ -100,10 +93,6 @@ public class DriveSubsystem extends FullSubsystem {
         modules[1] = new Module(frModuleIO, 1, CompTunerConstants.FrontRight);
         modules[2] = new Module(blModuleIO, 2, CompTunerConstants.BackLeft);
         modules[3] = new Module(brModuleIO, 3, CompTunerConstants.BackRight);
-
-        setpoint =
-                new SwerveSetpoint(
-                        getChassisSpeeds(), getModuleStates(), DriveFeedforwards.zeros(4));
 
         // Usage reporting for swerve template
         HAL.report(
@@ -206,14 +195,15 @@ public class DriveSubsystem extends FullSubsystem {
             if (gyroInputs.connected) {
                 // Use the real gyro angle
                 rawYawRotation = gyroInputs.odometryYawPositions[i];
-                rawRoll = gyroInputs.odometryRollPositions[i].getRadians();
-                rawPitch = gyroInputs.odometryPitchPositions[i].getRadians();
 
                 // too lazy to update gyro sim so here's the solution
                 if (Constants.currentMode == Mode.REAL) {
                     rawYawVelocity = gyroInputs.odometryYawVelocitys[i];
                     rawRollVelocity = gyroInputs.odometryRollVelocitys[i];
                     rawPitchVelocity = gyroInputs.odometryPitchVelocitys[i];
+
+                    rawRoll = gyroInputs.odometryRollPositions[i].getRadians();
+                    rawPitch = gyroInputs.odometryPitchPositions[i].getRadians();
 
                     rawAccelX = gyroInputs.odometryAccelXs[i];
                     rawAccelY = gyroInputs.odometryAccelYs[i];
@@ -236,8 +226,7 @@ public class DriveSubsystem extends FullSubsystem {
                     ChassisSpeeds.fromRobotRelativeSpeeds(
                             measuredRobotRelativeChassisSpeeds, rawYawRotation);
             ChassisSpeeds desiredFieldRelativeChassisSpeeds =
-                    ChassisSpeeds.fromRobotRelativeSpeeds(
-                            setpoint.robotRelativeSpeeds(), rawYawRotation);
+                    ChassisSpeeds.fromRobotRelativeSpeeds(prePoofed, rawYawRotation);
 
             ChassisSpeeds fusedFieldRelativeChassisSpeeds =
                     new ChassisSpeeds(
@@ -255,7 +244,7 @@ public class DriveSubsystem extends FullSubsystem {
                             rawRoll,
                             rawAccelX,
                             rawAccelY,
-                            setpoint.robotRelativeSpeeds(),
+                            prePoofed,
                             desiredFieldRelativeChassisSpeeds,
                             measuredRobotRelativeChassisSpeeds,
                             measuredFieldRelativeChassisSpeeds,
@@ -431,7 +420,7 @@ public class DriveSubsystem extends FullSubsystem {
         double speedY =
                 getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveY, 0.05) * magnitude;
         // TODO: tune on MUSA's preference
-        double speedR = getMaxAngularSpeedRadPerSec() * MathUtil.applyDeadband(rotate, 0.05);
+        double speedR = 2 * Math.PI * MathUtil.applyDeadband(rotate, 0.05);
 
         if (Util.shouldFlip()) {
             speedX = -speedX;
@@ -439,9 +428,8 @@ public class DriveSubsystem extends FullSubsystem {
         }
         prePoofed = ChassisSpeeds.fromFieldRelativeSpeeds(speedX, speedY, speedR, getRotation());
         Logger.recordOutput("prePoofed", prePoofed);
-        setpoint = generator.generateSetpoint(setpoint, prePoofed, Constants.kRealDt);
-        Logger.recordOutput("Drive/Poofed/Setpoint", setpoint.robotRelativeSpeeds());
-        runVelocity(setpoint.robotRelativeSpeeds());
+
+        runVelocity(prePoofed);
     }
 
     public void teleopResetRotation() {

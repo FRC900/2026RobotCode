@@ -98,10 +98,6 @@ public class DriveConstants {
         };
     }
 
-    public static final class RotationConfigs {
+    public static final Gains kHeadingController = new Gains(0,0 , 0, 0, 0, 0, 0);
 
-        public static final double kSwerveHeadingControllerErrorTolerance = 0.025;
-        public static final Gains gainsSnap = new Gains(30, 0, 0, 0, 0, 0, 0);
-        public static final Gains gainsMaintain = new Gains(30, 0, 0, 0, 0, 0, 0);
-    }
 }

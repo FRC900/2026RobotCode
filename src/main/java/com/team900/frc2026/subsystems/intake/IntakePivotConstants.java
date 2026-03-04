@@ -32,6 +32,7 @@ public class IntakePivotConstants {
     public static CanCoderConfig kIntakeCanCoderConfig = new CanCoderConfig();
 
     static {
+        kIntakePivotConfig.name = "Intake Pivot";
         kIntakePivotConfig.cancoderToUnitsRatio = 1;
         kIntakePivotConfig.isFusedCancoder = true;
         kIntakePivotConfig.kMaxPositionUnits = kIntakePivotMaxRadians;

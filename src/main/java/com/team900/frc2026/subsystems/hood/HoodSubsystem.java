@@ -18,10 +18,6 @@ public class HoodSubsystem
             ServoMotorSubsystemWithCanCoderConfig c, MotorIO motorIO, CanCoderIO cancoderIO) {
         super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
         this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
-        setDefaultCommand(
-                motionMagicSetpointCommand(this::getPositionSetpointUnits)
-                        .withName("Hood Maintain Setpoint (default)")
-                        .ignoringDisable(true));
 
         // Update frequency for feedback.
         cancoderIO.updateFrequency(500);
