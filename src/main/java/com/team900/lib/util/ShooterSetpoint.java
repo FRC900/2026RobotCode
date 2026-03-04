@@ -63,8 +63,8 @@ public class ShooterSetpoint {
         return this.isValid;
     }
 
-    private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
-            Translation3d robotToTargetTranslation) {
+    // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
+    //         Translation3d robotToTargetTranslation) {
 
             //turret
 
@@ -77,7 +77,7 @@ public class ShooterSetpoint {
             //shooterRPS
 
             
-}
+// }
 
     // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
     //         Translation3d robotToTargetTranslation,
