@@ -12,6 +12,12 @@ main solver. It's like a lookup table to make
 trajectory profiling easier. 
 """
 
+import sys
+import os
+
+# allows imports of files from parent directory 
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 import numpy as np
 import ProjectilePath as pp
 import FuelClearance as fc
