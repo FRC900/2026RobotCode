@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # load data
-data = np.load("clean_theta_phi_surface.npz")
+data = np.load("ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_surface.npz")
 r_vals = data['r_vals']
 vf_vals = data['vf_vals']
 vl_vals = data['vl_vals']
@@ -21,7 +21,7 @@ ax1.set_ylabel('Lateral Robot Velocity vl (m/s)')
 ax1.set_zlabel('Azimuthal Angle θ (rad)')
 ax1.set_title('Azimuthal Angle (Theta) Surface vs Distance and\nLateral Velocity (launch speed = 23 m/s)')
 fig1.colorbar(surf1, ax=ax1, shrink=0.5, aspect=10)
-fig1.savefig("theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
+fig1.savefig("ProjectileMotionSim/ShooterSurfaces/theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
 
 # lateral (tangential) velocity, distance to target --> phi
 phi_slice = phi_surface[:, :, 0]
@@ -35,6 +35,6 @@ ax2.set_ylabel('Forward Robot Velocity vf (m/s)')
 ax2.set_zlabel('Launch Angle φ (rad)')
 ax2.set_title('Launch Angle (Phi) Surface vs Distance and\nForward Velocity (launch speed = 23 m/s)')
 fig2.colorbar(surf2, ax=ax2, shrink=0.5, aspect=10)
-fig2.savefig("phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
+fig2.savefig("ProjectileMotionSim/ShooterSurfaces/phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
 
 plt.show()
