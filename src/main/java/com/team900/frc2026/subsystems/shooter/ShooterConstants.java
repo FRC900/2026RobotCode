@@ -18,10 +18,13 @@ public class ShooterConstants {
 
     public static final Gains gains = new Gains(0, 0, 0, 0, 0, 0, 0);
 
+
     static {
         kShooterConfig.name = "Shooter Right";
         kShooterConfig.talonCANID = new CANDeviceId(40, Constants.kCanBusCanivoreMech);
         kShooterConfig.unitToRotorRatio = 1;
+
+        kShooterConfig.momentOfInertia = 0.0011720789;
 
         kShooterConfig.fxConfig = new TalonFXConfiguration();
         kShooterConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
@@ -31,11 +34,11 @@ public class ShooterConstants {
         kShooterConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         kShooterConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kShooterConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
-        kShooterConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kShooterConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kShooterConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kShooterConfig.fxConfig.TorqueCurrent.PeakForwardTorqueCurrent = 150;
-        kShooterConfig.fxConfig.TorqueCurrent.PeakReverseTorqueCurrent = 150;
+        kShooterConfig.fxConfig.TorqueCurrent.PeakReverseTorqueCurrent = -150;
 
         kShooterConfig.fxConfig.Slot0.kA = gains.ffkA();
         kShooterConfig.fxConfig.Slot0.kD = gains.kD();
@@ -46,8 +49,8 @@ public class ShooterConstants {
         kShooterConfig.fxConfig.Slot0.kV = gains.ffkV();
 
         kShooterLeftConfig.config.name = "Shooter Left";
-        kShooterLeftConfig.inverted = false;
-        kShooterLeftConfig.config.momentOfInertia = 1;
+        kShooterLeftConfig.inverted = true;
+        kShooterLeftConfig.config.momentOfInertia = 0.0011720789;
         kShooterLeftConfig.config.talonCANID = new CANDeviceId(41, new CANBus("mech"));
         kShooterLeftConfig.config.unitToRotorRatio = 1;
 

@@ -18,7 +18,7 @@ public class SpindexerConstants {
 
         kSpindexerConfig.fxConfig = new TalonFXConfiguration();
         kSpindexerConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
-        kSpindexerConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 80;
+        kSpindexerConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 150;
         kSpindexerConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kSpindexerConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 70;
         kSpindexerConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -26,6 +26,8 @@ public class SpindexerConstants {
         kSpindexerConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
         kSpindexerConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kSpindexerConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+        kSpindexerConfig.momentOfInertia = 0.00042474;
     }
 
     public static final double kSpindexerGearRatio = 10.0;
