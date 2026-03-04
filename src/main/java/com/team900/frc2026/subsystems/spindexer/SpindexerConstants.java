@@ -14,7 +14,7 @@ public class SpindexerConstants {
     static {
         kSpindexerConfig.name = "Spindexer";
         kSpindexerConfig.talonCANID = new CANDeviceId(50, Constants.kCanBusCanivoreMech);
-        // 12t:24t 16t:80t overall: 10:1 
+        // 12t:24t 16t:80t overall: 10:1
         kSpindexerConfig.unitToRotorRatio = 10.0;
 
         kSpindexerConfig.fxConfig = new TalonFXConfiguration();

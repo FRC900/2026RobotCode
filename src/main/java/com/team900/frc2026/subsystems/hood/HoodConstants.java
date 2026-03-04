@@ -1,32 +1,98 @@
 package com.team900.frc2026.subsystems.hood;
 
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.team900.frc2026.Constants;
+import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
+import com.team900.lib.subsystems.CanCoderConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
-    // TODO: in static just do khoodconfig. and then try to fill out as many of the fields with the
-    // info you have
-    public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
-            new ServoMotorSubsystemWithCanCoderConfig();
 
-    // this should all lowkey go into the khoodconfig bc none of the below constants are actually
-    // used
-    public static final CANDeviceId kHoodTalonCanID =
-            new CANDeviceId(30, Constants.kCanBusCanivoreMech);
-    public static final double kHoodGearRatio = 0;
-    // TODO: what should this even be what
-    public static final double kHoodRotorMaxPosition = 0;
+    public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
+    public static final double kHoodGearRatio = 15.625 * 170. / 10.;
+
+    public static final double kHoodRotorMaxPosition =
+            Units.radiansToRotations(kHoodGearRatio / kHoodGearRatio);
     public static final double kHoodRotorMinPosition = 0;
     public static final double kHoodToleranceRadians = 0.1;
-    public static final double kHoodMinPositionRadians = 0.0;
-    public static final double kHoodMaxPositionRadians =
-            Units.rotationsToRadians(kHoodRotorMaxPosition * kHoodGearRatio);
+    public static final double kHoodMinPositionRadians = Math.PI / 12;
+    public static final double kHoodMaxPositionRadians = Math.PI / 4;
     public static final double kHoodZeroedAngleDegrees = 15;
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
 
     public static final double kHoodStowTrenchPositionRadians = 15.0;
+
+    public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
+            new ServoMotorSubsystemWithCanCoderConfig();
+    public static CanCoderConfig kHoodCanCoderConfig = new CanCoderConfig();
+
+    static {
+        // subsystem configs
+        kHoodConfig.name = "Hood";
+
+        kHoodConfig.cancoderToUnitsRatio = 170. / 10.;
+        kHoodConfig.isFusedCancoder = true;
+        kHoodConfig.kMaxPositionUnits = Math.PI / 4;
+        kHoodConfig.kMinPositionUnits = Math.PI / 12;
+        kHoodConfig.momentOfInertia = 0.0255356814;
+        kHoodConfig.talonCANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
+        kHoodConfig.unitToRotorRatio = 15.625 * 170. / 10.;
+
+        // configs for sim
+        kHoodConfig.ratioForSim = kHoodGearRatio;
+        kHoodConfig.cancoderUnitsForSim = 1;
+
+        // cancoder config TODO: add the freaking cancoder debicve id
+        kHoodCanCoderConfig.CANID = new CANDeviceId(0, Constants.kCanBusCanivoreMech);
+        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
+        kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
+                SensorDirectionValue.Clockwise_Positive;
+
+        // fxConfig
+        kHoodConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 150;
+        kHoodConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 80;
+        kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
+        kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+        kHoodConfig.fxConfig.Feedback.FeedbackRemoteSensorID =
+                kHoodCanCoderConfig.CANID.getDeviceNumber();
+        kHoodConfig.fxConfig.Feedback.FeedbackRotorOffset = 0;
+        kHoodConfig.fxConfig.Feedback.FeedbackSensorSource =
+                FeedbackSensorSourceValue.FusedCANcoder;
+        kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = kHoodConfig.getCanCodertoRotorRatio();
+        kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 170. / 10.;
+
+        kHoodConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
+        kHoodConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kHoodConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+        kHoodConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+        kHoodConfig.fxConfig.Slot0.StaticFeedforwardSign =
+                StaticFeedforwardSignValue.UseVelocitySign;
+        kHoodConfig.fxConfig.Slot0.kA = COMP_GAINS.ffkA();
+        kHoodConfig.fxConfig.Slot0.kD = COMP_GAINS.kD();
+        kHoodConfig.fxConfig.Slot0.kG = COMP_GAINS.ffkG();
+        kHoodConfig.fxConfig.Slot0.kI = COMP_GAINS.kI();
+        kHoodConfig.fxConfig.Slot0.kP = COMP_GAINS.kP();
+        kHoodConfig.fxConfig.Slot0.kS = COMP_GAINS.ffkS();
+        kHoodConfig.fxConfig.Slot0.kV = COMP_GAINS.ffkV();
+
+        kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+                kHoodRotorMaxPosition - 3;
+        kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kHoodRotorMinPosition;
+        kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    }
 }

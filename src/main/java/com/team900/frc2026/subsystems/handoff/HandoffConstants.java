@@ -22,6 +22,7 @@ public class HandoffConstants {
 
         kHandoffConfig.fxConfig = new TalonFXConfiguration();
         kHandoffConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
+        // TODO: experimentally find the current limits which we need
         kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 80;
         kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 70;
@@ -30,6 +31,8 @@ public class HandoffConstants {
         kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
         kHandoffConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kHandoffConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        // using arbitralily small value for not since handoff position and velocity isn't important
+        kHandoffConfig.momentOfInertia = 0.00042474;
     }
 
     public static final double kHandoffGearRatio = 1;
