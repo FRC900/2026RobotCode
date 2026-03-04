@@ -1,5 +1,7 @@
 package com.team900.frc2026.subsystems.shooter;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -69,4 +71,5 @@ kShooterLeftConfig.config.fxConfig = new TalonFXConfiguration();
     public static final double kShooterGearRatio = 1;
     public static final double kShooterDutyCycle = 0.5;
     public static final double kShooterDutyCycleExhaust = -0.5;
+    public static final DoubleSupplier IDLE_RPS = null; // TODO: find this experimentally
 }
