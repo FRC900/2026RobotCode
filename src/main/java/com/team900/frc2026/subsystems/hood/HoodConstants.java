@@ -53,7 +53,7 @@ public class HoodConstants {
         kHoodConfig.ratioForSim = kHoodGearRatio;
         kHoodConfig.cancoderUnitsForSim = 1;
 
-        // cancoder config TODO: add the freaking cancoder debicve id
+        // cancoder config
         kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
         kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;

@@ -45,7 +45,7 @@ public class IntakePivotConstants {
         kIntakePivotConfig.ratioForSim = kIntakeGearRatio;
         kIntakePivotConfig.cancoderUnitsForSim = 2 * Math.PI;
 
-        // cancoder config TODO: add the freaking cancoder debicve id
+        // cancoder config
         kIntakeCanCoderConfig.CANID = new CANDeviceId(62, Constants.kCanBusCanivoreMech);
         kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
         kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
