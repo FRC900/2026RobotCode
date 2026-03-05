@@ -19,8 +19,8 @@ public class HoodConstants {
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
     public static final double kHoodToleranceRadians = 0.1;
-    public static final double kHoodMinPositionRadians = Math.PI / 12;
-    public static final double kHoodMaxPositionRadians = Math.PI / 4;
+    public static final double kHoodMinPositionRadians = 0;
+    public static final double kHoodMaxPositionRadians = Math.PI / 4 - Math.PI / 12;
     public static final double kHoodZeroedAngleDegrees = 15;
 
     public static final double kHoodRotorMaxPosition =
@@ -47,7 +47,7 @@ public class HoodConstants {
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
-        kHoodConfig.unitToRotorRatio = 1;
+        kHoodConfig.unitToRotorRatio = 2 * Math.PI;
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;
@@ -55,8 +55,8 @@ public class HoodConstants {
 
         // cancoder config
         kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
-        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
-        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0;
+        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = -0.149;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
@@ -73,7 +73,7 @@ public class HoodConstants {
         kHoodConfig.fxConfig.Feedback.FeedbackSensorSource =
                 FeedbackSensorSourceValue.FusedCANcoder;
         kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = 15.625;
-        kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 170. / 10.;
+        kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 17;
 
         kHoodConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
         kHoodConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

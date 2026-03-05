@@ -4,9 +4,9 @@
 
 package com.team900.frc2026;
 
-import com.team900.frc2026.factories.PivotFactory;
-import com.team900.frc2026.factories.RollerFactory;
-import com.team900.frc2026.factories.ShooterFactory;
+// import com.team900.frc2026.factories.PivotFactory;
+// import com.team900.frc2026.factories.RollerFactory;
+// import com.team900.frc2026.factories.ShooterFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
 // import com.team900.frc2026.factories.HandoffFactory;
 // import com.team900.frc2026.factories.IntakeFactory;
@@ -247,24 +247,27 @@ public class RobotContainer {
                                         -driveController.getRightX())));
         driveController
                 .cross()
-                .onTrue(new InstantCommand(driveSubsystem::teleopResetRotation, driveSubsystem));
+                .onTrue(new InstantCommand(() -> hoodSubsystem.setPositionRadians(0.3)));
+
+
+        
 
         // Intake pivot, l1 to retract and deploy intake
-        driveController
-                .L1()
-                .onTrue(
-                        Commands.either(
-                                PivotFactory.retractSlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
-                                PivotFactory.deploySlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
-                                () -> intakeDeployed));
+        // driveController
+        //         .L1()
+        //         .onTrue(
+        //                 Commands.either(
+        //                         PivotFactory.retractSlapdown(this)
+        //                                 .andThen(new InstantCommand(() -> intakeDeployed = false)),
+        //                         PivotFactory.deploySlapdown(this)
+        //                                 .andThen(new InstantCommand(() -> intakeDeployed = true)),
+        //                         () -> intakeDeployed));
 
-        // Intake rollers, l2 to run rollers when held
-        driveController.L2().whileTrue(RollerFactory.runIntake());
+        // // Intake rollers, l2 to run rollers when held
+        // driveController.L2().whileTrue(RollerFactory.runIntake());
 
-        // Shooter, r2 held to spin up both shooter wheels, temp to test shooter
-        driveController.R2().whileTrue(ShooterFactory.spinUp());
+        // // Shooter, r2 held to spin up both shooter wheels, temp to test shooter
+        // driveController.R2().whileTrue(ShooterFactory.spinUp());
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

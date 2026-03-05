@@ -1,36 +1,36 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
-package com.team900.frc2026.factories;
+// package com.team900.frc2026.factories;
 
-import com.team900.frc2026.RobotContainer;
-import com.team900.frc2026.subsystems.shooter.ShooterConstants;
-import com.team900.lib.util.ShooterSetpoint;
-import edu.wpi.first.wpilibj2.command.Command;
-import java.util.function.Supplier;
+// import com.team900.frc2026.RobotContainer;
+// import com.team900.frc2026.subsystems.shooter.ShooterConstants;
+// import com.team900.lib.util.ShooterSetpoint;
+// import edu.wpi.first.wpilibj2.command.Command;
+// import java.util.function.Supplier;
 
-public class ShooterFactory {
+// public class ShooterFactory {
 
-    private static RobotContainer getContainer() {
-        return RobotContainer.getInstance();
-    }
+//     private static RobotContainer getContainer() {
+//         return RobotContainer.getInstance();
+//     }
 
-    /* Commands for shooting */
+//     /* Commands for shooting */
 
-    public static Command idle() {
-        return getContainer().getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
-    }
+//     public static Command idle() {
+//         return getContainer().getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
+//     }
 
-    public static Command spinUp() {
-        return getContainer()
-                .getShooterSubsystem()
-                .dutyCycleCommand(() -> 0.3)
-                .withName("Shooter Spin Up");
-    }
+//     public static Command spinUp() {
+//         return getContainer()
+//                 .getShooterSubsystem()
+//                 .dutyCycleCommand(() -> 0.3)
+//                 .withName("Shooter Spin Up");
+//     }
 
-    public static Command setShooterRPS(Supplier<ShooterSetpoint> setpointSupplier) {
-        var shooter = getContainer().getShooterSubsystem();
-        return shooter.velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
-    }
-}
+//     public static Command setShooterRPS(Supplier<ShooterSetpoint> setpointSupplier) {
+//         var shooter = getContainer().getShooterSubsystem();
+//         return shooter.velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
+//     }
+// }
