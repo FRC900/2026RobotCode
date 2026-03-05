@@ -11,6 +11,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -489,6 +492,10 @@ public class RobotState {
 
     public Optional<Pose2d> getTrajectoryCurrentPose() {
         return trajectoryCurrentPose;
+    }
+
+    public boolean isRedAlliance() {
+        return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().equals(Optional.of(Alliance.Red));
     }
 
     public double getDrivePitchRadians() {
