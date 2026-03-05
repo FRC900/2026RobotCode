@@ -7,6 +7,8 @@ package com.team900.frc2026;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.team900.lib.util.CANBusStatusLogger;
+import com.team900.lib.util.VirtualSubsystem;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -103,8 +105,9 @@ public class Robot extends LoggedRobot {
         } else {
             Threads.setCurrentThreadPriority(false, kNonRTPriority);
         }
-
+        VirtualSubsystem.runAllPeriodic();
         CommandScheduler.getInstance().run();
+
 
         RobotState.getInstance().updateLogger();
         robotContainer.getRobotViz().updateViz();

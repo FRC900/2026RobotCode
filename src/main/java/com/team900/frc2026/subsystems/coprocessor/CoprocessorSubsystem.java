@@ -3,6 +3,7 @@ package com.team900.frc2026.subsystems.coprocessor;
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
 import com.team900.lib.util.VirtualSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team88.ros.bridge.BridgePublisher;
 import frc.team88.ros.bridge.BridgeSubscriber;
 import frc.team88.ros.bridge.ROSNetworkTablesBridge;
@@ -11,7 +12,7 @@ import frc.team88.ros.messages.std_msgs.RosFloat64;
 import frc.team88.ros.messages.tf2_msgs.TFMessage;
 import java.util.Optional;
 
-public class CoprocessorSubsystem extends VirtualSubsystem {
+public class CoprocessorSubsystem extends SubsystemBase {
     private final ROSNetworkTablesBridge m_ros_interface;
     private final BridgeSubscriber<RosFloat64> m_pingSendSub;
     private final BridgePublisher<RosFloat64> m_pingReturnPub;
@@ -87,8 +88,6 @@ public class CoprocessorSubsystem extends VirtualSubsystem {
         checkPing();
         checkFiducialDetections();
         checkPose();
+        System.out.println("fea");
     }
-
-    @Override
-    public void periodicAfterScheduler() {}
 }

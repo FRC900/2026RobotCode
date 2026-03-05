@@ -24,7 +24,8 @@ public class IntakePivotConstants {
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-    public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(900, 0, 
+    100, 10, 0, 0, 13);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
@@ -34,8 +35,8 @@ public class IntakePivotConstants {
         kIntakePivotConfig.name = "Intake Pivot";
         kIntakePivotConfig.cancoderToUnitsRatio = 1;
         kIntakePivotConfig.isFusedCancoder = true;
-        kIntakePivotConfig.kMaxPositionUnits = kIntakePivotMaxRadians;
-        kIntakePivotConfig.kMinPositionUnits = kIntakePivotMinRadians;
+        kIntakePivotConfig.kMaxPositionUnits = 0.242;
+        kIntakePivotConfig.kMinPositionUnits = 0;
         kIntakePivotConfig.momentOfInertia = 0.6065550876;
         kIntakePivotConfig.talonCANID = new CANDeviceId(61, Constants.kCanBusCanivoreMech);
         kIntakePivotConfig.unitToRotorRatio = 1;
@@ -67,12 +68,12 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
-        kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kIntakePivotConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kIntakePivotConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         kIntakePivotConfig.fxConfig.Slot0.StaticFeedforwardSign =
-                StaticFeedforwardSignValue.UseVelocitySign;
+                StaticFeedforwardSignValue.UseClosedLoopSign;
         kIntakePivotConfig.fxConfig.Slot0.kA = COMP_GAINS.ffkA();
         kIntakePivotConfig.fxConfig.Slot0.kD = COMP_GAINS.kD();
         kIntakePivotConfig.fxConfig.Slot0.kG = COMP_GAINS.ffkG();
@@ -82,10 +83,10 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.Slot0.kV = COMP_GAINS.ffkV();
 
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-                Units.radiansToRotations(kIntakePivotMaxRadians);
+                kIntakePivotConfig.kMaxPositionUnits;
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-                Units.radiansToRotations(kIntakePivotMinRadians);
+                kIntakePivotConfig.kMinPositionUnits;
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         kIntakePivotConfig.canCoderConfig = kIntakeCanCoderConfig;

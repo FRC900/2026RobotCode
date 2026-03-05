@@ -7,6 +7,7 @@ package com.team900.frc2026;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.simulation.SimulatedRobotState;
+import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.drive.GyroIO;
@@ -186,6 +187,8 @@ public class RobotContainer {
     @Getter private SimulatedRobotState simulatedRobotState = new SimulatedRobotState();
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
+
+    // @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem();
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {

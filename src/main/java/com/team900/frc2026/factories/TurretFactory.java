@@ -2,7 +2,7 @@ package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.turret.TurretSubsystem;
-import com.team900.lib.util.ShooterSetpoint;
+// import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.function.Supplier;
@@ -14,16 +14,16 @@ public class TurretFactory {
     }
 
     // Continuously aims the turret in radians
-    public static Command aimTurretToPose(Supplier<ShooterSetpoint> setpointSupplier) {
-        TurretSubsystem turret = getContainer().getTurretSubsystem();
-        return Commands.run(
-                        () ->
-                                turret.setPositionRadians(
-                                        setpointSupplier.get().getTurretRadiansFromCenter(),
-                                        setpointSupplier.get().getTurretFF()),
-                        turret)
-                .withName("Aim Turret to Pose (rad)");
-    }
+    // public static Command aimTurretToPose(Supplier<ShooterSetpoint> setpointSupplier) {
+    //     TurretSubsystem turret = getContainer().getTurretSubsystem();
+    //     return Commands.run(
+    //                     () ->
+    //                             turret.setPositionRadians(
+    //                                     setpointSupplier.get().getTurretRadiansFromCenter(),
+    //                                     setpointSupplier.get().getTurretFF()),
+    //                     turret)
+    //             .withName("Aim Turret to Pose (rad)");
+    // }
 
     // Goes to a fixed position in radians, then finishes
     public static Command setPositionRadians(double radians) {

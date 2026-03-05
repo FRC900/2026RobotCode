@@ -285,9 +285,9 @@ public class DriveSubsystem extends FullSubsystem {
         Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
 
         // Send setpoints to modules
-        for (int i = 0; i < 4; i++) {
-            modules[i].runSetpoint(setpointStates[i]);
-        }
+        // for (int i = 0; i < 4; i++) {
+        //     modules[i].runSetpoint(setpointStates[i]);
+        // }
 
         // Log optimized setpoints (runSetpoint mutates each state)
         Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
