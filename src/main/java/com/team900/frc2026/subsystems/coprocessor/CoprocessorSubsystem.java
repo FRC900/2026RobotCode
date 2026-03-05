@@ -74,7 +74,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
     private void checkPose() {
         TFMessage pose;
         // just log it for rn
-        if ((pose = m_poseSub.receive().get()) != null) {
+        if ((m_poseSub.receive().isPresent()) && (pose = m_poseSub.receive().get()) != null) {
             for (TransformStamped tf : pose.getTransforms()) {
                 // if (tf.getChildFrameId() == "base_link") {
                 System.out.println(tf);
@@ -88,6 +88,5 @@ public class CoprocessorSubsystem extends SubsystemBase {
         checkPing();
         checkFiducialDetections();
         checkPose();
-        System.out.println("fea");
     }
 }
