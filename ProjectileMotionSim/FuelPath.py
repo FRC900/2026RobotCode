@@ -4,11 +4,7 @@ import ProjectilePath as pp
 import FuelClearance as fc
 from numpy import array, rad2deg, linalg, pi
 from tabulate import tabulate
-import numpy as np
 import time
-
-def angle_to_900__hood_rot(angle_deg, hood_min, hood_max, hood_rest_angle_deg):
-    return hood_min + (hood_max - ((hood_rest_angle_deg-angle_deg) / 1.36))
 
 # define targets and initial condition guesses
 xt = 10
@@ -26,7 +22,7 @@ v_mag_robot = linalg.norm(array([vx_robot, vy_robot, vz_robot]))
 vxi0 = 12.99
 vyi0 = 12.99
 vzi0 = 12.99
-omegai0 = 15.8 * 2*np.pi
+omegai0 = 15.8 * 2*pi
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
@@ -58,7 +54,6 @@ table = [
     ["Final X (m)", sx_list[-1]],
     ["Final Y (m)", sy_list[-1]],
     ["Final Z (m)", sz_list[-1]],
-    ["900 Hood Motor Rotations", angle_to_900__hood_rot(rad2deg(fuel_solver.phi), -6, 22, 75)]
 ]
 
 print(tabulate(table, headers=["Parameter", "Value"], tablefmt="rounded_grid"))
