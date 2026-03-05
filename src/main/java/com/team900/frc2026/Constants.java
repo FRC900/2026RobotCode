@@ -67,17 +67,21 @@ public class Constants {
     public static final double kFieldWidthMeters = kAprilTagLayout.getFieldWidth();
     public static final double kFieldLengthMeters = kAprilTagLayout.getFieldLength();
 
-    public static final Translation3d kRedHubCenterPose = new Translation3d(
-        Constants.kAprilTagLayout.getTagPose(10).get().getX() + Units.inchesToMeters(23.759780),
-        Constants.kAprilTagLayout.getTagPose(10).get().getY(),
-        Constants.kAprilTagLayout.getTagPose(10).get().getZ() + Units.inchesToMeters(12.192147)
-    );
+    public static final Translation3d kRedHubCenterPose =
+            new Translation3d(
+                    Constants.kAprilTagLayout.getTagPose(10).get().getX()
+                            + Units.inchesToMeters(23.759780),
+                    Constants.kAprilTagLayout.getTagPose(10).get().getY(),
+                    Constants.kAprilTagLayout.getTagPose(10).get().getZ()
+                            + Units.inchesToMeters(12.192147));
 
-    public static final Translation3d kBlueHubCenterPose = new Translation3d(
-        Constants.kAprilTagLayout.getTagPose(26).get().getX() + Units.inchesToMeters(-23.759780),
-        Constants.kAprilTagLayout.getTagPose(26).get().getY(),
-        Constants.kAprilTagLayout.getTagPose(26).get().getZ() + Units.inchesToMeters(12.192147)
-    );
+    public static final Translation3d kBlueHubCenterPose =
+            new Translation3d(
+                    Constants.kAprilTagLayout.getTagPose(26).get().getX()
+                            + Units.inchesToMeters(-23.759780),
+                    Constants.kAprilTagLayout.getTagPose(26).get().getY(),
+                    Constants.kAprilTagLayout.getTagPose(26).get().getZ()
+                            + Units.inchesToMeters(12.192147));
 
     public record Gains(
             double kP, double kI, double kD, double ffkS, double ffkV, double ffkA, double ffkG) {}

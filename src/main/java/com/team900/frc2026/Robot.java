@@ -5,7 +5,6 @@
 package com.team900.frc2026;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.team900.lib.util.CANBusStatusLogger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -94,7 +93,6 @@ public class Robot extends LoggedRobot {
         }
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
         SignalLogger.enableAutoLogging(false);
-
     }
 
     @Override
