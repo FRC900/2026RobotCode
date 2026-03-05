@@ -23,13 +23,13 @@ import ProjectilePath as pp
 import FuelClearance as fc
 import time
 
-hub_height = 1.8288 # m
-shot_speed = 14.7 # m/s
+min_height = 1.8288 # m
+shot_speed = 22.5 # m/s
 shot_spin = 15.8 * 2*np.pi # rad/s
 
 fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
-r_vals  = np.linspace(0, 6.5, 26) # radial distance to target
+r_vals  = np.linspace(0, 19, 76) # radial distance to target
 vf_vals = np.linspace(-5.5, 5.5, 22) # forward (radial) velocity
 vl_vals = np.linspace(-5.5, 5.5, 22) # lateral (tangential) velocity
 
@@ -52,7 +52,7 @@ for i, r in enumerate(r_vals):
 
             # target in rotated frame fixed on the target
             xt = r
-            yt = hub_height
+            yt = min_height
             zt = 0
 
             # initial velocity guesses
@@ -102,7 +102,7 @@ for i, r in enumerate(r_vals):
                 runtime_counter = 0
 
 # save
-np.savez("ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_surface.npz",
+np.savez("ProjectileMotionSim/PassingSurfaces/clean_theta_phi_surface.npz",
          r_vals=r_vals,
          vf_vals=vf_vals,
          vl_vals=vl_vals,
