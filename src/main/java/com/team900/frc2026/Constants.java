@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -49,7 +51,7 @@ public class Constants {
 
     // TODO: temporary code to be changed to reflect rebuilt map
     public static final AprilTagFieldLayout kAprilTagLayout =
-            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+            AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
     public static final int[] kAllowedTagIDs = {17, 18, 19, 20, 21, 22, 6, 7, 8, 9, 10, 11};
     public static final AprilTagFieldLayout kAprilTagLayoutReefsOnly =
             new AprilTagFieldLayout(
@@ -64,6 +66,18 @@ public class Constants {
 
     public static final double kFieldWidthMeters = kAprilTagLayout.getFieldWidth();
     public static final double kFieldLengthMeters = kAprilTagLayout.getFieldLength();
+
+    public static final Translation3d kRedHubCenterPose = new Translation3d(
+        Constants.kAprilTagLayout.getTagPose(10).get().getX() + Units.inchesToMeters(23.759780),
+        Constants.kAprilTagLayout.getTagPose(10).get().getY(),
+        Constants.kAprilTagLayout.getTagPose(10).get().getZ() + Units.inchesToMeters(12.192147)
+    );
+
+    public static final Translation3d kBlueHubCenterPose = new Translation3d(
+        Constants.kAprilTagLayout.getTagPose(26).get().getX() + Units.inchesToMeters(-23.759780),
+        Constants.kAprilTagLayout.getTagPose(26).get().getY(),
+        Constants.kAprilTagLayout.getTagPose(26).get().getZ() + Units.inchesToMeters(12.192147)
+    );
 
     public record Gains(
             double kP, double kI, double kD, double ffkS, double ffkV, double ffkA, double ffkG) {}
