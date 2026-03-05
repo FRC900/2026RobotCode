@@ -41,7 +41,7 @@ public class HoodConstants {
         // subsystem configs
         kHoodConfig.name = "Hood";
 
-        kHoodConfig.cancoderToUnitsRatio =1;
+        kHoodConfig.cancoderToUnitsRatio = 1;
         kHoodConfig.isFusedCancoder = true;
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians + Units.degreesToRotations(5);
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;

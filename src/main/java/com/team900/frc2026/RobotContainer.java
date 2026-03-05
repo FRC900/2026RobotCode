@@ -4,6 +4,9 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.factories.PivotFactory;
+import com.team900.frc2026.factories.RollerFactory;
+import com.team900.frc2026.factories.ShooterFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
 // import com.team900.frc2026.factories.HandoffFactory;
 // import com.team900.frc2026.factories.IntakeFactory;
@@ -43,9 +46,6 @@ import com.team900.lib.subsystems.TalonFXIO;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.team900.frc2026.factories.PivotFactory;
-import com.team900.frc2026.factories.RollerFactory;
-import com.team900.frc2026.factories.ShooterFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -255,13 +255,9 @@ public class RobotContainer {
                 .onTrue(
                         Commands.either(
                                 PivotFactory.retractSlapdown(this)
-                                        .andThen(
-                                                new InstantCommand(
-                                                        () -> intakeDeployed = false)),
+                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
                                 PivotFactory.deploySlapdown(this)
-                                        .andThen(
-                                                new InstantCommand(
-                                                        () -> intakeDeployed = true)),
+                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
                                 () -> intakeDeployed));
 
         // Intake rollers, l2 to run rollers when held

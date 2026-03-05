@@ -1,13 +1,6 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.RobotState;
-import com.team900.frc2026.subsystems.hood.HoodConstants;
-import com.team900.frc2026.subsystems.shooter.ShooterConstants;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-
 import java.util.Optional;
 
 public class ShooterSetpoint {
@@ -65,51 +58,42 @@ public class ShooterSetpoint {
         return this.isValid;
     }
 
-     private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
-             Translation3d robotToTargetTranslation, double launchSpeedMetersPerSec) {
+    // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
+    //          Translation3d robotToTargetTranslation, double launchSpeedMetersPerSec) {
 
-            //turret
-            Rotation2d turretRotationRobotFrame = robotToTargetRotation
-            .minus(robotState.getLatestFieldToRobot().getValue().getRotation());
-            Rotation2d turretRotationTurretFrame = turretRotationRobotFrame.
-            rotateBy(MathHelpers.kRotation2dPi).rotateBy(ShooterConstants.kTurretToShotCorrection);
+    //         //turret
+    //         Rotation2d turretRotationRobotFrame = robotToTargetRotation
+    //         .minus(robotState.getLatestFieldToRobot().getValue().getRotation());
+    //         Rotation2d turretRotationTurretFrame = turretRotationRobotFrame.
+    //
+    // rotateBy(MathHelpers.kRotation2dPi).rotateBy(ShooterConstants.kTurretToShotCorrection);
 
-            //feedforward turret
-            var robotSpeeds = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
+    //         //feedforward turret
+    //         var robotSpeeds = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
 
-            var robotToTargetXY = new Translation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
+    //         var robotToTargetXY = new Translation2d(robotToTargetTranslation.getX(),
+    // robotToTargetTranslation.getY());
 
-            var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond,
-            robotSpeeds.vyMetersPerSecond)
-                .rotateBy(
-                    robotToTargetXY.getAngle());
+    //         var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond,
+    //         robotSpeeds.vyMetersPerSecond)
+    //             .rotateBy(
+    //                 robotToTargetXY.getAngle());
 
-            var tangent = targetFrameToRobot.getY();
-            var angular = robotSpeeds.omegaRadiansPerSecond;
-            var distanceToTarget = robotToTargetXY.getNorm();
-            var turretFF = -(angular + tangent / distanceToTarget);
+    //         var tangent = targetFrameToRobot.getY();
+    //         var angular = robotSpeeds.omegaRadiansPerSecond;
+    //         var distanceToTarget = robotToTargetXY.getNorm();
+    //         var turretFF = -(angular + tangent / distanceToTarget);
 
-        // shooterRPS
+    //     // shooterRPS
 
-            boolean validSetpont = true;
-            double shooterRPS = launchSpeedMetersPerSec /
-            ShooterConstants.kLaunchVelMetersPerSecPerRotPerSec;
-            if (shooterRPS > ShooterConstants.kShooterRPSCap) {
-                shooterRPS = ShooterConstants.kShooterRPSCap;
-                validSetpont = false;
-            }
-
-            // TODO: hood angle and hood feedforward
-            double hoodAngle = 0.0;
-            double hoodFF = 0.0;
-
-            return new ShooterSetpoint(shooterRPS,
-                    turretRotationTurretFrame.getRadians(),
-                    turretFF,
-                    hoodAngle,
-                    hoodFF, validSetpont);
-        }
-
+    //         boolean validSetpont = true;
+    //         double shooterRPS = launchSpeedMetersPerSec /
+    //         ShooterConstants.kLaunchVelMetersPerSecPerRotPerSec;
+    //         if (shooterRPS > ShooterConstants.kShooterRPSCap) {
+    //             shooterRPS = ShooterConstants.kShooterRPSCap;
+    //             validSetpont = false;
+    //         }
+    //     }
 
     // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
     //         Translation3d robotToTargetTranslation,

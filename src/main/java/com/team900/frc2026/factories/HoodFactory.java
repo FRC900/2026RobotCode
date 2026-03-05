@@ -1,14 +1,12 @@
 package com.team900.frc2026.factories;
 
-import java.util.function.Supplier;
-
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.hood.HoodSubsystem;
 import com.team900.lib.util.ShooterSetpoint;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.function.Supplier;
 
 public class HoodFactory {
 
@@ -18,9 +16,15 @@ public class HoodFactory {
         return hood.motionMagicSetpointCommand(() -> radians).withName("Hood Set Position");
     }
 
-    public static Command aimHoodToPose(RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
+    public static Command aimHoodToPose(
+            RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
         HoodSubsystem hood = container.getHoodSubsystem();
-        return Commands.run(() -> hood.setPositionRadians(setPointSupplier.get().getHoodRadians(), setPointSupplier.get().getHoodFF()), hood)
+        return Commands.run(
+                        () ->
+                                hood.setPositionRadians(
+                                        setPointSupplier.get().getHoodRadians(),
+                                        setPointSupplier.get().getHoodFF()),
+                        hood)
                 .withName("Aim Hood to Pose (rad)");
     }
 
