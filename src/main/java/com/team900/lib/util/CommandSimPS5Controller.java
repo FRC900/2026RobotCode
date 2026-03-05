@@ -1,96 +1,96 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.Constants;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class CommandSimXboxController extends CommandXboxController {
-    private final SimXboxController m_hid;
+public class CommandSimPS5Controller extends CommandPS5Controller {
+    private final SimPS5Controller m_hid;
     private final ControllerMapping mapping;
 
-    public CommandSimXboxController(int port) {
+    public CommandSimPS5Controller(int port) {
         super(port);
         switch (Constants.kSimControllerType) {
             case XBOX:
                 mapping = ControllerMappings.XBOX_MAPPING;
-                m_hid = new SimXboxController(port, mapping);
+                m_hid = new SimPS5Controller(port, mapping);
                 break;
             case DUAL_SENSE:
                 mapping = ControllerMappings.DUALSENSE_MAPPING;
-                m_hid = new SimXboxController(port, mapping);
+                m_hid = new SimPS5Controller(port, mapping);
                 break;
             default:
                 mapping = ControllerMappings.XBOX_MAPPING;
-                m_hid = new SimXboxController(port, mapping);
+                m_hid = new SimPS5Controller(port, mapping);
                 break;
         }
     }
 
     @Override
-    public XboxController getHID() {
+    public PS5Controller getHID() {
         return m_hid;
     }
 
     @Override
-    public Trigger a(EventLoop loop) {
+    public Trigger cross(EventLoop loop) {
         return button(mapping.getButton("A"), loop);
     }
 
     @Override
-    public Trigger b(EventLoop loop) {
+    public Trigger circle(EventLoop loop) {
         return button(mapping.getButton("B"), loop);
     }
 
     @Override
-    public Trigger x(EventLoop loop) {
+    public Trigger square(EventLoop loop) {
         return button(mapping.getButton("X"), loop);
     }
 
     @Override
-    public Trigger y(EventLoop loop) {
+    public Trigger triangle(EventLoop loop) {
         return button(mapping.getButton("Y"), loop);
     }
 
     @Override
-    public Trigger leftBumper(EventLoop loop) {
+    public Trigger L1(EventLoop loop) {
         return button(mapping.getButton("LeftBumper"), loop);
     }
 
     @Override
-    public Trigger rightBumper(EventLoop loop) {
+    public Trigger R1(EventLoop loop) {
         return button(mapping.getButton("RightBumper"), loop);
     }
 
     @Override
-    public Trigger back(EventLoop loop) {
+    public Trigger create(EventLoop loop) {
         return button(mapping.getButton("Back"), loop);
     }
 
     @Override
-    public Trigger start(EventLoop loop) {
+    public Trigger options(EventLoop loop) {
         return button(mapping.getButton("Start"), loop);
     }
 
     @Override
-    public Trigger leftStick(EventLoop loop) {
+    public Trigger L3(EventLoop loop) {
         return button(mapping.getButton("LeftStick"), loop);
     }
 
     @Override
-    public Trigger rightStick(EventLoop loop) {
+    public Trigger R3(EventLoop loop) {
         return button(mapping.getButton("RightStick"), loop);
     }
 
     @Override
-    public Trigger leftTrigger(double threshold, EventLoop loop) {
-        return axisGreaterThan(mapping.getAxis("LeftTrigger"), threshold, loop);
+    public Trigger L2(EventLoop loop) {
+        return button(mapping.getAxis("LeftTrigger"), loop);
     }
 
     @Override
-    public Trigger rightTrigger(double threshold, EventLoop loop) {
-        return axisGreaterThan(mapping.getAxis("RightTrigger"), threshold, loop);
+    public Trigger R2(EventLoop loop) {
+        return button(mapping.getAxis("RightTrigger"), loop);
     }
 
     @Override
@@ -114,12 +114,12 @@ public class CommandSimXboxController extends CommandXboxController {
     }
 
     @Override
-    public double getLeftTriggerAxis() {
-        return m_hid.getLeftTriggerAxis();
+    public double getL2Axis() {
+        return m_hid.getL2Axis();
     }
 
     @Override
-    public double getRightTriggerAxis() {
-        return m_hid.getRightTriggerAxis();
+    public double getR2Axis() {
+        return m_hid.getR2Axis();
     }
 }

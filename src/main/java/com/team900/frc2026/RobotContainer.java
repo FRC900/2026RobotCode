@@ -4,13 +4,9 @@
 
 package com.team900.frc2026;
 
-// import com.team900.frc2026.factories.PivotFactory;
-// import com.team900.frc2026.factories.RollerFactory;
-// import com.team900.frc2026.factories.ShooterFactory;
+import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
+import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.simulation.SimulatedRobotState;
-// import com.team900.frc2026.factories.HandoffFactory;
-// import com.team900.frc2026.factories.IntakeFactory;
-// import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.drive.GyroIO;
@@ -48,7 +44,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import java.util.function.Consumer;
 import lombok.Getter;
@@ -176,6 +171,8 @@ public class RobotContainer {
                 });
     }
 
+    @Getter private final ControlBoard controlBoard = ControlBoard.getInstance();
+
     private final SimTalonFXWithCancoder simulatedHoodMotor =
             Robot.isSimulation() ? new SimTalonFXWithCancoder(HoodConstants.kHoodConfig) : null;
 
@@ -200,14 +197,12 @@ public class RobotContainer {
 
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
 
-    // private final DriveMaintainingHeadingCommand driveCommand =
-    //         (new DriveMaintainingHeadingCommand(
-    //                 driveSubsystem,
-    //                 robotState,
-    //                 this,
-    //                 controlBoard::getThrottle,
-    //                 controlBoard::getStrafe,
-    //                 controlBoard::getRotation));
+    private final DriveMaintainingHeadingCommand driveCommand =
+            (new DriveMaintainingHeadingCommand(
+                    this,
+                    controlBoard::getThrottle,
+                    controlBoard::getStrafe,
+                    controlBoard::getRotation));
 
     @Getter private final RobotViz robotViz = new RobotViz();
 
@@ -228,8 +223,8 @@ public class RobotContainer {
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
-            // assert this.simulatedRobotState != null;
-            // this.simulatedRobotState.init();
+            assert this.simulatedRobotState != null;
+            this.simulatedRobotState.init();
         }
         configureBindings();
     }
@@ -238,19 +233,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Swerve Drive
-        driveSubsystem.setDefaultCommand(
-                driveSubsystem.run(
-                        () ->
-                                driveSubsystem.teleopControl(
-                                        -driveController.getLeftY(),
-                                        -driveController.getLeftX(),
-                                        -driveController.getRightX())));
-        driveController
-                .cross()
-                .onTrue(new InstantCommand(() -> hoodSubsystem.setPositionRadians(0.3)));
-
-
-        
+        driveSubsystem.setDefaultCommand(driveCommand);
 
         // Intake pivot, l1 to retract and deploy intake
         // driveController
@@ -258,9 +241,11 @@ public class RobotContainer {
         //         .onTrue(
         //                 Commands.either(
         //                         PivotFactory.retractSlapdown(this)
-        //                                 .andThen(new InstantCommand(() -> intakeDeployed = false)),
+        //                                 .andThen(new InstantCommand(() -> intakeDeployed =
+        // false)),
         //                         PivotFactory.deploySlapdown(this)
-        //                                 .andThen(new InstantCommand(() -> intakeDeployed = true)),
+        //                                 .andThen(new InstantCommand(() -> intakeDeployed =
+        // true)),
         //                         () -> intakeDeployed));
 
         // // Intake rollers, l2 to run rollers when held
@@ -291,7 +276,7 @@ public class RobotContainer {
         return Commands.print("No autonomous command configured");
     }
 
-    public static RobotContainer getInstance() {
+    public static synchronized RobotContainer getInstance() {
         if (instance == null) {
             synchronized (RobotContainer.class) {
                 if (instance == null) {

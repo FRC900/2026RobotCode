@@ -25,8 +25,10 @@ public class TalonFXIO implements MotorIO {
     private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC =
             new VelocityTorqueCurrentFOC(0.0);
     private final VoltageOut voltageControl = new VoltageOut(0.0);
-    private final PositionTorqueCurrentFOC positionVoltageTorqueCurrentFOCControl = new PositionTorqueCurrentFOC(0.0);
-    private final MotionMagicVoltage motionMagicPositionControl = new MotionMagicVoltage(0.0);
+    private final PositionTorqueCurrentFOC positionVoltageTorqueCurrentFOCControl =
+            new PositionTorqueCurrentFOC(0.0);
+    private final MotionMagicExpoTorqueCurrentFOC motionMagicPositionControl =
+            new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final DynamicMotionMagicVoltage dynamicMotionMagicVoltage =
             new DynamicMotionMagicVoltage(0.0, 0.0, 0.0);
     private final Follower followerControl = new Follower(0, MotorAlignmentValue.Aligned);
@@ -112,7 +114,9 @@ public class TalonFXIO implements MotorIO {
     @Override
     public void setPositionSetpoint(double units, double ff) {
         talon.setControl(
-                positionVoltageTorqueCurrentFOCControl.withPosition(clampPosition(units)).withFeedForward(ff));
+                positionVoltageTorqueCurrentFOCControl
+                        .withPosition(clampPosition(units))
+                        .withFeedForward(ff));
     }
 
     @Override

@@ -39,6 +39,8 @@ public class Constants {
         REPLAY
     }
 
+    public static final double kSteerJoystickDeadband = 0.05;
+
     public static boolean disableHAL = false;
 
     public static void disableHAL() {
@@ -69,6 +71,8 @@ public class Constants {
     public static final CANBus kCanBusCanivoreDrive = new CANBus("drive");
     public static final CANBus kCanBusCanivoreMech = new CANBus("mech");
     public static final String kPracticeBotMacAddress = "00:80:2F:33:D1:4B";
+    public static final int kDriveGamepadPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static boolean kIsPracticeBot = hasMacAddress(kPracticeBotMacAddress);
     public static boolean kIsReplay = false;
 

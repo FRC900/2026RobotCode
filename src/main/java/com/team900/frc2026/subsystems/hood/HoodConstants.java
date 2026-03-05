@@ -27,11 +27,11 @@ public class HoodConstants {
             Units.radiansToRotations(kHoodMaxPositionRadians / kHoodGearRatio);
     public static final double kHoodRotorMinPosition =
             Units.radiansToRotations(kHoodMinPositionRadians);
-            
+
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
     // TODO: find this experimetnatlly
-    public static final double kHoodStowTrenchPositionRadians = 15.0;
+    public static final double kHoodStowTrenchPositionRadians = Units.degreesToRadians(15.0);
 
     public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
             new ServoMotorSubsystemWithCanCoderConfig();

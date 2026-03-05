@@ -20,7 +20,7 @@ public class IntakePivotConstants {
     public static final double kIntakePivotMaxRadians = 0.0;
     public static final double kIntakePivotToleranceRadians = 0.1;
     public static final double kIntakePivotStowRadians = 0.0;
-    public static final double kIntakePivotDeployRadians = 1.0;
+    public static final double kIntakePivotDeployRadians = Math.PI / 4;
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
