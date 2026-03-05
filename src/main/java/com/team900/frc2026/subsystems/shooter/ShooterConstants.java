@@ -18,7 +18,7 @@ public class ShooterConstants {
             new ServoMotorSubsystemWithFollowersConfig();
     public static final FollowerConfig kShooterLeftConfig = new FollowerConfig();
 
-    public static final Gains gains = new Gains(0, 0, 0, 0, 0, 0, 0);
+    public static final Gains gains = new Gains(0.5, 0, 0, 0.349609375, 0.11, 0, 0);
 
     static {
         kShooterConfig.name = "Shooter Right";
@@ -35,7 +35,7 @@ public class ShooterConstants {
         kShooterConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         kShooterConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kShooterConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
-        kShooterConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kShooterConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kShooterConfig.fxConfig.TorqueCurrent.PeakForwardTorqueCurrent = 150;
