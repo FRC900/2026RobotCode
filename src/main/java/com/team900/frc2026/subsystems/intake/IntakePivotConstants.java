@@ -32,7 +32,7 @@ public class IntakePivotConstants {
 
     static {
         kIntakePivotConfig.name = "Intake Pivot";
-        kIntakePivotConfig.cancoderToUnitsRatio =1;
+        kIntakePivotConfig.cancoderToUnitsRatio = 1;
         kIntakePivotConfig.isFusedCancoder = true;
         kIntakePivotConfig.kMaxPositionUnits = kIntakePivotMaxRadians;
         kIntakePivotConfig.kMinPositionUnits = kIntakePivotMinRadians;
@@ -63,8 +63,7 @@ public class IntakePivotConstants {
                 kIntakeCanCoderConfig.CANID.getDeviceNumber();
         kIntakePivotConfig.fxConfig.Feedback.FeedbackSensorSource =
                 FeedbackSensorSourceValue.FusedCANcoder;
-        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio =
-                18.3704;
+        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio = 18.3704;
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;

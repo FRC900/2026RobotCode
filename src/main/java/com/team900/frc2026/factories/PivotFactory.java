@@ -2,14 +2,12 @@ package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.intake.IntakePivotConstants;
-
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PivotFactory {
-        static RobotContainer container = RobotContainer.getInstance();
+    static RobotContainer container = RobotContainer.getInstance();
 
-
-     public static Command deploySlapdown(RobotContainer container) {
+    public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
                 .motionMagicSetpointCommandBlocking(
@@ -24,5 +22,4 @@ public class PivotFactory {
                         () -> IntakePivotConstants.kIntakePivotStowRadians,
                         IntakePivotConstants.kIntakePivotToleranceRadians);
     }
-    
 }
