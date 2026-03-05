@@ -6,8 +6,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class RollerFactory {
 
+    private static RobotContainer getContainer() {
+        return RobotContainer.getInstance();
+    }
+
     public static Command runIntake() {
         return RobotContainer.getInstance()
+        return getContainer()
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
