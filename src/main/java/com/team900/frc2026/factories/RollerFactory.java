@@ -11,7 +11,6 @@ public class RollerFactory {
     }
 
     public static Command runIntake() {
-        return RobotContainer.getInstance()
         return getContainer()
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
