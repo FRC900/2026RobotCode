@@ -6,8 +6,11 @@ from numpy import array, rad2deg, linalg, pi
 from tabulate import tabulate
 import time
 
+def angle_to_900_hood_rot(angle_deg, hood_min, hood_max, hood_rest_angle_deg):
+    return hood_min + (hood_max - ((hood_rest_angle_deg-angle_deg) / 1.36))
+
 # define targets and initial condition guesses
-xt = 10
+xt = 3.89382
 yt = 1.8288
 zt = 0
 
@@ -19,10 +22,10 @@ vz_robot = 0
 v_mag_robot = linalg.norm(array([vx_robot, vy_robot, vz_robot]))
 
 # define initial solution guesses
-vxi0 = 12.99
-vyi0 = 12.99
-vzi0 = 12.99
-omegai0 = 15.8 * 2*pi
+vxi0 = 8.5
+vyi0 = 8.5
+vzi0 = 8.5
+omegai0 = 100
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
@@ -47,13 +50,12 @@ table = [
     ["Total vx (m/s)", fuel_solver.vx + vx_robot],
     ["Total vy (m/s)", fuel_solver.vy + vy_robot],
     ["Total vz (m/s)", fuel_solver.vz + vz_robot],
-    ["Azimuthal Angle Theta (rad)", fuel_solver.theta],
-    ["Launch Angle, Phi (rad)", fuel_solver.phi],
     ["Azimuthal Angle Theta (deg)", rad2deg(fuel_solver.theta)],
     ["Launch Angle, Phi (deg)", rad2deg(fuel_solver.phi)],
     ["Final X (m)", sx_list[-1]],
     ["Final Y (m)", sy_list[-1]],
     ["Final Z (m)", sz_list[-1]],
+    ["900 Hood Motor Rotations", angle_to_900_hood_rot(rad2deg(fuel_solver.phi), -6, 22, 75)]
 ]
 
 print(tabulate(table, headers=["Parameter", "Value"], tablefmt="rounded_grid"))
