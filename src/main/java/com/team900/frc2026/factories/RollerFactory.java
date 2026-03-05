@@ -5,10 +5,9 @@ import com.team900.frc2026.subsystems.intake.IntakeRollerConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RollerFactory {
-    static RobotContainer container = RobotContainer.getInstance();
 
     public static Command runIntake() {
-        return container
+        return RobotContainer.getInstance()
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
