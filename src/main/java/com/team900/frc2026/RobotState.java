@@ -494,10 +494,6 @@ public class RobotState {
         return trajectoryCurrentPose;
     }
 
-    public boolean isRedAlliance() {
-        return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().equals(Optional.of(Alliance.Red));
-    }
-
     public double getDrivePitchRadians() {
         if (this.drivePitchRads.getInternalBuffer().lastEntry() != null) {
             return drivePitchRads.getInternalBuffer().lastEntry().getValue();
