@@ -9,11 +9,13 @@ import java.util.function.Supplier;
 
 public class TurretFactory {
 
-    static RobotContainer container = RobotContainer.getInstance();
+    private static RobotContainer getContainer() {
+        return RobotContainer.getInstance();
+    }
 
     // Continuously aims the turret in radians
     public static Command aimTurretToPose(Supplier<ShooterSetpoint> setpointSupplier) {
-        TurretSubsystem turret = container.getTurretSubsystem();
+        TurretSubsystem turret = getContainer().getTurretSubsystem();
         return Commands.run(
                         () ->
                                 turret.setPositionRadians(
@@ -25,7 +27,7 @@ public class TurretFactory {
 
     // Goes to a fixed position in radians, then finishes
     public static Command setPositionRadians(double radians) {
-        TurretSubsystem turret = container.getTurretSubsystem();
+        TurretSubsystem turret = getContainer().getTurretSubsystem();
         return Commands.run(() -> turret.setPositionRadians(radians), turret)
                 .until(turret::atSetpoint)
                 .withName("Turret Set Position (rad)");
@@ -33,18 +35,18 @@ public class TurretFactory {
 
     // Holds the turret at a fixed position in radians until it's interrupted
     public static Command holdPositionRadians(double radians) {
-        TurretSubsystem turret = container.getTurretSubsystem();
+        TurretSubsystem turret = getContainer().getTurretSubsystem();
         return Commands.run(() -> turret.setPositionRadians(radians), turret)
                 .withName("Turret Hold Position (rad)");
     }
 
     public static Command moveTurret(double dutyCycle) {
-        TurretSubsystem turret = container.getTurretSubsystem();
+        TurretSubsystem turret = getContainer().getTurretSubsystem();
         return Commands.run(() -> turret.setOpenLoop(dutyCycle), turret).withName("Move Turret");
     }
 
     public static Command stop() {
-        TurretSubsystem turret = container.getTurretSubsystem();
+        TurretSubsystem turret = getContainer().getTurretSubsystem();
         return Commands.runOnce(turret::stop, turret).withName("Turret Stop");
     }
 }

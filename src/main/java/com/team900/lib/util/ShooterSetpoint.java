@@ -98,6 +98,16 @@ public class ShooterSetpoint {
                 shooterRPS = ShooterConstants.kShooterRPSCap;
                 validSetpont = false;
             }
+
+            // TODO: hood angle and hood feedforward
+            double hoodAngle = 0.0;
+            double hoodFF = 0.0;
+
+            return new ShooterSetpoint(shooterRPS,
+                    turretRotationTurretFrame.getRadians(),
+                    turretFF,
+                    hoodAngle,
+                    hoodFF, validSetpont);
         }
 
 

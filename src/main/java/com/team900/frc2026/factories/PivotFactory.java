@@ -6,8 +6,6 @@ import com.team900.frc2026.subsystems.intake.IntakePivotConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PivotFactory {
-        static RobotContainer container = RobotContainer.getInstance();
-
 
      public static Command deploySlapdown(RobotContainer container) {
         return container
