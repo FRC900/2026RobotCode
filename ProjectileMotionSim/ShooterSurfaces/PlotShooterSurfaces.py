@@ -3,11 +3,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 # load data
-<<<<<<< Updated upstream
 data = np.load("ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_shooter_surface.npz")
-=======
-data = np.load("ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_surface.npz")
->>>>>>> Stashed changes
 r_vals = data['r_vals']
 vf_vals = data['vf_vals']
 vl_vals = data['vl_vals']
@@ -33,11 +29,7 @@ ax1.set_ylabel('Lateral Robot Velocity vl (m/s)')
 ax1.set_zlabel('Azimuthal Angle θ (rad)')
 ax1.set_title(f'Azimuthal Angle (Theta) Surface vs Distance and\nLateral Velocity (launch speed = {initial_speed_mag})')
 fig1.colorbar(surf1, ax=ax1, shrink=0.5, aspect=10)
-<<<<<<< Updated upstream
 fig1.savefig("ProjectileMotionSim/ShooterSurfaces/plots/theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
-=======
-# fig1.savefig("theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
->>>>>>> Stashed changes
 
 # lateral (tangential) velocity, distance to target --> phi
 phi_slice = phi_surface[:, :, 0]
@@ -51,7 +43,6 @@ ax2.set_ylabel('Forward Robot Velocity vf (m/s)')
 ax2.set_zlabel('Launch Angle φ (rad)')
 ax2.set_title(f'Launch Angle (Phi) Surface vs Distance and\nForward Velocity (launch speed = {initial_speed_mag})')
 fig2.colorbar(surf2, ax=ax2, shrink=0.5, aspect=10)
-<<<<<<< Updated upstream
 fig2.savefig("ProjectileMotionSim/ShooterSurfaces/plots/phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
 
 # theta(r, vl) --> theta
@@ -107,8 +98,5 @@ ax6.set_zlabel('Launch Angle φ (rad)')
 ax6.set_title(f'Phi Polynomial Fit (launch speed = {initial_speed_mag})')
 fig6.colorbar(surf6, ax=ax6, shrink=0.5, aspect=10)
 fig6.savefig("ProjectileMotionSim/ShooterSurfaces/plots/phi_fit.png", dpi=300, bbox_inches='tight')
-=======
-# fig2.savefig("phi_surface.png", dpi=300, bbox_inches='tight') # save plot 2
->>>>>>> Stashed changes
 
 plt.show()
