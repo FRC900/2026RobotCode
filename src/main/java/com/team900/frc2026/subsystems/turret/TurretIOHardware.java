@@ -160,7 +160,7 @@ public class TurretIOHardware implements TurretIO {
 
     @Override
     public void setOpenLoopDutyCycle(double dutyCycle) {
-        talon.setControl(dutyCycleControl.withOutput(dutyCycle));
+        // talon.setControl(dutyCycleControl.withOutput(dutyCycle));
         Logger.recordOutput("Turret/IO/setOpenLoopDutyCycle/dutyCycle", dutyCycle);
     }
 
@@ -243,8 +243,8 @@ public class TurretIOHardware implements TurretIO {
         double setpointRotations = Units.radiansToRotations(setpointRadians);
         double setpointRotor = setpointRotations / TurretConstants.kTurretGearRatio;
         double ffVel = Units.radiansToRotations(radsPerSecond) / TurretConstants.kTurretGearRatio;
-        talon.setControl(
-                positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
+        // talon.setControl(
+        //         positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radiansFromCenter", radiansFromCenter);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radsPerSecond", radsPerSecond);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/ffVel", ffVel);
