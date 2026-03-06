@@ -7,22 +7,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class IntakeFactory {
 
-    private static RobotContainer container = RobotContainer.getInstance();
+    private static RobotContainer getContainer() {
+        return RobotContainer.getInstance();
+    }
 
     public static Command runIntake() {
-        return container
+        return getContainer()
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
 
     public static Command exhaustIntake() {
-        return container
+        return getContainer()
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
 
     public static Command deploySlapdown() {
-        return container
+        return getContainer()
                 .getIntakePivotSubsystem()
                 .motionMagicSetpointCommandBlocking(
                         () -> IntakePivotConstants.kIntakePivotDeployRadians,
@@ -30,7 +32,7 @@ public class IntakeFactory {
     }
 
     public static Command retractSlapdown() {
-        return container
+        return getContainer()
                 .getIntakePivotSubsystem()
                 .motionMagicSetpointCommandBlocking(
                         () -> IntakePivotConstants.kIntakePivotStowRadians,

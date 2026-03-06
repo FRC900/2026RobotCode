@@ -10,16 +10,18 @@ import java.util.function.Supplier;
 
 public class HoodFactory {
 
-    static RobotContainer container = RobotContainer.getInstance();
+    private static RobotContainer getContainer() {
+        return RobotContainer.getInstance();
+    }
 
     // Sets the hood to a fixed position in radians
     public static Command setPositionMotionMagicCommand(double radians) {
-        HoodSubsystem hood = container.getHoodSubsystem();
+        HoodSubsystem hood = getContainer().getHoodSubsystem();
         return hood.motionMagicSetpointCommand(() -> radians).withName("Hood Set Position");
     }
 
     // public static Command aimHoodToPose(Supplier<ShooterSetpoint> setPointSupplier) {
-    //     HoodSubsystem hood = container.getHoodSubsystem();
+    //     HoodSubsystem hood = getContainer().getHoodSubsystem();
     //     return Commands.run(
     //                     () ->
     //                             hood.setPositionRadians(
@@ -31,7 +33,7 @@ public class HoodFactory {
 
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance
     public static Command setPositionBlocking(double radians, double tolerance) {
-        HoodSubsystem hood = container.getHoodSubsystem();
+        HoodSubsystem hood = getContainer().getHoodSubsystem();
         return hood.motionMagicSetpointCommandBlocking(() -> radians, tolerance)
                 .withName("Hood Set Position Blocking");
     }
