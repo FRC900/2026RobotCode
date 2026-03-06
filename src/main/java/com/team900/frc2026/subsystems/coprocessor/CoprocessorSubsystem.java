@@ -31,17 +31,17 @@ public class CoprocessorSubsystem extends SubsystemBase {
         m_vid0TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/apriltag_detection_ov2311_10_9_0_9_video0/tags",
+                        "/ov2311_10_9_0_9_video1/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_vid1TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/apriltag_detection_ov2311_10_9_0_9_video1/tags",
+                        "/ov2311_10_9_0_9_video1/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_vid2TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/apriltag_detection_ov2311_10_9_0_9_video2/tags",
+                        "/ov2311_10_9_0_9_video2/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_poseSub =
                 new BridgeSubscriber<>(
