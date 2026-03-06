@@ -16,14 +16,13 @@ public class IntakeRollerConstants {
         kIntakeRollerConfig.talonCANID = new CANDeviceId(60, Constants.kCanBusCanivoreMech);
 
         kIntakeRollerConfig.fxConfig = new TalonFXConfiguration();
-        kIntakeRollerConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
         kIntakeRollerConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 150;
         kIntakeRollerConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kIntakeRollerConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 80;
         kIntakeRollerConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         kIntakeRollerConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kIntakeRollerConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
-        kIntakeRollerConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kIntakeRollerConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kIntakeRollerConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         // using arbitralily small value for not since handoff position and velocity isn't important
@@ -31,7 +30,7 @@ public class IntakeRollerConstants {
     }
 
     public static final double kIntakeGearRatio = 1;
-    public static final double kIntakeDutyCycle = 1;
+    public static final double kIntakeDutyCycle = 12;
     public static final double kIntakeDutyCycleExhaust = -0.5;
     public static final double kRollerGearRatio = 15 / 32;
 }
