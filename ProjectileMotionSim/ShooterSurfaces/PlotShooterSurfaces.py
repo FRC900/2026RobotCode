@@ -11,9 +11,9 @@ theta_surface = data['theta_surface']
 phi_surface = data['phi_surface']
 
 # load models
-with open('ProjectileMotionSim/ShooterSurfaces/phi_model.pkl', 'rb') as f:
+with open('ProjectileMotionSim/ShooterSurfaces/models/phi_model.pkl', 'rb') as f:
     phi_model = pickle.load(f)
-with open('ProjectileMotionSim/ShooterSurfaces/theta_model.pkl', 'rb') as f:
+with open('ProjectileMotionSim/ShooterSurfaces/models/theta_model.pkl', 'rb') as f:
     theta_model = pickle.load(f)
 
 # forward (radial) velocity, distance to target --> theta

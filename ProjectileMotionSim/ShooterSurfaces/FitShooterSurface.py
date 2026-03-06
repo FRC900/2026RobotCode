@@ -9,6 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import r2_score
 import pickle
+import json
 
 def fit_surfaces(npz_path, poly_degree=4):
     data = np.load(npz_path)
@@ -54,8 +55,20 @@ def fit_surfaces(npz_path, poly_degree=4):
 
 phi_model, theta_model = fit_surfaces('ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_surface.npz')
 
-with open('ProjectileMotionSim/ShooterSurfaces/phi_model.pkl', 'wb') as f:
+with open('ProjectileMotionSim/ShooterSurfaces/models/phi_model.pkl', 'wb') as f:
     pickle.dump(phi_model, f)
 
-with open('ProjectileMotionSim/ShooterSurfaces/theta_model.pkl', 'wb') as f:
+with open('ProjectileMotionSim/ShooterSurfaces/models/theta_model.pkl', 'wb') as f:
     pickle.dump(theta_model, f)
+
+def export_model(model, path):
+    poly = model.named_steps['poly']
+    reg  = model.named_steps['reg']
+    json.dump({
+        'intercept': reg.intercept_,
+        'coefs': reg.coef_.tolist(),
+        'powers': poly.powers_.tolist()
+    }, open(path, 'w'))
+
+export_model(phi_model, 'ProjectileMotionSim/ShooterSurfaces/models/phi_shooter_model.json')
+export_model(theta_model, 'ProjectileMotionSim/ShooterSurfaces/models/theta_shooter_model.json')
