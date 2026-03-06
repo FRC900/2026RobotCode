@@ -1,4 +1,4 @@
-public class PassingSurfaces {
+public class PassingSurfacesPolynomial {
 
     /**
      * Predicts launch angle phi (radians) for FRC 2026 Fuel given distance and forward robot velocity. 

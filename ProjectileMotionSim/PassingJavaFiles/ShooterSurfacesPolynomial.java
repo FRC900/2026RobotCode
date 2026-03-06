@@ -1,4 +1,4 @@
-public class ShooterSurfaces {
+public class ShooterSurfacesPolynomial {
 
     /**
      * Predicts launch angle phi (radians) for FRC 2026 Fuel given distance and forward robot velocity.
