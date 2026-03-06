@@ -57,7 +57,10 @@ public class ShooterSetpoint {
 
         var distanceToTarget = robotToTargetXY.getNorm();
 
-        // shooterRPS
+    //     var tangent = targetFrameToRobot.getY();
+    //     var angular = robotSpeeds.omegaRadiansPerSecond;
+    //     var distanceToTarget = robotToTargetXY.getNorm();
+    //     var turretFF = -(angular + tangent / distanceToTarget);
 
         boolean validSetpont = true;
         double shooterRPM = ShooterConstants.kShootingRPM;
