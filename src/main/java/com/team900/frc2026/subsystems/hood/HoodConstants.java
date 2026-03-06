@@ -15,7 +15,7 @@ import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
         // position voltage
-    public static final Gains COMP_GAINS = new Gains(50, 0, 0, 0.37, 0, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(150, 0, 15, 0.37, 100, 0, 0);
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
     public static final double kHoodToleranceRadians = 0.1;

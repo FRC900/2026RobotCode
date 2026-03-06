@@ -139,7 +139,7 @@ public class CompTunerConstants {
     private static final int kFrontLeftDriveMotorId = 10;
     private static final int kFrontLeftSteerMotorId = 20;
     private static final int kFrontLeftEncoderId = 0;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.121337890625);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
