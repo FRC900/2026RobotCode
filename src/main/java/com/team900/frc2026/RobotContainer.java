@@ -198,7 +198,9 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(driveSubsystem);
+    @Getter
+    private final CoprocessorSubsystem coprocessorSubsystem =
+            new CoprocessorSubsystem(driveSubsystem);
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
@@ -266,7 +268,13 @@ public class RobotContainer {
 
         controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
 
-        controlBoard.intake().onTrue(new ParallelCommandGroup(SpindexerFactory.runSpindexer(this), HandoffFactory.runHandoff(this), ShooterFactory.setShooterRPM(20, this)));
+        controlBoard
+                .intake()
+                .onTrue(
+                        new ParallelCommandGroup(
+                                SpindexerFactory.runSpindexer(this),
+                                HandoffFactory.runHandoff(this),
+                                ShooterFactory.setShooterRPM(20, this)));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

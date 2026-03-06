@@ -2,7 +2,6 @@ package com.team900.frc2026.subsystems.coprocessor;
 
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -41,7 +40,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
 
         m_pingReturnPub = new BridgePublisher<>(m_ros_interface, "/ping_return");
         m_posePub = new BridgePublisher<>(m_ros_interface, "/wpi_pose");
-        
+
         m_pingSendSub = new BridgeSubscriber<>(m_ros_interface, "/ping_send", RosFloat64.class);
         m_vid0TagsSub =
                 new BridgeSubscriber<>(
