@@ -18,8 +18,8 @@ public class ShooterFactory {
         return container.getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
     }
 
-    public static Command setShooterRPM(double rps, RobotContainer container) {
-        return container.getShooterSubsystem().velocitySetpointCommand(() -> rps);
+    public static Command setShooterRPM(double rpm, RobotContainer container) {
+        return container.getShooterSubsystem().velocitySetpointCommand(() -> rpm);
     }
 
     public static Command setShooterRPM(
