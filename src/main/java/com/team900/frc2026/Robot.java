@@ -5,13 +5,12 @@
 package com.team900.frc2026;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.team900.lib.util.CANBusStatusLogger;
+import com.team900.lib.util.VirtualSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
@@ -25,7 +24,6 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -43,19 +41,10 @@ public class Robot extends LoggedRobot {
     private Command autonomousCommand = Commands.none();
     private Optional<Pose2d> startingPose = Optional.empty();
 
-    // private DesiredMode desiredMode = null;
-    private String scoringSequence = "";
-    private String levelSequence = "";
-    // private StartingPosition startingLocation = null;
-    private Optional<Alliance> allianceColor = Optional.of(Alliance.Blue);
-    private LoggedNetworkString latestProcessedScoreOrder =
-            new LoggedNetworkString("[Check]LatestProcessedScoreOrder", "Not Set");
     private double lastTimestampNotValid = 0;
 
     private double timeOfLastSync = 0.0;
 
-    private Command warmupCommand;
-    // private PathfindingWarmupCommand pathfindingWarmupCommand;
     private CANBusStatusLogger driverCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreDrive);
     private CANBusStatusLogger mechanismCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreMech);
 
@@ -105,9 +94,6 @@ public class Robot extends LoggedRobot {
         }
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
         SignalLogger.enableAutoLogging(false);
-
-        warmupCommand = PathfindingCommand.warmupCommand();
-        warmupCommand.schedule();
     }
 
     @Override
@@ -118,7 +104,7 @@ public class Robot extends LoggedRobot {
         } else {
             Threads.setCurrentThreadPriority(false, kNonRTPriority);
         }
-
+        VirtualSubsystem.runAllPeriodic();
         CommandScheduler.getInstance().run();
 
         RobotState.getInstance().updateLogger();
@@ -158,7 +144,7 @@ public class Robot extends LoggedRobot {
         RobotState.getInstance().setAutoStartTime(Timer.getFPGATimestamp());
 
         if (autonomousCommand != null) {
-            autonomousCommand.schedule();
+            CommandScheduler.getInstance().schedule(autonomousCommand);
         }
     }
 

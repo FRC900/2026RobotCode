@@ -4,10 +4,13 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
+import com.team900.frc2026.controlboard.ControlBoard;
+import com.team900.frc2026.factories.IntakeFactory;
+import com.team900.frc2026.factories.ShootingFactory;
+import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
-// import com.team900.frc2026.factories.HandoffFactory;
-// import com.team900.frc2026.factories.IntakeFactory;
-// import com.team900.frc2026.factories.SpindexerFactory;
+import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.drive.GyroIO;
@@ -40,6 +43,7 @@ import com.team900.lib.subsystems.SimCanCoderIO;
 import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -173,6 +177,8 @@ public class RobotContainer {
                 });
     }
 
+    @Getter private final ControlBoard controlBoard = ControlBoard.getInstance();
+
     private final SimTalonFXWithCancoder simulatedHoodMotor =
             Robot.isSimulation() ? new SimTalonFXWithCancoder(HoodConstants.kHoodConfig) : null;
 
@@ -187,6 +193,8 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
+    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem();
+
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
                 @Override
@@ -197,14 +205,13 @@ public class RobotContainer {
 
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
 
-    // private final DriveMaintainingHeadingCommand driveCommand =
-    //         (new DriveMaintainingHeadingCommand(
-    //                 driveSubsystem,
-    //                 robotState,
-    //                 this,
-    //                 controlBoard::getThrottle,
-    //                 controlBoard::getStrafe,
-    //                 controlBoard::getRotation));
+    @Getter
+    private final DriveMaintainingHeadingCommand driveCommand =
+            (new DriveMaintainingHeadingCommand(
+                    this,
+                    controlBoard::getThrottle,
+                    controlBoard::getStrafe,
+                    controlBoard::getRotation));
 
     @Getter private final RobotViz robotViz = new RobotViz();
 
@@ -225,24 +232,34 @@ public class RobotContainer {
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
-            // assert this.simulatedRobotState != null;
-            // this.simulatedRobotState.init();
+            assert this.simulatedRobotState != null;
+            this.simulatedRobotState.init();
         }
         configureBindings();
     }
 
+    private boolean intakeDeployed = false;
+
     private void configureBindings() {
         // Swerve Drive
-        driveSubsystem.setDefaultCommand(
-                driveSubsystem.run(
-                        () ->
-                                driveSubsystem.teleopControl(
-                                        -driveController.getLeftY(),
-                                        -driveController.getLeftX(),
-                                        -driveController.getRightX())));
-        driveController
-                .cross()
-                .onTrue(new InstantCommand(driveSubsystem::teleopResetRotation, driveSubsystem));
+        driveSubsystem.setDefaultCommand(driveCommand);
+
+        // Intake pivot, l1 to retract and deploy intake
+        controlBoard
+                .toggleIntake()
+                .onTrue(
+                        Commands.either(
+                                IntakeFactory.retractSlapdown(this)
+                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
+                                IntakeFactory.deploySlapdown(this)
+                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
+                                () -> intakeDeployed));
+
+        controlBoard.shoot().whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this));
+
+        controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
+
+        controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
@@ -266,7 +283,7 @@ public class RobotContainer {
         return Commands.print("No autonomous command configured");
     }
 
-    public static RobotContainer getInstance() {
+    public static synchronized RobotContainer getInstance() {
         if (instance == null) {
             synchronized (RobotContainer.class) {
                 if (instance == null) {

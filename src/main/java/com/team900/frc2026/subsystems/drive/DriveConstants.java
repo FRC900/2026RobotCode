@@ -99,4 +99,15 @@ public class DriveConstants {
     }
 
     public static final Gains kHeadingController = new Gains(0, 0, 0, 0, 0, 0, 0);
+
+    public static final double kDriveMaxSpeed =
+            CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 10.0;
+    public static final double kMaxXAccelerationMetersPerSecondSquared = 10.0;
+    public static final double kMaxYAccelerationMetersPerSecondSquared = 10.0;
+    public static final double kDriveMaxAngularRate = 8.2;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 20.0;
+    public static final double kHeadingControllerP = 5.0;
+    public static final double kHeadingControllerI = 0;
+    public static final double kHeadingControllerD = 0;
 }

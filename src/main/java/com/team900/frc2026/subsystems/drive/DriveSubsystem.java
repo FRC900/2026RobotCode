@@ -23,7 +23,6 @@ import com.team900.lib.util.Util;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -286,9 +285,9 @@ public class DriveSubsystem extends FullSubsystem {
         Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
 
         // Send setpoints to modules
-        for (int i = 0; i < 4; i++) {
-            modules[i].runSetpoint(setpointStates[i]);
-        }
+        // for (int i = 0; i < 4; i++) {
+        //     modules[i].runSetpoint(setpointStates[i]);
+        // }
 
         // Log optimized setpoints (runSetpoint mutates each state)
         Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
@@ -411,25 +410,6 @@ public class DriveSubsystem extends FullSubsystem {
     /** Returns the maximum angular speed in radians per sec. */
     public double getMaxAngularSpeedRadPerSec() {
         return getMaxLinearSpeedMetersPerSec() / DriveConstants.DRIVE_BASE_RADIUS;
-    }
-
-    public void teleopControl(double driveX, double driveY, double rotate) {
-        double magnitude = Math.hypot(driveX, driveY);
-        double speedX =
-                getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveX, 0.05) * magnitude;
-        double speedY =
-                getMaxLinearSpeedMetersPerSec() * MathUtil.applyDeadband(driveY, 0.05) * magnitude;
-        // TODO: tune on MUSA's preference
-        double speedR = 2 * Math.PI * MathUtil.applyDeadband(rotate, 0.05);
-
-        if (Util.shouldFlip()) {
-            speedX = -speedX;
-            speedY = -speedY;
-        }
-        prePoofed = ChassisSpeeds.fromFieldRelativeSpeeds(speedX, speedY, speedR, getRotation());
-        Logger.recordOutput("prePoofed", prePoofed);
-
-        runVelocity(prePoofed);
     }
 
     public void teleopResetRotation() {

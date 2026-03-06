@@ -1,8 +1,8 @@
 package com.team900.frc2026.subsystems.coprocessor;
 
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
-import com.team900.lib.util.VirtualSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team88.ros.bridge.BridgePublisher;
 import frc.team88.ros.bridge.BridgeSubscriber;
 import frc.team88.ros.bridge.ROSNetworkTablesBridge;
@@ -11,7 +11,7 @@ import frc.team88.ros.messages.std_msgs.RosFloat64;
 import frc.team88.ros.messages.tf2_msgs.TFMessage;
 import java.util.Optional;
 
-public class CoprocessorSubsystem extends VirtualSubsystem {
+public class CoprocessorSubsystem extends SubsystemBase {
     private final ROSNetworkTablesBridge m_ros_interface;
     private final BridgeSubscriber<RosFloat64> m_pingSendSub;
     private final BridgePublisher<RosFloat64> m_pingReturnPub;
@@ -31,17 +31,17 @@ public class CoprocessorSubsystem extends VirtualSubsystem {
         m_vid0TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/apriltag_detection_ov2311_10_9_0_9_video0/tags",
+                        "/ov2311_10_9_0_9_video1/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_vid1TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/apriltag_detection_ov2311_10_9_0_9_video1/tags",
+                        "/ov2311_10_9_0_9_video1/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_vid2TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/apriltag_detection_ov2311_10_9_0_9_video2/tags",
+                        "/ov2311_10_9_0_9_video2/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_poseSub =
                 new BridgeSubscriber<>(
@@ -73,7 +73,7 @@ public class CoprocessorSubsystem extends VirtualSubsystem {
     private void checkPose() {
         TFMessage pose;
         // just log it for rn
-        if ((pose = m_poseSub.receive().get()) != null) {
+        if ((m_poseSub.receive().isPresent()) && (pose = m_poseSub.receive().get()) != null) {
             for (TransformStamped tf : pose.getTransforms()) {
                 // if (tf.getChildFrameId() == "base_link") {
                 System.out.println(tf);
@@ -88,7 +88,4 @@ public class CoprocessorSubsystem extends VirtualSubsystem {
         checkFiducialDetections();
         checkPose();
     }
-
-    @Override
-    public void periodicAfterScheduler() {}
 }

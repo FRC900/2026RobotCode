@@ -12,16 +12,20 @@ import java.util.function.Supplier;
 
 public class ShooterFactory {
 
-    public static final RobotContainer container = RobotContainer.getInstance();
-
     /* Commands for shooting */
 
-    public static Command idle() {
+    public static Command idle(RobotContainer container) {
         return container.getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
     }
 
-    public static Command setShooterRPS(Supplier<ShooterSetpoint> setpointSupplier) {
-        var shooter = container.getShooterSubsystem();
-        return shooter.velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
+    public static Command setShooterRPM(double rps, RobotContainer container) {
+        return container.getShooterSubsystem().velocitySetpointCommand(() -> rps);
+    }
+
+    public static Command setShooterRPM(
+            Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container) {
+        return container
+                .getShooterSubsystem()
+                .velocitySetpointCommand(setpointSupplier.get()::getShooterRPM);
     }
 }
