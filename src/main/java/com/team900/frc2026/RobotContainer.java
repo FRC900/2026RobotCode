@@ -188,7 +188,7 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem();
+    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(driveSubsystem);
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
