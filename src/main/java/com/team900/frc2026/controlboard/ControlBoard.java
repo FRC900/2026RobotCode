@@ -107,7 +107,7 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     }
 
     @Override
-    public Trigger deployIntake() {
-        return buttonControlBoard.deployIntake();
+    public Trigger toggleIntake() {
+        return buttonControlBoard.toggleIntake();
     }
 }

@@ -22,15 +22,14 @@ public class TalonFXIO implements MotorIO {
     protected final ServoMotorSubsystemConfig config;
 
     protected final DutyCycleOut dutyCycleControl = new DutyCycleOut(0.0);
-    private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC =
-            new VelocityTorqueCurrentFOC(0.0);
+    private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0).withEnableFOC(true);
     private final VoltageOut voltageControl = new VoltageOut(0.0);
-    private final PositionTorqueCurrentFOC positionVoltageTorqueCurrentFOCControl =
-            new PositionTorqueCurrentFOC(0.0);
+    private final PositionVoltage positionVoltageControl =
+            new PositionVoltage(0.0).withEnableFOC(true);
     private final MotionMagicExpoTorqueCurrentFOC motionMagicPositionControl =
             new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final DynamicMotionMagicVoltage dynamicMotionMagicVoltage =
-            new DynamicMotionMagicVoltage(0.0, 0.0, 0.0);
+            new DynamicMotionMagicVoltage(0.0, 0.0, 0.0).withEnableFOC(true);
     private final Follower followerControl = new Follower(0, MotorAlignmentValue.Aligned);
     private final TorqueCurrentFOC torqueCurrentFOC = new TorqueCurrentFOC(0.0);
 
@@ -108,15 +107,17 @@ public class TalonFXIO implements MotorIO {
 
     @Override
     public void setPositionSetpoint(double units) {
-        talon.setControl(positionVoltageTorqueCurrentFOCControl.withPosition(clampPosition(units)));
+        talon.setControl(
+                positionVoltageControl.withPosition(clampPosition(units)).withEnableFOC(true));
     }
 
     @Override
     public void setPositionSetpoint(double units, double ff) {
         talon.setControl(
-                positionVoltageTorqueCurrentFOCControl
+                positionVoltageControl
                         .withPosition(clampPosition(units))
-                        .withFeedForward(ff));
+                        .withFeedForward(ff)
+                        .withEnableFOC(true));
     }
 
     @Override
@@ -146,7 +147,8 @@ public class TalonFXIO implements MotorIO {
                         .withJerk(jerk)
                         .withVelocity(velocity)
                         .withSlot(slot)
-                        .withFeedForward(feedfowards));
+                        .withFeedForward(feedfowards)
+                        .withEnableFOC(true));
     }
 
     @Override
@@ -181,7 +183,10 @@ public class TalonFXIO implements MotorIO {
     @Override
     public void setVelocitySetpoint(double unitsPerSecond, int slot) {
         talon.setControl(
-                velocityTorqueCurrentFOC.withVelocity(unitsToRotor(unitsPerSecond)).withSlot(slot));
+                velocityVoltage
+                        .withVelocity(unitsToRotor(unitsPerSecond))
+                        .withSlot(slot)
+                        .withEnableFOC(true));
     }
 
     @Override

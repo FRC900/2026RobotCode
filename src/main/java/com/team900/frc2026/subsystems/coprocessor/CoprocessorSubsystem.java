@@ -1,7 +1,6 @@
 package com.team900.frc2026.subsystems.coprocessor;
 
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
-import com.team900.lib.util.VirtualSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team88.ros.bridge.BridgePublisher;

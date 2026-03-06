@@ -6,27 +6,26 @@ package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
-// import com.team900.lib.util.ShooterSetpoint;
+import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.Supplier;
 
 public class ShooterFactory {
 
-    static RobotContainer container = RobotContainer.getInstance();
-
     /* Commands for shooting */
 
-    public static Command idle() {
+    public static Command idle(RobotContainer container) {
         return container.getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
     }
 
-    public static Command setShooterRPS(double rps) {
+    public static Command setShooterRPM(double rps, RobotContainer container) {
         return container.getShooterSubsystem().velocitySetpointCommand(() -> rps);
     }
 
-    // public static Command setShooterRPS(Supplier<ShooterSetpoint> setpointSupplier) {
-    //     return container
-    //             .getShooterSubsystem()
-    //             .velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
-    // }
+    public static Command setShooterRPM(
+            Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container) {
+        return container
+                .getShooterSubsystem()
+                .velocitySetpointCommand(setpointSupplier.get()::getShooterRPM);
+    }
 }

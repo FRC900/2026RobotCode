@@ -1,35 +1,37 @@
 package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
-// import com.team900.lib.util.ShooterSetpoint;
+import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import java.util.function.Supplier;
 
 public class SuperstructureFactory {
 
-//     public static Command aimAndShoot(
-//             RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
-//         return new ParallelCommandGroup(
-//                 TurretFactory.aimTurretToPose(setPointSupplier),
-//                 HoodFactory.aimHoodToPose(setPointSupplier),
-//                 SpindexerFactory.runSpindexer(),
-//                 HandoffFactory.runHandoff(),
-//                 ShooterFactory.setShooterRPS(setPointSupplier));
-//         /*Command to shoot all balls in robot (should auto aim)
-//          * Aim turret*
-//          * Aim hood*
-//          * Run handoff, shooter, and spindexer as appropriate**/
-//     }
+    public static Command aim(
+            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
+        // return null;
+        return new ParallelCommandGroup(
+                new InstantCommand(() -> container.getDriveCommand().setKAiming(true)),
+                HoodFactory.aimHoodToPose(setPointSupplier, container));
+        /*Command to aim at target
+         * Aim turret
+         * Aim hood */
+    }
 
-//     public static Command aim(
-//             RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
-//         // return null;
-//         return new ParallelCommandGroup(
-//                 TurretFactory.aimTurretToPose(setPointSupplier),
-//                 HoodFactory.aimHoodToPose(setPointSupplier));
-//         /*Command to aim at target
-//          * Aim turret
-//          * Aim hood */
-//     }
+    public static Command stow(RobotContainer container) {
+        return new ParallelCommandGroup(
+                HoodFactory.stow(container), IntakeFactory.retractSlapdown(container));
+    }
+
+    public static Command trench(RobotContainer container) {
+        return new ParallelCommandGroup(
+                HoodFactory.stow(container), IntakeFactory.deploySlapdown(container));
+    }
+
+    public static Command intakeDeploy(RobotContainer container) {
+
+        return IntakeFactory.deploySlapdown(container);
+    }
 }

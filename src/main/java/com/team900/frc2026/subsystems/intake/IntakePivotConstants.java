@@ -1,5 +1,6 @@
 package com.team900.frc2026.subsystems.intake;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -11,7 +12,6 @@ import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.CanCoderConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
-import edu.wpi.first.math.util.Units;
 
 public class IntakePivotConstants {
     // Intake radians will be measured from horizontal to avoid confusion where positive direction
@@ -24,8 +24,7 @@ public class IntakePivotConstants {
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-    public static final Gains COMP_GAINS = new Gains(900, 0, 
-    100, 10, 0, 0, 13);
+    public static final Gains COMP_GAINS = new Gains(900, 0, 100, 10, 0, 0, 13);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
@@ -90,5 +89,12 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         kIntakePivotConfig.canCoderConfig = kIntakeCanCoderConfig;
+    }
+
+    public static MotionMagicConfigs kIntakePivotMotionMagicConfigs = new MotionMagicConfigs();
+
+    static {
+        kIntakePivotMotionMagicConfigs.MotionMagicAcceleration = 0.5;
+        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity = 0.25;
     }
 }

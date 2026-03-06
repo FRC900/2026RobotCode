@@ -10,7 +10,7 @@ public interface IButtonControlBoard {
 
     Trigger intake();
 
-    Trigger deployIntake();
+    Trigger toggleIntake();
 
     Trigger exhaust();
 

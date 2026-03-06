@@ -14,7 +14,7 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
-        // position voltage
+    // position voltage
     public static final Gains COMP_GAINS = new Gains(50, 0, 0, 0.37, 0, 0, 0);
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
@@ -23,8 +23,7 @@ public class HoodConstants {
     public static final double kHoodMaxPositionRadians = Math.PI / 4 - Math.PI / 12;
     public static final double kHoodZeroedAngleDegrees = 15;
 
-    public static final double kHoodRotorMaxPosition =
-            0.0754;
+    public static final double kHoodRotorMaxPosition = 0.0754;
     public static final double kHoodRotorMinPosition =
             Units.radiansToRotations(kHoodMinPositionRadians);
 
@@ -90,8 +89,7 @@ public class HoodConstants {
         kHoodConfig.fxConfig.Slot0.kS = COMP_GAINS.ffkS();
         kHoodConfig.fxConfig.Slot0.kV = COMP_GAINS.ffkV();
 
-        kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-                kHoodRotorMaxPosition;
+        kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = kHoodRotorMaxPosition;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kHoodRotorMinPosition;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
