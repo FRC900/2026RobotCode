@@ -25,7 +25,8 @@ import time
 
 hub_height = 1.8288 # m
 shot_speed = 14.7 # m/s
-shot_spin = 15.8 * 2*np.pi # rad/s
+shot_spin = 17 * 2*np.pi # rad/s
+y0 = 0.4464568922 # m, shooter height 
 
 fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
@@ -68,6 +69,7 @@ for i, r in enumerate(r_vals):
                 xt, yt, zt,
                 vxi0, vyi0, vzi0,
                 shot_spin,
+                sy0=y0,
                 vx_frame=vf,
                 vy_frame=0,
                 vz_frame=vl,

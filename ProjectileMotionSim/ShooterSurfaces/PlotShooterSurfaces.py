@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 # load data
-data = np.load("clean_theta_phi_surface.npz")
+data = np.load("ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_surface.npz")
 r_vals = data['r_vals']
 vf_vals = data['vf_vals']
 vl_vals = data['vl_vals']
