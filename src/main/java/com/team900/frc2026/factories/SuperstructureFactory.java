@@ -72,13 +72,13 @@ public class SuperstructureFactory {
          * Stow intake**/
     }
 
-    public Command outtake(RobotContainer container) {
+    public static Command outtake(RobotContainer container) {
         return IntakeFactory.exhaustIntake();
         /*Command to outtake balls from robot
          * Run intake in reverse**/
     }
 
-    public Command deploy_then_outtake(RobotContainer container) {
+    public static Command deploy_then_outtake(RobotContainer container) {
         return new ParallelCommandGroup(
                 IntakeFactory.deploySlapdown(), IntakeFactory.exhaustIntake());
         /*Command to deploy intake and then run outtake
@@ -86,7 +86,7 @@ public class SuperstructureFactory {
          * Run intake in reverse**/
     }
 
-    public Command deploy_intake_then_intake_and_shoot(
+    public static Command deploy_intake_then_intake_and_shoot(
             RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
         return new ParallelCommandGroup(
                 IntakeFactory.deploySlapdown(),
@@ -101,7 +101,7 @@ public class SuperstructureFactory {
          * Run shooter**/
     }
 
-    public Command intake_and_shoot(
+    public static Command intake_and_shoot(
             RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
         return new ParallelCommandGroup(
                 IntakeFactory.runIntake(),
@@ -114,7 +114,7 @@ public class SuperstructureFactory {
          * Run shooter**/
     }
 
-    public Command remove_balls(RobotContainer container) {
+    public static Command remove_balls(RobotContainer container) {
         return new ParallelCommandGroup(
                 IntakeFactory.exhaustIntake(),
                 SpindexerFactory.exhaustSpindexer(),
@@ -125,7 +125,7 @@ public class SuperstructureFactory {
          */
     }
 
-    public Command deploy_intake_then_intake_and_aim_and_shoot(
+    public static Command deploy_intake_then_intake_and_aim_and_shoot(
             RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
         return new ParallelCommandGroup(
                 IntakeFactory.deploySlapdown(),
@@ -142,7 +142,7 @@ public class SuperstructureFactory {
          * Run shooter**/
     }
 
-    public Command intake_and_aim_and_shoot(
+    public static Command intake_and_aim_and_shoot(
             RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
         return new ParallelCommandGroup(
                 IntakeFactory.runIntake(),
