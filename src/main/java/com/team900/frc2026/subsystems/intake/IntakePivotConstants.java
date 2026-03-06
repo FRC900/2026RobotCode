@@ -24,12 +24,8 @@ public class IntakePivotConstants {
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-<<<<<<< HEAD
     public static final Gains COMP_GAINS = new Gains(30, 0, 
     0, 0, 1, 0, 0);
-=======
-    public static final Gains COMP_GAINS = new Gains(900, 0, 100, 10, 0, 0, 13);
->>>>>>> b727e521abfef53c3db8bd926b880dd0c081ff47
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
