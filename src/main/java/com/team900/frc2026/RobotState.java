@@ -2,6 +2,7 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.subsystems.vision.VisionConstants;
 import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.MathHelpers;
@@ -9,6 +10,7 @@ import com.team900.lib.util.Util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import java.util.Map;
@@ -231,6 +233,23 @@ public class RobotState {
 
     public Transform2d getTurretToCamera() {
         return TURRET_TO_CAMERA;
+    }
+
+    public Rotation2d getLatestRotationRobotToHub() {
+
+        return AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d())
+                .minus(getLatestFieldToRobot().getValue().getTranslation())
+                .getAngle();
+    }
+
+    public Translation3d getLatestTranlastionRobotToHub() {
+
+        return AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint)
+                .minus(
+                        new Translation3d(
+                                getLatestFieldToRobot().getValue().getX(),
+                                getLatestFieldToRobot().getValue().getY(),
+                                0.4464568922));
     }
 
     public Map.Entry<Double, Rotation2d> getLatestRobotToTurret() {

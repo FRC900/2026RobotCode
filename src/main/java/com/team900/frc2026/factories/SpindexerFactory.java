@@ -5,15 +5,14 @@ import com.team900.frc2026.subsystems.spindexer.SpindexerConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SpindexerFactory {
-    static RobotContainer container = RobotContainer.getInstance();
 
-    public static Command runSpindexer() {
+    public static Command runSpindexer(RobotContainer container) {
         return container
                 .getSpindexerSubsystem()
                 .dutyCycleCommand(() -> SpindexerConstants.kSpindexerDutyCycle);
     }
 
-    public static Command exhaustSpindexer() {
+    public static Command exhaustSpindexer(RobotContainer container) {
         return container
                 .getSpindexerSubsystem()
                 .dutyCycleCommand(() -> SpindexerConstants.kSpindexerDutyCycleExhaust);

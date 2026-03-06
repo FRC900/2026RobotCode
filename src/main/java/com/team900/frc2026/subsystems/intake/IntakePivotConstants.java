@@ -12,7 +12,6 @@ import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.CanCoderConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
-import edu.wpi.first.math.util.Units;
 
 public class IntakePivotConstants {
     // Intake radians will be measured from horizontal to avoid confusion where positive direction
@@ -25,8 +24,12 @@ public class IntakePivotConstants {
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
+<<<<<<< HEAD
     public static final Gains COMP_GAINS = new Gains(30, 0, 
     0, 0, 1, 0, 0);
+=======
+    public static final Gains COMP_GAINS = new Gains(900, 0, 100, 10, 0, 0, 13);
+>>>>>>> b727e521abfef53c3db8bd926b880dd0c081ff47
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();

@@ -37,7 +37,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     }
 
     @Override
-    public Trigger deployIntake() {
+    public Trigger toggleIntake() {
         return controller.L1();
     }
 

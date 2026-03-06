@@ -6,15 +6,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class HandoffFactory {
 
-    static RobotContainer container = RobotContainer.getInstance();
-
-    public static Command runHandoff() {
+    public static Command runHandoff(RobotContainer container) {
         return container
                 .getHandoffSubsystem()
                 .dutyCycleCommand(() -> HandoffConstants.kHandoffDutyCycle);
     }
 
-    public static Command exhaustHandoff() {
+    public static Command exhaustHandoff(RobotContainer container) {
         return container
                 .getHandoffSubsystem()
                 .dutyCycleCommand(() -> HandoffConstants.kHandoffDutyCycleExhaust);
