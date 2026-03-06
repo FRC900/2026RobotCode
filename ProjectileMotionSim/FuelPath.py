@@ -6,7 +6,7 @@ from numpy import array, rad2deg, linalg, pi
 from tabulate import tabulate
 import time
 
-def angle_to_900__hood_rot(angle_deg, hood_min, hood_max, hood_rest_angle_deg):
+def angle_to_900_hood_rot(angle_deg, hood_min, hood_max, hood_rest_angle_deg):
     return hood_min + (hood_max - ((hood_rest_angle_deg-angle_deg) / 1.36))
 
 # define targets and initial condition guesses
@@ -55,7 +55,7 @@ table = [
     ["Final X (m)", sx_list[-1]],
     ["Final Y (m)", sy_list[-1]],
     ["Final Z (m)", sz_list[-1]],
-    ["900 Hood Motor Rotations", angle_to_900__hood_rot(rad2deg(fuel_solver.phi), -6, 22, 75)]
+    ["900 Hood Motor Rotations", angle_to_900_hood_rot(rad2deg(fuel_solver.phi), -6, 22, 75)]
 ]
 
 print(tabulate(table, headers=["Parameter", "Value"], tablefmt="rounded_grid"))

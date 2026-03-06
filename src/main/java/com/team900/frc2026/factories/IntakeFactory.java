@@ -7,33 +7,33 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class IntakeFactory {
 
-    private static RobotContainer container = RobotContainer.getInstance();
-
-    public static Command runIntake() {
+    public static Command runIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
 
-    public static Command exhaustIntake() {
+    public static Command exhaustIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
                 .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
 
-    public static Command deploySlapdown() {
-        return container
-                .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotDeployRadians,
-                        IntakePivotConstants.kIntakePivotToleranceRadians);
-    }
-
-    public static Command retractSlapdown() {
+    public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
                 .motionMagicSetpointCommandBlocking(
                         () -> IntakePivotConstants.kIntakePivotStowRadians,
+                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs,
+                        IntakePivotConstants.kIntakePivotToleranceRadians);
+    }
+
+    public static Command retractSlapdown(RobotContainer container) {
+        return container
+                .getIntakePivotSubsystem()
+                .motionMagicSetpointCommandBlocking(
+                        () -> IntakePivotConstants.kIntakePivotStowRadians,
+                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs,
                         IntakePivotConstants.kIntakePivotToleranceRadians);
     }
 }

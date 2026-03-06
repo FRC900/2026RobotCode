@@ -1,9 +1,7 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.RobotState;
-import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import java.util.Optional;
@@ -14,38 +12,23 @@ public class ShooterSetpoint {
 
     public static Optional<Double> overrideRPS = Optional.empty();
 
-    private double shooterRPS;
-    private double handoffRPS = 14.4;
+    private double shooterRPM;
+    private double handoffRPM = 5000;
     private double turretRadiansFromCenter;
     private double turretFF;
     private double hoodRadians;
     private double hoodFF;
     private boolean isValid;
 
-    public ShooterSetpoint(
-            double shooterRPS,
-            double turretRadiansFromCenter,
-            double turretFF,
-            double hoodRadians,
-            double hoodFF,
-            boolean isValid) {
-        this.shooterRPS = shooterRPS;
-        this.turretRadiansFromCenter = turretRadiansFromCenter;
-        this.turretFF = turretFF;
+    public ShooterSetpoint(double shooterRPS, double hoodRadians, double hoodFF, boolean isValid) {
+        this.shooterRPM = shooterRPS;
         this.hoodRadians = hoodRadians;
         this.hoodFF = hoodFF;
         this.isValid = isValid;
     }
 
-    public ShooterSetpoint(
-            double shooterRPS,
-            double turretRadiansFromCenter,
-            double turretFF,
-            double hoodRadians,
-            double hoodFF) {
-        this.shooterRPS = shooterRPS;
-        this.turretRadiansFromCenter = turretRadiansFromCenter;
-        this.turretFF = turretFF;
+    public ShooterSetpoint(double shooterRPS, double hoodRadians, double hoodFF) {
+        this.shooterRPM = shooterRPS;
         this.hoodRadians = hoodRadians;
         this.hoodFF = hoodFF;
         this.isValid = true;
@@ -63,327 +46,102 @@ public class ShooterSetpoint {
         return this.isValid;
     }
 
-    private static ShooterSetpoint makeSetpoint(
-            Rotation2d robotToTargetRotation,
-            Translation3d robotToTargetTranslation,
-            double launchSpeedMetersPerSec) {
+    public static ShooterSetpoint setpointHub() {
+        return makeShootingSetpoint(robotState.getLatestTranlastionRobotToHub());
+    }
 
-        // turret
-        Rotation2d turretRotationRobotFrame =
-                robotToTargetRotation.minus(
-                        robotState.getLatestFieldToRobot().getValue().getRotation());
-        Rotation2d turretRotationTurretFrame =
-                turretRotationRobotFrame
-                        .rotateBy(MathHelpers.kRotation2dPi)
-                        .rotateBy(ShooterConstants.kTurretToShotCorrection);
-
-        // feedforward turret
-        var robotSpeeds = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
+    private static ShooterSetpoint makeShootingSetpoint(Translation3d robotToTargetTranslation) {
 
         var robotToTargetXY =
                 new Translation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
 
-        var targetFrameToRobot =
-                new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
-                        .rotateBy(robotToTargetXY.getAngle());
-
-        var tangent = targetFrameToRobot.getY();
-        var angular = robotSpeeds.omegaRadiansPerSecond;
         var distanceToTarget = robotToTargetXY.getNorm();
-        var turretFF = -(angular + tangent / distanceToTarget);
-
-        // shooterRPS
-
-        boolean validSetpont = true;
-        double shooterRPS =
-                launchSpeedMetersPerSec / ShooterConstants.kLaunchVelMetersPerSecPerRotPerSec;
-        if (shooterRPS > ShooterConstants.kShooterRPSCap) {
-            shooterRPS = ShooterConstants.kShooterRPSCap;
-            validSetpont = false;
-        }
-
-        // values for hood are placeholders rn since that depends on the lookup table
-        return new ShooterSetpoint(
-                shooterRPS,
-                turretRotationTurretFrame.getRadians(),
-                turretFF,
-                HoodConstants.kHoodShootingEpsilon,
-                0.0,
-                validSetpont);
-    }
-
-    // private static ShooterSetpoint makeSetpoint(Rotation2d robotToTargetRotation,
-    //         Translation3d robotToTargetTranslation,
-    //         double pitchAngleRads, double launchSpeedMetersPerSec) {
-    //     // turret
-    //     Rotation2d turretRotationRobotFrame = robotToTargetRotation
-    //             .minus(robotState.getLatestFieldToRobot().getValue().getRotation());
-    //     Rotation2d turretRotationTurretFrame = turretRotationRobotFrame
-
-    // .rotateBy(MathHelpers.kRotation2dPi).rotateBy(ShooterConstants.kTurretToShotCorrection);
-
-    //     // hood
-    //     var hoodZeroedAngle = Rotation2d.fromDegrees(HoodConstants.kHoodZeroedAngleDegrees);
-    //     double hoodAngle = hoodZeroedAngle.getRadians() - pitchAngleRads;
-
-    //     // Feedfowards
-    //     var robotSpeeds = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
-
-    //     var robotToTargetXY = new Translation2d(robotToTargetTranslation.getX(),
-    // robotToTargetTranslation.getY());
-
-    //     // In this frame, x = radial component (positive towards goal)
-    //     // y = tangential component (positive means turret needs negative lead)
-    //     var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond,
-    // robotSpeeds.vyMetersPerSecond)
-    //             .rotateBy(
-    //                     robotToTargetXY.getAngle());
 
     //     var tangent = targetFrameToRobot.getY();
     //     var angular = robotSpeeds.omegaRadiansPerSecond;
     //     var distanceToTarget = robotToTargetXY.getNorm();
     //     var turretFF = -(angular + tangent / distanceToTarget);
-    //     // This is the deriative of atan2 accounting for the frame that the hood is
-    //     // defined in.
-    //     var hoodFF = targetFrameToRobot.getX() * -robotToTargetTranslation.getZ() /
-    //             (distanceToTarget * distanceToTarget +
-    //                     robotToTargetTranslation.getZ() * robotToTargetTranslation.getZ());
 
-    //     boolean validSetpont = true;
-    //     double shooterRPS = launchSpeedMetersPerSec /
-    //     ShooterConstants.kLaunchVelMetersPerSecPerRotPerSec;
-    //     if (shooterRPS > ShooterConstants.kShooterRPSCap) {
-    //         shooterRPS = ShooterConstants.kShooterRPSCap;
-    //         validSetpont = false;
-    //     }
+        boolean validSetpont = true;
+        double shooterRPM = ShooterConstants.kShootingRPM;
 
-    //     return new ShooterSetpoint(shooterRPS,
-    //             turretRotationTurretFrame.getRadians(),
-    //             turretFF,
-    //             hoodAngle,
-    //             hoodFF, validSetpont);
-    // }
-
-    // public static Supplier<ShooterSetpoint> poopSetpointSupplier(RobotState robotState) {
-    //     return poopSetpointSupplier(() -> PoopTargetFactory.generate(robotState), robotState);
-    // }
-
-    // public static Supplier<ShooterSetpoint> poopSetpointSupplier(Supplier<Translation3d>
-    // targetPoint,
-    //         RobotState robotState) {
-    //     return Util.memoizeByIteration(robotState.getIterationSupplier(),
-    //             () -> fromPoopPose(targetPoint.get(), robotState));
-    // }
-
-    // private static ShooterSetpoint fromPoopPose(Translation3d target, RobotState robotState) {
-    //     double maxPoopHeight = target.getZ();
-    //     target = new Translation3d(target.getX(), target.getY(), 0.0);
-    //     var fieldToRobot = robotState.getLatestFieldToRobot();
-    //     var vRobot = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
-    //     Translation3d d = target.minus(
-    //             new Translation3d(fieldToRobot.getValue().getX(), fieldToRobot.getValue().getY(),
-    //                     Constants.kNoteReleaseHeight));
-    //     var hoodZeroedAngle =
-    // Rotation2d.fromDegrees(Constants.HoodConstants.kHoodZeroedAngleDegrees);
-
-    //     double apexHeight = maxPoopHeight;
-    //     double pitchAngleRads = 0.0;
-    //     double launchSpeedMetersPerSec = 0.0;
-    //     Rotation2d robotToTargetRotation = MathHelpers.kRotation2dZero;
-
-    //     final int max_num_iterations = 10;
-    //     double minApexHeight = 0.0;
-    //     double maxApexHeight = apexHeight;
-    //     for (int i = 0; i < max_num_iterations; ++i) {
-    //         // Try to aim at our nominal apex height, then reduce it if we need to.
-    //         final double kG = -9.81;
-    //         double vz = Math.sqrt(-2.0 * kG * (apexHeight - Constants.kNoteReleaseHeight));
-    //         double t_apex = vz / -kG;
-    //         double t_fall = Math.sqrt(2.0 * apexHeight / -kG);
-    //         double t_total = t_apex + t_fall;
-    //         double vx = (d.getX() - vRobot.vxMetersPerSecond * t_total) / t_total;
-    //         double vy = (d.getY() - vRobot.vyMetersPerSecond * t_total) / t_total;
-
-    //         double shotXY = Math.sqrt(vx * vx + vy * vy);
-    //         pitchAngleRads = Math.atan2(vz, shotXY);
-
-    //         double hoodAngle = hoodZeroedAngle.getRadians() - pitchAngleRads;
-
-    //         // Hood needs to go too far vertical, so we need to reduce apex height.
-    //         // Solving exactly for the extremal hood position yields a quartic function, so
-    //         // just binary search over
-    //         // apex heights to find something close.
-    //         if (hoodAngle < Constants.HoodConstants.kHoodMinPositionRadians) {
-    //             // We have to aim lower. Don't remember the launch parameters because this angle
-    //             // is infeasible.
-    //             maxApexHeight = Math.min(apexHeight, maxApexHeight);
-    //             apexHeight = (maxApexHeight - minApexHeight) / 2.0 + minApexHeight;
-    //         } else if (apexHeight < Constants.ShooterConstants.kPoopMaxApexHeight) {
-    //             // We can aim higher. Remember the parameters in case this is the best we find.
-    //             launchSpeedMetersPerSec = Math.sqrt(vz * vz + shotXY * shotXY);
-    //             robotToTargetRotation = new Rotation2d(vx, vy);
-    //             minApexHeight = Math.max(apexHeight, minApexHeight);
-    //             apexHeight = (maxApexHeight - minApexHeight) / 2.0 + minApexHeight;
-    //         } else {
-    //             // Found an exact solution that achieves our nominal apex height.
-    //             launchSpeedMetersPerSec = Math.sqrt(vz * vz + shotXY * shotXY);
-    //             robotToTargetRotation = new Rotation2d(vx, vy);
-    //             break;
-    //         }
-    //     }
-    //     return makeSetpoint(robotState, robotToTargetRotation, d, pitchAngleRads,
-    // launchSpeedMetersPerSec);
-    // }
-
-    // public static Supplier<ShooterSetpoint> autoSetpointSupplier(RobotState robotState) {
-    //     return autoSetpointSupplier(() -> SpeakerTargetFactory.generate(robotState), robotState);
-    // }
-
-    // public static Supplier<ShooterSetpoint> autoSetpointSupplier(Supplier<Translation3d>
-    // speakerTargetPoint,
-    //         RobotState robotState) {
-    //     return Util.memoizeByIteration(robotState.getIterationSupplier(),
-    //             () -> fromAutoTarget(speakerTargetPoint.get(), robotState));
-    // }
-
-    // public static Supplier<ShooterSetpoint> speakerSetpointSupplier(RobotState robotState) {
-    //     return speakerSetpointSupplier(() -> SpeakerTargetFactory.generate(robotState),
-    // robotState);
-    // }
-
-    // public static Supplier<ShooterSetpoint> speakerSetpointSupplier(Supplier<Translation3d>
-    // targetPoint,
-    //         RobotState robotState) {
-    //     return Util.memoizeByIteration(robotState.getIterationSupplier(),
-    //             () -> fromSpeakerTarget(targetPoint.get(), robotState));
-    // }
-
-    // private static ShooterSetpoint fromAutoTarget(Translation3d speakerTarget, RobotState
-    // robotState) {
-    //     var setpoint = fromSpeakerTarget(speakerTarget, robotState);
-    //     if (Timer.getFPGATimestamp() - robotState.getAutoStartTime() <= 2) {
-    //         setpoint.shooterRPS = Constants.ShooterConstants.kPreloadShotRPS;
-    //     }
-    //     return setpoint;
-    // }
-
-    // private static ShooterSetpoint fromSpeakerTarget(Translation3d target, RobotState robotState)
-    // {
-    //     // turret
-    //     Pose2d fieldToRobot;
-    //     final boolean kUsePrediction = true;
-    //     final double kPredictionLookaheadTime = 0.05;
-    //     if (kUsePrediction) {
-    //         fieldToRobot = robotState.getPredictedFieldToRobot(kPredictionLookaheadTime);
-    //     } else {
-    //         fieldToRobot = robotState.getLatestFieldToRobot().getValue();
-    //     }
-    //     Rotation2d robotToTargetRotation;
-    //     Translation3d robotToTargetTranslation;
-    //     double pitchAngleRads;
-
-    //     var distanceToTarget = new Translation2d(
-    //             target.getX() - fieldToRobot.getX(),
-    //             target.getY() - fieldToRobot.getY()).getNorm();
-
-    //     double launchSpeedRPS = 0.0;
-    //     if (distanceToTarget < Constants.ShooterConstants.kShooterStage2MaxShortRangeDistance) {
-    //         launchSpeedRPS = Constants.ShooterConstants.kShooterStage2RPSShortRange;
-    //     } else if (distanceToTarget >
-    // Constants.ShooterConstants.kShooterStage2MinLongRangeDistance) {
-    //         launchSpeedRPS = Constants.ShooterConstants.kShooterStage2RPSLongRange;
-    //     } else {
-    //         var x = (distanceToTarget -
-    // Constants.ShooterConstants.kShooterStage2MaxShortRangeDistance) /
-    //                 (Constants.ShooterConstants.kShooterStage2MinLongRangeDistance
-    //                         - Constants.ShooterConstants.kShooterStage2MaxShortRangeDistance);
-    //         launchSpeedRPS =
-    // Util.interpolate(Constants.ShooterConstants.kShooterStage2RPSShortRange,
-    //                 Constants.ShooterConstants.kShooterStage2RPSLongRange, x);
-    //     }
-
-    //     // if (overrideRPS.isPresent()) {
-    //     // launchSpeedRPS = overrideRPS.get();
-    //     // }
-
-    //     double launchSpeedMetersPerSec =
-    // Constants.ShooterConstants.kRingLaunchVelMetersPerSecPerRotPerSec *
-    //             launchSpeedRPS;
-
-    //     boolean kUseMotionCompensation = true;
-    //     if (kUseMotionCompensation) {
-    //         var vRobot = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
-    //         var vShot = launchSpeedMetersPerSec;
-
-    //         // Solve quadratic equation to obtain time of flight of ring.
-    //         // a = vx^2+vy^2-shot_vel^2
-    //         // b = -2*((tx-rx)*vx+(ty-ry)*vy)
-    //         // c = (tx-rx)^2+(ty-ry)^2+dz^2
-    //         var a = vRobot.vxMetersPerSecond * vRobot.vxMetersPerSecond +
-    //                 vRobot.vyMetersPerSecond * vRobot.vyMetersPerSecond -
-    //                 vShot * vShot;
-    //         if (Math.abs(a) < Util.kEpsilon) {
-    //             // Not a quadratic equation, cheat a little bit to make it one.
-    //             vShot = 1.01 * vShot;
-    //         }
-    //         Translation3d d = target.minus(
-    //                 new Translation3d(fieldToRobot.getX(), fieldToRobot.getY(),
-    // Constants.kNoteReleaseHeight));
-    //         var b = -2.0 * (d.getX() * vRobot.vxMetersPerSecond +
-    //                 d.getY() * vRobot.vyMetersPerSecond);
-    //         var c = d.getX() * d.getX() + d.getY() * d.getY() + d.getZ() * d.getZ();
-
-    //         var discriminant = b * b - 4.0 * a * c;
-    //         if (discriminant < 0.0) {
-    //             discriminant = 0.0;
-    //         }
-    //         var t = (-b - Math.sqrt(discriminant)) / (2.0 * a);
-    //         var shot = new Translation3d((d.getX() - vRobot.vxMetersPerSecond * t) / t,
-    //                 (d.getY() - vRobot.vyMetersPerSecond * t) / t,
-    //                 (d.getZ() / t));
-    //         robotToTargetRotation = new Rotation2d(shot.getX(), shot.getY());
-    //         var xyVel = Math.sqrt(shot.getX() * shot.getX() + shot.getY() * shot.getY());
-    //         pitchAngleRads = Math.atan2(shot.getZ(), xyVel);
-
-    //         boolean kUseGravityCompensation = true;
-    //         final double kG = -9.81;
-    //         if (kUseGravityCompensation) {
-    //             boolean kUseLiftCompensation = true;
-    //             var drop = 0.5 * t * t * kG;
-    //             if (kUseLiftCompensation) {
-    //                 // But, v here is (distance / t), so v^2 * t^2 just becomes distance^2, which
-    // // is
-    //                 // c.
-    //                 // That's neat, huh.
-    //                 drop += 0.5 * Constants.ShooterConstants.kRingLaunchLiftCoeff * c;
-    //             }
-    //             pitchAngleRads = Math.atan2((d.getZ() - drop) / t, xyVel);
-    //             vShot = Math.sqrt((d.getZ() - drop) * (d.getZ() - drop) / (t * t) + xyVel *
-    // xyVel);
-    //         }
-    //         launchSpeedMetersPerSec = vShot;
-    //         robotToTargetTranslation = d;
-    //     } else {
-    //         robotToTargetRotation = new Rotation2d(
-    //                 target.getX() - fieldToRobot.getX(),
-    //                 target.getY() - fieldToRobot.getY());
-    //         var differential_height = target.getZ() - Constants.kNoteReleaseHeight;
-    //         pitchAngleRads = Math.atan2(differential_height, distanceToTarget);
-    //         robotToTargetTranslation = new Translation3d(
-    //                 target.getX() - fieldToRobot.getX(),
-    //                 target.getY() - fieldToRobot.getY(), differential_height);
-    //     }
-    //     return makeSetpoint(robotState, robotToTargetRotation, robotToTargetTranslation,
-    // pitchAngleRads,
-    //             launchSpeedMetersPerSec);
-    // }
-
-    public double getShooterRPS() {
-        return shooterRPS;
+        // values for hood are placeholders rn since that depends on the lookup table
+        return new ShooterSetpoint(shooterRPM, getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
     }
 
-    public double getShooterStage1RPS() {
-        return handoffRPS;
+    private static ShooterSetpoint makeShuttlingSetpoint(
+            Translation3d robotToTargetTranslation, double launchSpeedMetersPerSec) {
+
+        var robotToTargetXY =
+                new Translation2d(robotToTargetTranslation.getX(), robotToTargetTranslation.getY());
+
+        var distanceToTarget = robotToTargetXY.getNorm();
+
+        // shooterRPS
+
+        boolean validSetpont = true;
+        double shooterRPM = ShooterConstants.kShootingRPM;
+
+        // values for hood are placeholders rn since that depends on the lookup table
+        return new ShooterSetpoint(shooterRPM, getPhi(distanceToTarget, 0), 0.0, validSetpont);
+    }
+
+    /**
+     * Predicts launch angle phi (radians) given distance and forward robot velocity.
+     *
+     * @param r distance to target (m)
+     * @param vf forward robot velocity (m/s)
+     * @return phi in radians
+     */
+    public static double getPhi(double r, double vf) {
+        return 1.3319077394113694
+                - 3.7917476957e-02 * r
+                + 6.5559211155e-02 * vf
+                + 9.1578107241e-04 * r * r
+                - 3.3448392435e-04 * r * vf
+                + 4.0252360850e-04 * vf * vf
+                - 5.5561511125e-05 * r * r * r
+                + 2.8140998785e-05 * r * r * vf
+                - 8.0052327056e-05 * r * vf * vf
+                + 3.8622151398e-05 * vf * vf * vf
+                - 1.3708875933e-06 * r * r * r * r
+                + 1.4983176335e-05 * r * r * r * vf
+                - 2.3428958040e-05 * r * r * vf * vf
+                + 1.8910264589e-05 * r * vf * vf * vf
+                - 4.4641776123e-06 * vf * vf * vf * vf;
+    }
+
+    /**
+     * Predicts azimuthal angle theta (radians) given distance and lateral robot velocity.
+     *
+     * @param r distance to target (m)
+     * @param vl lateral robot velocity (m/s)
+     * @return theta in radians
+     */
+    public static double getTheta(double r, double vl) {
+        return -1.8722509645831825e-06
+                - 7.3510622274e-06 * r
+                - 6.7834581637e-02 * vl
+                + 8.9871349979e-06 * r * r
+                - 2.2214896752e-05 * r * vl
+                + 4.8712473326e-07 * vl * vl
+                - 2.6831898409e-06 * r * r * r
+                + 1.4942965759e-05 * r * r * vl
+                - 2.8428821571e-07 * r * vl * vl
+                - 5.5109921945e-05 * vl * vl * vl
+                + 2.3075944928e-07 * r * r * r * r
+                - 2.4046620763e-06 * r * r * r * vl
+                + 3.7418622874e-08 * r * r * vl * vl
+                - 5.3380041757e-07 * r * vl * vl * vl
+                - 2.2116720819e-09 * vl * vl * vl * vl;
+    }
+
+    public double getShooterRPM() {
+        return shooterRPM;
+    }
+
+    public double getShooterStage1RPM() {
+        return handoffRPM;
     }
 
     public double getTurretRadiansFromCenter() {

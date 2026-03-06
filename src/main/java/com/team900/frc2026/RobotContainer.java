@@ -6,6 +6,9 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
+import com.team900.frc2026.factories.IntakeFactory;
+import com.team900.frc2026.factories.ShootingFactory;
+import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
 import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
@@ -40,11 +43,13 @@ import com.team900.lib.subsystems.SimCanCoderIO;
 import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import java.util.function.Consumer;
 import lombok.Getter;
@@ -200,6 +205,7 @@ public class RobotContainer {
 
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
 
+    @Getter
     private final DriveMaintainingHeadingCommand driveCommand =
             (new DriveMaintainingHeadingCommand(
                     this,
@@ -239,23 +245,21 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(driveCommand);
 
         // Intake pivot, l1 to retract and deploy intake
-        // driveController
-        //         .L1()
-        //         .onTrue(
-        //                 Commands.either(
-        //                         PivotFactory.retractSlapdown(this)
-        //                                 .andThen(new InstantCommand(() -> intakeDeployed =
-        // false)),
-        //                         PivotFactory.deploySlapdown(this)
-        //                                 .andThen(new InstantCommand(() -> intakeDeployed =
-        // true)),
-        //                         () -> intakeDeployed));
+        controlBoard
+                .toggleIntake()
+                .onTrue(
+                        Commands.either(
+                                IntakeFactory.retractSlapdown(this)
+                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
+                                IntakeFactory.deploySlapdown(this)
+                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
+                                () -> intakeDeployed));
 
-        // // Intake rollers, l2 to run rollers when held
-        // driveController.L2().whileTrue(RollerFactory.runIntake());
+        controlBoard.shoot().whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this));
 
-        // // Shooter, r2 held to spin up both shooter wheels, temp to test shooter
-        // driveController.R2().whileTrue(ShooterFactory.spinUp());
+        controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
+
+        controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

@@ -25,7 +25,7 @@ public class IntakePivotSubsystem
         setDefaultCommand(
                 motionMagicSetpointCommand(this::getPositionSetpointUnits)
                         .withName("Intake Pivot Hold Setpoint")
-                        .ignoringDisable(true));
+                        .ignoringDisable(false));
 
         cancoderIO.updateFrequency(500);
     }

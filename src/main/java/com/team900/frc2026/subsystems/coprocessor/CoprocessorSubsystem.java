@@ -2,11 +2,9 @@ package com.team900.frc2026.subsystems.coprocessor;
 
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
-import com.team900.lib.util.VirtualSubsystem;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team88.ros.bridge.BridgePublisher;
@@ -14,7 +12,6 @@ import frc.team88.ros.bridge.BridgeSubscriber;
 import frc.team88.ros.bridge.ROSNetworkTablesBridge;
 import frc.team88.ros.conversions.ROSConversions;
 import frc.team88.ros.messages.geometry_msgs.Pose;
-import frc.team88.ros.messages.geometry_msgs.Pose2D;
 import frc.team88.ros.messages.geometry_msgs.TransformStamped;
 import frc.team88.ros.messages.std_msgs.RosFloat64;
 import frc.team88.ros.messages.tf2_msgs.TFMessage;

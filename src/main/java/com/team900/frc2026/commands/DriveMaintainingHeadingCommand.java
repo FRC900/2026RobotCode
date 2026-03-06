@@ -6,6 +6,7 @@ import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.drive.DriveConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.lib.util.Util;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,6 +14,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import lombok.Getter;
+import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMaintainingHeadingCommand extends Command {
@@ -39,6 +42,7 @@ public class DriveMaintainingHeadingCommand extends Command {
     private final DoubleSupplier mStrafeSupplier;
     private final DoubleSupplier mTurnSupplier;
     private Optional<Rotation2d> mHeadingSetpoint = Optional.empty();
+    @Getter @Setter private boolean kAiming = false;
     private double mJoystickLastTouched = -1;
 
     private final PIDController thetaController =
@@ -90,28 +94,52 @@ public class DriveMaintainingHeadingCommand extends Command {
                 mHeadingSetpoint =
                         Optional.of(mRobotState.getLatestFieldToRobot().getValue().getRotation());
             }
+
             Logger.recordOutput("DriveMaintainHeading/throttleFieldFrame", throttleFieldFrame);
             Logger.recordOutput("DriveMaintainHeading/strafeFieldFrame", strafeFieldFrame);
             Logger.recordOutput("DriveMaintainHeading/mHeadingSetpoint", mHeadingSetpoint.get());
 
-            mDrivetrain.runVelocity(
-                    ChassisSpeeds.fromFieldRelativeSpeeds(
-                            throttleFieldFrame,
-                            strafeFieldFrame,
-                            thetaController.calculate(
-                                            mDrivetrain.getRotation().getRadians(),
-                                            mHeadingSetpoint.get().getRadians())
-                                    * DriveConstants.kDriveMaxAngularRate,
-                            mDrivetrain.getRotation()));
+            if (kAiming) {
 
-            Logger.recordOutput("DriveMaintainHeading/Mode", "Heading");
-            Logger.recordOutput(
-                    "DriveMaintainHeading/HeadingSetpoint", mHeadingSetpoint.get().getDegrees());
+                mHeadingSetpoint = Optional.of(mRobotState.getLatestRotationRobotToHub());
+
+                mDrivetrain.runVelocity(
+                        ChassisSpeeds.fromFieldRelativeSpeeds(
+                                throttleFieldFrame,
+                                strafeFieldFrame,
+                                thetaController.calculate(
+                                                mDrivetrain.getRotation().getRadians(),
+                                                mHeadingSetpoint.get().getRadians())
+                                        * DriveConstants.kDriveMaxAngularRate,
+                                mDrivetrain.getRotation()));
+            } else {
+                mDrivetrain.runVelocity(
+                        ChassisSpeeds.fromFieldRelativeSpeeds(
+                                throttleFieldFrame,
+                                strafeFieldFrame,
+                                thetaController.calculate(
+                                                mDrivetrain.getRotation().getRadians(),
+                                                mHeadingSetpoint.get().getRadians())
+                                        * DriveConstants.kDriveMaxAngularRate,
+                                mDrivetrain.getRotation()));
+
+                Logger.recordOutput("DriveMaintainHeading/Mode", "Heading");
+                Logger.recordOutput(
+                        "DriveMaintainHeading/HeadingSetpoint",
+                        mHeadingSetpoint.get().getDegrees());
+            }
         }
     }
 
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    public boolean isNearTarget() {
+        return MathUtil.isNear(
+                mHeadingSetpoint.get().getDegrees(),
+                mRobotContainer.getDriveSubsystem().getRotation().getDegrees(),
+                5);
     }
 }

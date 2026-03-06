@@ -30,8 +30,8 @@ shot_spin = 15.8 * 2*np.pi # rad/s
 fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
 r_vals  = np.linspace(0, 6.5, 26) # radial distance to target
-vf_vals = np.linspace(-10, 10, 40) # forward (radial) velocity
-vl_vals = np.linspace(-10, 10, 40) # lateral (tangential) velocity
+vf_vals = np.linspace(-5.5, 5.5, 22) # forward (radial) velocity
+vl_vals = np.linspace(-5.5, 5.5, 22) # lateral (tangential) velocity
 
 theta_surface = np.zeros((len(r_vals),
                           len(vf_vals),
@@ -102,7 +102,7 @@ for i, r in enumerate(r_vals):
                 runtime_counter = 0
 
 # save
-np.savez("clean_theta_phi_surface.npz",
+np.savez("ProjectileMotionSim/ShooterSurfaces/clean_theta_phi_surface.npz",
          r_vals=r_vals,
          vf_vals=vf_vals,
          vl_vals=vl_vals,
