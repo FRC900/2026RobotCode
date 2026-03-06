@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public class AutoFactory {
+public class AutoFactory900 {
 
     private static final RobotContainer container = RobotContainer.getInstance();
 
