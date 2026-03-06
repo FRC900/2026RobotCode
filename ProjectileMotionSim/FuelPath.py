@@ -38,28 +38,25 @@ for i in range(26):
     # display results 
     vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = fuel.trajectory(fuel_solver.vx+vx_robot, fuel_solver.vy+vy_robot, fuel_solver.vz+vz_robot, fuel_solver.omega, dt=0.01, stop_on_y=yt) # smaller dt=more refined approximation
 
-    # table = [
-    #     ["LM Time (ms)", 1000 * (end - start)],
-    #     ["Shot Speed (m/s)", fuel_solver.v_mag],
-    #     ["Shot vx (m/s)", fuel_solver.vx],
-    #     ["Shot vy (m/s)", fuel_solver.vy],
-    #     ["Shot vz (m/s)", fuel_solver.vz],
-    #     ["Shot Spin (rad/s)", fuel_solver.omega],
-    #     ["Total Speed (m/s)", fuel_solver.v_mag + v_mag_robot],
-    #     ["Total vx (m/s)", fuel_solver.vx + vx_robot],
-    #     ["Total vy (m/s)", fuel_solver.vy + vy_robot],
-    #     ["Total vz (m/s)", fuel_solver.vz + vz_robot],
-    #     ["Azimuthal Angle Theta (rad)", fuel_solver.theta],
-    #     ["Launch Angle, Phi (rad)", fuel_solver.phi],
-    #     ["Azimuthal Angle Theta (deg)", rad2deg(fuel_solver.theta)],
-    #     ["Launch Angle, Phi (deg)", rad2deg(fuel_solver.phi)],
-    #     ["Final X (m)", sx_list[-1]],
-    #     ["Final Y (m)", sy_list[-1]],
-    #     ["Final Z (m)", sz_list[-1]],
-    #     ["900 Hood Motor Rotations", angle_to_900_hood_rot(rad2deg(fuel_solver.phi), -6, 22, 75)]
-    # ]
+    table = [
+        ["LM Time (ms)", 1000 * (end - start)],
+        ["Shot Speed (m/s)", fuel_solver.v_mag],
+        ["Shot vx (m/s)", fuel_solver.vx],
+        ["Shot vy (m/s)", fuel_solver.vy],
+        ["Shot vz (m/s)", fuel_solver.vz],
+        ["Shot Spin (rad/s)", fuel_solver.omega],
+        ["Total Speed (m/s)", fuel_solver.v_mag + v_mag_robot],
+        ["Total vx (m/s)", fuel_solver.vx + vx_robot],
+        ["Total vy (m/s)", fuel_solver.vy + vy_robot],
+        ["Total vz (m/s)", fuel_solver.vz + vz_robot],
+        ["Azimuthal Angle Theta (rad)", fuel_solver.theta],
+        ["Launch Angle, Phi (rad)", fuel_solver.phi],
+        ["Azimuthal Angle Theta (deg)", rad2deg(fuel_solver.theta)],
+        ["Launch Angle, Phi (deg)", rad2deg(fuel_solver.phi)],
+        ["Final X (m)", sx_list[-1]],
+        ["Final Y (m)", sy_list[-1]],
+        ["Final Z (m)", sz_list[-1]],
+    ]
 
-    print(fuel_solver.phi)
-
-# print(tabulate(table, headers=["Parameter", "Value"], tablefmt="rounded_grid"))
-# fuel.plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list)
+print(tabulate(table, headers=["Parameter", "Value"], tablefmt="rounded_grid"))
+fuel.plot_solutions(vel_approx_tlist, vx_list, vy_list, vz_list, pos_approx_tlist, sx_list, sy_list, sz_list)
