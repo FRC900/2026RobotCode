@@ -7,6 +7,8 @@
 
 package com.team900.frc2026.subsystems.vision;
 
+import com.team900.frc2026.RobotState;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -18,15 +20,7 @@ public class VisionConstants {
 
   // Camera names, must match names configured on coprocessor
   public static String camera0Name = "Turret_Camera";
-
-  // Robot to camera transforms
-  // (Not used by Limelight, configure in web UI instead)
-  public static Transform3d robotToCamera0 =
-      new Transform3d(
-          Units.inchesToMeters(-4),
-          0,
-          Units.inchesToMeters(6.25),
-          new Rotation3d(0.0, Units.degreesToRadians(-21.25), 0.0));
+      
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
@@ -54,6 +48,8 @@ public class VisionConstants {
     public static final double kCameraTPitchDegrees = 20.0;
     public static final double kCameraTPitchRads = Units.degreesToRadians(kCameraTPitchDegrees);
     public static final double kCameraTHeightOffGroundMeters = Units.inchesToMeters(8.3787);
+      public static Transform3d robotToCamera0 = new Transform3d(RobotState.getInstance().getTurretToCamera().getX(), RobotState.getInstance().getTurretToCamera().getY(), kCameraTHeightOffGroundMeters, new Rotation3d(0,0, 180));
+
     public static final String kROSTTableName = "limelight-turret";
     public static final double kRobotToCameraTForward = Units.inchesToMeters(7.8757);
     public static final double kRobotToCameraTSide = Units.inchesToMeters(11.9269);
