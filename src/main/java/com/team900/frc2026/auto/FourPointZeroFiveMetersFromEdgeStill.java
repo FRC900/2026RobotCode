@@ -6,13 +6,10 @@ import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.factories.AutoFactory900;
-import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.lib.util.ShooterSetpoint;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -71,13 +68,10 @@ public class FourPointZeroFiveMetersFromEdgeStill {
                         Commands.sequence(
                                 path.resetOdometry(),
                                 AutoFactory900.resetHood(container),
-                                
                                 path.cmd(),
                                 AutoFactory900.waitSeconds(2),
                                 AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
-                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)
-                        )
-                ); 
+                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)));
 
         // for FourPointZeroFiveMetersFromEdgeToCenter
         // routine.active()
@@ -88,18 +82,20 @@ public class FourPointZeroFiveMetersFromEdgeStill {
         //                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0)
         //                                 .withTimeout(1.0),
 
-        //                         AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
+        //
+        // AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
         //                         AutoFactory900.stopShoot(ShooterSetpoint::setpointHub) //,
         //                         // Commands.parallel(
         //                         //         path.cmd(),
         //                         //         AutoFactory900.deploySlapdownAndRunIntake(container)),
         //                         // AutoFactory900.retractSlapdown()
         //                 )
-        //         ); 
-        
+        //         );
+
         // for sim
         // // routine.active()
-        // //         .onTrue(Commands.sequence(path.resetOdometry(), Commands.parallel(path.cmd())));
+        // //         .onTrue(Commands.sequence(path.resetOdometry(),
+        // Commands.parallel(path.cmd())));
 
         return routine.cmd();
     }
