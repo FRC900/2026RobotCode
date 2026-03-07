@@ -275,9 +275,9 @@ public class RobotContainer {
                 .onTrue(
                         Commands.either(
                                 IntakeFactory.retractSlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
+                                        .beforeStarting(() -> intakeDeployed = false),
                                 IntakeFactory.deploySlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
+                                        .beforeStarting(() -> intakeDeployed = true),
                                 () -> intakeDeployed));
 
         controlBoard
