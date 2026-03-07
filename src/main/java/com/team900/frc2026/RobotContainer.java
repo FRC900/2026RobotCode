@@ -193,17 +193,17 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(driveSubsystem);
-
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
-            new Consumer<VisionFieldPoseEstimate>() {
-                @Override
-                public void accept(VisionFieldPoseEstimate estimate) {
-                    driveSubsystem.addVisionMeasurement(estimate);
-                }
-            };
-
+    new Consumer<VisionFieldPoseEstimate>() {
+        @Override
+        public void accept(VisionFieldPoseEstimate estimate) {
+            driveSubsystem.addVisionMeasurement(estimate);
+        }
+    };
+    
     private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
+
+    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(robotState);
 
     @Getter
     private final DriveMaintainingHeadingCommand driveCommand =
