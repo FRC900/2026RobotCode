@@ -5,8 +5,6 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import com.team900.frc2026.RobotContainer;
-import com.team900.frc2026.factories.AutoFactory900;
-import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -72,11 +70,7 @@ public class FourPointZeroFiveMetersFromEdgeAutoToCenter {
                                 //         .withTimeout(1.0),
                                 // AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
                                 // AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
-                                Commands.parallel(
-                                        path.cmd()
-                                )
-                        ) 
-                );
+                                Commands.parallel(path.cmd())));
 
         return routine.cmd();
     }
