@@ -83,9 +83,9 @@ public class ShooterConstants {
     }
 
     public static final double kShooterGearRatio = 1;
-    public static final double kIdleRPM = 2000;
-    public static final double kShootingRPM = 3500;
-    public static final double kFeedingRPM = 5500;
+    public static final double kIdleRPS = 1200 /60;
+    public static final double kShootingRPS = 3500 /60;
+    public static final double kFeedingRPS = 5500 /60;
     public static final Rotation2d kTurretToShotCorrection =
             Rotation2d.fromRadians(Units.degreesToRadians(0));
 

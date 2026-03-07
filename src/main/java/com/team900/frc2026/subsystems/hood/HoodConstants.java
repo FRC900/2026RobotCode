@@ -14,7 +14,7 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
-        // position voltage
+    // position voltage
     public static final Gains COMP_GAINS = new Gains(150, 0, 15, 0.37, 100, 0, 0);
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 

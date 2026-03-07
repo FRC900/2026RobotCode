@@ -310,6 +310,7 @@ public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends Moto
             DoubleSupplier setpoint,
             Supplier<MotionMagicConfigs> configSupplier,
             double tolerance) {
+                System.out.println("toggle intake");
         return motionMagicSetpointCommandBlocking(setpoint, configSupplier, tolerance, 0);
     }
 

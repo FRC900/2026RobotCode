@@ -12,8 +12,8 @@ public class ShooterSetpoint {
 
     public static Optional<Double> overrideRPS = Optional.empty();
 
-    private double shooterRPM;
-    private double handoffRPM = 5000;
+    private double shooterRPS;
+    private double handoffRPS = 5000;
     private double turretRadiansFromCenter;
     private double turretFF;
     private double hoodRadians;
@@ -21,14 +21,14 @@ public class ShooterSetpoint {
     private boolean isValid;
 
     public ShooterSetpoint(double shooterRPS, double hoodRadians, double hoodFF, boolean isValid) {
-        this.shooterRPM = shooterRPS;
+        this.shooterRPS = shooterRPS;
         this.hoodRadians = hoodRadians;
         this.hoodFF = hoodFF;
         this.isValid = isValid;
     }
 
     public ShooterSetpoint(double shooterRPS, double hoodRadians, double hoodFF) {
-        this.shooterRPM = shooterRPS;
+        this.shooterRPS = shooterRPS;
         this.hoodRadians = hoodRadians;
         this.hoodFF = hoodFF;
         this.isValid = true;
@@ -57,16 +57,16 @@ public class ShooterSetpoint {
 
         var distanceToTarget = robotToTargetXY.getNorm();
 
-    //     var tangent = targetFrameToRobot.getY();
-    //     var angular = robotSpeeds.omegaRadiansPerSecond;
-    //     var distanceToTarget = robotToTargetXY.getNorm();
-    //     var turretFF = -(angular + tangent / distanceToTarget);
+        //     var tangent = targetFrameToRobot.getY();
+        //     var angular = robotSpeeds.omegaRadiansPerSecond;
+        //     var distanceToTarget = robotToTargetXY.getNorm();
+        //     var turretFF = -(angular + tangent / distanceToTarget);
 
         boolean validSetpont = true;
-        double shooterRPM = ShooterConstants.kShootingRPM;
+        double shooterRPS = ShooterConstants.kShootingRPS;
 
         // values for hood are placeholders rn since that depends on the lookup table
-        return new ShooterSetpoint(shooterRPM, getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
+        return new ShooterSetpoint(shooterRPS, getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
     }
 
     private static ShooterSetpoint makeShuttlingSetpoint(
@@ -80,10 +80,10 @@ public class ShooterSetpoint {
         // shooterRPS
 
         boolean validSetpont = true;
-        double shooterRPM = ShooterConstants.kShootingRPM;
+        double shooterRPS = ShooterConstants.kShootingRPS;
 
         // values for hood are placeholders rn since that depends on the lookup table
-        return new ShooterSetpoint(shooterRPM, getPhi(distanceToTarget, 0), 0.0, validSetpont);
+        return new ShooterSetpoint(shooterRPS, getPhi(distanceToTarget, 0), 0.0, validSetpont);
     }
 
     /**
@@ -136,12 +136,12 @@ public class ShooterSetpoint {
                 - 2.2116720819e-09 * vl * vl * vl * vl;
     }
 
-    public double getShooterRPM() {
-        return shooterRPM;
+    public double getShooterRPS() {
+        return shooterRPS;
     }
 
-    public double getShooterStage1RPM() {
-        return handoffRPM;
+    public double getShooterStage1RPS() {
+        return handoffRPS;
     }
 
     public double getTurretRadiansFromCenter() {

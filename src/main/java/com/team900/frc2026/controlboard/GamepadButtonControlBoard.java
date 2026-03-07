@@ -24,7 +24,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     @SuppressWarnings("unused")
     private GamepadButtonControlBoard() {
         if (Robot.isSimulation()) {
-            controller = new CommandSimPS5Controller(Constants.kDriveGamepadPort);
+            controller = new CommandPS5Controller(Constants.kDriveGamepadPort);
         } else {
             controller = new CommandPS5Controller(Constants.kDriveGamepadPort);
         }

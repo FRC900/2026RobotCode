@@ -4,7 +4,6 @@
 
 package com.team900.frc2026;
 
-import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.IntakeFactory;
@@ -280,11 +279,11 @@ public class RobotContainer {
         return false;
     }
 
-    private final AutoDashboard autoDashboard = new AutoDashboard();
+    // private final AutoDashboard autoDashboard = new AutoDashboard();
 
-    public Command getAutonomousCommand() {
-        return autoDashboard.getSelectedAuto();
-    }
+    // public Command getAutonomousCommand() {
+    //     return autoDashboard.getSelectedAuto();
+    // }
 
     public static synchronized RobotContainer getInstance() {
         if (instance == null) {
