@@ -266,7 +266,7 @@ public class RobotContainer {
         controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
 
         controlBoard.intake().onTrue(new ParallelCommandGroup(SpindexerFactory.runSpindexer(this), HandoffFactory.runHandoff(this), ShooterFactory.setShooterRPM(20, this)));
-    }
+       }
 
     public boolean odometryCloseToPose(Pose2d pose) {
         Pose2d fieldToRobot = robotState.getLatestFieldToRobot().getValue();
