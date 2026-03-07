@@ -43,8 +43,7 @@ public class AutoFactory900 {
         return new ParallelCommandGroup(
                 ShooterFactory.setShooterRPS(setpointSupplier, container),
                 SpindexerFactory.runSpindexer(container),
-                HandoffFactory.runHandoff(container),
-                SpindexerFactory.runSpindexer(container));
+                HandoffFactory.runHandoff(container));
     }
 
     public static Command stopShoot(Supplier<ShooterSetpoint> setpointSupplier) {
