@@ -38,7 +38,7 @@ public class Robot extends LoggedRobot {
 
     private final RobotContainer robotContainer;
     private int mIter = 0;
-    private Command autonomousCommand = Commands.none();
+    private Command autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
     private Optional<Pose2d> startingPose = Optional.empty();
 
     private double lastTimestampNotValid = 0;
