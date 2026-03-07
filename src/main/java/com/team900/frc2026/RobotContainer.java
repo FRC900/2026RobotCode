@@ -4,6 +4,7 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
@@ -50,6 +51,7 @@ import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -236,10 +238,13 @@ public class RobotContainer {
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
 
     private RobotContainer() {
+        instance = this;
+
         if (Robot.isSimulation()) {
             assert this.simulatedRobotState != null;
             this.simulatedRobotState.init();
         }
+        autoDashboard = new AutoDashboard();
         configureBindings();
     }
 
@@ -292,11 +297,11 @@ public class RobotContainer {
         return false;
     }
 
-    // private final AutoDashboard autoDashboard = new AutoDashboard();
+    private final AutoDashboard autoDashboard;
 
-    // public Command getAutonomousCommand() {
-    //     return autoDashboard.getSelectedAuto();
-    // }
+    public Command getAutonomousCommand() {
+        return autoDashboard.getSelectedAuto();
+    }
 
     public static synchronized RobotContainer getInstance() {
         if (instance == null) {
