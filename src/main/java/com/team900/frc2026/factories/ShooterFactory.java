@@ -15,17 +15,17 @@ public class ShooterFactory {
     /* Commands for shooting */
 
     public static Command idle(RobotContainer container) {
-        return container.getShooterSubsystem().setTorqueCurrentFOC(() -> ShooterConstants.kIdleRPM);
+        return container.getShooterSubsystem().velocitySetpointCommand(() -> ShooterConstants.kIdleRPS);
     }
 
-    public static Command setShooterRPM(double rpm, RobotContainer container) {
-        return container.getShooterSubsystem().velocitySetpointCommand(() -> rpm);
+    public static Command setShooterRPS(double RPS, RobotContainer container) {
+        return container.getShooterSubsystem().velocitySetpointCommand(() -> RPS);
     }
 
-    public static Command setShooterRPM(
+    public static Command setShooterRPS(
             Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container) {
         return container
                 .getShooterSubsystem()
-                .velocitySetpointCommand(setpointSupplier.get()::getShooterRPM);
+                .velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
     }
 }

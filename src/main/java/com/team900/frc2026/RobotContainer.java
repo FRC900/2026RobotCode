@@ -260,7 +260,8 @@ public class RobotContainer {
                                         .andThen(new InstantCommand(() -> intakeDeployed = true)),
                                 () -> intakeDeployed));
 
-        controlBoard.shoot().whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this));
+        controlBoard.shoot().whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this)).onFalse(new ParallelCommandGroup(ShooterFactory.setShooterRPS(ShooterConstants.kIdleRPS, this),
+                        new InstantCommand(() -> getDriveCommand().setKAiming(false))));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
@@ -272,7 +273,7 @@ public class RobotContainer {
                         new ParallelCommandGroup(
                                 SpindexerFactory.runSpindexer(this),
                                 HandoffFactory.runHandoff(this),
-                                ShooterFactory.setShooterRPM(20, this)));
+                                ShooterFactory.setShooterRPS(20, this)));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

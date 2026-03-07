@@ -19,6 +19,6 @@ public class ShootingFactory {
                                         IntakeFactory.runIntake(container),
                                         HandoffFactory.runHandoff(container),
                                         SpindexerFactory.runSpindexer(container))
-                                .onlyIf(container.getDriveCommand()::isNearTarget));
+                                .onlyWhile(container.getDriveCommand()::isNearTarget));
     }
 }
