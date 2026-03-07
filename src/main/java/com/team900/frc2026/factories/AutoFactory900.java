@@ -32,7 +32,7 @@ public class AutoFactory900 {
 
     public static Command retractSlapdown() {
         return new ParallelCommandGroup(
-                IntakeFactory.retractSlapdown(container), IntakeFactory.exhaustIntake(container));
+                IntakeFactory.retractSlapdown(container), IntakeFactory.stopIntake(container));
     }
 
     public static Command runIntake() {
@@ -49,8 +49,8 @@ public class AutoFactory900 {
 
     public static Command stopShoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                SpindexerFactory.exhaustSpindexer(container),
-                HandoffFactory.exhaustHandoff(container),
+                SpindexerFactory.stopSpindexer(container),
+                HandoffFactory.stopHandoff(container),
                 ShooterFactory.setShooterRPS(0, container),
                 HoodFactory.aimHoodToPose(setpointSupplier, container));
     }

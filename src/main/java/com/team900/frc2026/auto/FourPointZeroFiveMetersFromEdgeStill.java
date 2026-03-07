@@ -5,14 +5,19 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import com.team900.frc2026.RobotContainer;
+import com.team900.frc2026.factories.AutoFactory900;
+import com.team900.frc2026.subsystems.hood.HoodConstants;
+import com.team900.lib.util.ShooterSetpoint;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-public class FourPointZeroFiveMetersFromEdgeAutoToCenter {
+public class FourPointZeroFiveMetersFromEdgeStill {
     private static final double kTranslationP = 5.0;
     private static final double kRotationP = 5.0;
 
@@ -58,9 +63,23 @@ public class FourPointZeroFiveMetersFromEdgeAutoToCenter {
                         DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                         container.getDriveSubsystem());
 
-        AutoRoutine routine = choreoFactory.newRoutine("FourPointZeroFiveMetersFromEdgeToCenter");
-        AutoTrajectory path = routine.trajectory("FourPointZeroFiveMetersFromEdgeToCenter");
+        AutoRoutine routine = choreoFactory.newRoutine("FourPointZeroFiveMetersFromEdgeStill");
+        AutoTrajectory path = routine.trajectory("FourPointZeroFiveMetersFromEdgeStill");
 
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                path.resetOdometry(),
+                                AutoFactory900.resetHood(container),
+                                
+                                path.cmd(),
+                                AutoFactory900.waitSeconds(2),
+                                AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
+                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)
+                        )
+                ); 
+
+        // for FourPointZeroFiveMetersFromEdgeToCenter
         // routine.active()
         //         .onTrue(
         //                 Commands.sequence(
@@ -68,18 +87,19 @@ public class FourPointZeroFiveMetersFromEdgeAutoToCenter {
         //                         AutoFactory900.resetHood(container),
         //                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0)
         //                                 .withTimeout(1.0),
-        //
-        // AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
-        //                         AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
-        //                         Commands.parallel(
-        //                                 path.cmd(),
-        //                                 AutoFactory900.deploySlapdownAndRunIntake(container)),
-        //                         AutoFactory900.retractSlapdown()
-        //                 )
-        //         );
 
-        routine.active()
-                .onTrue(Commands.sequence(path.resetOdometry(), Commands.parallel(path.cmd())));
+        //                         AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
+        //                         AutoFactory900.stopShoot(ShooterSetpoint::setpointHub) //,
+        //                         // Commands.parallel(
+        //                         //         path.cmd(),
+        //                         //         AutoFactory900.deploySlapdownAndRunIntake(container)),
+        //                         // AutoFactory900.retractSlapdown()
+        //                 )
+        //         ); 
+        
+        // for sim
+        // // routine.active()
+        // //         .onTrue(Commands.sequence(path.resetOdometry(), Commands.parallel(path.cmd())));
 
         return routine.cmd();
     }
