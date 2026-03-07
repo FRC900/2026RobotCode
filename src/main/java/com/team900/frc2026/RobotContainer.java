@@ -217,13 +217,11 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    //     @Getter
-    //     private final CoprocessorSubsystem coprocessorSubsystem =
-    //             new CoprocessorSubsystem(driveSubsystem);
-
     private final RobotState robotState = RobotState.getInstance();
 
     @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
+
+    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(robotState);
 
     @Getter
     private final DriveMaintainingHeadingCommand driveCommand =
