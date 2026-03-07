@@ -260,8 +260,10 @@ public class RobotContainer {
                                         .andThen(new InstantCommand(() -> intakeDeployed = true)),
                                 () -> intakeDeployed));
 
-        controlBoard.shoot().whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this)).onFalse(new ParallelCommandGroup(ShooterFactory.setShooterRPS(ShooterConstants.kIdleRPS, this),
-                        new InstantCommand(() -> getDriveCommand().setKAiming(false))));
+        controlBoard.shoot().onTrue(new ParallelCommandGroup(ShooterFactory.setShooterRPS(20, this), HandoffFactory.runHandoff(this), SpindexerFactory.runSpindexer(this))).onFalse(new ParallelCommandGroup(ShooterFactory.setShooterRPS(0, this), SpindexerFactory.stopSpindexer(this), HandoffFactory.stopHandoff(this)) );
+        
+        // whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this)).onFalse(new ParallelCommandGroup(ShooterFactory.setShooterRPS(ShooterConstants.kIdleRPS, this),
+        //                 new InstantCommand(() -> getDriveCommand().setKAiming(false))));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
@@ -270,10 +272,8 @@ public class RobotContainer {
         controlBoard
                 .intake()
                 .onTrue(
-                        new ParallelCommandGroup(
-                                SpindexerFactory.runSpindexer(this),
-                                HandoffFactory.runHandoff(this),
-                                ShooterFactory.setShooterRPS(20, this)));
+                        new ParallelCommandGroup( 
+                                IntakeFactory.runIntake(this))).onFalse(IntakeFactory.stopIntake(this));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

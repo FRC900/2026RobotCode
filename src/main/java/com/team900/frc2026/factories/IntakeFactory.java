@@ -19,6 +19,10 @@ public class IntakeFactory {
                 .voltageCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
 
+    public static Command stopIntake(RobotContainer container) {
+        return container.getIntakeRollerSubsystem().voltageCommand(() -> 0);
+    }
+
     public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
