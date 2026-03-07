@@ -60,8 +60,8 @@ public class C_Center {
                         DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                         container.getDriveSubsystem());
 
-        AutoRoutine routine = choreoFactory.newRoutine("FourPointZeroFiveMetersFromEdgeStill");
-        AutoTrajectory path = routine.trajectory("FourPointZeroFiveMetersFromEdgeStill");
+        AutoRoutine routine = choreoFactory.newRoutine("C_Center");
+        AutoTrajectory path = routine.trajectory("C_Center");
         
         routine.active()
                 .onTrue(
