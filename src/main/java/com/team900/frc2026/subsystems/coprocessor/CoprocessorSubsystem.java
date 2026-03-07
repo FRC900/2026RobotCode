@@ -2,8 +2,6 @@ package com.team900.frc2026.subsystems.coprocessor;
 
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
-import com.team900.frc2026.subsystems.drive.DriveSubsystem;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -22,14 +20,11 @@ import frc.team88.ros.messages.geometry_msgs.TransformStamped;
 import frc.team88.ros.messages.geometry_msgs.Twist;
 import frc.team88.ros.messages.geometry_msgs.TwistWithCovariance;
 import frc.team88.ros.messages.geometry_msgs.Vector3;
+import frc.team88.ros.messages.nav_msgs.Odometry;
 import frc.team88.ros.messages.std_msgs.RosFloat64;
 import frc.team88.ros.messages.std_msgs.RosHeader;
 import frc.team88.ros.messages.tf2_msgs.TFMessage;
-import frc.team88.ros.messages.nav_msgs.Odometry;
-
 import java.util.Optional;
-
-import org.jetbrains.bio.npy.NpyFile.Header;
 
 public class CoprocessorSubsystem extends SubsystemBase {
     private final RobotState m_robotState;
@@ -49,23 +44,30 @@ public class CoprocessorSubsystem extends SubsystemBase {
     public static final String BASE_FRAME = "base_link";
 
     // this is ROS Odometry, not wpi
-    private final Odometry m_odomMsg = new Odometry(new RosHeader(0, new TimePrimitive(), ODOM_FRAME), BASE_FRAME,
-        new PoseWithCovariance(new Pose(new Point(0, 0, 0), new Quaternion(0, 0, 0, 1)), new Double[] {
-                5e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 5e-4, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 5e-4, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 5e-4, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 5e-4, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 5e-4
-        }),
-        new TwistWithCovariance(new Twist(new Vector3(0, 0, 0), new Vector3(0, 0, 0)), new Double[] {
-                1e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 1e-4, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 1e-4, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 1e-4, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 1e-4, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 1e-4
-        }));
+    private final Odometry m_odomMsg =
+            new Odometry(
+                    new RosHeader(0, new TimePrimitive(), ODOM_FRAME),
+                    BASE_FRAME,
+                    new PoseWithCovariance(
+                            new Pose(new Point(0, 0, 0), new Quaternion(0, 0, 0, 1)),
+                            new Double[] {
+                                5e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 5e-4, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 5e-4, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 5e-4, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 5e-4, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0.0, 5e-4
+                            }),
+                    new TwistWithCovariance(
+                            new Twist(new Vector3(0, 0, 0), new Vector3(0, 0, 0)),
+                            new Double[] {
+                                1e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 1e-4, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 1e-4, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 1e-4, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 1e-4, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0.0, 1e-4
+                            }));
 
     public CoprocessorSubsystem(RobotState robotState) {
         long updateDelay = 20;
@@ -73,12 +75,12 @@ public class CoprocessorSubsystem extends SubsystemBase {
         instance.startServer();
 
         m_ros_interface = new ROSNetworkTablesBridge(instance.getTable(""), updateDelay);
-        
+
         m_robotState = robotState;
 
         m_odomPub = new BridgePublisher<>(m_ros_interface, "/wpi_odom");
         m_pingReturnPub = new BridgePublisher<>(m_ros_interface, "/ping_return");
-        
+
         m_pingSendSub = new BridgeSubscriber<>(m_ros_interface, "/ping_send", RosFloat64.class);
         m_vid0TagsSub =
                 new BridgeSubscriber<>(
@@ -133,16 +135,23 @@ public class CoprocessorSubsystem extends SubsystemBase {
             }
         }
     }
+
     private void sendOdom() {
         Pose2d pose = m_robotState.getLatestFieldToRobot().getValue();
         ChassisSpeeds velocity = m_robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
-        
+
         m_odomMsg.setHeader(m_odomPub.getHeader(ODOM_FRAME));
         m_odomMsg.getPose().setPose(ROSConversions.wpiToRosPose(new Pose3d(pose)));
-        m_odomMsg.getTwist().getTwist()
-        .setLinear(new Vector3(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond, 0.0));
-        m_odomMsg.getTwist().getTwist().setAngular(new Vector3(0.0, 0.0, velocity.omegaRadiansPerSecond));
-        
+        m_odomMsg
+                .getTwist()
+                .getTwist()
+                .setLinear(
+                        new Vector3(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond, 0.0));
+        m_odomMsg
+                .getTwist()
+                .getTwist()
+                .setAngular(new Vector3(0.0, 0.0, velocity.omegaRadiansPerSecond));
+
         m_odomPub.send(m_odomMsg);
     }
 

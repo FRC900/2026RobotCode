@@ -21,11 +21,11 @@ public class IntakePivotSubsystem
                 motorIO,
                 new CanCoderInputsAutoLogged(),
                 cancoderIO);
-
+        this.setMotionMagicConfigCommand(IntakePivotConstants.kIntakePivotMotionMagicConfigs);
         setDefaultCommand(
                 motionMagicSetpointCommand(this::getPositionSetpointUnits)
                         .withName("Intake Pivot Hold Setpoint")
-                        .ignoringDisable(false));
+                        .ignoringDisable(true));
 
         cancoderIO.updateFrequency(500);
     }

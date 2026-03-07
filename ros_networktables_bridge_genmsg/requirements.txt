@@ -1,0 +1,16 @@
+--extra-index-url https://rospypi.github.io/simple/
+actionlib-msgs
+diagnostic-msgs
+geometry-msgs
+nav-msgs
+std-msgs
+sensor-msgs
+shape-msgs
+stereo-msgs
+trajectory-msgs
+visualization-msgs
+tf2-msgs
+
+rospy
+rospy-builder
+genpy

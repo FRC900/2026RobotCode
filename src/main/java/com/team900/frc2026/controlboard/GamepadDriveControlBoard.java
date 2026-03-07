@@ -53,6 +53,6 @@ public class GamepadDriveControlBoard implements IDriveControlBoard {
 
     @Override
     public Trigger resetGyro() {
-        return controller.create().and(controller.options().negate());
+        return controller.cross();
     }
 }

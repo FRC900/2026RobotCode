@@ -12,6 +12,10 @@ public class HandoffFactory {
                 .dutyCycleCommand(() -> HandoffConstants.kHandoffDutyCycle);
     }
 
+    public static Command stopHandoff(RobotContainer container) {
+        return container.getHandoffSubsystem().dutyCycleCommand(() -> 0);
+    }
+
     public static Command exhaustHandoff(RobotContainer container) {
         return container
                 .getHandoffSubsystem()

@@ -16,16 +16,13 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 public class IntakePivotConstants {
     // Intake radians will be measured from horizontal to avoid confusion where positive direction
     // is up
-    public static final double kIntakePivotMinRadians = 0.0;
-    public static final double kIntakePivotMaxRadians = 0.0;
     public static final double kIntakePivotToleranceRadians = 0.1;
-    public static final double kIntakePivotStowRadians = 0.0;
-    public static final double kIntakePivotDeployRadians = Math.PI / 4;
+    public static final double kIntakePivotStow = 0.242;
+    public static final double kIntakePivotDeploy = 0;
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-    public static final Gains COMP_GAINS = new Gains(30, 0, 
-    0, 0, 1, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(30, 0, 0, 0, 1, 0, 0);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
@@ -93,10 +90,9 @@ public class IntakePivotConstants {
     }
 
     public static MotionMagicConfigs kIntakePivotMotionMagicConfigs = new MotionMagicConfigs();
-    
+
     static {
         kIntakePivotMotionMagicConfigs.MotionMagicAcceleration = 0.7;
-        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity =1;
-
+        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity = 1;
     }
 }

@@ -53,12 +53,12 @@ def fit_surfaces(npz_path, poly_degree=4):
     print(f"theta R2 = {r2_theta:.6f} (inputs: vf, vl)")
     return phi_model, theta_model
 
-phi_model, theta_model = fit_surfaces('ProjectileMotionSim/PassingSurfaces/clean_theta_phi_surface.npz')
+phi_model, theta_model = fit_surfaces('ProjectileMotionSim/PassingSurfaces/clean_theta_phi_passing_surface.npz')
 
-with open('ProjectileMotionSim/PassingSurfaces/models/phi_model.pkl', 'wb') as f:
+with open('ProjectileMotionSim/PassingSurfaces/models/phi_passing_model.pkl', 'wb') as f:
     pickle.dump(phi_model, f)
 
-with open('ProjectileMotionSim/PassingSurfaces/models/theta_model.pkl', 'wb') as f:
+with open('ProjectileMotionSim/PassingSurfaces/models/theta_passing_model.pkl', 'wb') as f:
     pickle.dump(theta_model, f)
 
 def export_model(model, path):

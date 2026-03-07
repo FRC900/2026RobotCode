@@ -11,7 +11,7 @@ public class ShootingFactory {
     public static Command shoot(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return new ParallelCommandGroup(
-                        ShooterFactory.setShooterRPM(setPointSupplier, container),
+                        ShooterFactory.setShooterRPS(setPointSupplier, container),
                         SuperstructureFactory.aim(setPointSupplier, container),
                         IntakeFactory.deploySlapdown(container))
                 .andThen(
@@ -19,6 +19,6 @@ public class ShootingFactory {
                                         IntakeFactory.runIntake(container),
                                         HandoffFactory.runHandoff(container),
                                         SpindexerFactory.runSpindexer(container))
-                                .onlyIf(container.getDriveCommand()::isNearTarget));
+                                .onlyWhile(container.getDriveCommand()::isNearTarget));
     }
 }
