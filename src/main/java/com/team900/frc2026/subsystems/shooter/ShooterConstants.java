@@ -18,11 +18,11 @@ public class ShooterConstants {
             new ServoMotorSubsystemWithFollowersConfig();
     public static final FollowerConfig kShooterLeftConfig = new FollowerConfig();
 
-    public static final Gains gains = new Gains(0.5, 0, 0, 0.349609375, 0.11, 0, 0);
+    public static final Gains gains = new Gains(0.4, 0, 0, 0.28, 0.115, 0, 0);
 
     static {
         kShooterConfig.name = "Shooter Right";
-        kShooterConfig.talonCANID = new CANDeviceId(40, Constants.kCanBusCanivoreMech);
+        kShooterConfig.talonCANID = new CANDeviceId(55, Constants.kCanBusCanivoreMech);
         kShooterConfig.unitToRotorRatio = 1;
 
         kShooterConfig.momentOfInertia = 0.0011720789;
@@ -38,6 +38,8 @@ public class ShooterConstants {
         kShooterConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kShooterConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+        kShooterConfig.fxConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.05;
+
         kShooterConfig.fxConfig.TorqueCurrent.PeakForwardTorqueCurrent = 150;
         kShooterConfig.fxConfig.TorqueCurrent.PeakReverseTorqueCurrent = -150;
 
@@ -52,7 +54,7 @@ public class ShooterConstants {
         kShooterLeftConfig.config.name = "Shooter Left";
         kShooterLeftConfig.inverted = true;
         kShooterLeftConfig.config.momentOfInertia = 0.0011720789;
-        kShooterLeftConfig.config.talonCANID = new CANDeviceId(41, new CANBus("mech"));
+        kShooterLeftConfig.config.talonCANID = new CANDeviceId(56, new CANBus("mech"));
         kShooterLeftConfig.config.unitToRotorRatio = 1;
 
         kShooterLeftConfig.config.fxConfig.Slot0.kA = gains.ffkA();

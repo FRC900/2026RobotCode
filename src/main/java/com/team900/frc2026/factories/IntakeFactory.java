@@ -10,30 +10,28 @@ public class IntakeFactory {
     public static Command runIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
-                .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
+                .voltageCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
 
     public static Command exhaustIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
-                .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
+                .voltageCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
 
     public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotStowRadians,
-                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs,
-                        IntakePivotConstants.kIntakePivotToleranceRadians);
+                .motionMagicSetpointCommand(
+                        () -> IntakePivotConstants.kIntakePivotDeploy,
+                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs);
     }
 
     public static Command retractSlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotStowRadians,
-                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs,
-                        IntakePivotConstants.kIntakePivotToleranceRadians);
+                .motionMagicSetpointCommand(
+                        () -> IntakePivotConstants.kIntakePivotStow,
+                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs);
     }
 }

@@ -6,8 +6,11 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
+import com.team900.frc2026.factories.HandoffFactory;
 import com.team900.frc2026.factories.IntakeFactory;
+import com.team900.frc2026.factories.ShooterFactory;
 import com.team900.frc2026.factories.ShootingFactory;
+import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
 import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
@@ -47,9 +50,9 @@ import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import java.util.function.Consumer;
 import lombok.Getter;
@@ -193,7 +196,9 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem();
+    @Getter
+    private final CoprocessorSubsystem coprocessorSubsystem =
+            new CoprocessorSubsystem(driveSubsystem);
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
@@ -220,7 +225,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -260,6 +265,14 @@ public class RobotContainer {
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
         controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
+
+        controlBoard
+                .intake()
+                .onTrue(
+                        new ParallelCommandGroup(
+                                SpindexerFactory.runSpindexer(this),
+                                HandoffFactory.runHandoff(this),
+                                ShooterFactory.setShooterRPM(20, this)));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

@@ -104,7 +104,7 @@ for i, r in enumerate(r_vals):
                 runtime_counter = 0
 
 # save
-np.savez("ProjectileMotionSim/PassingSurfaces/clean_theta_phi_surface.npz",
+np.savez("ProjectileMotionSim/PassingSurfaces/clean_theta_phi_passing_surface.npz",
          r_vals=r_vals,
          vf_vals=vf_vals,
          vl_vals=vl_vals,
