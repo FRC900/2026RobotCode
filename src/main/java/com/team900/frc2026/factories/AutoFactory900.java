@@ -36,7 +36,7 @@ public class AutoFactory900 {
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                ShooterFactory.setShooterRPM(setpointSupplier, container),
+                ShooterFactory.setShooterRPS(setpointSupplier, container),
                 SpindexerFactory.runSpindexer(container),
                 HandoffFactory.runHandoff(container),
                 HoodFactory.aimHoodToPose(setpointSupplier, container));
@@ -44,7 +44,7 @@ public class AutoFactory900 {
 
     public static Command stopShoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                ShooterFactory.setShooterRPM(0, container),
+                ShooterFactory.setShooterRPS(0, container),
                 SpindexerFactory.exhaustSpindexer(container),
                 HandoffFactory.exhaustHandoff(container),
                 HoodFactory.aimHoodToPose(setpointSupplier, container));
