@@ -120,7 +120,17 @@ public class Robot extends LoggedRobot {
     public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        // Periodically refresh the auto command from the dashboard chooser
+        // so the driver can see what's selected and it stays up to date.
+        if (mIter % 50 == 0) {
+            autonomousCommand = robotContainer.getAutonomousCommand();
+            SmartDashboard.putString(
+                    "Selected Auto",
+                    autonomousCommand != null ? autonomousCommand.getName() : "None");
+        }
+        mIter++;
+    }
 
     @Override
     public void disabledExit() {}
@@ -143,6 +153,7 @@ public class Robot extends LoggedRobot {
 
         RobotState.getInstance().setAutoStartTime(Timer.getFPGATimestamp());
 
+        autonomousCommand = robotContainer.getAutonomousCommand();
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(autonomousCommand);
         }
