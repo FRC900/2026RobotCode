@@ -4,10 +4,12 @@
 
 package com.team900.frc2026;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.team900.lib.util.CANBusStatusLogger;
 import com.team900.lib.util.VirtualSubsystem;
+import edu.wpi.first.math.MathShared;
+import edu.wpi.first.math.MathSharedStore;
+import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,11 +17,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -48,8 +52,6 @@ public class Robot extends LoggedRobot {
     private CANBusStatusLogger driverCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreDrive);
     private CANBusStatusLogger mechanismCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreMech);
 
-    private RobotContainer container;
-
     public Robot() {
         Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -70,9 +72,7 @@ public class Robot extends LoggedRobot {
 
         if (RobotBase.isReal()) {
             Logger.addDataReceiver(new WPILOGWriter());
-            if (!DriverStation.isFMSAttached()) {
-                Logger.addDataReceiver(new NT4Publisher());
-            }
+            Logger.addDataReceiver(new NT4Publisher());
         } else if (Constants.kIsReplay) {
             setUseTiming(false);
             String logPath = LogFileUtil.findReplayLog();
@@ -88,12 +88,58 @@ public class Robot extends LoggedRobot {
             RobotController.setTimeSource(RobotController::getFPGATime);
         }
 
+        // Silence joystick alerts
+        DriverStation.silenceJoystickConnectionWarning(true);
+
+        // Silence Rotation2d warnings
+        var mathShared = MathSharedStore.getMathShared();
+        MathSharedStore.setMathShared(
+                new MathShared() {
+                    @Override
+                    public void reportError(String error, StackTraceElement[] stackTrace) {
+                        if (error.startsWith("x and y components of Rotation2d are zero")) {
+                            return;
+                        }
+                        mathShared.reportError(error, stackTrace);
+                    }
+
+                    @Override
+                    public void reportUsage(MathUsageId id, int count) {
+                        mathShared.reportUsage(id, count);
+                    }
+
+                    @Override
+                    public double getTimestamp() {
+                        return mathShared.getTimestamp();
+                    }
+                });
+
+        // Log active commands
+        Map<String, Integer> commandCounts = new HashMap<>();
+        BiConsumer<Command, Boolean> logCommandFunction =
+                (Command command, Boolean active) -> {
+                    String name = command.getName();
+                    int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
+                    commandCounts.put(name, count);
+                    Logger.recordOutput(
+                            "CommandsUnique/"
+                                    + name
+                                    + "_"
+                                    + Integer.toHexString(command.hashCode()),
+                            active);
+                    Logger.recordOutput("CommandsAll/" + name, count > 0);
+                };
+        CommandScheduler.getInstance()
+                .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
+        CommandScheduler.getInstance()
+                .onCommandFinish((Command command) -> logCommandFunction.accept(command, false));
+        CommandScheduler.getInstance()
+                .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
+
         robotContainer = RobotContainer.getInstance();
         if (RobotBase.isSimulation()) {
             robotContainer.getDriveSubsystem().resetPose(new Pose2d(3, 3, new Rotation2d()));
         }
-        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-        SignalLogger.enableAutoLogging(false);
     }
 
     @Override
@@ -166,6 +212,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+        var testCommand = robotContainer.getTestCommand();
+        CommandScheduler.getInstance().schedule(testCommand);
     }
 
     @Override

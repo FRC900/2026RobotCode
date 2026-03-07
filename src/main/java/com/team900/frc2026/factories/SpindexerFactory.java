@@ -12,7 +12,7 @@ public class SpindexerFactory {
                 .dutyCycleCommand(() -> SpindexerConstants.kSpindexerDutyCycle);
     }
 
-       public static Command stopSpindexer(RobotContainer container) {
+    public static Command stopSpindexer(RobotContainer container) {
         return container.getSpindexerSubsystem().dutyCycleCommand(() -> 0);
     }
 

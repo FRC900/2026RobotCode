@@ -46,7 +46,7 @@ public class RobotViz {
                 new Pose3d(
                         new Translation3d(0.165101, 0, 0.012717 + 0.09525),
                         new Rotation3d(
-                                0, Units.rotationsToRadians(state.getIntakePivotRotations()), 0));
+                                0, -Units.rotationsToRadians(state.getIntakePivotRotations()), 0));
 
         Logger.recordOutput(
                 "ComponentsPoseArray", new Pose3d[] {intakePose3d, shooterPose3d, hoodPose3d});

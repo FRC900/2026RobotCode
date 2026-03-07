@@ -5,10 +5,10 @@ import java.io.IOException;
 /**
  * Loads and evaluates a 2-variable polynomial model from a JSON file.
  *
- * Expected JSON format: { "intercept": double, "coefs": [c0, c1, ..., cN], "powers": [[p0_a,
+ * <p>Expected JSON format: { "intercept": double, "coefs": [c0, c1, ..., cN], "powers": [[p0_a,
  * p0_b], [p1_a, p1_b], ..., [pN_a, pN_b]] }
  *
- * Evaluation: intercept + sum_i( coefs[i] * x^powers[i][0] * y^powers[i][1] )
+ * <p>Evaluation: intercept + sum_i( coefs[i] * x^powers[i][0] * y^powers[i][1] )
  */
 public class PolynomialModel {
 

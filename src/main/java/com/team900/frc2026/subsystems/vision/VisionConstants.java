@@ -1,88 +1,68 @@
+// Copyright (c) 2025 FRC 1533
+// http://github.com/triplestrange
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
 package com.team900.frc2026.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
 
-    // Large variance used to downweight unreliable vision measurements
-    public static final double kLargeVariance = 1e6;
+  // Camera names, must match names configured on coprocessor
+  public static String camera0Name = "Turret_Camera";
 
-    // Standard deviation constants
-    public static final int kMegatag1XStdDevIndex = 0;
-    public static final int kMegatag1YStdDevIndex = 1;
-    public static final int kMegatag1YawStdDevIndex = 5;
+  // Robot to camera transforms
+  // (Not used by Limelight, configure in web UI instead)
+  public static Transform3d robotToCamera0 =
+      new Transform3d(
+          Units.inchesToMeters(-4),
+          0,
+          Units.inchesToMeters(6.25),
+          new Rotation3d(0.0, Units.degreesToRadians(-21.25), 0.0));
 
-    // Standard deviation array indices for Megatag2
-    public static final int kMegatag2XStdDevIndex = 6;
-    public static final int kMegatag2YStdDevIndex = 7;
-    public static final int kMegatag2YawStdDevIndex = 11;
+  // Basic filtering thresholds
+  public static double maxAmbiguity = 0.3;
+  public static double maxZError = 0.75;
 
-    // Validation constants
-    public static final int kExpectedStdDevArrayLength = 12;
+  // Standard deviation baselines, for 1 meter distance and 1 tag
+  // (Adjusted automatically based on distance and # of tags)
+  public static double linearStdDevBaseline = 0.02; // Meters
+  public static double angularStdDevBaseline = 0.06; // Radians
 
-    public static final int kMinFiducialCount = 1;
-    // TODO: fix these gosh darn constants
-    // Camera A (Left-side Camera)
-    public static final double kCameraAPitchDegrees = 20.0;
-    public static final double kCameraAPitchRads = Units.degreesToRadians(kCameraAPitchDegrees);
-    public static final double kCameraAHeightOffGroundMeters = Units.inchesToMeters(8.3787);
-    public static final String kROSATableName = "limelight-left";
-    public static final double kRobotToCameraAForward = Units.inchesToMeters(7.8757);
-    public static final double kRobotToCameraASide = Units.inchesToMeters(-11.9269);
-    public static final Rotation2d kCameraAYawOffset = Rotation2d.fromDegrees(0.0);
-    public static final Transform2d kRobotToCameraA =
-            new Transform2d(
-                    new Translation2d(kRobotToCameraAForward, kRobotToCameraASide),
-                    kCameraAYawOffset);
+  // Standard deviation multipliers for each camera
+  // (Adjust to trust some cameras more than others)
+  public static double[] cameraStdDevFactors =
+      new double[] {
+        1.0, // Camera 0
+        1.0 // Camera 1
+      };
 
-    // Camera B (Right-side camera)
-    public static final double kCameraBPitchDegrees = 20.0;
-    public static final double kCameraBPitchRads = Units.degreesToRadians(kCameraBPitchDegrees);
-    public static final double kCameraBHeightOffGroundMeters = Units.inchesToMeters(8.3787);
-    public static final String kROSBTableName = "limelight-right";
-    public static final double kRobotToCameraBForward = Units.inchesToMeters(7.8757);
-    public static final double kRobotToCameraBSide = Units.inchesToMeters(11.9269);
-    public static final Rotation2d kCameraBYawOffset = Rotation2d.fromDegrees(0.0);
-    public static final Transform2d kRobotToCameraB =
-            new Transform2d(
-                    new Translation2d(kRobotToCameraBForward, kRobotToCameraBSide),
-                    kCameraBYawOffset);
+  // Multipliers to apply for MegaTag 2 observations
+  public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
+  public static double angularStdDevMegatag2Factor =
+      Double.POSITIVE_INFINITY; // No rotation data available
 
-    // Camera T (Turret camera)
+      // Camera T (Turret camera)
     public static final double kCameraTPitchDegrees = 20.0;
-    public static final double kCameraTPitchRads = Units.degreesToRadians(kCameraBPitchDegrees);
+    public static final double kCameraTPitchRads = Units.degreesToRadians(kCameraTPitchDegrees);
     public static final double kCameraTHeightOffGroundMeters = Units.inchesToMeters(8.3787);
     public static final String kROSTTableName = "limelight-turret";
     public static final double kRobotToCameraTForward = Units.inchesToMeters(7.8757);
     public static final double kRobotToCameraTSide = Units.inchesToMeters(11.9269);
-    public static final Rotation2d kCameraTYawOffset = Rotation2d.fromDegrees(0.0);
+    public static final Rotation2d kCameraTYawOffset = Rotation2d.fromDegrees(180);
     public static final Transform2d kRobotToCameraT =
             new Transform2d(
-                    new Translation2d(kRobotToCameraBForward, kRobotToCameraBSide),
-                    kCameraBYawOffset);
+                    new Translation2d(kRobotToCameraTForward, kRobotToCameraTSide),
+                    kCameraTYawOffset);
     public static final double kTurretToCameraXMeters = 0;
 
     public static final double kTurretToCameraYMeters = 0;
-
-    // Vision processing constants
-    public static final double kDefaultAmbiguityThreshold = 0.19;
-    public static final double kDefaultYawDiffThreshold = 5.0;
-    public static final double kTagAreaThresholdForYawCheck = 2.0;
-    public static final double kTagMinAreaForSingleTagMegatag = 1.0;
-    public static final double kDefaultZThreshold = 0.2;
-    public static final double kDefaultNormThreshold = 1.0;
-    public static final double kMinAmbiguityToFlip = 0.08;
-
-    public static final double kCameraHorizontalFOVDegrees = 81.0;
-    public static final double kCameraVerticalFOVDegrees = 55.0;
-    public static final int kCameraImageWidth = 1280;
-    public static final int kCameraImageHeight = 800;
-
-    public static final double kScoringConfidenceThreshold = 0.7;
-
-    // NetworkTables constants
-    public static final String kBoundingBoxTableName = "BoundingBoxes";
 }

@@ -15,14 +15,16 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Mode;
+import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
+import com.team900.frc2026.subsystems.vision.VisionSubsystem.VisionConsumer;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
-import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.util.FullSubsystem;
 import com.team900.lib.util.Util;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +33,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -428,9 +432,5 @@ public class DriveSubsystem extends FullSubsystem {
         }
 
         return states;
-    }
-
-    public void addVisionMeasurement(VisionFieldPoseEstimate estimate) {
-        // TODO: Implement when vision is enabled
     }
 }

@@ -7,9 +7,9 @@ package com.team900.frc2026;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
+import com.team900.frc2026.factories.HoodFactory;
 import com.team900.frc2026.factories.IntakeFactory;
 import com.team900.frc2026.factories.ShooterFactory;
-import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
@@ -39,21 +39,25 @@ import com.team900.frc2026.subsystems.turret.TurretIO;
 import com.team900.frc2026.subsystems.turret.TurretIOHardware;
 import com.team900.frc2026.subsystems.turret.TurretIOSim;
 import com.team900.frc2026.subsystems.turret.TurretSubsystem;
-import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import com.team900.frc2026.subsystems.vision.VisionConstants;
+import com.team900.frc2026.subsystems.vision.VisionIOPhotonVision;
+import com.team900.frc2026.subsystems.vision.VisionIOPhotonVisionSim;
+import com.team900.frc2026.subsystems.vision.VisionSubsystem;
 import com.team900.frc2026.viz.RobotViz;
 import com.team900.lib.subsystems.CanCoderIOHardware;
 import com.team900.lib.subsystems.SimCanCoderIO;
 import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
-import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.Consumer;
 import lombok.Getter;
 import org.ironmaple.simulation.SimulatedArena;
@@ -93,6 +97,16 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
     }
+
+private VisionSubsystem buildVisionSubsystem()  {
+    if (RobotBase.isSimulation())   {
+        return new VisionSubsystem(robotState, new VisionIOPhotonVisionSim(VisionConstants.camera0Name, VisionConstants.robotToCamera0, simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
+    }
+
+    else {
+        return new VisionSubsystem(robotState, new VisionIOPhotonVision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
+    }
+}
 
     private SpindexerSubsystem buildSpindexerSubsystem() {
         if (RobotBase.isSimulation())
@@ -200,15 +214,11 @@ public class RobotContainer {
     private final CoprocessorSubsystem coprocessorSubsystem =
             new CoprocessorSubsystem(driveSubsystem);
 
-    private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
-            new Consumer<VisionFieldPoseEstimate>() {
-                @Override
-                public void accept(VisionFieldPoseEstimate estimate) {
-                    driveSubsystem.addVisionMeasurement(estimate);
-                }
-            };
+                private final RobotState robotState = RobotState.getInstance();
 
-    private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
+
+              @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
+
 
     @Getter
     private final DriveMaintainingHeadingCommand driveCommand =
@@ -234,6 +244,9 @@ public class RobotContainer {
 
     @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
+    // TODO: check if this is automatically triggered
+    private final Trigger zeroHood =
+            new Trigger(robotState::getHoodHasZeroed).onTrue(HoodFactory.zero(this));
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
@@ -260,9 +273,21 @@ public class RobotContainer {
                                         .andThen(new InstantCommand(() -> intakeDeployed = true)),
                                 () -> intakeDeployed));
 
-        controlBoard.shoot().onTrue(new ParallelCommandGroup(ShooterFactory.setShooterRPS(20, this), HandoffFactory.runHandoff(this), SpindexerFactory.runSpindexer(this))).onFalse(new ParallelCommandGroup(ShooterFactory.setShooterRPS(0, this), SpindexerFactory.stopSpindexer(this), HandoffFactory.stopHandoff(this)) );
-        
-        // whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this)).onFalse(new ParallelCommandGroup(ShooterFactory.setShooterRPS(ShooterConstants.kIdleRPS, this),
+        controlBoard
+                .shoot()
+                .onTrue(
+                        new ParallelCommandGroup(
+                                ShooterFactory.setShooterRPS(20, this),
+                                HandoffFactory.runHandoff(this),
+                                SpindexerFactory.runSpindexer(this)))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                ShooterFactory.setShooterRPS(0, this),
+                                SpindexerFactory.stopSpindexer(this),
+                                HandoffFactory.stopHandoff(this)));
+
+        // whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this)).onFalse(new
+        // ParallelCommandGroup(ShooterFactory.setShooterRPS(ShooterConstants.kIdleRPS, this),
         //                 new InstantCommand(() -> getDriveCommand().setKAiming(false))));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
@@ -271,9 +296,8 @@ public class RobotContainer {
 
         controlBoard
                 .intake()
-                .onTrue(
-                        new ParallelCommandGroup( 
-                                IntakeFactory.runIntake(this))).onFalse(IntakeFactory.stopIntake(this));
+                .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
+                .onFalse(IntakeFactory.stopIntake(this));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
@@ -298,6 +322,10 @@ public class RobotContainer {
     // public Command getAutonomousCommand() {
     //     return autoDashboard.getSelectedAuto();
     // }
+
+    public Command getTestCommand() {
+        return IntakeFactory.deploySlapdown(this);
+    }
 
     public static synchronized RobotContainer getInstance() {
         if (instance == null) {

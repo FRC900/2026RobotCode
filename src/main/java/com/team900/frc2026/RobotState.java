@@ -1,18 +1,26 @@
 package com.team900.frc2026;
 
 import com.team900.frc2026.subsystems.vision.VisionConstants;
-import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
+import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
+import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
+import com.team900.frc2026.subsystems.vision.VisionSubsystem.VisionConsumer;
 import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.MathHelpers;
 import com.team900.lib.util.Util;
+
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Timer;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,16 +31,14 @@ import java.util.function.IntSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /** Tracks robot state including pose, velocities, and mechanism positions. */
-public class RobotState {
+public class RobotState implements VisionConsumer{
 
     private static volatile RobotState instance;
 
     public static final double LOOKBACK_TIME = 1.0;
 
-    private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer;
 
-    private RobotState(Consumer<VisionFieldPoseEstimate> visionEstimateConsumer) {
-        this.visionEstimateConsumer = visionEstimateConsumer;
+    private RobotState() {
         fieldToRobot.addSample(0.0, MathHelpers.kPose2dZero);
         robotToTurret.addSample(0.0, MathHelpers.kRotation2dZero);
         turretAngularVelocity.addSample(0.0, 0.0);
@@ -98,6 +104,8 @@ public class RobotState {
 
     private final AtomicBoolean enablePathCancel = new AtomicBoolean(false);
 
+    private final AtomicBoolean hasHoodZero = new AtomicBoolean(false);
+
     private double autoStartTime;
 
     private Optional<Pose2d> trajectoryTargetPose = Optional.empty();
@@ -121,6 +129,14 @@ public class RobotState {
 
     public boolean getPathCancel() {
         return enablePathCancel.get();
+    }
+
+    public void updateHoodHasZero(boolean hoodZereod) {
+        hasHoodZero.set(hoodZereod);
+    }
+
+    public boolean getHoodHasZeroed() {
+        return hasHoodZero.get();
     }
 
     public void addOdometryMeasurement(double timestamp, Pose2d pose) {
@@ -308,13 +324,7 @@ public class RobotState {
     public Optional<Double> getMaxAbsDriveRollAngularVelocityInRange(
             double minTime, double maxTime) {
         return getMaxAbsValueInRange(driveRollAngularVelocity, minTime, maxTime);
-    }
-
-    public void updateTagSlamEstimate(VisionFieldPoseEstimate tagSlamEstimate) {
-        lastUsedTagSlamTimestamp = tagSlamEstimate.getTimestampSeconds();
-        lastUsedTagSlamPose = tagSlamEstimate.getVisionRobotPoseMeters();
-        visionEstimateConsumer.accept(tagSlamEstimate);
-    }
+            }
 
     public double lastUsedTagSlamTimestamp() {
         return lastUsedTagSlamTimestamp;
@@ -370,6 +380,8 @@ public class RobotState {
         Logger.recordOutput(
                 "RobotState/FusedChassisSpeedFieldFrame",
                 getLatestFusedFieldRelativeChassisSpeed());
+
+        Logger.recordOutput("RobotState/HasHoodZero", getHoodHasZeroed());
 
         // Add mechanism logging
         Logger.recordOutput("RobotState/TurretRotations", getLatestTurretPositionRadians());
@@ -543,18 +555,35 @@ public class RobotState {
     }
 
     public static RobotState getInstance() {
-        return instance;
-    }
-
-    public static RobotState getInstance(Consumer<VisionFieldPoseEstimate> estimateConsumer) {
         if (instance == null) {
             synchronized (RobotState.class) {
                 if (instance == null) {
 
-                    instance = new RobotState(estimateConsumer);
+                    instance = new RobotState();
                 }
             }
         }
         return instance;
     }
+
+     /** Adds a new timestamped vision measurement. */
+  @Override
+  public void accept(PoseObservation observation, Matrix<N3, N1> visionMeasurementStdDevs) {
+    updatePoseObservation(observation, visionMeasurementStdDevs);
+  }
+
+  public void updatePoseObservation(
+      PoseObservation poseObservation, Matrix<N3, N1> visionMeasurementStdDevs) {
+
+    if (poseObservation.type() == PoseObservationType.SOLVE_PNP)
+      lastUsedTagSlamTimestamp = Timer.getFPGATimestamp();
+    RobotContainer.getInstance()
+        .getDriveSubsystem()
+        .getPoseEstimator()
+        .addVisionMeasurement(
+            poseObservation.pose().toPose2d(),
+            poseObservation.timestamp(),
+            visionMeasurementStdDevs);
+  }
+
 }

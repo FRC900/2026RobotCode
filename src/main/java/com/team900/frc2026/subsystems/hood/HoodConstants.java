@@ -19,13 +19,17 @@ public class HoodConstants {
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
     public static final double kHoodToleranceRadians = 0.1;
-    public static final double kHoodMinPositionRadians = 0;
-    public static final double kHoodMaxPositionRadians = Math.PI / 4 - Math.PI / 12;
     public static final double kHoodZeroedAngleDegrees = 15;
 
     public static final double kHoodRotorMaxPosition = 0.0754;
-    public static final double kHoodRotorMinPosition =
-            Units.radiansToRotations(kHoodMinPositionRadians);
+    public static final double kHoodRotorMinPosition = 0;
+
+    public static final double kZeroingAmps = 100;
+    public static final double kZeroingSeconds = 0.125;
+
+    public static final double kHoodMinPositionRadians = 0;
+    public static final double kHoodMaxPositionRadians =
+            Units.rotationsToRadians(kHoodRotorMaxPosition);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
@@ -40,6 +44,7 @@ public class HoodConstants {
         // subsystem configs
         kHoodConfig.name = "Hood";
 
+        // TODO: verify these tm
         kHoodConfig.cancoderToUnitsRatio = 1;
         kHoodConfig.isFusedCancoder = true;
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians + Units.degreesToRotations(5);

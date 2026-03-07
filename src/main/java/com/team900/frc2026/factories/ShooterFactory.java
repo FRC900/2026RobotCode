@@ -15,7 +15,9 @@ public class ShooterFactory {
     /* Commands for shooting */
 
     public static Command idle(RobotContainer container) {
-        return container.getShooterSubsystem().velocitySetpointCommand(() -> ShooterConstants.kIdleRPS);
+        return container
+                .getShooterSubsystem()
+                .velocitySetpointCommand(() -> ShooterConstants.kIdleRPS);
     }
 
     public static Command setShooterRPS(double RPS, RobotContainer container) {
