@@ -11,8 +11,7 @@ public class AutoDashboard {
 
     public AutoDashboard() {
         autoChooser.setDefaultOption(
-                "4.05m Edge to Center (Shoot + Intake)",
-                Red_C_Center_Left_Trench.getAutoCommand());
+                "4.05m Edge to Center (Shoot + Intake)", Red_C_Center_Left_Trench.getAutoCommand());
 
         // Add more autos here as you create them:
         // autoChooser.addOption("My Other Auto", MyOtherAuto.getAutoCommand());
