@@ -68,10 +68,10 @@ public class C_Center {
                         Commands.sequence(
                                 path.resetOdometry(),
                                 AutoFactory900.resetHood(container),
+                                path.cmd(),
                                 AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0)
                                         .withTimeout(1.0),
 
-        
                                 AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
                                 AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
                                 Commands.parallel(
