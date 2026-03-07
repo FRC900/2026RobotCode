@@ -69,10 +69,13 @@ public class C_Center {
                                 path.resetOdometry(),
                                 AutoFactory900.resetHood(container),
                                 path.cmd(),
-                                AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0)
-                                        .withTimeout(1.0),
+                                Commands.parallel(AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(1)
+                                ),
 
-                                AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(3.0),
+                                Commands.parallel(AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(3)
+                                ),
                                 AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
                                 Commands.parallel(
                                         path.cmd(),
@@ -80,11 +83,6 @@ public class C_Center {
                                 AutoFactory900.retractSlapdown()
                         )
                 );
-
-        // for sim
-        // // routine.active()
-        // //         .onTrue(Commands.sequence(path.resetOdometry(),
-        // Commands.parallel(path.cmd())));
 
         return routine.cmd();
     }
