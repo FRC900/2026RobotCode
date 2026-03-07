@@ -7,6 +7,7 @@ import com.team900.lib.subsystems.MotorInputsAutoLogged;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoder;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.util.CurrentSpikeDetector;
 import edu.wpi.first.math.MathUtil;
 
 public class HoodSubsystem
@@ -14,6 +15,9 @@ public class HoodSubsystem
                 MotorInputsAutoLogged, TalonFXIO, CanCoderInputsAutoLogged, CanCoderIO> {
     private final RobotState state = RobotState.getInstance();
     private TalonFXIO motorIO;
+
+    private final CurrentSpikeDetector spikeDetector =
+            new CurrentSpikeDetector(HoodConstants.kZeroingAmps, HoodConstants.kZeroingSeconds);
 
     public HoodSubsystem(
             ServoMotorSubsystemWithCanCoderConfig c, TalonFXIO motorIO, CanCoderIO cancoderIO) {
@@ -31,6 +35,7 @@ public class HoodSubsystem
         super.periodic();
         state.setHoodRotations(inputs.unitPosition);
         state.setHoodRPS(inputs.velocityUnitsPerSecond);
+        state.updateHoodHasZero(spikeDetector.update(inputs.currentStatorAmps));
     }
 
     public boolean isStowed() {
@@ -62,5 +67,13 @@ public class HoodSubsystem
 
         // If out of range, go to nearest limit
         return desiredRad < min ? min : max;
+    }
+
+    public void disableSoftLimits() {
+        motorIO.setEnableSoftLimits(true, false);
+    }
+
+    public void enableSoftLimits() {
+        motorIO.setEnableSoftLimits(true, true);
     }
 }

@@ -41,17 +41,17 @@ public class AutoFactory900 {
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                HoodFactory.aimHoodToPose(setpointSupplier, container),
                 ShooterFactory.setShooterRPS(setpointSupplier, container),
+                SpindexerFactory.runSpindexer(container),
                 HandoffFactory.runHandoff(container),
                 SpindexerFactory.runSpindexer(container));
     }
 
     public static Command stopShoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                SpindexerFactory.stopSpindexer(container),
-                HandoffFactory.stopHandoff(container),
                 ShooterFactory.setShooterRPS(0, container),
+                SpindexerFactory.exhaustSpindexer(container),
+                HandoffFactory.exhaustHandoff(container),
                 HoodFactory.aimHoodToPose(setpointSupplier, container));
     }
 

@@ -1,11 +1,13 @@
 package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
+import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.hood.HoodSubsystem;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.util.function.Supplier;
 
 public class HoodFactory {
@@ -41,5 +43,15 @@ public class HoodFactory {
         return setPositionMotionMagicCommand(
                         HoodConstants.kHoodStowTrenchPositionRadians, container)
                 .withName("Hood Stow");
+    }
+
+    public static Command zero(RobotContainer container) {
+        return new InstantCommand(container.getHoodSubsystem()::disableSoftLimits)
+                .andThen(
+                        container
+                                .getHoodSubsystem()
+                                .dutyCycleCommand(() -> -0.05)
+                                .until(RobotState.getInstance()::getHoodHasZeroed)
+                                .andThen(container.getHoodSubsystem()::enableSoftLimits));
     }
 }
