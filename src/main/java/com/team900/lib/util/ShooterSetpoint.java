@@ -93,23 +93,22 @@ public class ShooterSetpoint {
      * @param vf forward robot velocity (m/s)
      * @return phi in radians
      */
-
     public static double getPhi(double r, double vf) {
-        return 1.3319077394113694
-                - 3.7917476957e-02 * r
-                + 6.5559211155e-02 * vf
-                + 9.1578107241e-04 * r * r
-                - 3.3448392435e-04 * r * vf
-                + 4.0252360850e-04 * vf * vf
-                - 5.5561511125e-05 * r * r * r
-                + 2.8140998785e-05 * r * r * vf
-                - 8.0052327056e-05 * r * vf * vf
-                + 3.8622151398e-05 * vf * vf * vf
-                - 1.3708875933e-06 * r * r * r * r
-                + 1.4983176335e-05 * r * r * r * vf
-                - 2.3428958040e-05 * r * r * vf * vf
-                + 1.8910264589e-05 * r * vf * vf * vf
-                - 4.4641776123e-06 * vf * vf * vf * vf;
+        return  1.3181648193362525
+            - 3.8557030940e-02 * r
+            + 6.5172357701e-02 * vf
+            + 1.0370934929e-03 * r * r
+            - 3.1174424260e-04 * r * vf
+            + 4.6050836990e-04 * vf * vf
+            - 4.4489041044e-05 * r * r * r
+            - 6.0106609748e-05 * r * r * vf
+            - 2.7244410203e-05 * r * vf * vf
+            + 2.6662042308e-05 * vf * vf * vf
+            - 2.4672194937e-06 * r * r * r * r
+            + 2.3539741491e-05 * r * r * r * vf
+            - 3.1134809372e-05 * r * r * vf * vf
+            + 2.3985434850e-05 * r * vf * vf * vf
+            - 7.2560025432e-06 * vf * vf * vf * vf;
     }
 
     /**
@@ -120,21 +119,21 @@ public class ShooterSetpoint {
      * @return theta in radians
      */
     public static double getTheta(double r, double vl) {
-        return -1.8722509645831825e-06
-                - 7.3510622274e-06 * r
-                - 6.7834581637e-02 * vl
-                + 8.9871349979e-06 * r * r
-                - 2.2214896752e-05 * r * vl
-                + 4.8712473326e-07 * vl * vl
-                - 2.6831898409e-06 * r * r * r
-                + 1.4942965759e-05 * r * r * vl
-                - 2.8428821571e-07 * r * vl * vl
-                - 5.5109921945e-05 * vl * vl * vl
-                + 2.3075944928e-07 * r * r * r * r
-                - 2.4046620763e-06 * r * r * r * vl
-                + 3.7418622874e-08 * r * r * vl * vl
-                - 5.3380041757e-07 * r * vl * vl * vl
-                - 2.2116720819e-09 * vl * vl * vl * vl;
+        return  1.0672480382571276e-07
+            + 1.0236363213e-06 * r
+            - 6.7838471178e-02 * vl
+            - 2.1658142815e-06 * r * r
+            - 2.5259903973e-05 * r * vl
+            + 2.8523417706e-08 * vl * vl
+            + 7.5185841520e-07 * r * r * r
+            + 1.6795875603e-05 * r * r * vl
+            + 6.9714925311e-09 * r * vl * vl
+            - 5.5151143377e-05 * vl * vl * vl
+            - 7.0034801371e-08 * r * r * r * r
+            - 2.4279336961e-06 * r * r * r * vl
+            - 6.9442822955e-09 * r * r * vl * vl
+            - 5.7258261252e-07 * r * vl * vl * vl
+            + 1.8639516443e-09 * vl * vl * vl * vl;
     }
 
     public double getShooterRPS() {
