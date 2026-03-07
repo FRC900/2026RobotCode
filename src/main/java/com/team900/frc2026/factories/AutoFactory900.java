@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -34,20 +35,33 @@ public class AutoFactory900 {
                 IntakeFactory.retractSlapdown(container), IntakeFactory.exhaustIntake(container));
     }
 
+    public static Command runIntake() {
+        return new InstantCommand(() -> IntakeFactory.runIntake(container));
+    }
+
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                ShooterFactory.setShooterRPM(setpointSupplier, container),
-                SpindexerFactory.runSpindexer(container),
+                HoodFactory.aimHoodToPose(setpointSupplier, container),
+                ShooterFactory.setShooterRPS(setpointSupplier, container),
                 HandoffFactory.runHandoff(container),
-                HoodFactory.aimHoodToPose(setpointSupplier, container));
+                SpindexerFactory.runSpindexer(container));
     }
 
     public static Command stopShoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
-                ShooterFactory.setShooterRPM(0, container),
                 SpindexerFactory.exhaustSpindexer(container),
                 HandoffFactory.exhaustHandoff(container),
+                ShooterFactory.setShooterRPS(0, container),
                 HoodFactory.aimHoodToPose(setpointSupplier, container));
+    }
+
+    public static Command deploySlapdownAndRunIntake(RobotContainer container) {
+        return new SequentialCommandGroup(
+                IntakeFactory.deploySlapdown(container), IntakeFactory.runIntake(container));
+    }
+
+    public static Command resetHood(RobotContainer container) {
+        return new InstantCommand(() -> HoodFactory.stow(container));
     }
 
     public static Command alignToHub(

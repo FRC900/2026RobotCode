@@ -11,7 +11,7 @@ public class ShootingFactory {
     public static Command shoot(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return new ParallelCommandGroup(
-                        ShooterFactory.setShooterRPM(setPointSupplier, container),
+                        ShooterFactory.setShooterRPS(setPointSupplier, container),
                         SuperstructureFactory.aim(setPointSupplier, container),
                         IntakeFactory.deploySlapdown(container))
                 .andThen(

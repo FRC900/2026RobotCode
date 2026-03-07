@@ -272,7 +272,7 @@ public class RobotContainer {
                         new ParallelCommandGroup(
                                 SpindexerFactory.runSpindexer(this),
                                 HandoffFactory.runHandoff(this),
-                                ShooterFactory.setShooterRPM(20, this)));
+                                ShooterFactory.setShooterRPS(20, this)));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
