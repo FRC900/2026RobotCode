@@ -13,10 +13,6 @@ public class IntakeFactory {
                 .voltageCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
 
-    public static Command stopIntake(RobotContainer container) {
-        return container.getIntakeRollerSubsystem().dutyCycleCommand(() -> 0);
-    }
-
     public static Command exhaustIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()

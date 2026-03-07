@@ -59,7 +59,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.function.Consumer;
 import lombok.Getter;
 import org.ironmaple.simulation.SimulatedArena;
 
@@ -99,15 +98,21 @@ public class RobotContainer {
                 new ModuleIO() {});
     }
 
-private VisionSubsystem buildVisionSubsystem()  {
-    if (RobotBase.isSimulation())   {
-        return new VisionSubsystem(robotState, new VisionIOPhotonVisionSim(VisionConstants.camera0Name, VisionConstants.robotToCamera0, simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
+    private VisionSubsystem buildVisionSubsystem() {
+        if (RobotBase.isSimulation()) {
+            return new VisionSubsystem(
+                    robotState,
+                    new VisionIOPhotonVisionSim(
+                            VisionConstants.camera0Name,
+                            VisionConstants.robotToCamera0,
+                            simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
+        } else {
+            return new VisionSubsystem(
+                    robotState,
+                    new VisionIOPhotonVision(
+                            VisionConstants.camera0Name, VisionConstants.robotToCamera0));
+        }
     }
-
-    else {
-        return new VisionSubsystem(robotState, new VisionIOPhotonVision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
-    }
-}
 
     private SpindexerSubsystem buildSpindexerSubsystem() {
         if (RobotBase.isSimulation())
@@ -215,11 +220,9 @@ private VisionSubsystem buildVisionSubsystem()  {
     private final CoprocessorSubsystem coprocessorSubsystem =
             new CoprocessorSubsystem(driveSubsystem);
 
-                private final RobotState robotState = RobotState.getInstance();
+    private final RobotState robotState = RobotState.getInstance();
 
-
-              @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
-
+    @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
 
     @Getter
     private final DriveMaintainingHeadingCommand driveCommand =

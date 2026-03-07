@@ -9,7 +9,6 @@ import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.MathHelpers;
 import com.team900.lib.util.Util;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,23 +19,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /** Tracks robot state including pose, velocities, and mechanism positions. */
-public class RobotState implements VisionConsumer{
+public class RobotState implements VisionConsumer {
 
     private static volatile RobotState instance;
 
     public static final double LOOKBACK_TIME = 1.0;
-
 
     private RobotState() {
         fieldToRobot.addSample(0.0, MathHelpers.kPose2dZero);
@@ -324,7 +320,7 @@ public class RobotState implements VisionConsumer{
     public Optional<Double> getMaxAbsDriveRollAngularVelocityInRange(
             double minTime, double maxTime) {
         return getMaxAbsValueInRange(driveRollAngularVelocity, minTime, maxTime);
-            }
+    }
 
     public double lastUsedTagSlamTimestamp() {
         return lastUsedTagSlamTimestamp;
@@ -566,24 +562,23 @@ public class RobotState implements VisionConsumer{
         return instance;
     }
 
-     /** Adds a new timestamped vision measurement. */
-  @Override
-  public void accept(PoseObservation observation, Matrix<N3, N1> visionMeasurementStdDevs) {
-    updatePoseObservation(observation, visionMeasurementStdDevs);
-  }
+    /** Adds a new timestamped vision measurement. */
+    @Override
+    public void accept(PoseObservation observation, Matrix<N3, N1> visionMeasurementStdDevs) {
+        updatePoseObservation(observation, visionMeasurementStdDevs);
+    }
 
-  public void updatePoseObservation(
-      PoseObservation poseObservation, Matrix<N3, N1> visionMeasurementStdDevs) {
+    public void updatePoseObservation(
+            PoseObservation poseObservation, Matrix<N3, N1> visionMeasurementStdDevs) {
 
-    if (poseObservation.type() == PoseObservationType.SOLVE_PNP)
-      lastUsedTagSlamTimestamp = Timer.getFPGATimestamp();
-    RobotContainer.getInstance()
-        .getDriveSubsystem()
-        .getPoseEstimator()
-        .addVisionMeasurement(
-            poseObservation.pose().toPose2d(),
-            poseObservation.timestamp(),
-            visionMeasurementStdDevs);
-  }
-
+        if (poseObservation.type() == PoseObservationType.SOLVE_PNP)
+            lastUsedTagSlamTimestamp = Timer.getFPGATimestamp();
+        RobotContainer.getInstance()
+                .getDriveSubsystem()
+                .getPoseEstimator()
+                .addVisionMeasurement(
+                        poseObservation.pose().toPose2d(),
+                        poseObservation.timestamp(),
+                        visionMeasurementStdDevs);
+    }
 }
