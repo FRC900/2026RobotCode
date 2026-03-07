@@ -50,7 +50,6 @@ import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -197,7 +196,9 @@ public class RobotContainer {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(driveSubsystem);
+    @Getter
+    private final CoprocessorSubsystem coprocessorSubsystem =
+            new CoprocessorSubsystem(driveSubsystem);
 
     private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
             new Consumer<VisionFieldPoseEstimate>() {
@@ -265,8 +266,14 @@ public class RobotContainer {
 
         controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
 
-        controlBoard.intake().onTrue(new ParallelCommandGroup(SpindexerFactory.runSpindexer(this), HandoffFactory.runHandoff(this), ShooterFactory.setShooterRPM(20, this)));
-       }
+        controlBoard
+                .intake()
+                .onTrue(
+                        new ParallelCommandGroup(
+                                SpindexerFactory.runSpindexer(this),
+                                HandoffFactory.runHandoff(this),
+                                ShooterFactory.setShooterRPM(20, this)));
+    }
 
     public boolean odometryCloseToPose(Pose2d pose) {
         Pose2d fieldToRobot = robotState.getLatestFieldToRobot().getValue();
@@ -285,9 +292,11 @@ public class RobotContainer {
         return false;
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
-    }
+    // private final AutoDashboard autoDashboard = new AutoDashboard();
+
+    // public Command getAutonomousCommand() {
+    //     return autoDashboard.getSelectedAuto();
+    // }
 
     public static synchronized RobotContainer getInstance() {
         if (instance == null) {
