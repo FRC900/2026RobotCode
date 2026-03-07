@@ -39,6 +39,10 @@ public class AutoFactory900 {
         return new InstantCommand(() -> IntakeFactory.runIntake(container));
     }
 
+    public static Command stopIntake() {
+        return new InstantCommand(() -> IntakeFactory.stopIntake(container));
+    }
+
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
                 ShooterFactory.setShooterRPS(setpointSupplier, container),

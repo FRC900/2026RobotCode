@@ -107,8 +107,9 @@ public class Red_C_Center_Left_Trench {
                                 AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
                                 Commands.parallel(
                                         path.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                AutoFactory900.retractSlapdown()));
+                                        AutoFactory900.deploySlapdownAndRunIntake(container)))
+                                
+                                );
 
         return routine.cmd();
     }
