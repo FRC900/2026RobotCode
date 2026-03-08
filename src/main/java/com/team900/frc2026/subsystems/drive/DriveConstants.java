@@ -33,7 +33,7 @@ public class DriveConstants {
                     Math.max(
                             Math.hypot(
                                     CompTunerConstants.FrontLeft.LocationX,
-                                    CompTunerConstants.FrontRight.LocationY),
+                                    CompTunerConstants.FrontLeft.LocationY),
                             Math.hypot(
                                     CompTunerConstants.FrontRight.LocationX,
                                     CompTunerConstants.FrontRight.LocationY)),

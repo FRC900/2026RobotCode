@@ -6,6 +6,8 @@ public interface IButtonControlBoard {
 
     Trigger shoot();
 
+    Trigger shootAuto();
+
     Trigger stowHood();
 
     Trigger intake();

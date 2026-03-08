@@ -10,10 +10,10 @@ import com.team900.frc2026.factories.HandoffFactory;
 import com.team900.frc2026.factories.HoodFactory;
 import com.team900.frc2026.factories.IntakeFactory;
 import com.team900.frc2026.factories.ShooterFactory;
+import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
-import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.drive.GyroIO;
@@ -49,6 +49,8 @@ import com.team900.lib.subsystems.SimCanCoderIO;
 import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.util.ShooterSetpoint;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,7 +60,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import java.util.function.Consumer;
 import lombok.Getter;
 import org.ironmaple.simulation.SimulatedArena;
 
@@ -98,15 +99,21 @@ public class RobotContainer {
                 new ModuleIO() {});
     }
 
-private VisionSubsystem buildVisionSubsystem()  {
-    if (RobotBase.isSimulation())   {
-        return new VisionSubsystem(robotState, new VisionIOPhotonVisionSim(VisionConstants.camera0Name, VisionConstants.robotToCamera0, simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
+    private VisionSubsystem buildVisionSubsystem() {
+        if (RobotBase.isSimulation()) {
+            return new VisionSubsystem(
+                    robotState,
+                    new VisionIOPhotonVisionSim(
+                            VisionConstants.camera0Name,
+                            VisionConstants.robotToCamera0,
+                            simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
+        } else {
+            return new VisionSubsystem(
+                    robotState,
+                    new VisionIOPhotonVision(
+                            VisionConstants.camera0Name, VisionConstants.robotToCamera0));
+        }
     }
-
-    else {
-        return new VisionSubsystem(robotState, new VisionIOPhotonVision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
-    }
-}
 
     private SpindexerSubsystem buildSpindexerSubsystem() {
         if (RobotBase.isSimulation())
@@ -210,15 +217,13 @@ private VisionSubsystem buildVisionSubsystem()  {
 
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    @Getter
-    private final CoprocessorSubsystem coprocessorSubsystem =
-            new CoprocessorSubsystem(driveSubsystem);
+    //     @Getter
+    //     private final CoprocessorSubsystem coprocessorSubsystem =
+    //             new CoprocessorSubsystem(driveSubsystem);
 
-                private final RobotState robotState = RobotState.getInstance();
+    private final RobotState robotState = RobotState.getInstance();
 
-
-              @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
-
+    @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
 
     @Getter
     private final DriveMaintainingHeadingCommand driveCommand =
@@ -276,19 +281,34 @@ private VisionSubsystem buildVisionSubsystem()  {
         controlBoard
                 .shoot()
                 .onTrue(
-                        new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(20, this),
-                                HandoffFactory.runHandoff(this),
-                                SpindexerFactory.runSpindexer(this)))
+                        (ShooterFactory.setShooterRPS(60, this)
+                                        .until(
+                                                () ->
+                                                        MathUtil.isNear(
+                                                                60,
+                                                                shooterSubsystem
+                                                                        .getCurrentVelocity(),
+                                                                1)))
+                                .andThen(
+                                        new ParallelCommandGroup(
+                                                HandoffFactory.runHandoff(this),
+                                                SpindexerFactory.runSpindexer(this))))
                 .onFalse(
                         new ParallelCommandGroup(
                                 ShooterFactory.setShooterRPS(0, this),
                                 SpindexerFactory.stopSpindexer(this),
                                 HandoffFactory.stopHandoff(this)));
 
-        // whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this)).onFalse(new
-        // ParallelCommandGroup(ShooterFactory.setShooterRPS(ShooterConstants.kIdleRPS, this),
-        //                 new InstantCommand(() -> getDriveCommand().setKAiming(false))));
+        controlBoard
+                .shootAuto()
+                .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                ShooterFactory.setShooterRPS(0, this),
+                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
+                                SpindexerFactory.stopSpindexer(this),
+                                IntakeFactory.stopIntake(this),
+                                HandoffFactory.stopHandoff(this)));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 

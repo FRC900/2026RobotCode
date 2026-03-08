@@ -45,13 +45,13 @@ public class HoodConstants {
         kHoodConfig.name = "Hood";
 
         // TODO: verify these tm
-        kHoodConfig.cancoderToUnitsRatio = 1;
+        kHoodConfig.cancoderToUnitsRatio = 17. * 1. / (2. * Math.PI);
         kHoodConfig.isFusedCancoder = true;
-        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians + Units.degreesToRotations(5);
+        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
-        kHoodConfig.unitToRotorRatio = 2 * Math.PI;
+        kHoodConfig.unitToRotorRatio = 1. / kHoodGearRatio * 1. / (2 * Math.PI);
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;

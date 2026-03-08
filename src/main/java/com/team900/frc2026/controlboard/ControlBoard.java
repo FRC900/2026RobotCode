@@ -102,6 +102,11 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     }
 
     @Override
+    public Trigger shootAuto() {
+        return buttonControlBoard.shootAuto();
+    }
+
+    @Override
     public Trigger stowHood() {
         return buttonControlBoard.stowHood();
     }

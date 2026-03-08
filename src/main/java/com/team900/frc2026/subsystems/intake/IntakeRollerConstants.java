@@ -16,6 +16,7 @@ public class IntakeRollerConstants {
         kIntakeRollerConfig.talonCANID = new CANDeviceId(60, Constants.kCanBusCanivoreMech);
 
         kIntakeRollerConfig.fxConfig = new TalonFXConfiguration();
+        kIntakeRollerConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
         kIntakeRollerConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 150;
         kIntakeRollerConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kIntakeRollerConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 80;
@@ -30,7 +31,7 @@ public class IntakeRollerConstants {
     }
 
     public static final double kIntakeGearRatio = 1;
-    public static final double kIntakeDutyCycle = 12;
+    public static final double kIntakeDutyCycle = 6;
     public static final double kIntakeDutyCycleExhaust = -8.5;
     public static final double kRollerGearRatio = 15 / 32;
 }

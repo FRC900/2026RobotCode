@@ -53,6 +53,7 @@ public class Robot extends LoggedRobot {
     private CANBusStatusLogger mechanismCAN = new CANBusStatusLogger(Constants.kCanBusCanivoreMech);
 
     public Robot() {
+
         Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);

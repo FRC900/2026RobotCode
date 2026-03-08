@@ -29,7 +29,7 @@ public class HandoffConstants {
         kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
-        kHandoffConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kHandoffConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kHandoffConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         // using arbitralily small value for not since handoff position and velocity isn't important
         kHandoffConfig.momentOfInertia = 0.00042474;
