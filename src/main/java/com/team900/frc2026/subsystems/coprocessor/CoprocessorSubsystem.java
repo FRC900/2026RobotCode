@@ -4,6 +4,7 @@ import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,6 +39,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
     private final BridgeSubscriber<RawFiducialArrayStamped> m_vid1TagsSub;
     // private final BridgeSubscriber<RawFiducialArrayStamped> m_vid2TagsSub;
     private final BridgeSubscriber<TFMessage> m_poseSub;
+    private final BridgeSubscriber<RosTargetObservation> m_targObsSub;
 
     public static final String MAP_FRAME = "map";
     public static final String ODOM_FRAME = "odom";
@@ -85,7 +87,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
         m_vid0TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/ov2311_10_9_0_9_video1/raw_fiducials",
+                        "/ov2311_10_9_0_9_video0/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_vid1TagsSub =
                 new BridgeSubscriber<>(
@@ -100,6 +102,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
         m_poseSub =
                 new BridgeSubscriber<>(
                         m_ros_interface, "/tagslam/odom/body_frc_robot", TFMessage.class);
+        m_targObsSub = new BridgeSubscriber<>(m_ros_interface, "/tagslam_pose_observations", RosTargetObservation.class);
     }
     ;
 
@@ -134,6 +137,19 @@ public class CoprocessorSubsystem extends SubsystemBase {
                 // }
             }
         }
+    }
+
+    private void checkRosTargetObservation() {
+        Rotation2d tx;
+        Rotation2d ty;
+        if ((m_poseSub.receive().isPresent()) && (tx = m_poseSub.receive().get()) != null) {
+            for (TransformStamped tf : pose.getTransforms()) {
+                // if (tf.getChildFrameId() == "base_link") {
+                System.out.println(tf);
+                // }
+            }
+        }
+        ROSConversions.rosToWpiRotation()
     }
 
     private void sendOdom() {
