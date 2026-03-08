@@ -10,9 +10,7 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption(
-                "Red_C-Position_Left_Trench",
-                Red_C_Center_Left_Trench.getAutoCommand());
+        autoChooser.setDefaultOption("A", APath.getAutoCommand());
 
         // Add more autos here as you create them:
         // autoChooser.addOption("My Other Auto", MyOtherAuto.getAutoCommand());
