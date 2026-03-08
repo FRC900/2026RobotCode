@@ -11,8 +11,12 @@ public class AutoDashboard {
 
     public AutoDashboard() {
         autoChooser.setDefaultOption(
+<<<<<<< Updated upstream
                 "Red_C-Position_Left_Trench",
                 Red_C_Center_Left_Trench.getAutoCommand());
+=======
+                "4.05m Edge to Center (Shoot + Intake)", Autos.C_Center());
+>>>>>>> Stashed changes
 
         // Add more autos here as you create them:
         // autoChooser.addOption("My Other Auto", MyOtherAuto.getAutoCommand());
