@@ -14,14 +14,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-public class FourPointZeroFiveMetersFromEdgeAuto {
-
-    private static final RobotContainer container = RobotContainer.getInstance();
-
+public class C_Center {
     private static final double kTranslationP = 5.0;
     private static final double kRotationP = 5.0;
 
     public static Command getAutoCommand() {
+        RobotContainer container = RobotContainer.getInstance();
+
         PIDController xController = new PIDController(kTranslationP, 0, 0);
         PIDController yController = new PIDController(kTranslationP, 0, 0);
         PIDController rotController = new PIDController(kRotationP, 0, 0);
@@ -61,18 +60,25 @@ public class FourPointZeroFiveMetersFromEdgeAuto {
                         DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                         container.getDriveSubsystem());
 
-        AutoRoutine routine = choreoFactory.newRoutine("FourPointZeroFiveAuto");
-        AutoTrajectory path = routine.trajectory("FourPointZeroFiveMetersFromEdgeToCenter");
+        AutoRoutine routine = choreoFactory.newRoutine("C_Center");
+        AutoTrajectory path = routine.trajectory("C_Center");
 
         routine.active()
                 .onTrue(
                         Commands.sequence(
                                 path.resetOdometry(),
-                                AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0)
-                                        .withTimeout(1.0),
-                                AutoFactory900.shoot(ShooterSetpoint::setpointHub).withTimeout(5.0),
+                                AutoFactory900.resetHood(container),
+                                path.cmd(),
+                                Commands.race(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(1)),
+                                Commands.race(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(3)),
                                 AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
-                                Commands.parallel(path.cmd(), AutoFactory900.intakeSlapdown()),
+                                Commands.parallel(
+                                        path.cmd(),
+                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
                                 AutoFactory900.retractSlapdown()));
 
         return routine.cmd();

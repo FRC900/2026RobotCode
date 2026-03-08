@@ -4,6 +4,7 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
@@ -253,10 +254,13 @@ public class RobotContainer {
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
 
     private RobotContainer() {
+        instance = this;
+
         if (Robot.isSimulation()) {
             assert this.simulatedRobotState != null;
             this.simulatedRobotState.init();
         }
+        autoDashboard = new AutoDashboard();
         configureBindings();
     }
 
@@ -377,11 +381,11 @@ public class RobotContainer {
         return false;
     }
 
-    // private final AutoDashboard autoDashboard = new AutoDashboard();
+    private final AutoDashboard autoDashboard;
 
-    // public Command getAutonomousCommand() {
-    //     return autoDashboard.getSelectedAuto();
-    // }
+    public Command getAutonomousCommand() {
+        return autoDashboard.getSelectedAuto();
+    }
 
     public Command getTestCommand() {
         return IntakeFactory.deploySlapdown(this);

@@ -2,7 +2,6 @@ package com.team900.frc2026.controlboard;
 
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
-import com.team900.lib.util.CommandSimPS5Controller;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -25,7 +24,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     @SuppressWarnings("unused")
     private GamepadButtonControlBoard() {
         if (Robot.isSimulation()) {
-            controller = new CommandSimPS5Controller(Constants.kDriveGamepadPort);
+            controller = new CommandPS5Controller(Constants.kDriveGamepadPort);
         } else {
             controller = new CommandPS5Controller(Constants.kDriveGamepadPort);
         }
