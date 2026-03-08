@@ -1,4 +1,4 @@
-// package com.team900.frc2026.subsystems.coprocessor;
+package com.team900.frc2026.subsystems.coprocessor;
 
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
@@ -106,26 +106,26 @@ public class CoprocessorSubsystem extends SubsystemBase {
     }
     ;
 
-//     private void checkPing() {
-//         Optional<RosFloat64> ping;
-//         if ((ping = m_pingSendSub.receive()).isPresent()) {
-//             m_pingReturnPub.send(ping.get());
-//         }
-//     }
+    private void checkPing() {
+        Optional<RosFloat64> ping;
+        if ((ping = m_pingSendSub.receive()).isPresent()) {
+            m_pingReturnPub.send(ping.get());
+        }
+    }
 
-//     private void checkFiducialDetections() {
-//         Optional<RawFiducialArrayStamped> rawFiducialArray;
-//         // just log it for rn
-//         if ((rawFiducialArray = m_vid0TagsSub.receive()).isPresent()) {
-//             System.out.println(rawFiducialArray);
-//         }
-//         if ((rawFiducialArray = m_vid1TagsSub.receive()).isPresent()) {
-//             System.out.println(rawFiducialArray);
-//         }
-//         // if ((rawFiducialArray = m_vid2TagsSub.receive()).isPresent()) {
-//         //     System.out.println(rawFiducialArray);
-//         // }
-//     }
+    private void checkFiducialDetections() {
+        Optional<RawFiducialArrayStamped> rawFiducialArray;
+        // just log it for rn
+        if ((rawFiducialArray = m_vid0TagsSub.receive()).isPresent()) {
+            System.out.println(rawFiducialArray);
+        }
+        if ((rawFiducialArray = m_vid1TagsSub.receive()).isPresent()) {
+            System.out.println(rawFiducialArray);
+        }
+        // if ((rawFiducialArray = m_vid2TagsSub.receive()).isPresent()) {
+        //     System.out.println(rawFiducialArray);
+        // }
+    }
 
     // private void checkRosPose() {
     //     TFMessage pose;

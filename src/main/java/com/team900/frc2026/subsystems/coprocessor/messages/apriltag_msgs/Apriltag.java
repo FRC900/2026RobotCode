@@ -1,9 +1,9 @@
-// // Auto generated!! Do not modify.
-// package com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs;
+// Auto generated!! Do not modify.
+package com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs;
 
-// import com.google.gson.JsonElement;
-// import com.google.gson.JsonObject;
-// import com.google.gson.annotations.Expose;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 
 public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
@@ -22,10 +22,10 @@ public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
                 new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point()
             };
 
-//     @Expose(serialize = false, deserialize = false)
-//     public final java.lang.String _type = "apriltag_msgs/Apriltag";
+    @Expose(serialize = false, deserialize = false)
+    public final java.lang.String _type = "apriltag_msgs/Apriltag";
 
-//     public Apriltag() {}
+    public Apriltag() {}
 
     public Apriltag(
             int id,
@@ -63,25 +63,25 @@ public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
         }
     }
 
-//     public int getId() {
-//         return this.id;
-//     }
+    public int getId() {
+        return this.id;
+    }
 
-//     public java.lang.String getFamily() {
-//         return this.family;
-//     }
+    public java.lang.String getFamily() {
+        return this.family;
+    }
 
-//     public int getHamming() {
-//         return this.hamming;
-//     }
+    public int getHamming() {
+        return this.hamming;
+    }
 
-//     public int getBorder() {
-//         return this.border;
-//     }
+    public int getBorder() {
+        return this.border;
+    }
 
-//     public int getBits() {
-//         return this.bits;
-//     }
+    public int getBits() {
+        return this.bits;
+    }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point getCenter() {
         return this.center;
@@ -91,25 +91,25 @@ public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
         return this.corners;
     }
 
-//     public void setId(int id) {
-//         this.id = id;
-//     }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-//     public void setFamily(java.lang.String family) {
-//         this.family = family;
-//     }
+    public void setFamily(java.lang.String family) {
+        this.family = family;
+    }
 
-//     public void setHamming(int hamming) {
-//         this.hamming = hamming;
-//     }
+    public void setHamming(int hamming) {
+        this.hamming = hamming;
+    }
 
-//     public void setBorder(int border) {
-//         this.border = border;
-//     }
+    public void setBorder(int border) {
+        this.border = border;
+    }
 
-//     public void setBits(int bits) {
-//         this.bits = bits;
-//     }
+    public void setBits(int bits) {
+        this.bits = bits;
+    }
 
     public void setCenter(
             com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point center) {
@@ -121,11 +121,11 @@ public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
         this.corners = corners;
     }
 
-//     public JsonObject toJSON() {
-//         return ginst.toJsonTree(this).getAsJsonObject();
-//     }
+    public JsonObject toJSON() {
+        return ginst.toJsonTree(this).getAsJsonObject();
+    }
 
-//     public java.lang.String toString() {
-//         return ginst.toJson(this);
-//     }
-// }
+    public java.lang.String toString() {
+        return ginst.toJson(this);
+    }
+}

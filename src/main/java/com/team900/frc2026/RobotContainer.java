@@ -14,6 +14,7 @@ import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.frc2026.simulation.SimulatedRobotState;
+import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.drive.GyroIO;
