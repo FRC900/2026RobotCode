@@ -5,14 +5,19 @@
 package com.team900.frc2026;
 
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.team900.frc2026.factories.HandoffFactory;
+import com.team900.frc2026.factories.ShooterFactory;
+import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.lib.util.CANBusStatusLogger;
 import com.team900.lib.util.VirtualSubsystem;
 import edu.wpi.first.math.MathShared;
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.MathUsageId;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
@@ -20,6 +25,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+
+import static edu.wpi.first.units.Units.Volt;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -40,9 +49,23 @@ public class Robot extends LoggedRobot {
     private Command disabledCommand = Commands.none();
     private boolean hasEnabled = false;
 
-    private final RobotContainer robotContainer;
+    private final RobotContainer         robotContainer = RobotContainer.getInstance();
+;
     private int mIter = 0;
-    private Command autonomousCommand = Commands.none();
+    private Command autonomousCommand = (ShooterFactory.setShooterRPS(60, robotContainer)
+                                        .until(
+                                                () ->
+                                                        MathUtil.isNear(
+                                                                60,
+                                                                robotContainer.getShooterSubsystem()
+                                                                        .getCurrentVelocity(),
+                                                                1)))
+                                .andThen(
+                                        new ParallelCommandGroup(
+                                                HandoffFactory.runHandoff(robotContainer),
+                                                SpindexerFactory.runSpindexer(robotContainer)));
+
+
     private Optional<Pose2d> startingPose = Optional.empty();
 
     private double lastTimestampNotValid = 0;
@@ -88,6 +111,8 @@ public class Robot extends LoggedRobot {
         if (!Logger.hasReplaySource()) {
             RobotController.setTimeSource(RobotController::getFPGATime);
         }
+
+        RobotController.setBrownoutVoltage(Volt.of(6.0));
 
         // Silence joystick alerts
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -137,7 +162,6 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance()
                 .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
 
-        robotContainer = RobotContainer.getInstance();
         if (RobotBase.isSimulation()) {
             robotContainer.getDriveSubsystem().resetPose(new Pose2d(3, 3, new Rotation2d()));
         }
@@ -164,7 +188,8 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit()  {
+    }
 
     @Override
     public void disabledPeriodic() {}

@@ -54,4 +54,9 @@ public class HoodFactory {
                                 .until(RobotState.getInstance()::getHoodHasZeroed)
                                 .andThen(container.getHoodSubsystem()::enableSoftLimits));
     }
+
+    public static Command pass(RobotContainer container,double tolerance)        {
+               return container.getHoodSubsystem().motionMagicSetpointCommandBlocking(() -> 0.74, tolerance)
+                .withName("Hood Set Position Blocking");
+    }
 }

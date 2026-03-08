@@ -29,4 +29,8 @@ public interface IButtonControlBoard {
     Trigger povRight();
 
     void setRumble(boolean rumble);
+
+    Trigger resetHood();
+
+    Trigger pass();
 }

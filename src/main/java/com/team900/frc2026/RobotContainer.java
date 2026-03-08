@@ -62,6 +62,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lombok.Getter;
 import org.ironmaple.simulation.SimulatedArena;
+import org.littletonrobotics.junction.AutoLogOutput;
+import java.util.*;;
 
 public class RobotContainer {
     private DriveSubsystem buildDriveSystem() {
@@ -249,9 +251,6 @@ public class RobotContainer {
 
     @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
-    // TODO: check if this is automatically triggered
-    private final Trigger zeroHood =
-            new Trigger(robotState::getHoodHasZeroed).onTrue(HoodFactory.zero(this));
 
     private RobotContainer() {
         if (Robot.isSimulation()) {
@@ -268,15 +267,30 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(driveCommand);
 
         // Intake pivot, l1 to retract and deploy intake
+        // controlBoard
+        //         .toggleIntake()
+        //         .onTrue(
+        //                 Commands.either(
+        //                         IntakeFactory.retractSlapdown(this)
+        //                                 .beforeStarting(() -> intakeDeployed = false),
+        //                         IntakeFactory.deploySlapdown(this)
+        //                                 .beforeStarting(() -> intakeDeployed = true),
+        //                         () -> intakeDeployed));
+
         controlBoard
                 .toggleIntake()
                 .onTrue(
-                        Commands.either(
-                                IntakeFactory.retractSlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
-                                IntakeFactory.deploySlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
-                                () -> intakeDeployed));
+                        Commands.defer(
+                                () -> {
+                                        if (intakeDeployed){
+                                                intakeDeployed = false;
+                                                return IntakeFactory.retractSlapdown(this);
+                                        } else {
+                                                intakeDeployed = true;
+                                                return IntakeFactory.deploySlapdown(this);
+                                        }
+                                },
+                                        Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .shoot()
@@ -310,6 +324,27 @@ public class RobotContainer {
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
 
+ controlBoard
+                .pass()
+                .onTrue(
+                        (Commands.parallel(ShooterFactory.setShooterRPS(90, this)
+                                        .until(
+                                                () ->
+                                                        MathUtil.isNear(
+                                                                90,
+                                                                shooterSubsystem
+                                                                        .getCurrentVelocity(),
+                                                                1)), HoodFactory.pass(instance, 0.017)))
+                                .andThen(
+                                        new ParallelCommandGroup(
+                                                HandoffFactory.runHandoff(this),
+                                                SpindexerFactory.runSpindexer(this))))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                ShooterFactory.setShooterRPS(0, this),
+                                SpindexerFactory.stopSpindexer(this),
+                                HandoffFactory.stopHandoff(this)));
+
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
         controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
@@ -318,7 +353,12 @@ public class RobotContainer {
                 .intake()
                 .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
                 .onFalse(IntakeFactory.stopIntake(this));
+
+        controlBoard.exhaust().onTrue(IntakeFactory.exhaustIntake(this)).onFalse(IntakeFactory.stopIntake(this));
+
+        controlBoard.resetHood().onTrue(HoodFactory.zero(this));
     }
+
 
     public boolean odometryCloseToPose(Pose2d pose) {
         Pose2d fieldToRobot = robotState.getLatestFieldToRobot().getValue();

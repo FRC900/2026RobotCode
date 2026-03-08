@@ -1,6 +1,7 @@
 package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
+import com.team900.frc2026.RobotState;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,8 +14,7 @@ public class ShootingFactory {
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return (new ParallelCommandGroup(
                                 ShooterFactory.setShooterRPS(setPointSupplier, container),
-                                SuperstructureFactory.aim(setPointSupplier, container),
-                                IntakeFactory.deploySlapdown(container))
+                                SuperstructureFactory.aim(setPointSupplier, container))
                         .until(
                                 () ->
                                         MathUtil.isNear(
@@ -22,7 +22,7 @@ public class ShootingFactory {
                                                 container
                                                         .getShooterSubsystem()
                                                         .getCurrentVelocity(),
-                                                1)))
+                                                1) && MathUtil.isNear(setPointSupplier.get().getHoodRadians(), container.getHoodSubsystem().getCurrentPosition(), 1) && MathUtil.isNear(0, RobotState.getInstance().getLatestRotationRobotToHub().getDegrees(), 3)))
                 .andThen(
                         new ParallelCommandGroup(
                                         IntakeFactory.runIntake(container),

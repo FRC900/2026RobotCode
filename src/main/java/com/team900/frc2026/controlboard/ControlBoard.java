@@ -115,4 +115,14 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     public Trigger toggleIntake() {
         return buttonControlBoard.toggleIntake();
     }
+
+    @Override
+    public Trigger resetHood()  {
+        return buttonControlBoard.resetHood();
+    }
+
+    @Override 
+    public Trigger pass()   {
+        return buttonControlBoard.pass();
+    }
 }
