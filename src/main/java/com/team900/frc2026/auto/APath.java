@@ -7,14 +7,16 @@ import choreo.trajectory.SwerveSample;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.factories.AutoFactory900;
 import com.team900.lib.util.ShooterSetpoint;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class C_Center {
+public class APath {
+    
     private static final double kTranslationP = 5.0;
     private static final double kRotationP = 5.0;
 
@@ -60,27 +62,22 @@ public class C_Center {
                         DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                         container.getDriveSubsystem());
 
-        AutoRoutine routine = choreoFactory.newRoutine("C_Center");
-        AutoTrajectory path = routine.trajectory("C_Center");
-
+        AutoRoutine routine = choreoFactory.newRoutine("A");
+        AutoTrajectory path = routine.trajectory("A");
+        
         routine.active()
                 .onTrue(
                         Commands.sequence(
                                 path.resetOdometry(),
                                 AutoFactory900.resetHood(container),
                                 path.cmd(),
-                                Commands.race(
+                                Commands.parallel(
                                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
                                         AutoFactory900.waitSeconds(1)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(3)),
-                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
                                 Commands.parallel(
-                                        path.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                AutoFactory900.retractSlapdown()));
-
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(5)),
+                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)));
         return routine.cmd();
     }
 }

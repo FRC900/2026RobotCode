@@ -80,4 +80,25 @@ public class Autos {
                                 AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)));
         return routine.cmd();
     }
+
+    public static Command A() {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory();
+        AutoRoutine routine = choreoFactory.newRoutine("A");
+        AutoTrajectory path = routine.trajectory("A");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                path.resetOdometry(),
+                                AutoFactory900.resetHood(container),
+                                path.cmd(),
+                                Commands.parallel(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(1)),
+                                Commands.parallel(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(5)),
+                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)));
+        return routine.cmd();
+    }
 }

@@ -10,7 +10,7 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption("C_LT_Ce", Autos.C_RT_Ce());
+        autoChooser.setDefaultOption("A", APath.getAutoCommand());
 
         // Add more autos here as you create them:
         // autoChooser.addOption("My Other Auto", MyOtherAuto.getAutoCommand());
