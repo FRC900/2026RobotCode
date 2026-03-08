@@ -282,20 +282,20 @@ public class RobotContainer {
         //                                 .beforeStarting(() -> intakeDeployed = true),
         //                         () -> intakeDeployed));
 
-        controlBoard
-                .toggleIntake()
-                .onTrue(
-                        Commands.defer(
-                                () -> {
-                                        if (intakeDeployed){
-                                                intakeDeployed = false;
-                                                return IntakeFactory.retractSlapdown(this);
-                                        } else {
-                                                intakeDeployed = true;
-                                                return IntakeFactory.deploySlapdown(this);
-                                        }
-                                },
-                                        Set.of(getIntakePivotSubsystem())));
+        // controlBoard
+        //         .toggleIntake()
+        //         .onTrue(
+        //                 Commands.defer(
+        //                         () -> {
+        //                                 if (intakeDeployed){
+        //                                         intakeDeployed = false;
+        //                                         return IntakeFactory.retractSlapdown(this);
+        //                                 } else {
+        //                                         intakeDeployed = true;
+        //                                         return IntakeFactory.deploySlapdown(this);
+        //                                 }
+        //                         },
+        //                                 Set.of(getIntakePivotSubsystem())));
 
          controlBoard
                 .shoot()

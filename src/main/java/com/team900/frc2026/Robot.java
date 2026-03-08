@@ -213,9 +213,9 @@ public class Robot extends LoggedRobot {
 
         RobotState.getInstance().setAutoStartTime(Timer.getFPGATimestamp());
 
-        autonomousCommand = robotContainer.getAutonomousCommand();
+        // autonomousCommand = robotContainer.getAutonomousCommand();
         if (autonomousCommand != null) {
-            CommandScheduler.getInstance().schedule(autonomousCommand);
+            // CommandScheduler.getInstance().schedule(autonomousCommand);
         }
     }
 
