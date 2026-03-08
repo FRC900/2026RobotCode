@@ -2,10 +2,15 @@
 
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducialArrayStamped;
-import com.team900.frc2026.subsystems.drive.DriveSubsystem;
+import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RosPoseObservation;
+import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
+import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
+import com.team900.frc2026.subsystems.vision.VisionIO.TargetObservation;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,10 +43,13 @@ public class CoprocessorSubsystem extends SubsystemBase {
     private final BridgePublisher<RosFloat64> m_pingReturnPub;
     private final BridgePublisher<Odometry> m_odomPub;
 
-//     public CoprocessorSubsystem(DriveSubsystem drive) {
-//         long updateDelay = 20;
-//         NetworkTableInstance instance = NetworkTableInstance.getDefault();
-//         instance.startServer();
+    private final BridgeSubscriber<RosFloat64> m_pingSendSub;
+    private final BridgeSubscriber<RawFiducialArrayStamped> m_vid0TagsSub;
+    private final BridgeSubscriber<RawFiducialArrayStamped> m_vid1TagsSub;
+    // private final BridgeSubscriber<RawFiducialArrayStamped> m_vid2TagsSub;
+    // private final BridgeSubscriber<TFMessage> m_poseSub;
+    private final BridgeSubscriber<RosPoseObservation> m_poseObsSub;
+    // private final BridgeSubscriber<RosTargetObservation> m_targObsSub;
 
     public static final String MAP_FRAME = "map";
     public static final String ODOM_FRAME = "odom";
@@ -94,9 +102,10 @@ public class CoprocessorSubsystem extends SubsystemBase {
         //                 m_ros_interface,
         //                 "/ov2311_10_9_0_9_video2/raw_fiducials",
         //                 RawFiducialArrayStamped.class);
-        m_poseSub =
-                new BridgeSubscriber<>(
-                        m_ros_interface, "/tagslam/odom/body_frc_robot", TFMessage.class);
+        // m_poseSub =
+        //         new BridgeSubscriber<>(
+        //                 m_ros_interface, "/tagslam/odom/body_frc_robot", TFMessage.class);
+        m_poseObsSub = new BridgeSubscriber<>(m_ros_interface, "/tagslam_bridge/pose_observations", RosPoseObservation.class);
     }
     ;
 
@@ -121,17 +130,43 @@ public class CoprocessorSubsystem extends SubsystemBase {
 //         // }
 //     }
 
-    private void checkRosPose() {
-        TFMessage pose;
-        // just log it for rn
-        if ((m_poseSub.receive().isPresent()) && (pose = m_poseSub.receive().get()) != null) {
-            for (TransformStamped tf : pose.getTransforms()) {
-                // if (tf.getChildFrameId() == "base_link") {
-                System.out.println(tf);
-                // }
-            }
+    // private void checkRosPose() {
+    //     TFMessage pose;
+    //     // just log it for rn
+    //     if ((m_poseSub.receive().isPresent()) && (pose = m_poseSub.receive().get()) != null) {
+    //         for (TransformStamped tf : pose.getTransforms()) {
+    //             // if (tf.getChildFrameId() == "base_link") {
+    //             System.out.println(tf);
+    //             // }
+    //         }
+    //     }
+    // }
+
+    private void checkRosPoseObservation() {
+        Optional<RosPoseObservation> rosPoseObsRes;
+        RosPoseObservation rosPoseObs;
+        if ((rosPoseObsRes = m_poseObsSub.receive()).isPresent() && (rosPoseObs = rosPoseObsRes.get()) != null) {
+            PoseObservation posObs = new PoseObservation(
+                rosPoseObs.getTimestamp(), 
+                ROSConversions.rosToWpiPose(rosPoseObs.getPose()), 
+                rosPoseObs.getAmbiguity(),
+                rosPoseObs.getTagCount(),
+                rosPoseObs.getAverageTagDistance(),
+                PoseObservationType.SOLVE_PNP // is this correct?
+            );
         }
     }
+
+    // private void checkRosTargetObservation() {
+    //     RosTargetObservation rosTargObs;
+    //     if ((m_targObsSub.receive().isPresent()) && (targObs = m_targObsSub.receive().get()) != null) {
+    //         Rotation3d targObsRot = ROSConversions.rosToWpiRotation(targObs.rot);
+    //         Rotation2d tx = new Rotation2d(targObsRot.getMeasureZ()); // yaw
+    //         Rotation2d ty = new Rotation2d(targObsRot.getMeasureY()); // pitch
+    //         TargetObservation targObs = new TargetObservation(tx, ty);
+    //     }
+    // }
+
     private void sendOdom() {
         Pose2d pose = m_robotState.getLatestFieldToRobot().getValue();
         ChassisSpeeds velocity = m_robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
@@ -149,7 +184,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
     public void periodic() {
         checkPing();
         checkFiducialDetections();
-        checkRosPose();
+        checkRosPoseObservation();
         sendOdom();
     }
 }
