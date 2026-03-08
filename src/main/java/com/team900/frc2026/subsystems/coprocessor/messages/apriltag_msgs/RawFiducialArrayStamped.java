@@ -7,41 +7,40 @@
 // import java.util.ArrayList;
 // import java.util.Arrays;
 
-// public class RawFiducialArrayStamped extends frc.team88.ros.messages.RosMessage {
+public class RawFiducialArrayStamped extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-//     private frc.team88.ros.messages.std_msgs.RosHeader header =
-//             new frc.team88.ros.messages.std_msgs.RosHeader();
-//     private
-// ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
-//             rawFiducials = new ArrayList<>();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
+            rawFiducials = new ArrayList<>();
 
 //     @Expose(serialize = false, deserialize = false)
 //     public final java.lang.String _type = "apriltag_msgs/RawFiducialArrayStamped";
 
 //     public RawFiducialArrayStamped() {}
 
-//     public RawFiducialArrayStamped(
-//             frc.team88.ros.messages.std_msgs.RosHeader header,
-//             com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial[]
-//                     rawFiducials) {
-//         this.header = header;
-//         this.rawFiducials = new ArrayList<>(Arrays.asList(rawFiducials));
-//     }
+    public RawFiducialArrayStamped(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial[]
+                    rawFiducials) {
+        this.header = header;
+        this.rawFiducials = new ArrayList<>(Arrays.asList(rawFiducials));
+    }
 
-//     public RawFiducialArrayStamped(JsonObject jsonObj) {
-//         this.header =
-//                 new frc.team88.ros.messages.std_msgs.RosHeader(
-//                         jsonObj.get("header").getAsJsonObject());
-//         for (JsonElement rawFiducials_element : jsonObj.getAsJsonArray("rawFiducials")) {
-//             this.rawFiducials.add(
-//                     new com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs
-//                             .RawFiducial(rawFiducials_element.getAsJsonObject()));
-//         }
-//     }
+    public RawFiducialArrayStamped(JsonObject jsonObj) {
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
+        for (JsonElement rawFiducials_element : jsonObj.getAsJsonArray("rawFiducials")) {
+            this.rawFiducials.add(
+                    new com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs
+                            .RawFiducial(rawFiducials_element.getAsJsonObject()));
+        }
+    }
 
-//     public frc.team88.ros.messages.std_msgs.RosHeader getHeader() {
-//         return this.header;
-//     }
+    public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
+        return this.header;
+    }
 
 //     public
 // ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
@@ -49,9 +48,9 @@
 //         return this.rawFiducials;
 //     }
 
-//     public void setHeader(frc.team88.ros.messages.std_msgs.RosHeader header) {
-//         this.header = header;
-//     }
+    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+        this.header = header;
+    }
 
 //     public void setRawFiducials(
 //

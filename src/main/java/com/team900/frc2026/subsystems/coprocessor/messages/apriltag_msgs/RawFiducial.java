@@ -3,7 +3,7 @@
 // import com.google.gson.JsonObject;
 // import com.google.gson.annotations.Expose;
 
-// public class RawFiducial extends frc.team88.ros.messages.RosMessage {
+public class RawFiducial extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
 //     private int id = 0;
 //     private double txnc = 0;
