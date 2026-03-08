@@ -15,9 +15,7 @@ public class RegionOfInterest extends com.team900.lib.rosNetworkTablesBridge.mes
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/RegionOfInterest";
 
-    public RegionOfInterest() {
-
-    }
+    public RegionOfInterest() {}
 
     public RegionOfInterest(int x_offset, int y_offset, int height, int width, boolean do_rectify) {
         this.x_offset = x_offset;
@@ -38,15 +36,19 @@ public class RegionOfInterest extends com.team900.lib.rosNetworkTablesBridge.mes
     public int getXOffset() {
         return this.x_offset;
     }
+
     public int getYOffset() {
         return this.y_offset;
     }
+
     public int getHeight() {
         return this.height;
     }
+
     public int getWidth() {
         return this.width;
     }
+
     public boolean getDoRectify() {
         return this.do_rectify;
     }
@@ -54,15 +56,19 @@ public class RegionOfInterest extends com.team900.lib.rosNetworkTablesBridge.mes
     public void setXOffset(int x_offset) {
         this.x_offset = x_offset;
     }
+
     public void setYOffset(int y_offset) {
         this.y_offset = y_offset;
     }
+
     public void setHeight(int height) {
         this.height = height;
     }
+
     public void setWidth(int width) {
         this.width = width;
     }
+
     public void setDoRectify(boolean do_rectify) {
         this.do_rectify = do_rectify;
     }

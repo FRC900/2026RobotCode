@@ -5,15 +5,6 @@ import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFidu
 import com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RosPoseObservation;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
-import com.team900.frc2026.subsystems.vision.VisionIO.TargetObservation;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.team900.lib.rosNetworkTablesBridge.bridge.BridgePublisher;
 import com.team900.lib.rosNetworkTablesBridge.bridge.BridgeSubscriber;
 import com.team900.lib.rosNetworkTablesBridge.bridge.ROSNetworkTablesBridge;
@@ -23,14 +14,17 @@ import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseWithCovariance;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Quaternion;
-import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Twist;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TwistWithCovariance;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3;
 import com.team900.lib.rosNetworkTablesBridge.messages.nav_msgs.Odometry;
 import com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosFloat64;
 import com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader;
-import com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.TFMessage;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 
 public class CoprocessorSubsystem extends SubsystemBase {
@@ -109,7 +103,11 @@ public class CoprocessorSubsystem extends SubsystemBase {
         // m_poseSub =
         //         new BridgeSubscriber<>(
         //                 m_ros_interface, "/tagslam/odom/body_frc_robot", TFMessage.class);
-        m_poseObsSub = new BridgeSubscriber<>(m_ros_interface, "/tagslam_bridge/pose_observations", RosPoseObservation.class);
+        m_poseObsSub =
+                new BridgeSubscriber<>(
+                        m_ros_interface,
+                        "/tagslam_bridge/pose_observations",
+                        RosPoseObservation.class);
     }
     ;
 
@@ -149,21 +147,24 @@ public class CoprocessorSubsystem extends SubsystemBase {
     private void checkRosPoseObservation() {
         Optional<RosPoseObservation> rosPoseObsRes;
         RosPoseObservation rosPoseObs;
-        if ((rosPoseObsRes = m_poseObsSub.receive()).isPresent() && (rosPoseObs = rosPoseObsRes.get()) != null) {
-            PoseObservation posObs = new PoseObservation(
-                rosPoseObs.getTimestamp(), 
-                ROSConversions.rosToWpiPose(rosPoseObs.getPose()), 
-                rosPoseObs.getAmbiguity(),
-                rosPoseObs.getTagCount(),
-                rosPoseObs.getAverageTagDistance(),
-                PoseObservationType.SOLVE_PNP // is this correct?
-            );
+        if ((rosPoseObsRes = m_poseObsSub.receive()).isPresent()
+                && (rosPoseObs = rosPoseObsRes.get()) != null) {
+            PoseObservation posObs =
+                    new PoseObservation(
+                            rosPoseObs.getTimestamp(),
+                            ROSConversions.rosToWpiPose(rosPoseObs.getPose()),
+                            rosPoseObs.getAmbiguity(),
+                            rosPoseObs.getTagCount(),
+                            rosPoseObs.getAverageTagDistance(),
+                            PoseObservationType.SOLVE_PNP // is this correct?
+                            );
         }
     }
 
     // private void checkRosTargetObservation() {
     //     RosTargetObservation rosTargObs;
-    //     if ((m_targObsSub.receive().isPresent()) && (targObs = m_targObsSub.receive().get()) != null) {
+    //     if ((m_targObsSub.receive().isPresent()) && (targObs = m_targObsSub.receive().get()) !=
+    // null) {
     //         Rotation3d targObsRot = ROSConversions.rosToWpiRotation(targObs.rot);
     //         Rotation2d tx = new Rotation2d(targObsRot.getMeasureZ()); // yaw
     //         Rotation2d ty = new Rotation2d(targObsRot.getMeasureY()); // pitch

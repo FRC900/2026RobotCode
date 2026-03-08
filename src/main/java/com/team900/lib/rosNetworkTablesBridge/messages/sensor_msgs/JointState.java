@@ -9,7 +9,8 @@ import java.util.Arrays;
 
 public class JointState extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private ArrayList<java.lang.String> name = new ArrayList<>();
     private ArrayList<java.lang.Double> position = new ArrayList<>();
     private ArrayList<java.lang.Double> velocity = new ArrayList<>();
@@ -18,11 +19,14 @@ public class JointState extends com.team900.lib.rosNetworkTablesBridge.messages.
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/JointState";
 
-    public JointState() {
+    public JointState() {}
 
-    }
-
-    public JointState(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, java.lang.String[] name, java.lang.Double[] position, java.lang.Double[] velocity, java.lang.Double[] effort) {
+    public JointState(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            java.lang.String[] name,
+            java.lang.Double[] position,
+            java.lang.Double[] velocity,
+            java.lang.Double[] effort) {
         this.header = header;
         this.name = new ArrayList<>(Arrays.asList(name));
         this.position = new ArrayList<>(Arrays.asList(position));
@@ -31,7 +35,9 @@ public class JointState extends com.team900.lib.rosNetworkTablesBridge.messages.
     }
 
     public JointState(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         for (JsonElement name_element : jsonObj.getAsJsonArray("name")) {
             this.name.add(name_element.getAsString());
         }
@@ -49,31 +55,40 @@ public class JointState extends com.team900.lib.rosNetworkTablesBridge.messages.
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public ArrayList<java.lang.String> getName() {
         return this.name;
     }
+
     public ArrayList<java.lang.Double> getPosition() {
         return this.position;
     }
+
     public ArrayList<java.lang.Double> getVelocity() {
         return this.velocity;
     }
+
     public ArrayList<java.lang.Double> getEffort() {
         return this.effort;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setName(ArrayList<java.lang.String> name) {
         this.name = name;
     }
+
     public void setPosition(ArrayList<java.lang.Double> position) {
         this.position = position;
     }
+
     public void setVelocity(ArrayList<java.lang.Double> velocity) {
         this.velocity = velocity;
     }
+
     public void setEffort(ArrayList<java.lang.Double> effort) {
         this.effort = effort;
     }

@@ -4,7 +4,8 @@ package com.team900.lib.rosNetworkTablesBridge.messages.std_msgs;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
-public class RosMultiArrayDimension extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class RosMultiArrayDimension
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private java.lang.String label = "";
     private int size = 0;
@@ -13,9 +14,7 @@ public class RosMultiArrayDimension extends com.team900.lib.rosNetworkTablesBrid
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/MultiArrayDimension";
 
-    public RosMultiArrayDimension() {
-
-    }
+    public RosMultiArrayDimension() {}
 
     public RosMultiArrayDimension(java.lang.String label, int size, int stride) {
         this.label = label;
@@ -32,9 +31,11 @@ public class RosMultiArrayDimension extends com.team900.lib.rosNetworkTablesBrid
     public java.lang.String getLabel() {
         return this.label;
     }
+
     public int getSize() {
         return this.size;
     }
+
     public int getStride() {
         return this.stride;
     }
@@ -42,9 +43,11 @@ public class RosMultiArrayDimension extends com.team900.lib.rosNetworkTablesBrid
     public void setLabel(java.lang.String label) {
         this.label = label;
     }
+
     public void setSize(int size) {
         this.size = size;
     }
+
     public void setStride(int stride) {
         this.stride = stride;
     }

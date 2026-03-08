@@ -111,11 +111,13 @@ public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
         this.bits = bits;
     }
 
-    public void setCenter(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point center) {
+    public void setCenter(
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point center) {
         this.center = center;
     }
 
-    public void setCorners(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] corners) {
+    public void setCorners(
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] corners) {
         this.corners = corners;
     }
 

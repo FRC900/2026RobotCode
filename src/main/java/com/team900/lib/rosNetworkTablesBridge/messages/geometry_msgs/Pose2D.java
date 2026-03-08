@@ -13,9 +13,7 @@ public class Pose2D extends com.team900.lib.rosNetworkTablesBridge.messages.RosM
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "geometry_msgs/Pose2D";
 
-    public Pose2D() {
-
-    }
+    public Pose2D() {}
 
     public Pose2D(double x, double y, double theta) {
         this.x = x;
@@ -32,9 +30,11 @@ public class Pose2D extends com.team900.lib.rosNetworkTablesBridge.messages.RosM
     public double getX() {
         return this.x;
     }
+
     public double getY() {
         return this.y;
     }
+
     public double getTheta() {
         return this.theta;
     }
@@ -42,9 +42,11 @@ public class Pose2D extends com.team900.lib.rosNetworkTablesBridge.messages.RosM
     public void setX(double x) {
         this.x = x;
     }
+
     public void setY(double y) {
         this.y = y;
     }
+
     public void setTheta(double theta) {
         this.theta = theta;
     }

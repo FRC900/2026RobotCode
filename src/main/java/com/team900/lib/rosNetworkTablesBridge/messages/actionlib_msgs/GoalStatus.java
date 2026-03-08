@@ -16,25 +16,29 @@ public class GoalStatus extends com.team900.lib.rosNetworkTablesBridge.messages.
     public static int RECALLED = 8;
     public static int LOST = 9;
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID goal_id = new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID();
+    private com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID goal_id =
+            new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID();
     private byte status = 0;
     private java.lang.String text = "";
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "actionlib_msgs/GoalStatus";
 
-    public GoalStatus() {
+    public GoalStatus() {}
 
-    }
-
-    public GoalStatus(com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID goal_id, byte status, java.lang.String text) {
+    public GoalStatus(
+            com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID goal_id,
+            byte status,
+            java.lang.String text) {
         this.goal_id = goal_id;
         this.status = status;
         this.text = text;
     }
 
     public GoalStatus(JsonObject jsonObj) {
-        this.goal_id = new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID(jsonObj.get("goal_id").getAsJsonObject());
+        this.goal_id =
+                new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID(
+                        jsonObj.get("goal_id").getAsJsonObject());
         this.status = jsonObj.get("status").getAsByte();
         this.text = jsonObj.get("text").getAsString();
     }
@@ -42,19 +46,24 @@ public class GoalStatus extends com.team900.lib.rosNetworkTablesBridge.messages.
     public com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID getGoalId() {
         return this.goal_id;
     }
+
     public byte getStatus() {
         return this.status;
     }
+
     public java.lang.String getText() {
         return this.text;
     }
 
-    public void setGoalId(com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID goal_id) {
+    public void setGoalId(
+            com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalID goal_id) {
         this.goal_id = goal_id;
     }
+
     public void setStatus(byte status) {
         this.status = status;
     }
+
     public void setText(java.lang.String text) {
         this.text = text;
     }

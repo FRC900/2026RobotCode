@@ -9,41 +9,55 @@ import java.util.Arrays;
 
 public class Mesh extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle> triangles = new ArrayList<>();
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point> vertices = new ArrayList<>();
+    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle>
+            triangles = new ArrayList<>();
+    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point>
+            vertices = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "shape_msgs/Mesh";
 
-    public Mesh() {
+    public Mesh() {}
 
-    }
-
-    public Mesh(com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle[] triangles, com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] vertices) {
+    public Mesh(
+            com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle[] triangles,
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] vertices) {
         this.triangles = new ArrayList<>(Arrays.asList(triangles));
         this.vertices = new ArrayList<>(Arrays.asList(vertices));
     }
 
     public Mesh(JsonObject jsonObj) {
         for (JsonElement triangles_element : jsonObj.getAsJsonArray("triangles")) {
-            this.triangles.add(new com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle(triangles_element.getAsJsonObject()));
+            this.triangles.add(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle(
+                            triangles_element.getAsJsonObject()));
         }
         for (JsonElement vertices_element : jsonObj.getAsJsonArray("vertices")) {
-            this.vertices.add(new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(vertices_element.getAsJsonObject()));
+            this.vertices.add(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(
+                            vertices_element.getAsJsonObject()));
         }
     }
 
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle> getTriangles() {
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle>
+            getTriangles() {
         return this.triangles;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point> getVertices() {
+
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point>
+            getVertices() {
         return this.vertices;
     }
 
-    public void setTriangles(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle> triangles) {
+    public void setTriangles(
+            ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.shape_msgs.MeshTriangle>
+                    triangles) {
         this.triangles = triangles;
     }
-    public void setVertices(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point> vertices) {
+
+    public void setVertices(
+            ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point>
+                    vertices) {
         this.vertices = vertices;
     }
 

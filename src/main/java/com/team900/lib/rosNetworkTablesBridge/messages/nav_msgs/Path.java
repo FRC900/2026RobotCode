@@ -9,39 +9,51 @@ import java.util.Arrays;
 
 public class Path extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped> poses = new ArrayList<>();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped>
+            poses = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "nav_msgs/Path";
 
-    public Path() {
+    public Path() {}
 
-    }
-
-    public Path(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped[] poses) {
+    public Path(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped[] poses) {
         this.header = header;
         this.poses = new ArrayList<>(Arrays.asList(poses));
     }
 
     public Path(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         for (JsonElement poses_element : jsonObj.getAsJsonArray("poses")) {
-            this.poses.add(new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped(poses_element.getAsJsonObject()));
+            this.poses.add(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped(
+                            poses_element.getAsJsonObject()));
         }
     }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped> getPoses() {
+
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped>
+            getPoses() {
         return this.poses;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
-    public void setPoses(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped> poses) {
+
+    public void setPoses(
+            ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseStamped>
+                    poses) {
         this.poses = poses;
     }
 

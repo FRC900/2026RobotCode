@@ -18,11 +18,14 @@ public class MenuEntry extends com.team900.lib.rosNetworkTablesBridge.messages.R
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "visualization_msgs/MenuEntry";
 
-    public MenuEntry() {
+    public MenuEntry() {}
 
-    }
-
-    public MenuEntry(int id, int parent_id, java.lang.String title, java.lang.String command, byte command_type) {
+    public MenuEntry(
+            int id,
+            int parent_id,
+            java.lang.String title,
+            java.lang.String command,
+            byte command_type) {
         this.id = id;
         this.parent_id = parent_id;
         this.title = title;
@@ -41,15 +44,19 @@ public class MenuEntry extends com.team900.lib.rosNetworkTablesBridge.messages.R
     public int getId() {
         return this.id;
     }
+
     public int getParentId() {
         return this.parent_id;
     }
+
     public java.lang.String getTitle() {
         return this.title;
     }
+
     public java.lang.String getCommand() {
         return this.command;
     }
+
     public byte getCommandType() {
         return this.command_type;
     }
@@ -57,15 +64,19 @@ public class MenuEntry extends com.team900.lib.rosNetworkTablesBridge.messages.R
     public void setId(int id) {
         this.id = id;
     }
+
     public void setParentId(int parent_id) {
         this.parent_id = parent_id;
     }
+
     public void setTitle(java.lang.String title) {
         this.title = title;
     }
+
     public void setCommand(java.lang.String command) {
         this.command = command;
     }
+
     public void setCommandType(byte command_type) {
         this.command_type = command_type;
     }

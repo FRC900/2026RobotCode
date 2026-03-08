@@ -6,25 +6,29 @@ import com.google.gson.annotations.Expose;
 
 public class FluidPressure extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private double fluid_pressure = 0.0;
     private double variance = 0.0;
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/FluidPressure";
 
-    public FluidPressure() {
+    public FluidPressure() {}
 
-    }
-
-    public FluidPressure(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, double fluid_pressure, double variance) {
+    public FluidPressure(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            double fluid_pressure,
+            double variance) {
         this.header = header;
         this.fluid_pressure = fluid_pressure;
         this.variance = variance;
     }
 
     public FluidPressure(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         this.fluid_pressure = jsonObj.get("fluid_pressure").getAsDouble();
         this.variance = jsonObj.get("variance").getAsDouble();
     }
@@ -32,19 +36,24 @@ public class FluidPressure extends com.team900.lib.rosNetworkTablesBridge.messag
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public double getFluidPressure() {
         return this.fluid_pressure;
     }
+
     public double getVariance() {
         return this.variance;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setFluidPressure(double fluid_pressure) {
         this.fluid_pressure = fluid_pressure;
     }
+
     public void setVariance(double variance) {
         this.variance = variance;
     }

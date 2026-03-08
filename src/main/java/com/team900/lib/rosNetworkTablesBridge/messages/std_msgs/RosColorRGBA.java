@@ -14,9 +14,7 @@ public class RosColorRGBA extends com.team900.lib.rosNetworkTablesBridge.message
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/ColorRGBA";
 
-    public RosColorRGBA() {
-
-    }
+    public RosColorRGBA() {}
 
     public RosColorRGBA(float r, float g, float b, float a) {
         this.r = r;
@@ -35,12 +33,15 @@ public class RosColorRGBA extends com.team900.lib.rosNetworkTablesBridge.message
     public float getR() {
         return this.r;
     }
+
     public float getG() {
         return this.g;
     }
+
     public float getB() {
         return this.b;
     }
+
     public float getA() {
         return this.a;
     }
@@ -48,12 +49,15 @@ public class RosColorRGBA extends com.team900.lib.rosNetworkTablesBridge.message
     public void setR(float r) {
         this.r = r;
     }
+
     public void setG(float g) {
         this.g = g;
     }
+
     public void setB(float b) {
         this.b = b;
     }
+
     public void setA(float a) {
         this.a = a;
     }

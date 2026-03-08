@@ -4,48 +4,79 @@ package com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
-public class LookupTransformActionFeedback extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class LookupTransformActionFeedback
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
-    private com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus status = new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus();
-    private com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback feedback = new com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus status =
+            new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus();
+    private com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback
+            feedback =
+                    new com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .tf2_msgs
+                            .LookupTransformFeedback();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "tf2_msgs/LookupTransformActionFeedback";
 
-    public LookupTransformActionFeedback() {
+    public LookupTransformActionFeedback() {}
 
-    }
-
-    public LookupTransformActionFeedback(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus status, com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback feedback) {
+    public LookupTransformActionFeedback(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus status,
+            com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback
+                    feedback) {
         this.header = header;
         this.status = status;
         this.feedback = feedback;
     }
 
     public LookupTransformActionFeedback(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
-        this.status = new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus(jsonObj.get("status").getAsJsonObject());
-        this.feedback = new com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback(jsonObj.get("feedback").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
+        this.status =
+                new com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus(
+                        jsonObj.get("status").getAsJsonObject());
+        this.feedback =
+                new com.team900
+                        .lib
+                        .rosNetworkTablesBridge
+                        .messages
+                        .tf2_msgs
+                        .LookupTransformFeedback(jsonObj.get("feedback").getAsJsonObject());
     }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus getStatus() {
         return this.status;
     }
-    public com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback getFeedback() {
+
+    public com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback
+            getFeedback() {
         return this.feedback;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
-    public void setStatus(com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus status) {
+
+    public void setStatus(
+            com.team900.lib.rosNetworkTablesBridge.messages.actionlib_msgs.GoalStatus status) {
         this.status = status;
     }
-    public void setFeedback(com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback feedback) {
+
+    public void setFeedback(
+            com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs.LookupTransformFeedback
+                    feedback) {
         this.feedback = feedback;
     }
 

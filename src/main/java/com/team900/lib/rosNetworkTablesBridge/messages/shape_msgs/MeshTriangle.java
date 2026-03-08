@@ -7,18 +7,12 @@ import com.google.gson.annotations.Expose;
 
 public class MeshTriangle extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private java.lang.Integer[] vertex_indices = new java.lang.Integer[] {
-        0,
-        0,
-        0
-    };
+    private java.lang.Integer[] vertex_indices = new java.lang.Integer[] {0, 0, 0};
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "shape_msgs/MeshTriangle";
 
-    public MeshTriangle() {
-
-    }
+    public MeshTriangle() {}
 
     public MeshTriangle(java.lang.Integer[] vertex_indices) {
         for (int index = 0; index < 3; index++) {

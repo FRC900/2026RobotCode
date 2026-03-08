@@ -6,19 +6,12 @@ import com.google.gson.annotations.Expose;
 
 public class GetMapGoal extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "nav_msgs/GetMapGoal";
 
-    public GetMapGoal() {
+    public GetMapGoal() {}
 
-    }
-
-    public GetMapGoal(JsonObject jsonObj) {
-
-    }
-
-
+    public GetMapGoal(JsonObject jsonObj) {}
 
     public JsonObject toJSON() {
         return ginst.toJsonTree(this).getAsJsonObject();

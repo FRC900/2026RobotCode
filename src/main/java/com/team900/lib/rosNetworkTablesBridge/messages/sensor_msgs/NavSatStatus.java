@@ -20,9 +20,7 @@ public class NavSatStatus extends com.team900.lib.rosNetworkTablesBridge.message
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/NavSatStatus";
 
-    public NavSatStatus() {
-
-    }
+    public NavSatStatus() {}
 
     public NavSatStatus(byte status, short service) {
         this.status = status;
@@ -37,6 +35,7 @@ public class NavSatStatus extends com.team900.lib.rosNetworkTablesBridge.message
     public byte getStatus() {
         return this.status;
     }
+
     public short getService() {
         return this.service;
     }
@@ -44,6 +43,7 @@ public class NavSatStatus extends com.team900.lib.rosNetworkTablesBridge.message
     public void setStatus(byte status) {
         this.status = status;
     }
+
     public void setService(short service) {
         this.service = service;
     }

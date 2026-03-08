@@ -30,7 +30,8 @@ public class BatteryState extends com.team900.lib.rosNetworkTablesBridge.message
     public static int POWER_SUPPLY_TECHNOLOGY_NICD = 5;
     public static int POWER_SUPPLY_TECHNOLOGY_LIMN = 6;
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private float voltage = 0.0f;
     private float temperature = 0.0f;
     private float current = 0.0f;
@@ -50,11 +51,25 @@ public class BatteryState extends com.team900.lib.rosNetworkTablesBridge.message
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/BatteryState";
 
-    public BatteryState() {
+    public BatteryState() {}
 
-    }
-
-    public BatteryState(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, float voltage, float temperature, float current, float charge, float capacity, float design_capacity, float percentage, byte power_supply_status, byte power_supply_health, byte power_supply_technology, boolean present, java.lang.Float[] cell_voltage, java.lang.Float[] cell_temperature, java.lang.String location, java.lang.String serial_number) {
+    public BatteryState(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            float voltage,
+            float temperature,
+            float current,
+            float charge,
+            float capacity,
+            float design_capacity,
+            float percentage,
+            byte power_supply_status,
+            byte power_supply_health,
+            byte power_supply_technology,
+            boolean present,
+            java.lang.Float[] cell_voltage,
+            java.lang.Float[] cell_temperature,
+            java.lang.String location,
+            java.lang.String serial_number) {
         this.header = header;
         this.voltage = voltage;
         this.temperature = temperature;
@@ -74,7 +89,9 @@ public class BatteryState extends com.team900.lib.rosNetworkTablesBridge.message
     }
 
     public BatteryState(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         this.voltage = jsonObj.get("voltage").getAsFloat();
         this.temperature = jsonObj.get("temperature").getAsFloat();
         this.current = jsonObj.get("current").getAsFloat();
@@ -99,97 +116,128 @@ public class BatteryState extends com.team900.lib.rosNetworkTablesBridge.message
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public float getVoltage() {
         return this.voltage;
     }
+
     public float getTemperature() {
         return this.temperature;
     }
+
     public float getCurrent() {
         return this.current;
     }
+
     public float getCharge() {
         return this.charge;
     }
+
     public float getCapacity() {
         return this.capacity;
     }
+
     public float getDesignCapacity() {
         return this.design_capacity;
     }
+
     public float getPercentage() {
         return this.percentage;
     }
+
     public byte getPowerSupplyStatus() {
         return this.power_supply_status;
     }
+
     public byte getPowerSupplyHealth() {
         return this.power_supply_health;
     }
+
     public byte getPowerSupplyTechnology() {
         return this.power_supply_technology;
     }
+
     public boolean getPresent() {
         return this.present;
     }
+
     public ArrayList<java.lang.Float> getCellVoltage() {
         return this.cell_voltage;
     }
+
     public ArrayList<java.lang.Float> getCellTemperature() {
         return this.cell_temperature;
     }
+
     public java.lang.String getLocation() {
         return this.location;
     }
+
     public java.lang.String getSerialNumber() {
         return this.serial_number;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setVoltage(float voltage) {
         this.voltage = voltage;
     }
+
     public void setTemperature(float temperature) {
         this.temperature = temperature;
     }
+
     public void setCurrent(float current) {
         this.current = current;
     }
+
     public void setCharge(float charge) {
         this.charge = charge;
     }
+
     public void setCapacity(float capacity) {
         this.capacity = capacity;
     }
+
     public void setDesignCapacity(float design_capacity) {
         this.design_capacity = design_capacity;
     }
+
     public void setPercentage(float percentage) {
         this.percentage = percentage;
     }
+
     public void setPowerSupplyStatus(byte power_supply_status) {
         this.power_supply_status = power_supply_status;
     }
+
     public void setPowerSupplyHealth(byte power_supply_health) {
         this.power_supply_health = power_supply_health;
     }
+
     public void setPowerSupplyTechnology(byte power_supply_technology) {
         this.power_supply_technology = power_supply_technology;
     }
+
     public void setPresent(boolean present) {
         this.present = present;
     }
+
     public void setCellVoltage(ArrayList<java.lang.Float> cell_voltage) {
         this.cell_voltage = cell_voltage;
     }
+
     public void setCellTemperature(ArrayList<java.lang.Float> cell_temperature) {
         this.cell_temperature = cell_temperature;
     }
+
     public void setLocation(java.lang.String location) {
         this.location = location;
     }
+
     public void setSerialNumber(java.lang.String serial_number) {
         this.serial_number = serial_number;
     }

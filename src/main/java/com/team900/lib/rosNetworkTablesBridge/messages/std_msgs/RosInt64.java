@@ -11,9 +11,7 @@ public class RosInt64 extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Int64";
 
-    public RosInt64() {
-
-    }
+    public RosInt64() {}
 
     public RosInt64(long data) {
         this.data = data;

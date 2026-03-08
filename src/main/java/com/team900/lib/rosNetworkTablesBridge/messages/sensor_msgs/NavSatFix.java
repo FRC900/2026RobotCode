@@ -11,32 +11,30 @@ public class NavSatFix extends com.team900.lib.rosNetworkTablesBridge.messages.R
     public static int COVARIANCE_TYPE_DIAGONAL_KNOWN = 2;
     public static int COVARIANCE_TYPE_KNOWN = 3;
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
-    private com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus status = new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus status =
+            new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus();
     private double latitude = 0.0;
     private double longitude = 0.0;
     private double altitude = 0.0;
-    private java.lang.Double[] position_covariance = new java.lang.Double[] {
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0
-    };
+    private java.lang.Double[] position_covariance =
+            new java.lang.Double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     private byte position_covariance_type = 0;
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/NavSatFix";
 
-    public NavSatFix() {
+    public NavSatFix() {}
 
-    }
-
-    public NavSatFix(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus status, double latitude, double longitude, double altitude, java.lang.Double[] position_covariance, byte position_covariance_type) {
+    public NavSatFix(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus status,
+            double latitude,
+            double longitude,
+            double altitude,
+            java.lang.Double[] position_covariance,
+            byte position_covariance_type) {
         this.header = header;
         this.status = status;
         this.latitude = latitude;
@@ -49,14 +47,20 @@ public class NavSatFix extends com.team900.lib.rosNetworkTablesBridge.messages.R
     }
 
     public NavSatFix(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
-        this.status = new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus(jsonObj.get("status").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
+        this.status =
+                new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus(
+                        jsonObj.get("status").getAsJsonObject());
         this.latitude = jsonObj.get("latitude").getAsDouble();
         this.longitude = jsonObj.get("longitude").getAsDouble();
         this.altitude = jsonObj.get("altitude").getAsDouble();
         int position_covariance_element_index = 0;
-        for (JsonElement position_covariance_element : jsonObj.getAsJsonArray("position_covariance")) {
-            this.position_covariance[position_covariance_element_index++] = position_covariance_element.getAsDouble();
+        for (JsonElement position_covariance_element :
+                jsonObj.getAsJsonArray("position_covariance")) {
+            this.position_covariance[position_covariance_element_index++] =
+                    position_covariance_element.getAsDouble();
         }
         this.position_covariance_type = jsonObj.get("position_covariance_type").getAsByte();
     }
@@ -64,43 +68,57 @@ public class NavSatFix extends com.team900.lib.rosNetworkTablesBridge.messages.R
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus getStatus() {
         return this.status;
     }
+
     public double getLatitude() {
         return this.latitude;
     }
+
     public double getLongitude() {
         return this.longitude;
     }
+
     public double getAltitude() {
         return this.altitude;
     }
+
     public java.lang.Double[] getPositionCovariance() {
         return this.position_covariance;
     }
+
     public byte getPositionCovarianceType() {
         return this.position_covariance_type;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
-    public void setStatus(com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus status) {
+
+    public void setStatus(
+            com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.NavSatStatus status) {
         this.status = status;
     }
+
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
     public void setAltitude(double altitude) {
         this.altitude = altitude;
     }
+
     public void setPositionCovariance(java.lang.Double[] position_covariance) {
         this.position_covariance = position_covariance;
     }
+
     public void setPositionCovarianceType(byte position_covariance_type) {
         this.position_covariance_type = position_covariance_type;
     }

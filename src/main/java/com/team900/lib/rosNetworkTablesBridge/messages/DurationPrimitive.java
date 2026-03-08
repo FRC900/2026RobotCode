@@ -7,9 +7,7 @@ public class DurationPrimitive extends com.team900.lib.rosNetworkTablesBridge.me
     private int secs = 0;
     private int nsecs = 0;
 
-    public DurationPrimitive() {
-
-    }
+    public DurationPrimitive() {}
 
     public DurationPrimitive(int secs, int nsecs) {
         this.secs = secs;

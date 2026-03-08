@@ -11,9 +11,7 @@ public class RosString extends com.team900.lib.rosNetworkTablesBridge.messages.R
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/String";
 
-    public RosString() {
-
-    }
+    public RosString() {}
 
     public RosString(java.lang.String data) {
         this.data = data;

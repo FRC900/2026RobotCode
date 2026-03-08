@@ -7,20 +7,30 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class InteractiveMarkerInit extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class InteractiveMarkerInit
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private java.lang.String server_id = "";
     private long seq_num = 0;
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker> markers = new ArrayList<>();
+    private ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarker>
+            markers = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "visualization_msgs/InteractiveMarkerInit";
 
-    public InteractiveMarkerInit() {
+    public InteractiveMarkerInit() {}
 
-    }
-
-    public InteractiveMarkerInit(java.lang.String server_id, long seq_num, com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker[] markers) {
+    public InteractiveMarkerInit(
+            java.lang.String server_id,
+            long seq_num,
+            com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker[]
+                    markers) {
         this.server_id = server_id;
         this.seq_num = seq_num;
         this.markers = new ArrayList<>(Arrays.asList(markers));
@@ -30,27 +40,52 @@ public class InteractiveMarkerInit extends com.team900.lib.rosNetworkTablesBridg
         this.server_id = jsonObj.get("server_id").getAsString();
         this.seq_num = jsonObj.get("seq_num").getAsLong();
         for (JsonElement markers_element : jsonObj.getAsJsonArray("markers")) {
-            this.markers.add(new com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker(markers_element.getAsJsonObject()));
+            this.markers.add(
+                    new com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarker(markers_element.getAsJsonObject()));
         }
     }
 
     public java.lang.String getServerId() {
         return this.server_id;
     }
+
     public long getSeqNum() {
         return this.seq_num;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker> getMarkers() {
+
+    public ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarker>
+            getMarkers() {
         return this.markers;
     }
 
     public void setServerId(java.lang.String server_id) {
         this.server_id = server_id;
     }
+
     public void setSeqNum(long seq_num) {
         this.seq_num = seq_num;
     }
-    public void setMarkers(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker> markers) {
+
+    public void setMarkers(
+            ArrayList<
+                            com.team900
+                                    .lib
+                                    .rosNetworkTablesBridge
+                                    .messages
+                                    .visualization_msgs
+                                    .InteractiveMarker>
+                    markers) {
         this.markers = markers;
     }
 

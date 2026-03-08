@@ -1,14 +1,13 @@
 package com.team900.lib.rosNetworkTablesBridge.bridge;
 
-import edu.wpi.first.networktables.StringPublisher;
 import com.team900.lib.rosNetworkTablesBridge.messages.RosMessage;
 import com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive;
 import com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader;
+import edu.wpi.first.networktables.StringPublisher;
 
 /**
- * The BridgePublisher class is responsible for publishing data from the client
- * to ROS using NetworkTables.
- * Using an instance of ROSNetworkTablesBridge, it creates and manages a
+ * The BridgePublisher class is responsible for publishing data from the client to ROS using
+ * NetworkTables. Using an instance of ROSNetworkTablesBridge, it creates and manages a
  * StringPublisher for a specified topic.
  *
  * @param <T> The type of RosMessage to be published
@@ -22,10 +21,10 @@ public class BridgePublisher<T extends RosMessage> {
     private boolean enabled = true;
 
     /**
-     * Constructor that initializes the BridgePublisher with a
-     * ROSNetworkTablesBridge instance and topic name.
+     * Constructor that initializes the BridgePublisher with a ROSNetworkTablesBridge instance and
+     * topic name.
      *
-     * @param bridge    The ROSNetworkTablesBridge instance to use for communication
+     * @param bridge The ROSNetworkTablesBridge instance to use for communication
      * @param topicName The name of the topic to be published
      */
     public BridgePublisher(ROSNetworkTablesBridge bridge, String topicName) {
@@ -35,8 +34,7 @@ public class BridgePublisher<T extends RosMessage> {
     }
 
     /**
-     * Generates a Header with the current sequence number, current time, and
-     * specified frame_id.
+     * Generates a Header with the current sequence number, current time, and specified frame_id.
      *
      * @param frame_id The frame_id to be set in the Header
      * @return A new Header object
@@ -55,10 +53,9 @@ public class BridgePublisher<T extends RosMessage> {
     }
 
     /**
-     * Generates a Header with the current sequence number, specified time, and
-     * specified frame_id.
+     * Generates a Header with the current sequence number, specified time, and specified frame_id.
      *
-     * @param time     The time to be set in the Header
+     * @param time The time to be set in the Header
      * @param frame_id The frame_id to be set in the Header
      * @return A new Header object
      */
@@ -95,16 +92,12 @@ public class BridgePublisher<T extends RosMessage> {
         this.pub.set(input);
     }
 
-    /**
-     * Enable publisher (Publisher are enabled on initialization).
-     */
+    /** Enable publisher (Publisher are enabled on initialization). */
     public void register() {
         this.enabled = true;
     }
 
-    /**
-     * Disable publisher (Publisher are enabled on initialization).
-     */
+    /** Disable publisher (Publisher are enabled on initialization). */
     public void unregister() {
         this.enabled = false;
         this.bridge.unregister(topicName);

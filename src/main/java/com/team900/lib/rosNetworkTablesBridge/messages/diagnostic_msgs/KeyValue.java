@@ -12,9 +12,7 @@ public class KeyValue extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "diagnostic_msgs/KeyValue";
 
-    public KeyValue() {
-
-    }
+    public KeyValue() {}
 
     public KeyValue(java.lang.String key, java.lang.String value) {
         this.key = key;
@@ -29,6 +27,7 @@ public class KeyValue extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     public java.lang.String getKey() {
         return this.key;
     }
+
     public java.lang.String getValue() {
         return this.value;
     }
@@ -36,6 +35,7 @@ public class KeyValue extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     public void setKey(java.lang.String key) {
         this.key = key;
     }
+
     public void setValue(java.lang.String value) {
         this.value = value;
     }

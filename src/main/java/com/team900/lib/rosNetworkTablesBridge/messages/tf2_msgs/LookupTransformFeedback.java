@@ -4,21 +4,15 @@ package com.team900.lib.rosNetworkTablesBridge.messages.tf2_msgs;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
-public class LookupTransformFeedback extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
-
+public class LookupTransformFeedback
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "tf2_msgs/LookupTransformFeedback";
 
-    public LookupTransformFeedback() {
+    public LookupTransformFeedback() {}
 
-    }
-
-    public LookupTransformFeedback(JsonObject jsonObj) {
-
-    }
-
-
+    public LookupTransformFeedback(JsonObject jsonObj) {}
 
     public JsonObject toJSON() {
         return ginst.toJsonTree(this).getAsJsonObject();

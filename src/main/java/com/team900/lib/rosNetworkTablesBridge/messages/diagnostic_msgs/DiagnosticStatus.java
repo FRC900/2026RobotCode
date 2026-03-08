@@ -17,16 +17,20 @@ public class DiagnosticStatus extends com.team900.lib.rosNetworkTablesBridge.mes
     private java.lang.String name = "";
     private java.lang.String message = "";
     private java.lang.String hardware_id = "";
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue> values = new ArrayList<>();
+    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue>
+            values = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "diagnostic_msgs/DiagnosticStatus";
 
-    public DiagnosticStatus() {
+    public DiagnosticStatus() {}
 
-    }
-
-    public DiagnosticStatus(byte level, java.lang.String name, java.lang.String message, java.lang.String hardware_id, com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue[] values) {
+    public DiagnosticStatus(
+            byte level,
+            java.lang.String name,
+            java.lang.String message,
+            java.lang.String hardware_id,
+            com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue[] values) {
         this.level = level;
         this.name = name;
         this.message = message;
@@ -40,39 +44,52 @@ public class DiagnosticStatus extends com.team900.lib.rosNetworkTablesBridge.mes
         this.message = jsonObj.get("message").getAsString();
         this.hardware_id = jsonObj.get("hardware_id").getAsString();
         for (JsonElement values_element : jsonObj.getAsJsonArray("values")) {
-            this.values.add(new com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue(values_element.getAsJsonObject()));
+            this.values.add(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue(
+                            values_element.getAsJsonObject()));
         }
     }
 
     public byte getLevel() {
         return this.level;
     }
+
     public java.lang.String getName() {
         return this.name;
     }
+
     public java.lang.String getMessage() {
         return this.message;
     }
+
     public java.lang.String getHardwareId() {
         return this.hardware_id;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue> getValues() {
+
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue>
+            getValues() {
         return this.values;
     }
 
     public void setLevel(byte level) {
         this.level = level;
     }
+
     public void setName(java.lang.String name) {
         this.name = name;
     }
+
     public void setMessage(java.lang.String message) {
         this.message = message;
     }
+
     public void setHardwareId(java.lang.String hardware_id) {
         this.hardware_id = hardware_id;
     }
-    public void setValues(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue> values) {
+
+    public void setValues(
+            ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.diagnostic_msgs.KeyValue>
+                    values) {
         this.values = values;
     }
 

@@ -9,59 +9,40 @@ import java.util.Arrays;
 
 public class CameraInfo extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private int height = 0;
     private int width = 0;
     private java.lang.String distortion_model = "";
     private ArrayList<java.lang.Double> D = new ArrayList<>();
-    private java.lang.Double[] K = new java.lang.Double[] {
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0
-    };
-    private java.lang.Double[] R = new java.lang.Double[] {
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0
-    };
-    private java.lang.Double[] P = new java.lang.Double[] {
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0
-    };
+    private java.lang.Double[] K =
+            new java.lang.Double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    private java.lang.Double[] R =
+            new java.lang.Double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    private java.lang.Double[] P =
+            new java.lang.Double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     private int binning_x = 0;
     private int binning_y = 0;
-    private com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest roi = new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest();
+    private com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest roi =
+            new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/CameraInfo";
 
-    public CameraInfo() {
+    public CameraInfo() {}
 
-    }
-
-    public CameraInfo(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, int height, int width, java.lang.String distortion_model, java.lang.Double[] D, java.lang.Double[] K, java.lang.Double[] R, java.lang.Double[] P, int binning_x, int binning_y, com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest roi) {
+    public CameraInfo(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            int height,
+            int width,
+            java.lang.String distortion_model,
+            java.lang.Double[] D,
+            java.lang.Double[] K,
+            java.lang.Double[] R,
+            java.lang.Double[] P,
+            int binning_x,
+            int binning_y,
+            com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest roi) {
         this.header = header;
         this.height = height;
         this.width = width;
@@ -82,7 +63,9 @@ public class CameraInfo extends com.team900.lib.rosNetworkTablesBridge.messages.
     }
 
     public CameraInfo(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         this.height = jsonObj.get("height").getAsInt();
         this.width = jsonObj.get("width").getAsInt();
         this.distortion_model = jsonObj.get("distortion_model").getAsString();
@@ -103,74 +86,98 @@ public class CameraInfo extends com.team900.lib.rosNetworkTablesBridge.messages.
         }
         this.binning_x = jsonObj.get("binning_x").getAsInt();
         this.binning_y = jsonObj.get("binning_y").getAsInt();
-        this.roi = new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest(jsonObj.get("roi").getAsJsonObject());
+        this.roi =
+                new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest(
+                        jsonObj.get("roi").getAsJsonObject());
     }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public int getHeight() {
         return this.height;
     }
+
     public int getWidth() {
         return this.width;
     }
+
     public java.lang.String getDistortionModel() {
         return this.distortion_model;
     }
+
     public ArrayList<java.lang.Double> getD() {
         return this.D;
     }
+
     public java.lang.Double[] getK() {
         return this.K;
     }
+
     public java.lang.Double[] getR() {
         return this.R;
     }
+
     public java.lang.Double[] getP() {
         return this.P;
     }
+
     public int getBinningX() {
         return this.binning_x;
     }
+
     public int getBinningY() {
         return this.binning_y;
     }
+
     public com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest getRoi() {
         return this.roi;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setHeight(int height) {
         this.height = height;
     }
+
     public void setWidth(int width) {
         this.width = width;
     }
+
     public void setDistortionModel(java.lang.String distortion_model) {
         this.distortion_model = distortion_model;
     }
+
     public void setD(ArrayList<java.lang.Double> D) {
         this.D = D;
     }
+
     public void setK(java.lang.Double[] K) {
         this.K = K;
     }
+
     public void setR(java.lang.Double[] R) {
         this.R = R;
     }
+
     public void setP(java.lang.Double[] P) {
         this.P = P;
     }
+
     public void setBinningX(int binning_x) {
         this.binning_x = binning_x;
     }
+
     public void setBinningY(int binning_y) {
         this.binning_y = binning_y;
     }
-    public void setRoi(com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest roi) {
+
+    public void setRoi(
+            com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.RegionOfInterest roi) {
         this.roi = roi;
     }
 

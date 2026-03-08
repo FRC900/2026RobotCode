@@ -4,7 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Quaternion;
 
-public class RosTargetObservation extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class RosTargetObservation
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private Quaternion rot = new Quaternion();
 
@@ -13,8 +14,7 @@ public class RosTargetObservation extends com.team900.lib.rosNetworkTablesBridge
 
     public RosTargetObservation() {}
 
-    public RosTargetObservation(
-            Quaternion rot) {
+    public RosTargetObservation(Quaternion rot) {
         this.rot = rot;
     }
 

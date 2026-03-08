@@ -11,9 +11,7 @@ public class RosByte extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Byte";
 
-    public RosByte() {
-
-    }
+    public RosByte() {}
 
     public RosByte(byte data) {
         this.data = data;

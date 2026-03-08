@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.team900.lib.rosNetworkTablesBridge.messages.RosMessage;
 import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose;
 
-
 public class RosPoseObservation extends RosMessage {
 
     private double timestamp = 0.0;

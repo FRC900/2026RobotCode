@@ -22,9 +22,7 @@ public class PointField extends com.team900.lib.rosNetworkTablesBridge.messages.
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/PointField";
 
-    public PointField() {
-
-    }
+    public PointField() {}
 
     public PointField(java.lang.String name, int offset, byte datatype, int count) {
         this.name = name;
@@ -43,12 +41,15 @@ public class PointField extends com.team900.lib.rosNetworkTablesBridge.messages.
     public java.lang.String getName() {
         return this.name;
     }
+
     public int getOffset() {
         return this.offset;
     }
+
     public byte getDatatype() {
         return this.datatype;
     }
+
     public int getCount() {
         return this.count;
     }
@@ -56,12 +57,15 @@ public class PointField extends com.team900.lib.rosNetworkTablesBridge.messages.
     public void setName(java.lang.String name) {
         this.name = name;
     }
+
     public void setOffset(int offset) {
         this.offset = offset;
     }
+
     public void setDatatype(byte datatype) {
         this.datatype = datatype;
     }
+
     public void setCount(int count) {
         this.count = count;
     }
