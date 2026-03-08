@@ -9,38 +9,45 @@ import java.util.Arrays;
 
 public class RosByteMultiArray extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout layout = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout layout =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout();
     private ArrayList<java.lang.Byte> data = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/ByteMultiArray";
 
-    public RosByteMultiArray() {
+    public RosByteMultiArray() {}
 
-    }
-
-    public RosByteMultiArray(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout layout, java.lang.Byte[] data) {
+    public RosByteMultiArray(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout layout,
+            java.lang.Byte[] data) {
         this.layout = layout;
         this.data = new ArrayList<>(Arrays.asList(data));
     }
 
     public RosByteMultiArray(JsonObject jsonObj) {
-        this.layout = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout(jsonObj.get("layout").getAsJsonObject());
+        this.layout =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout(
+                        jsonObj.get("layout").getAsJsonObject());
         for (JsonElement data_element : jsonObj.getAsJsonArray("data")) {
             this.data.add(data_element.getAsByte());
         }
     }
 
-    public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout getLayout() {
+    public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout
+            getLayout() {
         return this.layout;
     }
+
     public ArrayList<java.lang.Byte> getData() {
         return this.data;
     }
 
-    public void setLayout(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout layout) {
+    public void setLayout(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosMultiArrayLayout layout) {
         this.layout = layout;
     }
+
     public void setData(ArrayList<java.lang.Byte> data) {
         this.data = data;
     }

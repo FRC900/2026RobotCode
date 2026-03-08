@@ -27,9 +27,7 @@ public class SolidPrimitive extends com.team900.lib.rosNetworkTablesBridge.messa
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "shape_msgs/SolidPrimitive";
 
-    public SolidPrimitive() {
-
-    }
+    public SolidPrimitive() {}
 
     public SolidPrimitive(byte type, java.lang.Double[] dimensions) {
         this.type = type;
@@ -46,6 +44,7 @@ public class SolidPrimitive extends com.team900.lib.rosNetworkTablesBridge.messa
     public byte getType() {
         return this.type;
     }
+
     public ArrayList<java.lang.Double> getDimensions() {
         return this.dimensions;
     }
@@ -53,6 +52,7 @@ public class SolidPrimitive extends com.team900.lib.rosNetworkTablesBridge.messa
     public void setType(byte type) {
         this.type = type;
     }
+
     public void setDimensions(ArrayList<java.lang.Double> dimensions) {
         this.dimensions = dimensions;
     }

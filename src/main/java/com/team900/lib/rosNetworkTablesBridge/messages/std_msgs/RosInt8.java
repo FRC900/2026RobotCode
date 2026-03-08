@@ -11,9 +11,7 @@ public class RosInt8 extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Int8";
 
-    public RosInt8() {
-
-    }
+    public RosInt8() {}
 
     public RosInt8(byte data) {
         this.data = data;

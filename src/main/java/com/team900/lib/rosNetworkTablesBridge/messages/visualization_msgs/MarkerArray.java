@@ -9,30 +9,35 @@ import java.util.Arrays;
 
 public class MarkerArray extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker> markers = new ArrayList<>();
+    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker>
+            markers = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "visualization_msgs/MarkerArray";
 
-    public MarkerArray() {
+    public MarkerArray() {}
 
-    }
-
-    public MarkerArray(com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker[] markers) {
+    public MarkerArray(
+            com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker[] markers) {
         this.markers = new ArrayList<>(Arrays.asList(markers));
     }
 
     public MarkerArray(JsonObject jsonObj) {
         for (JsonElement markers_element : jsonObj.getAsJsonArray("markers")) {
-            this.markers.add(new com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker(markers_element.getAsJsonObject()));
+            this.markers.add(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker(
+                            markers_element.getAsJsonObject()));
         }
     }
 
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker> getMarkers() {
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker>
+            getMarkers() {
         return this.markers;
     }
 
-    public void setMarkers(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker> markers) {
+    public void setMarkers(
+            ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.Marker>
+                    markers) {
         this.markers = markers;
     }
 

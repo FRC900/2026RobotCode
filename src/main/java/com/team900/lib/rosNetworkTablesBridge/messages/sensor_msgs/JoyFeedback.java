@@ -16,9 +16,7 @@ public class JoyFeedback extends com.team900.lib.rosNetworkTablesBridge.messages
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/JoyFeedback";
 
-    public JoyFeedback() {
-
-    }
+    public JoyFeedback() {}
 
     public JoyFeedback(byte type, byte id, float intensity) {
         this.type = type;
@@ -35,9 +33,11 @@ public class JoyFeedback extends com.team900.lib.rosNetworkTablesBridge.messages
     public byte getType() {
         return this.type;
     }
+
     public byte getId() {
         return this.id;
     }
+
     public float getIntensity() {
         return this.intensity;
     }
@@ -45,9 +45,11 @@ public class JoyFeedback extends com.team900.lib.rosNetworkTablesBridge.messages
     public void setType(byte type) {
         this.type = type;
     }
+
     public void setId(byte id) {
         this.id = id;
     }
+
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }

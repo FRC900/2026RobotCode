@@ -9,7 +9,8 @@ import java.util.Arrays;
 
 public class LaserScan extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private float angle_min = 0.0f;
     private float angle_max = 0.0f;
     private float angle_increment = 0.0f;
@@ -23,11 +24,19 @@ public class LaserScan extends com.team900.lib.rosNetworkTablesBridge.messages.R
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/LaserScan";
 
-    public LaserScan() {
+    public LaserScan() {}
 
-    }
-
-    public LaserScan(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, float angle_min, float angle_max, float angle_increment, float time_increment, float scan_time, float range_min, float range_max, java.lang.Float[] ranges, java.lang.Float[] intensities) {
+    public LaserScan(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            float angle_min,
+            float angle_max,
+            float angle_increment,
+            float time_increment,
+            float scan_time,
+            float range_min,
+            float range_max,
+            java.lang.Float[] ranges,
+            java.lang.Float[] intensities) {
         this.header = header;
         this.angle_min = angle_min;
         this.angle_max = angle_max;
@@ -41,7 +50,9 @@ public class LaserScan extends com.team900.lib.rosNetworkTablesBridge.messages.R
     }
 
     public LaserScan(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         this.angle_min = jsonObj.get("angle_min").getAsFloat();
         this.angle_max = jsonObj.get("angle_max").getAsFloat();
         this.angle_increment = jsonObj.get("angle_increment").getAsFloat();
@@ -60,61 +71,80 @@ public class LaserScan extends com.team900.lib.rosNetworkTablesBridge.messages.R
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public float getAngleMin() {
         return this.angle_min;
     }
+
     public float getAngleMax() {
         return this.angle_max;
     }
+
     public float getAngleIncrement() {
         return this.angle_increment;
     }
+
     public float getTimeIncrement() {
         return this.time_increment;
     }
+
     public float getScanTime() {
         return this.scan_time;
     }
+
     public float getRangeMin() {
         return this.range_min;
     }
+
     public float getRangeMax() {
         return this.range_max;
     }
+
     public ArrayList<java.lang.Float> getRanges() {
         return this.ranges;
     }
+
     public ArrayList<java.lang.Float> getIntensities() {
         return this.intensities;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setAngleMin(float angle_min) {
         this.angle_min = angle_min;
     }
+
     public void setAngleMax(float angle_max) {
         this.angle_max = angle_max;
     }
+
     public void setAngleIncrement(float angle_increment) {
         this.angle_increment = angle_increment;
     }
+
     public void setTimeIncrement(float time_increment) {
         this.time_increment = time_increment;
     }
+
     public void setScanTime(float scan_time) {
         this.scan_time = scan_time;
     }
+
     public void setRangeMin(float range_min) {
         this.range_min = range_min;
     }
+
     public void setRangeMax(float range_max) {
         this.range_max = range_max;
     }
+
     public void setRanges(ArrayList<java.lang.Float> ranges) {
         this.ranges = ranges;
     }
+
     public void setIntensities(ArrayList<java.lang.Float> intensities) {
         this.intensities = intensities;
     }

@@ -7,19 +7,12 @@ import com.google.gson.annotations.Expose;
 
 public class Plane extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private java.lang.Double[] coef = new java.lang.Double[] {
-        0.0,
-        0.0,
-        0.0,
-        0.0
-    };
+    private java.lang.Double[] coef = new java.lang.Double[] {0.0, 0.0, 0.0, 0.0};
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "shape_msgs/Plane";
 
-    public Plane() {
-
-    }
+    public Plane() {}
 
     public Plane(java.lang.Double[] coef) {
         for (int index = 0; index < 4; index++) {

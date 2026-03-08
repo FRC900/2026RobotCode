@@ -7,52 +7,96 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MultiDOFJointTrajectory extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class MultiDOFJointTrajectory
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private ArrayList<java.lang.String> joint_names = new ArrayList<>();
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.trajectory_msgs.MultiDOFJointTrajectoryPoint> points = new ArrayList<>();
+    private ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .trajectory_msgs
+                            .MultiDOFJointTrajectoryPoint>
+            points = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "trajectory_msgs/MultiDOFJointTrajectory";
 
-    public MultiDOFJointTrajectory() {
+    public MultiDOFJointTrajectory() {}
 
-    }
-
-    public MultiDOFJointTrajectory(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, java.lang.String[] joint_names, com.team900.lib.rosNetworkTablesBridge.messages.trajectory_msgs.MultiDOFJointTrajectoryPoint[] points) {
+    public MultiDOFJointTrajectory(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            java.lang.String[] joint_names,
+            com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .trajectory_msgs
+                            .MultiDOFJointTrajectoryPoint[]
+                    points) {
         this.header = header;
         this.joint_names = new ArrayList<>(Arrays.asList(joint_names));
         this.points = new ArrayList<>(Arrays.asList(points));
     }
 
     public MultiDOFJointTrajectory(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         for (JsonElement joint_names_element : jsonObj.getAsJsonArray("joint_names")) {
             this.joint_names.add(joint_names_element.getAsString());
         }
         for (JsonElement points_element : jsonObj.getAsJsonArray("points")) {
-            this.points.add(new com.team900.lib.rosNetworkTablesBridge.messages.trajectory_msgs.MultiDOFJointTrajectoryPoint(points_element.getAsJsonObject()));
+            this.points.add(
+                    new com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .trajectory_msgs
+                            .MultiDOFJointTrajectoryPoint(points_element.getAsJsonObject()));
         }
     }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public ArrayList<java.lang.String> getJointNames() {
         return this.joint_names;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.trajectory_msgs.MultiDOFJointTrajectoryPoint> getPoints() {
+
+    public ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .trajectory_msgs
+                            .MultiDOFJointTrajectoryPoint>
+            getPoints() {
         return this.points;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setJointNames(ArrayList<java.lang.String> joint_names) {
         this.joint_names = joint_names;
     }
-    public void setPoints(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.trajectory_msgs.MultiDOFJointTrajectoryPoint> points) {
+
+    public void setPoints(
+            ArrayList<
+                            com.team900
+                                    .lib
+                                    .rosNetworkTablesBridge
+                                    .messages
+                                    .trajectory_msgs
+                                    .MultiDOFJointTrajectoryPoint>
+                    points) {
         this.points = points;
     }
 

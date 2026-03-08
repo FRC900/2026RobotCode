@@ -7,7 +7,8 @@ import com.google.gson.annotations.Expose;
 public class Inertia extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private double m = 0.0;
-    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3 com = new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3();
+    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3 com =
+            new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3();
     private double ixx = 0.0;
     private double ixy = 0.0;
     private double ixz = 0.0;
@@ -18,11 +19,17 @@ public class Inertia extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "geometry_msgs/Inertia";
 
-    public Inertia() {
+    public Inertia() {}
 
-    }
-
-    public Inertia(double m, com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3 com, double ixx, double ixy, double ixz, double iyy, double iyz, double izz) {
+    public Inertia(
+            double m,
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3 com,
+            double ixx,
+            double ixy,
+            double ixz,
+            double iyy,
+            double iyz,
+            double izz) {
         this.m = m;
         this.com = com;
         this.ixx = ixx;
@@ -35,7 +42,9 @@ public class Inertia extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
 
     public Inertia(JsonObject jsonObj) {
         this.m = jsonObj.get("m").getAsDouble();
-        this.com = new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3(jsonObj.get("com").getAsJsonObject());
+        this.com =
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3(
+                        jsonObj.get("com").getAsJsonObject());
         this.ixx = jsonObj.get("ixx").getAsDouble();
         this.ixy = jsonObj.get("ixy").getAsDouble();
         this.ixz = jsonObj.get("ixz").getAsDouble();
@@ -47,24 +56,31 @@ public class Inertia extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     public double getM() {
         return this.m;
     }
+
     public com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3 getCom() {
         return this.com;
     }
+
     public double getIxx() {
         return this.ixx;
     }
+
     public double getIxy() {
         return this.ixy;
     }
+
     public double getIxz() {
         return this.ixz;
     }
+
     public double getIyy() {
         return this.iyy;
     }
+
     public double getIyz() {
         return this.iyz;
     }
+
     public double getIzz() {
         return this.izz;
     }
@@ -72,24 +88,31 @@ public class Inertia extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     public void setM(double m) {
         this.m = m;
     }
+
     public void setCom(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Vector3 com) {
         this.com = com;
     }
+
     public void setIxx(double ixx) {
         this.ixx = ixx;
     }
+
     public void setIxy(double ixy) {
         this.ixy = ixy;
     }
+
     public void setIxz(double ixz) {
         this.ixz = ixz;
     }
+
     public void setIyy(double iyy) {
         this.iyy = iyy;
     }
+
     public void setIyz(double iyz) {
         this.iyz = iyz;
     }
+
     public void setIzz(double izz) {
         this.izz = izz;
     }

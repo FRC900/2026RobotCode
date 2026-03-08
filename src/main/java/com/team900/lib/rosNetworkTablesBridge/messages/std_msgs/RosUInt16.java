@@ -11,9 +11,7 @@ public class RosUInt16 extends com.team900.lib.rosNetworkTablesBridge.messages.R
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/UInt16";
 
-    public RosUInt16() {
-
-    }
+    public RosUInt16() {}
 
     public RosUInt16(short data) {
         this.data = data;

@@ -6,25 +6,29 @@ import com.google.gson.annotations.Expose;
 
 public class Illuminance extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private double illuminance = 0.0;
     private double variance = 0.0;
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/Illuminance";
 
-    public Illuminance() {
+    public Illuminance() {}
 
-    }
-
-    public Illuminance(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header, double illuminance, double variance) {
+    public Illuminance(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
+            double illuminance,
+            double variance) {
         this.header = header;
         this.illuminance = illuminance;
         this.variance = variance;
     }
 
     public Illuminance(JsonObject jsonObj) {
-        this.header = new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(jsonObj.get("header").getAsJsonObject());
+        this.header =
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
+                        jsonObj.get("header").getAsJsonObject());
         this.illuminance = jsonObj.get("illuminance").getAsDouble();
         this.variance = jsonObj.get("variance").getAsDouble();
     }
@@ -32,19 +36,24 @@ public class Illuminance extends com.team900.lib.rosNetworkTablesBridge.messages
     public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
+
     public double getIlluminance() {
         return this.illuminance;
     }
+
     public double getVariance() {
         return this.variance;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
+
     public void setIlluminance(double illuminance) {
         this.illuminance = illuminance;
     }
+
     public void setVariance(double variance) {
         this.variance = variance;
     }

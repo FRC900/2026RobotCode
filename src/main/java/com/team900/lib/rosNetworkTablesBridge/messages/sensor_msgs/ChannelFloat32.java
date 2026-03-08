@@ -15,9 +15,7 @@ public class ChannelFloat32 extends com.team900.lib.rosNetworkTablesBridge.messa
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/ChannelFloat32";
 
-    public ChannelFloat32() {
-
-    }
+    public ChannelFloat32() {}
 
     public ChannelFloat32(java.lang.String name, java.lang.Float[] values) {
         this.name = name;
@@ -34,6 +32,7 @@ public class ChannelFloat32 extends com.team900.lib.rosNetworkTablesBridge.messa
     public java.lang.String getName() {
         return this.name;
     }
+
     public ArrayList<java.lang.Float> getValues() {
         return this.values;
     }
@@ -41,6 +40,7 @@ public class ChannelFloat32 extends com.team900.lib.rosNetworkTablesBridge.messa
     public void setName(java.lang.String name) {
         this.name = name;
     }
+
     public void setValues(ArrayList<java.lang.Float> values) {
         this.values = values;
     }

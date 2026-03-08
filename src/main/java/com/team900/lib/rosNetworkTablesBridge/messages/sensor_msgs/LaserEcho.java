@@ -14,9 +14,7 @@ public class LaserEcho extends com.team900.lib.rosNetworkTablesBridge.messages.R
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/LaserEcho";
 
-    public LaserEcho() {
-
-    }
+    public LaserEcho() {}
 
     public LaserEcho(java.lang.Float[] echoes) {
         this.echoes = new ArrayList<>(Arrays.asList(echoes));

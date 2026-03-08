@@ -11,16 +11,14 @@ public class RosChar extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Char";
 
-    public RosChar() {
-
-    }
+    public RosChar() {}
 
     public RosChar(char data) {
         this.data = data;
     }
 
     public RosChar(JsonObject jsonObj) {
-        this.data = (char)jsonObj.get("data").getAsByte();
+        this.data = (char) jsonObj.get("data").getAsByte();
     }
 
     public char getData() {

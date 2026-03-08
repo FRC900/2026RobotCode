@@ -9,30 +9,47 @@ import java.util.Arrays;
 
 public class TFMessage extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped> transforms = new ArrayList<>();
+    private ArrayList<
+                    com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped>
+            transforms = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "tf2_msgs/TFMessage";
 
-    public TFMessage() {
+    public TFMessage() {}
 
-    }
-
-    public TFMessage(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped[] transforms) {
+    public TFMessage(
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped[]
+                    transforms) {
         this.transforms = new ArrayList<>(Arrays.asList(transforms));
     }
 
     public TFMessage(JsonObject jsonObj) {
         for (JsonElement transforms_element : jsonObj.getAsJsonArray("transforms")) {
-            this.transforms.add(new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped(transforms_element.getAsJsonObject()));
+            this.transforms.add(
+                    new com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .geometry_msgs
+                            .TransformStamped(transforms_element.getAsJsonObject()));
         }
     }
 
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped> getTransforms() {
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped>
+            getTransforms() {
         return this.transforms;
     }
 
-    public void setTransforms(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.TransformStamped> transforms) {
+    public void setTransforms(
+            ArrayList<
+                            com.team900
+                                    .lib
+                                    .rosNetworkTablesBridge
+                                    .messages
+                                    .geometry_msgs
+                                    .TransformStamped>
+                    transforms) {
         this.transforms = transforms;
     }
 

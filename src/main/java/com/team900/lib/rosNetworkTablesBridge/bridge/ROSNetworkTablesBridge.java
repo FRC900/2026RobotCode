@@ -7,10 +7,9 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
 
 /**
- * The ROSNetworkTablesBridge class is responsible for creating and managing the
- * ros_to_nt and nt_to_ros NetworkTables. It facilitates communication between
- * ROS and the client by allowing data to be published and subscribed to using
- * NetworkTables.
+ * The ROSNetworkTablesBridge class is responsible for creating and managing the ros_to_nt and
+ * nt_to_ros NetworkTables. It facilitates communication between ROS and the client by allowing data
+ * to be published and subscribed to using NetworkTables.
  */
 public class ROSNetworkTablesBridge {
     private final NetworkTable rosToNtSubtable;
@@ -23,12 +22,11 @@ public class ROSNetworkTablesBridge {
     public final String TIME_ENTRY_KEY = "@time";
 
     /**
-     * Constructor that takes a single NetworkTable and creates ros_to_nt and
-     * nt_to_ros subtables.
+     * Constructor that takes a single NetworkTable and creates ros_to_nt and nt_to_ros subtables.
      *
-     * @param table          The parent NetworkTable to create the subtables from
-     * @param updateInterval The desired update interval for publishing and
-     *                       subscribing to data in milliseconds
+     * @param table The parent NetworkTable to create the subtables from
+     * @param updateInterval The desired update interval for publishing and subscribing to data in
+     *     milliseconds
      */
     public ROSNetworkTablesBridge(NetworkTable table, long updateInterval) {
         this.updateInterval = updateInterval;
@@ -41,22 +39,26 @@ public class ROSNetworkTablesBridge {
     }
 
     private DoubleSubscriber makeTimeSyncSub() {
-        return rosToNtSubtable.getDoubleTopic(TIME_ENTRY_KEY).subscribe(0.0, PubSubOption.sendAll(true),
-                PubSubOption.periodic((double) this.updateInterval / 1000.0));
+        return rosToNtSubtable
+                .getDoubleTopic(TIME_ENTRY_KEY)
+                .subscribe(
+                        0.0,
+                        PubSubOption.sendAll(true),
+                        PubSubOption.periodic((double) this.updateInterval / 1000.0));
     }
 
     /**
-     * Constructor that takes separate ros_to_nt and nt_to_ros NetworkTables.
-     * If these tables are not the default keys (/ros_to_nt and /nt_to_ros), make
-     * sure the corresponding ROS node is configured to point to the requested
-     * entries.
+     * Constructor that takes separate ros_to_nt and nt_to_ros NetworkTables. If these tables are
+     * not the default keys (/ros_to_nt and /nt_to_ros), make sure the corresponding ROS node is
+     * configured to point to the requested entries.
      *
      * @param rosToNtSubtable The ros_to_nt NetworkTable for subscribing to ROS data
      * @param ntToRosSubtable The nt_to_ros NetworkTable for publishing data to ROS
-     * @param updateInterval  The desired update interval for publishing and
-     *                        subscribing to data in milliseconds
+     * @param updateInterval The desired update interval for publishing and subscribing to data in
+     *     milliseconds
      */
-    public ROSNetworkTablesBridge(NetworkTable rosToNtSubtable, NetworkTable ntToRosSubtable, long updateInterval) {
+    public ROSNetworkTablesBridge(
+            NetworkTable rosToNtSubtable, NetworkTable ntToRosSubtable, long updateInterval) {
         this.updateInterval = updateInterval;
 
         this.rosToNtSubtable = rosToNtSubtable;
@@ -66,21 +68,18 @@ public class ROSNetworkTablesBridge {
         timeSync = new TimeSyncManager(makeTimeSyncSub());
     }
 
-    /**
-     * Set topic state on the request list table
-     */
+    /** Set topic state on the request list table */
     private void setTopicEnable(NetworkTable topicsTable, String topic, boolean state) {
         topicsTable.getEntry(topic).setBoolean(state);
     }
 
     /**
-     * Advertises a topic to the nt_to_ros NetworkTable and creates a
-     * StringPublisher for that topic.
-     * 
-     * Topic format should match ROS. ex. /tj2/odom.
-     * Relative topic names are interpreted at the discretion of the ROS host. ex.
-     * odom will be put the namespace of the ROS host node's namespace. If the
-     * ROS host node is in the tj2 namespace, it will behave the same as supplying
+     * Advertises a topic to the nt_to_ros NetworkTable and creates a StringPublisher for that
+     * topic.
+     *
+     * <p>Topic format should match ROS. ex. /tj2/odom. Relative topic names are interpreted at the
+     * discretion of the ROS host. ex. odom will be put the namespace of the ROS host node's
+     * namespace. If the ROS host node is in the tj2 namespace, it will behave the same as supplying
      * /tj2/odom
      *
      * @param topicName The name of the topic to be advertised
@@ -89,8 +88,10 @@ public class ROSNetworkTablesBridge {
     public StringPublisher advertise(String topicName) {
         System.out.println("Publishing to " + topicName);
         String ntTopic = topicName.replace('/', '\\');
-        StringPublisher pub = ntToRosSubtable.getStringTopic(ntTopic)
-                .publish(PubSubOption.periodic((double) this.updateInterval / 1000.0));
+        StringPublisher pub =
+                ntToRosSubtable
+                        .getStringTopic(ntTopic)
+                        .publish(PubSubOption.periodic((double) this.updateInterval / 1000.0));
         pub.set("");
         setTopicEnable(ntToRosRequestedTopicsTable, ntTopic, true);
         return pub;
@@ -108,15 +109,13 @@ public class ROSNetworkTablesBridge {
     }
 
     /**
-     * Subscribes to a topic in the ros_to_nt NetworkTable and creates a
-     * StringSubscriber and StringPublisher for that topic. The StringPublisher is
-     * used to create the NetworkTable entry so that ROS knows the client wants
-     * this topic and starts publishing data to it.
-     * 
-     * Topic format should match ROS. ex. /tj2/odom.
-     * Relative topic names are interpreted at the discretion of the ROS host. ex.
-     * odom will be put the namespace of the ROS host node's namespace. If the
-     * ROS host node is in the tj2 namespace, it will behave the same as supplying
+     * Subscribes to a topic in the ros_to_nt NetworkTable and creates a StringSubscriber and
+     * StringPublisher for that topic. The StringPublisher is used to create the NetworkTable entry
+     * so that ROS knows the client wants this topic and starts publishing data to it.
+     *
+     * <p>Topic format should match ROS. ex. /tj2/odom. Relative topic names are interpreted at the
+     * discretion of the ROS host. ex. odom will be put the namespace of the ROS host node's
+     * namespace. If the ROS host node is in the tj2 namespace, it will behave the same as supplying
      * /tj2/odom
      *
      * @param topicName The name of the topic to be subscribed to
@@ -125,8 +124,13 @@ public class ROSNetworkTablesBridge {
     public StringSubscriber subscribe(String topicName) {
         System.out.println("Subscribing to " + topicName);
         String ntTopic = topicName.replace('/', '\\');
-        StringSubscriber sub = rosToNtSubtable.getStringTopic(ntTopic).subscribe("", PubSubOption.sendAll(true),
-                PubSubOption.periodic((double) this.updateInterval / 1000.0));
+        StringSubscriber sub =
+                rosToNtSubtable
+                        .getStringTopic(ntTopic)
+                        .subscribe(
+                                "",
+                                PubSubOption.sendAll(true),
+                                PubSubOption.periodic((double) this.updateInterval / 1000.0));
         setTopicEnable(rosToNtRequestedTopicsTable, ntTopic, true);
         return sub;
     }
@@ -141,12 +145,10 @@ public class ROSNetworkTablesBridge {
     }
 
     /**
-     * Check if the host is alive. The host is considered alive if it has received
-     * a message within the last aliveThreshold milliseconds.
-     * 
-     * @param aliveThreshold The time in milliseconds that the host is considered
-     *                       alive
-     * 
+     * Check if the host is alive. The host is considered alive if it has received a message within
+     * the last aliveThreshold milliseconds.
+     *
+     * @param aliveThreshold The time in milliseconds that the host is considered alive
      * @return True if the host is alive, false otherwise
      */
     public boolean isAlive(long aliveThreshold) {
@@ -158,9 +160,9 @@ public class ROSNetworkTablesBridge {
     }
 
     /**
-     * Check if the host is alive. The host is considered alive if it has received
-     * a message within the last 10 * updateInterval milliseconds.
-     * 
+     * Check if the host is alive. The host is considered alive if it has received a message within
+     * the last 10 * updateInterval milliseconds.
+     *
      * @return True if the host is alive, false otherwise
      */
     public boolean isAlive() {

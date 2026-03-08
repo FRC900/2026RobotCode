@@ -11,9 +11,7 @@ public class RosUInt32 extends com.team900.lib.rosNetworkTablesBridge.messages.R
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/UInt32";
 
-    public RosUInt32() {
-
-    }
+    public RosUInt32() {}
 
     public RosUInt32(int data) {
         this.data = data;

@@ -7,25 +7,47 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class InteractiveMarkerUpdate extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class InteractiveMarkerUpdate
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
     public static int KEEP_ALIVE = 0;
     public static int UPDATE = 1;
 
     private java.lang.String server_id = "";
     private long seq_num = 0;
     private byte type = 0;
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker> markers = new ArrayList<>();
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarkerPose> poses = new ArrayList<>();
+    private ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarker>
+            markers = new ArrayList<>();
+    private ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarkerPose>
+            poses = new ArrayList<>();
     private ArrayList<java.lang.String> erases = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "visualization_msgs/InteractiveMarkerUpdate";
 
-    public InteractiveMarkerUpdate() {
+    public InteractiveMarkerUpdate() {}
 
-    }
-
-    public InteractiveMarkerUpdate(java.lang.String server_id, long seq_num, byte type, com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker[] markers, com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarkerPose[] poses, java.lang.String[] erases) {
+    public InteractiveMarkerUpdate(
+            java.lang.String server_id,
+            long seq_num,
+            byte type,
+            com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker[]
+                    markers,
+            com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarkerPose
+                            []
+                    poses,
+            java.lang.String[] erases) {
         this.server_id = server_id;
         this.seq_num = seq_num;
         this.type = type;
@@ -39,10 +61,22 @@ public class InteractiveMarkerUpdate extends com.team900.lib.rosNetworkTablesBri
         this.seq_num = jsonObj.get("seq_num").getAsLong();
         this.type = jsonObj.get("type").getAsByte();
         for (JsonElement markers_element : jsonObj.getAsJsonArray("markers")) {
-            this.markers.add(new com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker(markers_element.getAsJsonObject()));
+            this.markers.add(
+                    new com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarker(markers_element.getAsJsonObject()));
         }
         for (JsonElement poses_element : jsonObj.getAsJsonArray("poses")) {
-            this.poses.add(new com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarkerPose(poses_element.getAsJsonObject()));
+            this.poses.add(
+                    new com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarkerPose(poses_element.getAsJsonObject()));
         }
         for (JsonElement erases_element : jsonObj.getAsJsonArray("erases")) {
             this.erases.add(erases_element.getAsString());
@@ -52,18 +86,37 @@ public class InteractiveMarkerUpdate extends com.team900.lib.rosNetworkTablesBri
     public java.lang.String getServerId() {
         return this.server_id;
     }
+
     public long getSeqNum() {
         return this.seq_num;
     }
+
     public byte getType() {
         return this.type;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker> getMarkers() {
+
+    public ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarker>
+            getMarkers() {
         return this.markers;
     }
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarkerPose> getPoses() {
+
+    public ArrayList<
+                    com.team900
+                            .lib
+                            .rosNetworkTablesBridge
+                            .messages
+                            .visualization_msgs
+                            .InteractiveMarkerPose>
+            getPoses() {
         return this.poses;
     }
+
     public ArrayList<java.lang.String> getErases() {
         return this.erases;
     }
@@ -71,18 +124,39 @@ public class InteractiveMarkerUpdate extends com.team900.lib.rosNetworkTablesBri
     public void setServerId(java.lang.String server_id) {
         this.server_id = server_id;
     }
+
     public void setSeqNum(long seq_num) {
         this.seq_num = seq_num;
     }
+
     public void setType(byte type) {
         this.type = type;
     }
-    public void setMarkers(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarker> markers) {
+
+    public void setMarkers(
+            ArrayList<
+                            com.team900
+                                    .lib
+                                    .rosNetworkTablesBridge
+                                    .messages
+                                    .visualization_msgs
+                                    .InteractiveMarker>
+                    markers) {
         this.markers = markers;
     }
-    public void setPoses(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.visualization_msgs.InteractiveMarkerPose> poses) {
+
+    public void setPoses(
+            ArrayList<
+                            com.team900
+                                    .lib
+                                    .rosNetworkTablesBridge
+                                    .messages
+                                    .visualization_msgs
+                                    .InteractiveMarkerPose>
+                    poses) {
         this.poses = poses;
     }
+
     public void setErases(ArrayList<java.lang.String> erases) {
         this.erases = erases;
     }

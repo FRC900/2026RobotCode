@@ -6,21 +6,22 @@ import com.google.gson.annotations.Expose;
 
 public class RosTime extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive data = new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive();
+    private com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive data =
+            new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Time";
 
-    public RosTime() {
-
-    }
+    public RosTime() {}
 
     public RosTime(com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive data) {
         this.data = data;
     }
 
     public RosTime(JsonObject jsonObj) {
-        this.data = new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive(jsonObj.get("data").getAsJsonObject());
+        this.data =
+                new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive(
+                        jsonObj.get("data").getAsJsonObject());
     }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive getData() {

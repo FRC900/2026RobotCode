@@ -6,19 +6,12 @@ import com.google.gson.annotations.Expose;
 
 public class RosEmpty extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Empty";
 
-    public RosEmpty() {
+    public RosEmpty() {}
 
-    }
-
-    public RosEmpty(JsonObject jsonObj) {
-
-    }
-
-
+    public RosEmpty(JsonObject jsonObj) {}
 
     public JsonObject toJSON() {
         return ginst.toJsonTree(this).getAsJsonObject();

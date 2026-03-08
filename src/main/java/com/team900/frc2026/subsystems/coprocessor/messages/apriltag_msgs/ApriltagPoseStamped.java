@@ -7,7 +7,8 @@
 // import java.util.ArrayList;
 // import java.util.Arrays;
 
-public class ApriltagPoseStamped extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class ApriltagPoseStamped
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
             new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
@@ -57,7 +58,8 @@ public class ApriltagPoseStamped extends com.team900.lib.rosNetworkTablesBridge.
         return this.posearray;
     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
 
@@ -67,7 +69,8 @@ public class ApriltagPoseStamped extends com.team900.lib.rosNetworkTablesBridge.
 //         this.apriltags = apriltags;
 //     }
 
-    public void setPosearray(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray posearray) {
+    public void setPosearray(
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray posearray) {
         this.posearray = posearray;
     }
 

@@ -6,19 +6,12 @@ import com.google.gson.annotations.Expose;
 
 public class GetMapFeedback extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "nav_msgs/GetMapFeedback";
 
-    public GetMapFeedback() {
+    public GetMapFeedback() {}
 
-    }
-
-    public GetMapFeedback(JsonObject jsonObj) {
-
-    }
-
-
+    public GetMapFeedback(JsonObject jsonObj) {}
 
     public JsonObject toJSON() {
         return ginst.toJsonTree(this).getAsJsonObject();

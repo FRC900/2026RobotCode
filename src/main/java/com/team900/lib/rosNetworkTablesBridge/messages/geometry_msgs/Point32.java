@@ -13,9 +13,7 @@ public class Point32 extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "geometry_msgs/Point32";
 
-    public Point32() {
-
-    }
+    public Point32() {}
 
     public Point32(float x, float y, float z) {
         this.x = x;
@@ -32,9 +30,11 @@ public class Point32 extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     public float getX() {
         return this.x;
     }
+
     public float getY() {
         return this.y;
     }
+
     public float getZ() {
         return this.z;
     }
@@ -42,9 +42,11 @@ public class Point32 extends com.team900.lib.rosNetworkTablesBridge.messages.Ros
     public void setX(float x) {
         this.x = x;
     }
+
     public void setY(float y) {
         this.y = y;
     }
+
     public void setZ(float z) {
         this.z = z;
     }

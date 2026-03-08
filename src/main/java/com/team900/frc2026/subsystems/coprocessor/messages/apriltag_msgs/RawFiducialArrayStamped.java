@@ -7,7 +7,8 @@
 // import java.util.ArrayList;
 // import java.util.Arrays;
 
-public class RawFiducialArrayStamped extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+public class RawFiducialArrayStamped
+        extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
             new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
@@ -48,7 +49,8 @@ public class RawFiducialArrayStamped extends com.team900.lib.rosNetworkTablesBri
 //         return this.rawFiducials;
 //     }
 
-    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
+    public void setHeader(
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
 

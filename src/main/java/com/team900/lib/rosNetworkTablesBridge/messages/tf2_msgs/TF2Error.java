@@ -19,9 +19,7 @@ public class TF2Error extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "tf2_msgs/TF2Error";
 
-    public TF2Error() {
-
-    }
+    public TF2Error() {}
 
     public TF2Error(byte error, java.lang.String error_string) {
         this.error = error;
@@ -36,6 +34,7 @@ public class TF2Error extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     public byte getError() {
         return this.error;
     }
+
     public java.lang.String getErrorString() {
         return this.error_string;
     }
@@ -43,6 +42,7 @@ public class TF2Error extends com.team900.lib.rosNetworkTablesBridge.messages.Ro
     public void setError(byte error) {
         this.error = error;
     }
+
     public void setErrorString(java.lang.String error_string) {
         this.error_string = error_string;
     }

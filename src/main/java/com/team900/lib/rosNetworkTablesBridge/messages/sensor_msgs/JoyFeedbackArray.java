@@ -9,30 +9,35 @@ import java.util.Arrays;
 
 public class JoyFeedbackArray extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback> array = new ArrayList<>();
+    private ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback>
+            array = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "sensor_msgs/JoyFeedbackArray";
 
-    public JoyFeedbackArray() {
+    public JoyFeedbackArray() {}
 
-    }
-
-    public JoyFeedbackArray(com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback[] array) {
+    public JoyFeedbackArray(
+            com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback[] array) {
         this.array = new ArrayList<>(Arrays.asList(array));
     }
 
     public JoyFeedbackArray(JsonObject jsonObj) {
         for (JsonElement array_element : jsonObj.getAsJsonArray("array")) {
-            this.array.add(new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback(array_element.getAsJsonObject()));
+            this.array.add(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback(
+                            array_element.getAsJsonObject()));
         }
     }
 
-    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback> getArray() {
+    public ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback>
+            getArray() {
         return this.array;
     }
 
-    public void setArray(ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback> array) {
+    public void setArray(
+            ArrayList<com.team900.lib.rosNetworkTablesBridge.messages.sensor_msgs.JoyFeedback>
+                    array) {
         this.array = array;
     }
 

@@ -11,9 +11,7 @@ public class RosFloat32 extends com.team900.lib.rosNetworkTablesBridge.messages.
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "std_msgs/Float32";
 
-    public RosFloat32() {
-
-    }
+    public RosFloat32() {}
 
     public RosFloat32(float data) {
         this.data = data;

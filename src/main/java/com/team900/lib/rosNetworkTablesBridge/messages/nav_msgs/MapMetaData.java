@@ -6,20 +6,25 @@ import com.google.gson.annotations.Expose;
 
 public class MapMetaData extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive map_load_time = new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive();
+    private com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive map_load_time =
+            new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive();
     private float resolution = 0.0f;
     private int width = 0;
     private int height = 0;
-    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose origin = new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose();
+    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose origin =
+            new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "nav_msgs/MapMetaData";
 
-    public MapMetaData() {
+    public MapMetaData() {}
 
-    }
-
-    public MapMetaData(com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive map_load_time, float resolution, int width, int height, com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose origin) {
+    public MapMetaData(
+            com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive map_load_time,
+            float resolution,
+            int width,
+            int height,
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose origin) {
         this.map_load_time = map_load_time;
         this.resolution = resolution;
         this.width = width;
@@ -28,42 +33,56 @@ public class MapMetaData extends com.team900.lib.rosNetworkTablesBridge.messages
     }
 
     public MapMetaData(JsonObject jsonObj) {
-        this.map_load_time = new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive(jsonObj.get("map_load_time").getAsJsonObject());
+        this.map_load_time =
+                new com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive(
+                        jsonObj.get("map_load_time").getAsJsonObject());
         this.resolution = jsonObj.get("resolution").getAsFloat();
         this.width = jsonObj.get("width").getAsInt();
         this.height = jsonObj.get("height").getAsInt();
-        this.origin = new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose(jsonObj.get("origin").getAsJsonObject());
+        this.origin =
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose(
+                        jsonObj.get("origin").getAsJsonObject());
     }
 
     public com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive getMapLoadTime() {
         return this.map_load_time;
     }
+
     public float getResolution() {
         return this.resolution;
     }
+
     public int getWidth() {
         return this.width;
     }
+
     public int getHeight() {
         return this.height;
     }
+
     public com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose getOrigin() {
         return this.origin;
     }
 
-    public void setMapLoadTime(com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive map_load_time) {
+    public void setMapLoadTime(
+            com.team900.lib.rosNetworkTablesBridge.messages.TimePrimitive map_load_time) {
         this.map_load_time = map_load_time;
     }
+
     public void setResolution(float resolution) {
         this.resolution = resolution;
     }
+
     public void setWidth(int width) {
         this.width = width;
     }
+
     public void setHeight(int height) {
         this.height = height;
     }
-    public void setOrigin(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose origin) {
+
+    public void setOrigin(
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose origin) {
         this.origin = origin;
     }
 

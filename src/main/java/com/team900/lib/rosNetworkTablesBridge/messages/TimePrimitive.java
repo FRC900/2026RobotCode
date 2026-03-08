@@ -7,9 +7,7 @@ public class TimePrimitive extends com.team900.lib.rosNetworkTablesBridge.messag
     private int secs = 0;
     private int nsecs = 0;
 
-    public TimePrimitive() {
-
-    }
+    public TimePrimitive() {}
 
     public TimePrimitive(int secs, int nsecs) {
         this.secs = secs;
