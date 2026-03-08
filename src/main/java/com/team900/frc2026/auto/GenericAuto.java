@@ -53,6 +53,6 @@ public class GenericAuto {
                         },
                         DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                         container.getDriveSubsystem());
-            return choreoFactory;
-        }
+        return choreoFactory;
+    }
 }
