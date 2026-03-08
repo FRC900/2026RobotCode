@@ -53,6 +53,7 @@ import com.team900.lib.subsystems.TalonFXIO;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -264,7 +265,7 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private boolean intakeDeployed = false;
+    private boolean intakeDeployed = intakePivotSubsystem.getPositionSetpointUnits() < 0.125;
 
     private void configureBindings() {
         // Swerve Drive
@@ -296,17 +297,17 @@ public class RobotContainer {
                                 },
                                         Set.of(getIntakePivotSubsystem())));
 
-        controlBoard
+         controlBoard
                 .shoot()
                 .onTrue(
-                        (ShooterFactory.setShooterRPS(60, this)
+                        ((ShooterFactory.setShooterRPS(60, this)
                                         .until(
                                                 () ->
                                                         MathUtil.isNear(
                                                                 60,
                                                                 shooterSubsystem
                                                                         .getCurrentVelocity(),
-                                                                1)))
+                                                                1))))
                                 .andThen(
                                         new ParallelCommandGroup(
                                                 HandoffFactory.runHandoff(this),
@@ -317,41 +318,41 @@ public class RobotContainer {
                                 SpindexerFactory.stopSpindexer(this),
                                 HandoffFactory.stopHandoff(this)));
 
-        controlBoard
-                .shootAuto()
-                .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
-                                SpindexerFactory.stopSpindexer(this),
-                                IntakeFactory.stopIntake(this),
-                                HandoffFactory.stopHandoff(this)));
+        // controlBoard
+        //         .shootAuto()
+        //         .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
+        //         .onFalse(
+        //                 new ParallelCommandGroup(
+        //                         ShooterFactory.setShooterRPS(0, this),
+        //                         new InstantCommand(() -> getDriveCommand().setKAiming(false)),
+        //                         SpindexerFactory.stopSpindexer(this),
+        //                         IntakeFactory.stopIntake(this),
+        //                         HandoffFactory.stopHandoff(this)));
 
- controlBoard
-                .pass()
-                .onTrue(
-                        (Commands.parallel(ShooterFactory.setShooterRPS(90, this)
-                                        .until(
-                                                () ->
-                                                        MathUtil.isNear(
-                                                                90,
-                                                                shooterSubsystem
-                                                                        .getCurrentVelocity(),
-                                                                1)), HoodFactory.pass(instance, 0.017)))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this))))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                SpindexerFactory.stopSpindexer(this),
-                                HandoffFactory.stopHandoff(this)));
+//  controlBoard
+//                 .pass()
+//                 .onTrue(
+//                         (Commands.parallel(ShooterFactory.setShooterRPS(80, this)
+//                                         .until(
+//                                                 () ->
+//                                                         MathUtil.isNear(
+//                                                                 80,
+//                                                                 shooterSubsystem
+//                                                                         .getCurrentVelocity(),
+//                                                                 1)), HoodFactory.pass(instance, 0.025)))
+//                                 .andThen(
+//                                         new ParallelCommandGroup(
+//                                                 HandoffFactory.runHandoff(this),
+//                                                 SpindexerFactory.runSpindexer(this))))
+//                 .onFalse(
+//                         new ParallelCommandGroup(
+//                                 ShooterFactory.setShooterRPS(0, this),
+//                                 SpindexerFactory.stopSpindexer(this),
+//                                 HandoffFactory.stopHandoff(this)));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        controlBoard.stowHood().onTrue(SuperstructureFactory.stow(this));
+        // controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025,instance));
 
         controlBoard
                 .intake()

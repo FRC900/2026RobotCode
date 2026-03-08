@@ -17,24 +17,31 @@ public class IntakePivotConstants {
     // Intake radians will be measured from horizontal to avoid confusion where positive direction
     // is up
     public static final double kIntakePivotToleranceRadians = 0.1;
-    public static final double kIntakePivotStow = 0.242;
-    public static final double kIntakePivotDeploy = 0;
+    public static final double kIntakePivotStow = 0.24;
+    public static final double kIntakePivotDeploy = .003;
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-        // public static final Gains COMP_GAINS = new Gains(30, 0, 0, 0, 1, 0, 0);
+        public static final Gains COMP_GAINS = new Gains(30, 0, 0, 0, 1, 0, 0);
 
-    public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
+//     public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
     public static CanCoderConfig kIntakeCanCoderConfig = new CanCoderConfig();
 
+    public static MotionMagicConfigs kIntakePivotMotionMagicConfigs = new MotionMagicConfigs();
+
+    static {
+        kIntakePivotMotionMagicConfigs.MotionMagicAcceleration = 0.7;
+        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity = 1;
+    }
+
     static {
         kIntakePivotConfig.name = "Intake Pivot";
         kIntakePivotConfig.cancoderToUnitsRatio = 1;
         kIntakePivotConfig.isFusedCancoder = true;
-        kIntakePivotConfig.kMaxPositionUnits = 0.242;
+        kIntakePivotConfig.kMaxPositionUnits = 0.22;
         kIntakePivotConfig.kMinPositionUnits = 0;
         kIntakePivotConfig.momentOfInertia = 0.6065550876;
         kIntakePivotConfig.talonCANID = new CANDeviceId(61, Constants.kCanBusCanivoreMech);
@@ -47,12 +54,12 @@ public class IntakePivotConstants {
         // cancoder config
         kIntakeCanCoderConfig.CANID = new CANDeviceId(62, Constants.kCanBusCanivoreMech);
         kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .7;
-        kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.25;
+        kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.75;
         kIntakeCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
         // fxConfig
-        kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 150;
+        kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 80;
         kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 80;
         kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -67,7 +74,7 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
-        kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kIntakePivotConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kIntakePivotConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
@@ -89,12 +96,9 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         kIntakePivotConfig.canCoderConfig = kIntakeCanCoderConfig;
+
+        kIntakePivotConfig.fxConfig.MotionMagic = kIntakePivotMotionMagicConfigs;
     }
 
-    public static MotionMagicConfigs kIntakePivotMotionMagicConfigs = new MotionMagicConfigs();
-
-    static {
-        kIntakePivotMotionMagicConfigs.MotionMagicAcceleration = 0.7;
-        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity = 1;
-    }
+    
 }
