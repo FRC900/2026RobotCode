@@ -84,5 +84,3 @@ public class C_Center {
         return routine.cmd();
     }
 }
-
-

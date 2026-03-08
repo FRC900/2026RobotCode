@@ -21,7 +21,6 @@ public class Red_C_Center_Left_Trench {
     private static final double kTranslationP = 5.0;
     private static final double kRotationP = 5.0;
 
-
     //  Mirrors a Y coordinate across the field center line.
     private static double mirrorY(double y) {
         return FieldConstants.fieldWidth - y;
@@ -48,8 +47,9 @@ public class Red_C_Center_Left_Trench {
                                     new Pose2d(
                                             pose.getX(),
                                             mirrorY(pose.getY()),
-                                            new Rotation2d(mirrorHeading(
-                                                    pose.getRotation().getRadians())));
+                                            new Rotation2d(
+                                                    mirrorHeading(
+                                                            pose.getRotation().getRadians())));
                             container.getDriveSubsystem().resetPose(mirrored);
                         },
                         (SwerveSample sample) -> {
@@ -77,9 +77,7 @@ public class Red_C_Center_Left_Trench {
 
                             ChassisSpeeds fieldRelative =
                                     new ChassisSpeeds(
-                                            sample.vx + xFB,
-                                            mirroredVy + yFB,
-                                            mirroredOmega + rFB);
+                                            sample.vx + xFB, mirroredVy + yFB, mirroredOmega + rFB);
                             ChassisSpeeds robotRelative =
                                     ChassisSpeeds.fromFieldRelativeSpeeds(
                                             fieldRelative,
@@ -107,12 +105,8 @@ public class Red_C_Center_Left_Trench {
                                 AutoFactory900.stopShoot(ShooterSetpoint::setpointHub),
                                 Commands.parallel(
                                         path.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)))
-                                
-                                );
+                                        AutoFactory900.deploySlapdownAndRunIntake(container))));
 
         return routine.cmd();
     }
 }
-
-
