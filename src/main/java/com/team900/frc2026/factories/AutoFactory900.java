@@ -45,6 +45,7 @@ public class AutoFactory900 {
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
         return new ParallelCommandGroup(
+                HoodFactory.aimHoodToPose(setpointSupplier, container),
                 ShooterFactory.setShooterRPS(setpointSupplier, container),
                 SpindexerFactory.runSpindexer(container),
                 HandoffFactory.runHandoff(container));
