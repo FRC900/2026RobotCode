@@ -222,7 +222,8 @@ public class RobotContainer {
 
     @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
 
-    @Getter private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(robotState);
+    @Getter
+    private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(robotState);
 
     @Getter
     private final DriveMaintainingHeadingCommand driveCommand =

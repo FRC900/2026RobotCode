@@ -27,8 +27,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 
-import org.jetbrains.bio.npy.NpyFile.Header;
-
 public class CoprocessorSubsystem extends SubsystemBase {
     private final RobotState m_robotState;
     private final ROSNetworkTablesBridge m_ros_interface;
@@ -49,23 +47,30 @@ public class CoprocessorSubsystem extends SubsystemBase {
     public static final String BASE_FRAME = "base_link";
 
     // this is ROS Odometry, not wpi
-    private final Odometry m_odomMsg = new Odometry(new RosHeader(0, new TimePrimitive(), ODOM_FRAME), BASE_FRAME,
-        new PoseWithCovariance(new Pose(new Point(0, 0, 0), new Quaternion(0, 0, 0, 1)), new Double[] {
-                5e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 5e-4, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 5e-4, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 5e-4, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 5e-4, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 5e-4
-        }),
-        new TwistWithCovariance(new Twist(new Vector3(0, 0, 0), new Vector3(0, 0, 0)), new Double[] {
-                1e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 1e-4, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 1e-4, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 1e-4, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 1e-4, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 1e-4
-        }));
+    private final Odometry m_odomMsg =
+            new Odometry(
+                    new RosHeader(0, new TimePrimitive(), ODOM_FRAME),
+                    BASE_FRAME,
+                    new PoseWithCovariance(
+                            new Pose(new Point(0, 0, 0), new Quaternion(0, 0, 0, 1)),
+                            new Double[] {
+                                5e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 5e-4, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 5e-4, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 5e-4, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 5e-4, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0.0, 5e-4
+                            }),
+                    new TwistWithCovariance(
+                            new Twist(new Vector3(0, 0, 0), new Vector3(0, 0, 0)),
+                            new Double[] {
+                                1e-4, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 1e-4, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 1e-4, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 1e-4, 0.0, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 1e-4, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0.0, 1e-4
+                            }));
 
     public CoprocessorSubsystem(RobotState robotState) {
         long updateDelay = 20;
@@ -83,7 +88,7 @@ public class CoprocessorSubsystem extends SubsystemBase {
         m_vid0TagsSub =
                 new BridgeSubscriber<>(
                         m_ros_interface,
-                        "/ov2311_10_9_0_9_video1/raw_fiducials",
+                        "/ov2311_10_9_0_9_video0/raw_fiducials",
                         RawFiducialArrayStamped.class);
         m_vid1TagsSub =
                 new BridgeSubscriber<>(
@@ -170,13 +175,19 @@ public class CoprocessorSubsystem extends SubsystemBase {
     private void sendOdom() {
         Pose2d pose = m_robotState.getLatestFieldToRobot().getValue();
         ChassisSpeeds velocity = m_robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
-        
+
         m_odomMsg.setHeader(m_odomPub.getHeader(ODOM_FRAME));
         m_odomMsg.getPose().setPose(ROSConversions.wpiToRosPose(new Pose3d(pose)));
-        m_odomMsg.getTwist().getTwist()
-        .setLinear(new Vector3(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond, 0.0));
-        m_odomMsg.getTwist().getTwist().setAngular(new Vector3(0.0, 0.0, velocity.omegaRadiansPerSecond));
-        
+        m_odomMsg
+                .getTwist()
+                .getTwist()
+                .setLinear(
+                        new Vector3(velocity.vxMetersPerSecond, velocity.vyMetersPerSecond, 0.0));
+        m_odomMsg
+                .getTwist()
+                .getTwist()
+                .setAngular(new Vector3(0.0, 0.0, velocity.omegaRadiansPerSecond));
+
         m_odomPub.send(m_odomMsg);
     }
 
