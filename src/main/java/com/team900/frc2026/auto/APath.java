@@ -71,9 +71,9 @@ public class APath {
                                 path.resetOdometry(),
                                 AutoFactory900.resetHood(container),
                                 path.cmd(),
-                                Commands.parallel(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(1)),
+                                // Commands.parallel(
+                                //         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                //         AutoFactory900.waitSeconds(1)),
                                 Commands.parallel(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(5)),
