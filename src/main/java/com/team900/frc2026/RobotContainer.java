@@ -4,6 +4,7 @@
 
 package com.team900.frc2026;
 
+import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
@@ -249,15 +250,18 @@ public class RobotContainer {
 
     @Getter private final HandoffSubsystem handoffSubsystem = buildHandoffSubsystem();
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
-    // TODO: check if this is automatically triggered
+    // TODO: check if this is  omatically triggered
     private final Trigger zeroHood =
             new Trigger(robotState::getHoodHasZeroed).onTrue(HoodFactory.zero(this));
 
     private RobotContainer() {
+        instance = this;
+
         if (Robot.isSimulation()) {
             assert this.simulatedRobotState != null;
             this.simulatedRobotState.init();
         }
+        autoDashboard = new AutoDashboard();
         configureBindings();
     }
 
@@ -273,9 +277,9 @@ public class RobotContainer {
                 .onTrue(
                         Commands.either(
                                 IntakeFactory.retractSlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = false)),
+                                        .beforeStarting(() -> intakeDeployed = false),
                                 IntakeFactory.deploySlapdown(this)
-                                        .andThen(new InstantCommand(() -> intakeDeployed = true)),
+                                        .beforeStarting(() -> intakeDeployed = true),
                                 () -> intakeDeployed));
 
         controlBoard
@@ -337,11 +341,11 @@ public class RobotContainer {
         return false;
     }
 
-    // private final AutoDashboard autoDashboard = new AutoDashboard();
+    private final AutoDashboard autoDashboard;
 
-    // public Command getAutonomousCommand() {
-    //     return autoDashboard.getSelectedAuto();
-    // }
+    public Command getAutonomousCommand() {
+        return autoDashboard.getSelectedAuto();
+    }
 
     public Command getTestCommand() {
         return IntakeFactory.deploySlapdown(this);

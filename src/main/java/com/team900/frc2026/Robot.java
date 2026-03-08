@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,7 +43,7 @@ public class Robot extends LoggedRobot {
 
     private final RobotContainer robotContainer;
     private int mIter = 0;
-    private Command autonomousCommand = Commands.none();
+    private Command autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
     private Optional<Pose2d> startingPose = Optional.empty();
 
     private double lastTimestampNotValid = 0;
@@ -167,7 +168,17 @@ public class Robot extends LoggedRobot {
     public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        // Periodically refresh the auto command from the dashboard chooser
+        // so the driver can see what's selected and it stays up to date.
+        if (mIter % 50 == 0) {
+            autonomousCommand = robotContainer.getAutonomousCommand();
+            SmartDashboard.putString(
+                    "Selected Auto",
+                    autonomousCommand != null ? autonomousCommand.getName() : "None");
+        }
+        mIter++;
+    }
 
     @Override
     public void disabledExit() {}
@@ -190,6 +201,7 @@ public class Robot extends LoggedRobot {
 
         RobotState.getInstance().setAutoStartTime(Timer.getFPGATimestamp());
 
+        autonomousCommand = robotContainer.getAutonomousCommand();
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(autonomousCommand);
         }
