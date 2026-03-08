@@ -7,10 +7,10 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ApriltagArrayStamped extends frc.team88.ros.messages.RosMessage {
+public class ApriltagArrayStamped extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private frc.team88.ros.messages.std_msgs.RosHeader header =
-            new frc.team88.ros.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.Apriltag>
             apriltags = new ArrayList<>();
 
@@ -20,7 +20,7 @@ public class ApriltagArrayStamped extends frc.team88.ros.messages.RosMessage {
     public ApriltagArrayStamped() {}
 
     public ApriltagArrayStamped(
-            frc.team88.ros.messages.std_msgs.RosHeader header,
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
             com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.Apriltag[]
                     apriltags) {
         this.header = header;
@@ -29,7 +29,7 @@ public class ApriltagArrayStamped extends frc.team88.ros.messages.RosMessage {
 
     public ApriltagArrayStamped(JsonObject jsonObj) {
         this.header =
-                new frc.team88.ros.messages.std_msgs.RosHeader(
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
                         jsonObj.get("header").getAsJsonObject());
         for (JsonElement apriltags_element : jsonObj.getAsJsonArray("apriltags")) {
             this.apriltags.add(
@@ -38,7 +38,7 @@ public class ApriltagArrayStamped extends frc.team88.ros.messages.RosMessage {
         }
     }
 
-    public frc.team88.ros.messages.std_msgs.RosHeader getHeader() {
+    public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
 
@@ -47,7 +47,7 @@ public class ApriltagArrayStamped extends frc.team88.ros.messages.RosMessage {
         return this.apriltags;
     }
 
-    public void setHeader(frc.team88.ros.messages.std_msgs.RosHeader header) {
+    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
 

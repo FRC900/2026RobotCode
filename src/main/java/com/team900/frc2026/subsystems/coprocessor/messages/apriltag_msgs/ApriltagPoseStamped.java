@@ -7,14 +7,14 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ApriltagPoseStamped extends frc.team88.ros.messages.RosMessage {
+public class ApriltagPoseStamped extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
-    private frc.team88.ros.messages.std_msgs.RosHeader header =
-            new frc.team88.ros.messages.std_msgs.RosHeader();
+    private com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header =
+            new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader();
     private ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.Apriltag>
             apriltags = new ArrayList<>();
-    private frc.team88.ros.messages.geometry_msgs.PoseArray posearray =
-            new frc.team88.ros.messages.geometry_msgs.PoseArray();
+    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray posearray =
+            new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray();
 
     @Expose(serialize = false, deserialize = false)
     public final java.lang.String _type = "apriltag_msgs/ApriltagPoseStamped";
@@ -22,9 +22,9 @@ public class ApriltagPoseStamped extends frc.team88.ros.messages.RosMessage {
     public ApriltagPoseStamped() {}
 
     public ApriltagPoseStamped(
-            frc.team88.ros.messages.std_msgs.RosHeader header,
+            com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header,
             com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.Apriltag[] apriltags,
-            frc.team88.ros.messages.geometry_msgs.PoseArray posearray) {
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray posearray) {
         this.header = header;
         this.apriltags = new ArrayList<>(Arrays.asList(apriltags));
         this.posearray = posearray;
@@ -32,7 +32,7 @@ public class ApriltagPoseStamped extends frc.team88.ros.messages.RosMessage {
 
     public ApriltagPoseStamped(JsonObject jsonObj) {
         this.header =
-                new frc.team88.ros.messages.std_msgs.RosHeader(
+                new com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader(
                         jsonObj.get("header").getAsJsonObject());
         for (JsonElement apriltags_element : jsonObj.getAsJsonArray("apriltags")) {
             this.apriltags.add(
@@ -40,11 +40,11 @@ public class ApriltagPoseStamped extends frc.team88.ros.messages.RosMessage {
                             apriltags_element.getAsJsonObject()));
         }
         this.posearray =
-                new frc.team88.ros.messages.geometry_msgs.PoseArray(
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray(
                         jsonObj.get("posearray").getAsJsonObject());
     }
 
-    public frc.team88.ros.messages.std_msgs.RosHeader getHeader() {
+    public com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader getHeader() {
         return this.header;
     }
 
@@ -53,11 +53,11 @@ public class ApriltagPoseStamped extends frc.team88.ros.messages.RosMessage {
         return this.apriltags;
     }
 
-    public frc.team88.ros.messages.geometry_msgs.PoseArray getPosearray() {
+    public com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray getPosearray() {
         return this.posearray;
     }
 
-    public void setHeader(frc.team88.ros.messages.std_msgs.RosHeader header) {
+    public void setHeader(com.team900.lib.rosNetworkTablesBridge.messages.std_msgs.RosHeader header) {
         this.header = header;
     }
 
@@ -67,7 +67,7 @@ public class ApriltagPoseStamped extends frc.team88.ros.messages.RosMessage {
         this.apriltags = apriltags;
     }
 
-    public void setPosearray(frc.team88.ros.messages.geometry_msgs.PoseArray posearray) {
+    public void setPosearray(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.PoseArray posearray) {
         this.posearray = posearray;
     }
 

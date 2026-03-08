@@ -5,21 +5,21 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
-public class Apriltag extends frc.team88.ros.messages.RosMessage {
+public class Apriltag extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
 
     private int id = 0;
     private java.lang.String family = "";
     private int hamming = 0;
     private int border = 0;
     private int bits = 0;
-    private frc.team88.ros.messages.geometry_msgs.Point center =
-            new frc.team88.ros.messages.geometry_msgs.Point();
-    private frc.team88.ros.messages.geometry_msgs.Point[] corners =
-            new frc.team88.ros.messages.geometry_msgs.Point[] {
-                new frc.team88.ros.messages.geometry_msgs.Point(),
-                new frc.team88.ros.messages.geometry_msgs.Point(),
-                new frc.team88.ros.messages.geometry_msgs.Point(),
-                new frc.team88.ros.messages.geometry_msgs.Point()
+    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point center =
+            new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point();
+    private com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] corners =
+            new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] {
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(),
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(),
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(),
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point()
             };
 
     @Expose(serialize = false, deserialize = false)
@@ -33,8 +33,8 @@ public class Apriltag extends frc.team88.ros.messages.RosMessage {
             int hamming,
             int border,
             int bits,
-            frc.team88.ros.messages.geometry_msgs.Point center,
-            frc.team88.ros.messages.geometry_msgs.Point[] corners) {
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point center,
+            com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] corners) {
         this.id = id;
         this.family = family;
         this.hamming = hamming;
@@ -53,12 +53,12 @@ public class Apriltag extends frc.team88.ros.messages.RosMessage {
         this.border = jsonObj.get("border").getAsInt();
         this.bits = jsonObj.get("bits").getAsInt();
         this.center =
-                new frc.team88.ros.messages.geometry_msgs.Point(
+                new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(
                         jsonObj.get("center").getAsJsonObject());
         int corners_element_index = 0;
         for (JsonElement corners_element : jsonObj.getAsJsonArray("corners")) {
             this.corners[corners_element_index++] =
-                    new frc.team88.ros.messages.geometry_msgs.Point(
+                    new com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point(
                             corners_element.getAsJsonObject());
         }
     }
@@ -83,11 +83,11 @@ public class Apriltag extends frc.team88.ros.messages.RosMessage {
         return this.bits;
     }
 
-    public frc.team88.ros.messages.geometry_msgs.Point getCenter() {
+    public com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point getCenter() {
         return this.center;
     }
 
-    public frc.team88.ros.messages.geometry_msgs.Point[] getCorners() {
+    public com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] getCorners() {
         return this.corners;
     }
 
@@ -111,11 +111,11 @@ public class Apriltag extends frc.team88.ros.messages.RosMessage {
         this.bits = bits;
     }
 
-    public void setCenter(frc.team88.ros.messages.geometry_msgs.Point center) {
+    public void setCenter(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point center) {
         this.center = center;
     }
 
-    public void setCorners(frc.team88.ros.messages.geometry_msgs.Point[] corners) {
+    public void setCorners(com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Point[] corners) {
         this.corners = corners;
     }
 
