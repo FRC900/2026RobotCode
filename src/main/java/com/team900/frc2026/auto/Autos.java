@@ -23,7 +23,7 @@ public class Autos {
                 Commands.parallel(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(5)),
-                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub));
+                AutoFactory900.stopShoot());
     }
 
     private static Command onePointFiveShots(AutoTrajectory path) {
@@ -43,7 +43,7 @@ public class Autos {
                 Commands.parallel(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(5)),
-                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub));
+                AutoFactory900.stopShoot());
     }
 
     private static Command threeShots(AutoTrajectory path) {
@@ -57,7 +57,7 @@ public class Autos {
                 Commands.parallel(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(5)),
-                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub));
+                AutoFactory900.stopShoot());
     }
 
     public static Command C_RT_Ce() {
@@ -77,7 +77,7 @@ public class Autos {
                                 Commands.parallel(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(5)),
-                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)));
+                                AutoFactory900.stopShoot()));
         return routine.cmd();
     }
 
@@ -98,7 +98,7 @@ public class Autos {
                                 Commands.parallel(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(5)),
-                                AutoFactory900.stopShoot(ShooterSetpoint::setpointHub)));
+                                AutoFactory900.stopShoot()));
         return routine.cmd();
     }
 }

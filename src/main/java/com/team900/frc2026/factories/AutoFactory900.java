@@ -50,12 +50,12 @@ public class AutoFactory900 {
                 HandoffFactory.runHandoff(container));
     }
 
-    public static Command stopShoot(Supplier<ShooterSetpoint> setpointSupplier) {
+    public static Command stopShoot() {
         return new ParallelCommandGroup(
                 ShooterFactory.setShooterRPS(0, container),
                 SpindexerFactory.stopSpindexer(container),
                 HandoffFactory.stopHandoff(container),
-                HoodFactory.aimHoodToPose(setpointSupplier, container));
+                HoodFactory.stow(container));
     }
 
     public static Command deploySlapdownAndRunIntake(RobotContainer container) {
@@ -67,8 +67,9 @@ public class AutoFactory900 {
         return new InstantCommand(() -> HoodFactory.stow(container));
     }
 
-    public static Command alignToHub(
+    public static DriveMaintainingHeadingCommand alignToHub(
             DoubleSupplier throttle, DoubleSupplier strafe, DoubleSupplier turn) {
         return new DriveMaintainingHeadingCommand(container, throttle, strafe, turn);
     }
+
 }
