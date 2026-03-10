@@ -10,12 +10,12 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption("A", Autos.A());
+        autoChooser.setDefaultOption("A-Simple", Autos.A_Simple());
 
-        autoChooser.addOption("B", Autos.B());
-        autoChooser.addOption("C", Autos.C());
-        autoChooser.addOption("D", Autos.D());
-        autoChooser.addOption("E", Autos.E());
+        autoChooser.addOption("B-Simple", Autos.B_Simple());
+        autoChooser.addOption("C-Simple", Autos.C_Simple());
+        autoChooser.addOption("D-Simple", Autos.D_Simple());
+        autoChooser.addOption("E-Simple", Autos.E_Simple());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }

@@ -64,10 +64,10 @@ public class Autos {
 
     }
 
-    public static Command A() {
+    public static Command A_Simple() {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("A");
-        AutoTrajectory path = routine.trajectory("A");
+        AutoRoutine routine = choreoFactory.newRoutine("A_Simple");
+        AutoTrajectory path = routine.trajectory("A_Simple");
 
         routine.active()
                 .onTrue(
@@ -77,10 +77,10 @@ public class Autos {
         return routine.cmd();
     }
 
-    public static Command B() {
+    public static Command B_Simple() {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("B");
-        AutoTrajectory path = routine.trajectory("B");
+        AutoRoutine routine = choreoFactory.newRoutine("B_Simple");
+        AutoTrajectory path = routine.trajectory("B_Simple");
 
         routine.active()
                 .onTrue(
@@ -90,10 +90,10 @@ public class Autos {
         return routine.cmd();
     }
 
-    public static Command C() {
+    public static Command C_Simple() {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("C");
-        AutoTrajectory path = routine.trajectory("C");
+        AutoRoutine routine = choreoFactory.newRoutine("C_Simple");
+        AutoTrajectory path = routine.trajectory("C_Simple");
 
         routine.active()
                 .onTrue(
@@ -103,10 +103,10 @@ public class Autos {
         return routine.cmd();
     }
 
-    public static Command D() {
+    public static Command D_Simple() {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("D");
-        AutoTrajectory path = routine.trajectory("D");
+        AutoRoutine routine = choreoFactory.newRoutine("D_Simple");
+        AutoTrajectory path = routine.trajectory("D_Simple");
 
         routine.active()
                 .onTrue(
@@ -116,10 +116,10 @@ public class Autos {
         return routine.cmd();
     }
 
-    public static Command E() {
+    public static Command E_Simple() {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("E");
-        AutoTrajectory path = routine.trajectory("E");
+        AutoRoutine routine = choreoFactory.newRoutine("E_Simple");
+        AutoTrajectory path = routine.trajectory("E_Simple");
 
         routine.active()
                 .onTrue(
