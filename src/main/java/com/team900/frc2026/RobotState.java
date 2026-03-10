@@ -1,6 +1,7 @@
 package com.team900.frc2026;
 
 import com.team900.frc2026.subsystems.vision.VisionConstants;
+import com.team900.frc2026.subsystems.vision.VisionSubsystem;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
 import com.team900.frc2026.subsystems.vision.VisionSubsystem.VisionConsumer;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -248,11 +250,12 @@ public class RobotState implements VisionConsumer {
     }
 
     public Rotation2d getLatestRotationRobotToHub() {
-
-        return AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d())
-                .minus(getLatestFieldToRobot().getValue().getTranslation())
-                .getAngle();
+        return new Transform2d(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d(), Rotation2d.kZero), getLatestFieldToRobot().getValue()).getRotation();
     }
+
+    // public double getLatestDistanceRobotToHub() {
+    //     return RobotContainer.getInstance().getVisionSubsystem().getRotation2dToHubTy().getCos() * getLatestTranlastionRobotToHub().toTranslation2d().getNorm();
+    // }
 
     public Translation3d getLatestTranlastionRobotToHub() {
 

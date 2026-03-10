@@ -21,18 +21,18 @@ public class HoodConstants {
     public static final double kHoodToleranceRadians = 0.1;
     public static final double kHoodZeroedAngleDegrees = 15;
 
-    public static final double kHoodRotorMaxPosition = 0.0754;
-    public static final double kHoodRotorMinPosition = 0;
+    public static final double kHoodRotorMaxPosition = 0.0754 +Units.degreesToRotations(15.0);
+    public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
 
-    public static final double kZeroingAmps = 100;
-    public static final double kZeroingSeconds = 0.125;
+    public static final double kZeroingAmps = 23;
+    public static final double kZeroingSeconds = 0.1;
 
-    public static final double kHoodMinPositionRadians = 0;
+    public static final double kHoodMinPositionRadians = Units.rotationsToDegrees(kHoodRotorMinPosition);
     public static final double kHoodMaxPositionRadians =
             Units.rotationsToRadians(kHoodRotorMaxPosition);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
-    public static final double kHoodShootingEpsilon = Units.degreesToRadians(5.0);
+    public static final double kHoodShootingEpsilon = Units.degreesToRadians(1);
     // TODO: find this experimetnatlly
     public static final double kHoodStowTrenchPositionRadians = Units.degreesToRadians(15.0);
 
@@ -45,13 +45,13 @@ public class HoodConstants {
         kHoodConfig.name = "Hood";
 
         // TODO: verify these tm
-        kHoodConfig.cancoderToUnitsRatio = 17. * 1. / (2. * Math.PI);
+        kHoodConfig.cancoderToUnitsRatio = 2. * Math.PI;
         kHoodConfig.isFusedCancoder = true;
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
-        kHoodConfig.unitToRotorRatio = 1. / kHoodGearRatio * 1. / (2 * Math.PI);
+        kHoodConfig.unitToRotorRatio = 2*Math.PI;
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;

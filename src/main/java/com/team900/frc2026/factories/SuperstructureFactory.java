@@ -22,7 +22,7 @@ public class SuperstructureFactory {
 
     public static Command stow(RobotContainer container) {
         return new ParallelCommandGroup(
-                HoodFactory.stow(container), IntakeFactory.retractSlapdown(container));
+                HoodFactory.stow(container));
     }
 
     public static Command trench(RobotContainer container) {

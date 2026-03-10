@@ -2,9 +2,9 @@ package com.team900.frc2026.controlboard;
 
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Robot;
-import com.team900.lib.util.CommandSimPS5Controller;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class GamepadButtonControlBoard implements IButtonControlBoard {
@@ -24,7 +24,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     @SuppressWarnings("unused")
     private GamepadButtonControlBoard() {
         if (Robot.isSimulation()) {
-            controller = new CommandSimPS5Controller(Constants.kDriveGamepadPort);
+            controller = new CommandPS5Controller(Constants.kDriveGamepadPort);
         } else {
             controller = new CommandPS5Controller(Constants.kDriveGamepadPort);
         }
@@ -44,6 +44,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     @Override
     public Trigger exhaust() {
         return additionalController.circle();
+
     }
 
     @Override
@@ -94,5 +95,13 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     @Override
     public Trigger stowHood() {
         return controller.R1().or(additionalController.R1());
+    }
+
+    @Override public Trigger resetHood()    {
+        return additionalController.square();
+    }
+
+    @Override public Trigger pass() {
+        return controller.R2().and(additionalController.L3());
     }
 }

@@ -10,17 +10,16 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption(
-                "4.05m Edge to Center (Shoot + Intake)",
-                FourPointZeroFiveMetersFromEdgeAuto.getAutoCommand());
+        autoChooser.setDefaultOption("A", Autos.A());
 
-        // Add more autos here as you create them:
-        // autoChooser.addOption("My Other Auto", MyOtherAuto.getAutoCommand());
+        autoChooser.addOption("B", Autos.B());
+        autoChooser.addOption("C", Autos.C());
+        autoChooser.addOption("D", Autos.D());
+        autoChooser.addOption("E", Autos.E());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
-    /** Call this in Robot.autonomousInit() or RobotContainer.getAutonomousCommand() */
     public Command getSelectedAuto() {
         Command selected = autoChooser.getSelected();
         return selected != null ? selected : Commands.none();

@@ -13,7 +13,7 @@ public class SpindexerFactory {
     }
 
     public static Command stopSpindexer(RobotContainer container) {
-        return container.getSpindexerSubsystem().dutyCycleCommand(() -> 0);
+        return container.getSpindexerSubsystem().voltageCommand(() -> 0);
     }
 
     public static Command exhaustSpindexer(RobotContainer container) {
