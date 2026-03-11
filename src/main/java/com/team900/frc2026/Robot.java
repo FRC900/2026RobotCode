@@ -36,6 +36,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
+    static {
+        if (RobotBase.isSimulation()) {
+            SimulatedArena.overrideInstance(
+                    new org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt(false));
+        }
+    }
 
     static final int kRTPriority = 2;
     static final int kNonRTPriority = 1;
