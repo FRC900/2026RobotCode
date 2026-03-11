@@ -13,7 +13,9 @@ public class AutoDashboard {
         autoChooser.setDefaultOption("OneSwipe Left",  Autos.OneSwipe_Left());
 
 
-        // Swipe autos (left = normal side, right = Y-mirrored)
+        // Swipe autos 
+        // right = normal side
+        // left = Y-mirrored
         autoChooser.addOption("OneSwipe Left", Autos.OneSwipe_Left());
         autoChooser.addOption("OneSwipe Right", Autos.OneSwipe_Right());
         autoChooser.addOption("TwoSwipe Left", Autos.TwoSwipe_Left());
