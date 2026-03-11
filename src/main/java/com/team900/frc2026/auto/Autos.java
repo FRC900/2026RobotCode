@@ -109,11 +109,11 @@ public class Autos {
     // left = Y-mirrored
 
     public static Command OneSwipe_Left() {
-        return oneSwipe(false);
+        return oneSwipe(true);
     }
 
     public static Command OneSwipe_Right() {
-        return oneSwipe(true);
+        return oneSwipe(false);
     }
 
     // TwoSwipe autos
@@ -121,10 +121,10 @@ public class Autos {
     // Left = Y-mirrored
 
     public static Command TwoSwipe_Left() {
-        return twoSwipe(false);
+        return twoSwipe(true);
     }
 
     public static Command TwoSwipe_Right() {
-        return twoSwipe(true);
+        return twoSwipe(false);
     }
 }
