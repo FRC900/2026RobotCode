@@ -25,6 +25,11 @@ public class GenericAuto {
         return -heading;
     }
 
+    // AutoFactory with no mirroring (default)
+    public static AutoFactory getAutoFactory() {
+        return getAutoFactory(false);
+    }
+
     // AutoFactory with bool to mirror across Y Axis (switch from left side to right or vice versa)
     public static AutoFactory getAutoFactory(boolean mirrorAcrossY) {
         RobotContainer container = RobotContainer.getInstance();

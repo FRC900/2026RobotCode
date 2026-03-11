@@ -10,12 +10,14 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption("A-Simple", Autos.A_Simple());
+        autoChooser.setDefaultOption("OneSwipe Left",  Autos.OneSwipe_Left());
 
-        autoChooser.addOption("B-Simple", Autos.B_Simple());
-        autoChooser.addOption("C-Simple", Autos.C_Simple());
-        autoChooser.addOption("D-Simple", Autos.D_Simple());
-        autoChooser.addOption("E-Simple", Autos.E_Simple());
+
+        // Swipe autos (left = normal side, right = Y-mirrored)
+        autoChooser.addOption("OneSwipe Left", Autos.OneSwipe_Left());
+        autoChooser.addOption("OneSwipe Right", Autos.OneSwipe_Right());
+        autoChooser.addOption("TwoSwipe Left", Autos.TwoSwipe_Left());
+        autoChooser.addOption("TwoSwipe Right", Autos.TwoSwipe_Right());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }

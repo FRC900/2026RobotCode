@@ -28,104 +28,103 @@ public class Autos {
         );
     }
 
-    private static Command complexAuto(AutoTrajectory path) {
-        return Commands.sequence(
-                path.resetOdometry(),
-                AutoFactory900.resetHood(container),
-                path.cmd(),
-                Commands.parallel(
-                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                        AutoFactory900.waitSeconds(1)),
-                Commands.parallel(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                        AutoFactory900.waitSeconds(5)),
-                AutoFactory900.stopShoot(), 
 
-                Commands.parallel(path.cmd(), 
-                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                Commands.parallel(
-                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                        AutoFactory900.waitSeconds(1)),
-                Commands.parallel(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                        AutoFactory900.waitSeconds(5)), 
-
-                path.cmd(),
-                Commands.parallel(
-                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                        AutoFactory900.waitSeconds(1)),
-                Commands.parallel(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                        AutoFactory900.waitSeconds(5)),
-                AutoFactory900.stopShoot(),
-
-                path.cmd()
-        );
-
-    }
-
-    public static Command A_Simple() {
-        AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("A_Simple");
-        AutoTrajectory path = routine.trajectory("A_Simple");
+    // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot at the end.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command oneSwipe(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("OneSwipe" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("OneSwipe");
 
         routine.active()
                 .onTrue(
-                        simpleAuto(path)
-                );
+                        Commands.sequence(
+                                // Reset
+                                oneSwipePath.resetOdometry(),
+                                AutoFactory900.resetHood(container),
+                                // Intake and run path
+                                Commands.parallel(
+                                        AutoFactory900.deploySlapdownAndRunIntake(container),
+                                        oneSwipePath.cmd()),
+                                // Aim turret/hood and shoot
+                                Commands.parallel(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(1)),
+                                Commands.parallel(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(5)),
+                                AutoFactory900.stopShoot()
+                        ));
 
         return routine.cmd();
     }
 
-    public static Command B_Simple() {
-        AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("B_Simple");
-        AutoTrajectory path = routine.trajectory("B_Simple");
+    // Two-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot, then run 2and3 swipe.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command twoSwipe(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("TwoSwipe" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("OneSwipe");
+        AutoTrajectory twoAndThreeSwipePath = routine.trajectory("TwoAndThreeSwipe");
 
         routine.active()
                 .onTrue(
-                        simpleAuto(path)
-                );
+                        Commands.sequence(
+                                // reset
+                                oneSwipePath.resetOdometry(),
+                                AutoFactory900.resetHood(container),
+                                // First: Intake and run first swipe path
+                                Commands.parallel(
+                                        AutoFactory900.deploySlapdownAndRunIntake(container),
+                                        oneSwipePath.cmd()),
+                                // Aim turret/hood and shoot and stop
+                                Commands.parallel(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(1)),
+                                Commands.parallel(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(5)),
+                                AutoFactory900.stopShoot(),
+                                // Second: Intake and run second swipe path
+                                Commands.parallel(
+                                        AutoFactory900.deploySlapdownAndRunIntake(container),
+                                        twoAndThreeSwipePath.cmd()),
+                                // Aim turret/hood and shoot again and stop
+                                Commands.parallel(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(1)),
+                                Commands.parallel(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(5)),
+                                AutoFactory900.stopShoot()
+                        ));
 
         return routine.cmd();
     }
 
-    public static Command C_Simple() {
-        AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("C_Simple");
-        AutoTrajectory path = routine.trajectory("C_Simple");
+    // OneSwipe autos
+    // right = normal
+    // left = Y-mirrored
 
-        routine.active()
-                .onTrue(
-                        simpleAuto(path)
-                );
-
-        return routine.cmd();
+    public static Command OneSwipe_Left() {
+        return oneSwipe(false);
     }
 
-    public static Command D_Simple() {
-        AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("D_Simple");
-        AutoTrajectory path = routine.trajectory("D_Simple");
-
-        routine.active()
-                .onTrue(
-                        simpleAuto(path)
-                );
-
-        return routine.cmd();
+    public static Command OneSwipe_Right() {
+        return oneSwipe(true);
     }
 
-    public static Command E_Simple() {
-        AutoFactory choreoFactory = GenericAuto.getAutoFactory();
-        AutoRoutine routine = choreoFactory.newRoutine("E_Simple");
-        AutoTrajectory path = routine.trajectory("E_Simple");
+    // TwoSwipe autos
+    // Right = normal
+    // Left = Y-mirrored
 
-        routine.active()
-                .onTrue(
-                        simpleAuto(path)
-                );
+    public static Command TwoSwipe_Left() {
+        return twoSwipe(false);
+    }
 
-        return routine.cmd();
+    public static Command TwoSwipe_Right() {
+        return twoSwipe(true);
     }
 }
