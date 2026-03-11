@@ -26,7 +26,10 @@ public class Autos {
                 Commands.race(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
-                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime));
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+
+                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+        );
     }
 
     // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
@@ -66,7 +69,11 @@ public class Autos {
                                 Commands.race(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)));
+                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
         return routine.cmd();
     }
@@ -121,7 +128,11 @@ public class Autos {
                                 Commands.race(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)));
+                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
         return routine.cmd();
     }
@@ -188,7 +199,9 @@ public class Autos {
                                 Commands.race(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)
+                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
                         )
                 );
 
