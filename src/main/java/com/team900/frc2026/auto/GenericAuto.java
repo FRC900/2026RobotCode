@@ -10,9 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class GenericAuto {
-    private static final double kTranslationP = 5.0;
-    private static final double kRotationP = 5.0;
-
     //  Mirrors a Y coordinate across the field center line.
     private static double mirrorY(double y) {
         return FieldConstants.fieldWidth - y;
@@ -32,9 +29,9 @@ public class GenericAuto {
     public static AutoFactory getAutoFactory(boolean mirrorAcrossY) {
         RobotContainer container = RobotContainer.getInstance();
 
-        PIDController xController = new PIDController(kTranslationP, 0, 0);
-        PIDController yController = new PIDController(kTranslationP, 0, 0);
-        PIDController rotController = new PIDController(kRotationP, 0, 0);
+        PIDController xController = new PIDController(AutoConstants.kRotationP, AutoConstants.kRotationI, AutoConstants.kTranslationD);
+        PIDController yController = new PIDController(AutoConstants.kRotationP, AutoConstants.kRotationI, AutoConstants.kTranslationD);
+        PIDController rotController = new PIDController(AutoConstants.kRotationP, AutoConstants.kRotationI, AutoConstants.kTranslationD);
         rotController.enableContinuousInput(-Math.PI, Math.PI);
 
         AutoFactory choreoFactory =
