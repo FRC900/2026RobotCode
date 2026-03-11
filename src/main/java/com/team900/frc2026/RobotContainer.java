@@ -311,43 +311,41 @@ public class RobotContainer {
                                 SpindexerFactory.stopSpindexer(this),
                                 HandoffFactory.stopHandoff(this)));
 
-        // controlBoard
-        //         .shootAuto()
-        //         .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
-        //         .onFalse(
-        //                 new ParallelCommandGroup(
-        //                         ShooterFactory.setShooterRPS(0, this),
-        //                         new InstantCommand(() -> getDriveCommand().setKAiming(false)),
-        //                         SpindexerFactory.stopSpindexer(this),
-        //                         IntakeFactory.stopIntake(this),
-        //                         HandoffFactory.stopHandoff(this)));
+        controlBoard
+                .shootAuto()
+                .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                ShooterFactory.setShooterRPS(0, this),
+                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
+                                SpindexerFactory.stopSpindexer(this),
+                                IntakeFactory.stopIntake(this),
+                                HandoffFactory.stopHandoff(this)));
 
-        //  controlBoard
-        //                 .pass()
-        //                 .onTrue(
-        //                         (Commands.parallel(ShooterFactory.setShooterRPS(80, this)
-        //                                         .until(
-        //                                                 () ->
-        //                                                         MathUtil.isNear(
-        //                                                                 80,
-        //                                                                 shooterSubsystem
-        //
-        // .getCurrentVelocity(),
-        //                                                                 1)),
-        // HoodFactory.pass(instance, 0.025)))
-        //                                 .andThen(
-        //                                         new ParallelCommandGroup(
-        //                                                 HandoffFactory.runHandoff(this),
-        //                                                 SpindexerFactory.runSpindexer(this))))
-        //                 .onFalse(
-        //                         new ParallelCommandGroup(
-        //                                 ShooterFactory.setShooterRPS(0, this),
-        //                                 SpindexerFactory.stopSpindexer(this),
-        //                                 HandoffFactory.stopHandoff(this)));
+ controlBoard
+                .pass()
+                .onTrue(
+                        (Commands.parallel(ShooterFactory.setShooterRPS(80, this)
+                                        .until(
+                                                () ->
+                                                        MathUtil.isNear(
+                                                                80,
+                                                                shooterSubsystem
+                                                                        .getCurrentVelocity(),
+                                                                1)), HoodFactory.pass(instance, 0.025)))
+                                .andThen(
+                                        new ParallelCommandGroup(
+                                                HandoffFactory.runHandoff(this),
+                                                SpindexerFactory.runSpindexer(this))))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                ShooterFactory.setShooterRPS(0, this),
+                                SpindexerFactory.stopSpindexer(this),
+                                HandoffFactory.stopHandoff(this)));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        // controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025,instance));
+        controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025,instance));
 
         controlBoard
                 .intake()

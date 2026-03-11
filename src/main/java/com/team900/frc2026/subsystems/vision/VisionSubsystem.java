@@ -33,9 +33,6 @@ public class VisionSubsystem extends SubsystemBase {
     private final VisionIOInputsAutoLogged[] inputs;
     private final Alert[] disconnectedAlerts;
 
-    @Getter private Rotation2d rotation2dToHubTx = Rotation2d.kZero;
-    @Getter private Rotation2d rotation2dToHubTy = Rotation2d.kZero;
-
     public VisionSubsystem(VisionConsumer consumer, VisionIO... io) {
         this.consumer = consumer;
         this.io = io;

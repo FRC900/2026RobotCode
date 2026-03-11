@@ -387,6 +387,8 @@ public class RobotState implements VisionConsumer {
 
         Logger.recordOutput("RobotState/HasHoodZero", getHoodHasZeroed());
 
+        Logger.recordOutput("RobotState/RobotToHubRotation", getLatestRotationRobotToHub());
+
         // Add mechanism logging
         Logger.recordOutput("RobotState/TurretRotations", getLatestTurretPositionRadians());
         Logger.recordOutput("RobotState/HoodRotations", getHoodRotations());

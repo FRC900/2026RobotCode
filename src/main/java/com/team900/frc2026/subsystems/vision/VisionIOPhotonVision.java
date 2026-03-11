@@ -7,8 +7,12 @@
 
 package com.team900.frc2026.subsystems.vision;
 
+import com.team900.frc2026.Constants;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
+import com.team900.lib.util.FieldConstants;
+import com.team900.lib.util.Util;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -59,9 +63,7 @@ public class VisionIOPhotonVision implements VisionIO {
                 for (var target : result.targets) {
 
                     // Pinhole model using sensed tag distance instead of height difference
-                    Optional<Pose3d> tagPose =
-                            AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark)
-                                    .getTagPose(target.fiducialId);
+                    Optional<Pose3d> tagPose = FieldConstants.defaultAprilTagType.getLayout().getTagPose(target.fiducialId);
                     double tagDistance = target.getBestCameraToTarget().getTranslation().getNorm();
 
                     if (tagPose.isEmpty()) continue;
@@ -97,14 +99,14 @@ public class VisionIOPhotonVision implements VisionIO {
                             new Pose3d(
                                     new Translation3d(fieldToRobot), new Rotation3d(robotRotation));
 
-                    poseObservations.add(
-                            new PoseObservation(
-                                    result.getTimestampSeconds(), // Timestamp
-                                    robotPose, // 3D pose estimate
-                                    0, // Ambiguity
-                                    1, // Tag count
-                                    tagDistance, // Average tag distance
-                                    PoseObservationType.PINHOLE)); // Observation type
+                    // poseObservations.add(
+                    //         new PoseObservation(
+                    //                 result.getTimestampSeconds(), // Timestamp
+                    //                 robotPose, // 3D pose estimate
+                    //                 0, // Ambiguity
+                    //                 1, // Tag count
+                    //                 tagDistance, // Average tag distance
+                    //                 PoseObservationType.PINHOLE)); // Observation type
 
                     tagIds.add((short) target.fiducialId);
                 }
