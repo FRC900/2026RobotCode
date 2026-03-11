@@ -21,8 +21,7 @@ public class SuperstructureFactory {
     }
 
     public static Command stow(RobotContainer container) {
-        return new ParallelCommandGroup(
-                HoodFactory.stow(container));
+        return new ParallelCommandGroup(HoodFactory.stow(container));
     }
 
     public static Command trench(RobotContainer container) {

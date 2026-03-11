@@ -33,7 +33,9 @@ public class HoodFactory {
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance
     public static Command setPositionBlocking(
             double radians, double tolerance, RobotContainer container) {
-        return container.getHoodSubsystem().motionMagicSetpointCommandBlocking(() -> radians, tolerance)
+        return container
+                .getHoodSubsystem()
+                .motionMagicSetpointCommandBlocking(() -> radians, tolerance)
                 .withName("Hood Set Position Blocking");
     }
 
@@ -54,14 +56,17 @@ public class HoodFactory {
                                 .andThen(container.getHoodSubsystem()::enableSoftLimits));
     }
 
-    public static Command pass(RobotContainer container,double tolerance)        {
-               return container.getHoodSubsystem().motionMagicSetpointCommandBlocking(() -> 0.6, tolerance)
+    public static Command pass(RobotContainer container, double tolerance) {
+        return container
+                .getHoodSubsystem()
+                .motionMagicSetpointCommandBlocking(() -> 0.6, tolerance)
                 .withName("Hood pass Position Blocking");
     }
 
-    public static Command shoot(RobotContainer container, double tolerance)    {
-         return container.getHoodSubsystem().motionMagicSetpointCommandBlocking(() -> 0.3, tolerance)
+    public static Command shoot(RobotContainer container, double tolerance) {
+        return container
+                .getHoodSubsystem()
+                .motionMagicSetpointCommandBlocking(() -> 0.3, tolerance)
                 .withName("Hood Shoot Position Blocking");
-    }   
-
+    }
 }

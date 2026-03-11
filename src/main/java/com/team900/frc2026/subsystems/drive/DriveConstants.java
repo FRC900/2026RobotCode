@@ -97,8 +97,8 @@ public class DriveConstants {
                     CompTunerConstants.BackRight.LocationX, CompTunerConstants.BackRight.LocationY)
         };
     }
-
-    public static final Gains kHeadingController = new Gains(0, 0, 0, 0, 0, 0, 0);
+// 30 was way too much
+    public static final Gains kHeadingController = new Gains(0 , 0, 0,  0, 0, 0, 0);
 
     public static final double kDriveMaxSpeed =
             CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8;

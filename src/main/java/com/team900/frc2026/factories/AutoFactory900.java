@@ -71,5 +71,4 @@ public class AutoFactory900 {
             DoubleSupplier throttle, DoubleSupplier strafe, DoubleSupplier turn) {
         return new DriveMaintainingHeadingCommand(container, throttle, strafe, turn);
     }
-
 }

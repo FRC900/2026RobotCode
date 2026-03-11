@@ -21,13 +21,14 @@ public class HoodConstants {
     public static final double kHoodToleranceRadians = 0.1;
     public static final double kHoodZeroedAngleDegrees = 15;
 
-    public static final double kHoodRotorMaxPosition = 0.0754 +Units.degreesToRotations(15.0);
+    public static final double kHoodRotorMaxPosition = 0.0754 + Units.degreesToRotations(15.0);
     public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
 
     public static final double kZeroingAmps = 23;
     public static final double kZeroingSeconds = 0.1;
 
-    public static final double kHoodMinPositionRadians = Units.rotationsToDegrees(kHoodRotorMinPosition);
+    public static final double kHoodMinPositionRadians =
+            Units.rotationsToDegrees(kHoodRotorMinPosition);
     public static final double kHoodMaxPositionRadians =
             Units.rotationsToRadians(kHoodRotorMaxPosition);
 
@@ -51,7 +52,7 @@ public class HoodConstants {
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
-        kHoodConfig.unitToRotorRatio = 2*Math.PI;
+        kHoodConfig.unitToRotorRatio = 2 * Math.PI;
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;

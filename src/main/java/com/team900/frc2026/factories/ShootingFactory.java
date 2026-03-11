@@ -18,11 +18,23 @@ public class ShootingFactory {
                         .until(
                                 () ->
                                         MathUtil.isNear(
-                                                setPointSupplier.get().getShooterRPS(),
-                                                container
-                                                        .getShooterSubsystem()
-                                                        .getCurrentVelocity(),
-                                                1) && MathUtil.isNear(setPointSupplier.get().getHoodRadians(), container.getHoodSubsystem().getCurrentPosition(), 1) && MathUtil.isNear(0, RobotState.getInstance().getLatestRotationRobotToHub().getDegrees(), 3)))
+                                                        setPointSupplier.get().getShooterRPS(),
+                                                        container
+                                                                .getShooterSubsystem()
+                                                                .getCurrentVelocity(),
+                                                        1)
+                                                && MathUtil.isNear(
+                                                        setPointSupplier.get().getHoodRadians(),
+                                                        container
+                                                                .getHoodSubsystem()
+                                                                .getCurrentPosition(),
+                                                        1)
+                                                && MathUtil.isNear(
+                                                        0,
+                                                        RobotState.getInstance()
+                                                                .getLatestRotationRobotToHub()
+                                                                .getDegrees(),
+                                                        3)))
                 .andThen(
                         new ParallelCommandGroup(
                                         IntakeFactory.runIntake(container),

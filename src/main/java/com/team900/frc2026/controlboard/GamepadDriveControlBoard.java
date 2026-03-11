@@ -41,13 +41,13 @@ public class GamepadDriveControlBoard implements IDriveControlBoard {
 
     @Override
     public double getRotation() {
-        return -(Math.pow(Math.abs(controller.getRightX()), 2.0))
+        return -(Math.pow(Math.abs(controller.getRightX()), 1.5))
                 * Math.signum(controller.getRightX());
     }
 
     @Override
     public double getRotationY() {
-        return -(Math.pow(Math.abs(controller.getRightY()), 2.0))
+        return -(Math.pow(Math.abs(controller.getRightY()), 1.5))
                 * Math.signum(controller.getRightY());
     }
 

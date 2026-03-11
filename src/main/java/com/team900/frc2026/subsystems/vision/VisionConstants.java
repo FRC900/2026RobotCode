@@ -7,7 +7,6 @@
 
 package com.team900.frc2026.subsystems.vision;
 
-import com.team900.frc2026.RobotState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -45,7 +44,7 @@ public class VisionConstants {
     // Camera T (Turret camera)
     public static final double kCameraTPitchDegrees = 30.0;
     public static final double kCameraTPitchRads = Units.degreesToRadians(kCameraTPitchDegrees);
-    public static final double kCameraTHeightOffGroundMeters = Units.inchesToMeters(14.635);
+    public static final double kCameraTHeightOffGroundMeters = Units.inchesToMeters(18.25);
     public static final Rotation2d kCameraTYawOffset = Rotation2d.fromDegrees(180);
 
     public static final double kRobotToCameraTForward = Units.inchesToMeters(-12.235063);

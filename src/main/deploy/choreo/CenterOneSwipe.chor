@@ -1,5 +1,5 @@
 {
- "name":"OneMeterFromEdgeStill",
+ "name":"CenterOneSwipe",
  "version":2,
  "type":"Swerve",
  "variables":{

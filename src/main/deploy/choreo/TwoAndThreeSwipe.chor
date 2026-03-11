@@ -1,5 +1,5 @@
 {
- "name":"FourPointZeroFiveMetersFromEdgeToCenterThenDepot",
+ "name":"TwoSwipe",
  "version":2,
  "type":"Swerve",
  "variables":{
@@ -76,7 +76,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"Users/anshmenghani/Documents/GitHub/2026RobotCode/src/main/java/com/team900/frc2026/auto",
+  "root":"Users/anshmenghani/Documents/GitHub/2026RobotCode/src/main/deploy/choreo",
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true

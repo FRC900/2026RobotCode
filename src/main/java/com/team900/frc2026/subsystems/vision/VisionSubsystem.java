@@ -22,10 +22,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import lombok.Getter;
-
 import java.util.LinkedList;
 import java.util.List;
+import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -34,8 +33,8 @@ public class VisionSubsystem extends SubsystemBase {
     private final VisionIOInputsAutoLogged[] inputs;
     private final Alert[] disconnectedAlerts;
 
-    @Getter private Rotation2d rotation2dToHubTx = Rotation2d.kZero;
-    @Getter private Rotation2d rotation2dToHubTy = Rotation2d.kZero;
+    @Getter private Rotation2d rotation2dToHubTx = new Rotation2d();
+    @Getter private Rotation2d rotation2dToHubTy = new Rotation2d();
 
     public VisionSubsystem(VisionConsumer consumer, VisionIO... io) {
         this.consumer = consumer;
@@ -154,9 +153,8 @@ public class VisionSubsystem extends SubsystemBase {
                 consumer.accept(
                         observation, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 
-                        rotation2dToHubTx = inputs[0].latestTargetObservation.tx();
-                        rotation2dToHubTy  = inputs[0].latestTargetObservation.ty();
-                
+                rotation2dToHubTx = inputs[0].latestTargetObservation.tx();
+                rotation2dToHubTy = inputs[0].latestTargetObservation.ty();
             }
 
             // Log camera datadata
