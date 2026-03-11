@@ -4,20 +4,17 @@
 
 package com.team900.frc2026;
 
+import static edu.wpi.first.units.Units.Volt;
+
 import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.team900.frc2026.factories.HandoffFactory;
-import com.team900.frc2026.factories.ShooterFactory;
-import com.team900.frc2026.factories.SpindexerFactory;
 import com.team900.lib.util.CANBusStatusLogger;
 import com.team900.lib.util.VirtualSubsystem;
 import edu.wpi.first.math.MathShared;
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.MathUsageId;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
@@ -26,10 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
-import static edu.wpi.first.units.Units.Volt;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,8 +43,8 @@ public class Robot extends LoggedRobot {
     private Command disabledCommand = Commands.none();
     private boolean hasEnabled = false;
 
-    private final RobotContainer         robotContainer = RobotContainer.getInstance();
-;
+    private final RobotContainer robotContainer = RobotContainer.getInstance();
+    ;
     private int mIter = 0;
     private Command autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
     private Optional<Pose2d> startingPose = Optional.empty();
@@ -176,8 +169,7 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
-    public void disabledInit()  {
-    }
+    public void disabledInit() {}
 
     @Override
     public void disabledPeriodic() {

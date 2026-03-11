@@ -78,12 +78,12 @@ public class CoprocessorSubsystem extends SubsystemBase {
         instance.startServer();
 
         m_ros_interface = new ROSNetworkTablesBridge(instance.getTable(""), updateDelay);
-        
+
         m_robotState = robotState;
 
         m_odomPub = new BridgePublisher<>(m_ros_interface, "/wpi_odom");
         m_pingReturnPub = new BridgePublisher<>(m_ros_interface, "/ping_return");
-        
+
         m_pingSendSub = new BridgeSubscriber<>(m_ros_interface, "/ping_send", RosFloat64.class);
         m_vid0TagsSub =
                 new BridgeSubscriber<>(

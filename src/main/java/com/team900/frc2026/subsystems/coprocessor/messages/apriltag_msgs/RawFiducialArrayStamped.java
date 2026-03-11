@@ -43,8 +43,7 @@ public class RawFiducialArrayStamped
         return this.header;
     }
 
-    public
-ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
+    public ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
             getRawFiducials() {
         return this.rawFiducials;
     }
@@ -55,8 +54,7 @@ ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawF
     }
 
     public void setRawFiducials(
-
-ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
+            ArrayList<com.team900.frc2026.subsystems.coprocessor.messages.apriltag_msgs.RawFiducial>
                     rawFiducials) {
         this.rawFiducials = rawFiducials;
     }

@@ -65,7 +65,8 @@ public class ShooterSetpoint {
         double shooterRPS = ShooterConstants.kShootingRPS;
 
         // values for hood are placeholders rn since that depends on the lookup table
-        return new ShooterSetpoint(shooterRPS, Math.PI / 2. - getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
+        return new ShooterSetpoint(
+                shooterRPS, Math.PI / 2. - getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
     }
 
     /**

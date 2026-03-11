@@ -10,10 +10,9 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption("TwoSwipe Right",  Autos.TwoSwipe_Right());
+        autoChooser.setDefaultOption("TwoSwipe Right", Autos.TwoSwipe_Right());
 
-
-        // Swipe autos 
+        // Swipe autos
         // right = normal side
         // left = Y-mirrored
         autoChooser.addOption("OneSwipe Left", Autos.OneSwipe_Left());

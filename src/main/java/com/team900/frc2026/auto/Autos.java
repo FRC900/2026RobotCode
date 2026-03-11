@@ -16,7 +16,7 @@ public class Autos {
         return Commands.sequence(
                 path.resetOdometry(),
                 AutoFactory900.resetHood(container),
-                // reset turret, 
+                // reset turret,
                 path.cmd(),
                 Commands.parallel(
                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
@@ -24,12 +24,11 @@ public class Autos {
                 Commands.parallel(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(5)),
-                AutoFactory900.stopShoot()
-        );
+                AutoFactory900.stopShoot());
     }
 
-
-    // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot at the end.
+    // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
+    // at the end.
     // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
     private static Command oneSwipe(boolean mirrorY) {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
@@ -54,13 +53,13 @@ public class Autos {
                                 Commands.parallel(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(5)),
-                                AutoFactory900.stopShoot()
-                        ));
+                                AutoFactory900.stopShoot()));
 
         return routine.cmd();
     }
 
-    // Two-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot, then run 2and3 swipe.
+    // Two-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot,
+    // then run 2and3 swipe.
     // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
     private static Command twoSwipe(boolean mirrorY) {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
@@ -98,8 +97,7 @@ public class Autos {
                                 Commands.parallel(
                                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                                         AutoFactory900.waitSeconds(5)),
-                                AutoFactory900.stopShoot()
-                        ));
+                                AutoFactory900.stopShoot()));
 
         return routine.cmd();
     }

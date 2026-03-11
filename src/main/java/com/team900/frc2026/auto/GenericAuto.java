@@ -56,16 +56,11 @@ public class GenericAuto {
                                 }
                                 : container.getDriveSubsystem()::resetPose,
                         (SwerveSample sample) -> {
-                            double targetY =
-                                    mirrorAcrossY ? mirrorY(sample.y) : sample.y;
+                            double targetY = mirrorAcrossY ? mirrorY(sample.y) : sample.y;
                             double targetHeading =
-                                    mirrorAcrossY
-                                            ? mirrorHeading(sample.heading)
-                                            : sample.heading;
-                            double targetVy =
-                                    mirrorAcrossY ? -sample.vy : sample.vy;
-                            double targetOmega =
-                                    mirrorAcrossY ? -sample.omega : sample.omega;
+                                    mirrorAcrossY ? mirrorHeading(sample.heading) : sample.heading;
+                            double targetVy = mirrorAcrossY ? -sample.vy : sample.vy;
+                            double targetOmega = mirrorAcrossY ? -sample.omega : sample.omega;
 
                             double xFB =
                                     xController.calculate(
@@ -86,9 +81,7 @@ public class GenericAuto {
 
                             ChassisSpeeds fieldRelative =
                                     new ChassisSpeeds(
-                                            sample.vx + xFB,
-                                            targetVy + yFB,
-                                            targetOmega + rFB);
+                                            sample.vx + xFB, targetVy + yFB, targetOmega + rFB);
                             ChassisSpeeds robotRelative =
                                     ChassisSpeeds.fromFieldRelativeSpeeds(
                                             fieldRelative,

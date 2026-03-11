@@ -134,22 +134,23 @@ public class DriveMaintainingHeadingCommand extends Command {
     @Override
     public boolean isFinished() {
         if (isNearTarget()) {
-                return true;
+            return true;
         } else {
-                return false;
+            return false;
         }
     }
 
     public boolean isNearTarget() {
         if (mHeadingSetpoint.isEmpty()) {
-                return false;
+            return false;
         }
 
-        boolean isNearHubTarget = MathUtil.isNear(
-                mHeadingSetpoint.get().getDegrees(),
-                mRobotContainer.getDriveSubsystem().getRotation().getDegrees(),
-                2.5);
-        
+        boolean isNearHubTarget =
+                MathUtil.isNear(
+                        mHeadingSetpoint.get().getDegrees(),
+                        mRobotContainer.getDriveSubsystem().getRotation().getDegrees(),
+                        2.5);
+
         return isNearHubTarget;
     }
 }

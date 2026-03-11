@@ -117,12 +117,12 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     }
 
     @Override
-    public Trigger resetHood()  {
+    public Trigger resetHood() {
         return buttonControlBoard.resetHood();
     }
 
-    @Override 
-    public Trigger pass()   {
+    @Override
+    public Trigger pass() {
         return buttonControlBoard.pass();
     }
 }
