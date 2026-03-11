@@ -22,7 +22,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import lombok.Getter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,9 +32,6 @@ public class VisionSubsystem extends SubsystemBase {
     private final VisionIO[] io;
     private final VisionIOInputsAutoLogged[] inputs;
     private final Alert[] disconnectedAlerts;
-
-    @Getter private Rotation2d rotation2dToHubTx = Rotation2d.kZero;
-    @Getter private Rotation2d rotation2dToHubTy = Rotation2d.kZero;
 
     public VisionSubsystem(VisionConsumer consumer, VisionIO... io) {
         this.consumer = consumer;
@@ -153,10 +149,6 @@ public class VisionSubsystem extends SubsystemBase {
                 // Send vision observation
                 consumer.accept(
                         observation, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-
-                        rotation2dToHubTx = inputs[0].latestTargetObservation.tx();
-                        rotation2dToHubTy  = inputs[0].latestTargetObservation.ty();
-                
             }
 
             // Log camera datadata
