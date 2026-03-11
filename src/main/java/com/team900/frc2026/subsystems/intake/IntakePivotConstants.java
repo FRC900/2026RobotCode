@@ -60,9 +60,9 @@ public class IntakePivotConstants {
                 SensorDirectionValue.Clockwise_Positive;
 
         // fxConfig
-        kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 80;
+        kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 100;
         kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 80;
+        kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 100;
         kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
