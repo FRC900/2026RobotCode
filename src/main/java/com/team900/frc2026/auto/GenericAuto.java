@@ -8,8 +8,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class GenericAuto {
     private static final double kTranslationP = 5.0;
@@ -88,7 +86,7 @@ public class GenericAuto {
                                             container.getDriveSubsystem().getPose().getRotation());
                             container.getDriveSubsystem().runVelocity(robotRelative);
                         },
-                        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                        true, // always enable alliance flipping; Choreo queries the alliance lazily at runtime
                         container.getDriveSubsystem());
         return choreoFactory;
     }
