@@ -19,6 +19,8 @@ public class AutoDashboard {
         autoChooser.addOption("OneSwipe Right", Autos.OneSwipe_Right());
         autoChooser.addOption("TwoSwipe Left", Autos.TwoSwipe_Left());
         autoChooser.addOption("TwoSwipe Right", Autos.TwoSwipe_Right());
+        autoChooser.addOption("ThreeSwipe Left", Autos.ThreeSwipe_Left());
+        autoChooser.addOption("ThreeSwipe Right", Autos.ThreeSwipe_Right());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
