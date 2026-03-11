@@ -33,8 +33,9 @@ public class IntakePivotConstants {
     public static MotionMagicConfigs kIntakePivotMotionMagicConfigs = new MotionMagicConfigs();
 
     static {
-        kIntakePivotMotionMagicConfigs.MotionMagicAcceleration = 0.7;
-        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity = 1;
+        kIntakePivotMotionMagicConfigs.MotionMagicAcceleration = 0.3;
+        kIntakePivotMotionMagicConfigs.MotionMagicCruiseVelocity = 0.4;
+        kIntakePivotMotionMagicConfigs.MotionMagicJerk = 1.5;
     }
 
     static {
