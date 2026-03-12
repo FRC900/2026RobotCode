@@ -143,6 +143,74 @@ public class Autos {
         return routine.cmd();
     }
 
+    // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
+    // at the end.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command oneSwipeCenter(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("oneSwipeCenter" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("oneSwipeCenter");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "oneSwipeCenter"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
+
+        return routine.cmd();
+    }
+
+    // Two-swipe Center auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot,
+    // then run 2and3 swipe.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command twoSwipeCenter(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("TwoSwipeCenter" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("OneSwipeCenter");
+        AutoTrajectory twoAndThreeSwipePath = routine.trajectory("TwoAndThreeSwipeCenter");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
+
+        return routine.cmd();
+    }
+
+    // Three-swipe Center auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and
+    // shoot, then run 2and3 swipe twice.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command threeSwipeCenter(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("TwoSwipe" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("OneSwipeCenter");
+        AutoTrajectory twoAndThreeSwipePath = routine.trajectory("TwoAndThreeSwipeCenter");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
+                                swipeCommand(twoAndThreeSwipePath, "ThreeSwipeCenter"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
+
+        return routine.cmd();
+    }
+
     // Simple standstill autos
 
     public static Command A_Simple() {
@@ -177,6 +245,14 @@ public class Autos {
         return oneSwipe(false);
     }
 
+    public static Command OneSwipeCenter_Left() {
+        return oneSwipeCenter(true);
+    }
+
+    public static Command OneSwipeCenter_Right() {
+        return oneSwipeCenter(false);
+    }
+
     // TwoSwipe autos
     // Right = normal
     // Left = Y-mirrored
@@ -189,6 +265,14 @@ public class Autos {
         return twoSwipe(false);
     }
 
+    public static Command TwoSwipeCenter_Left() {
+        return twoSwipeCenter(true);
+    }
+
+    public static Command TwoSwipeCenter_Right() {
+        return twoSwipeCenter(false);
+    }
+
     // ThreeSwipe autos
     // Right = normal
     // Left = Y-mirrored
@@ -199,5 +283,13 @@ public class Autos {
 
     public static Command ThreeSwipe_Right() {
         return threeSwipe(false);
+    }
+
+    public static Command ThreeSwipeCenter_Left() {
+        return threeSwipeCenter(true);
+    }
+
+    public static Command ThreeSwipeCenter_Right() {
+        return threeSwipeCenter(false);
     }
 }
