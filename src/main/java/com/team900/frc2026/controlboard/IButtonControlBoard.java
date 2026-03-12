@@ -33,4 +33,6 @@ public interface IButtonControlBoard {
     Trigger resetHood();
 
     Trigger pass();
+
+    Trigger toggleHood();
 }

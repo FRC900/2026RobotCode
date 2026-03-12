@@ -5,7 +5,6 @@ import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.RobotBase;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -29,11 +28,19 @@ public class ShooterSetpoint {
     static {
         try {
             if (RobotBase.isReal()) {
-                phiShootingModel = PolynomialModel.load("/home/lvuser/deploy/shooting_models/phi_shooter_model.json");
-                thetaShootingModel = PolynomialModel.load("/home/lvuser/deploy/shooting_models/theta_shooter_model.json");
+                phiShootingModel =
+                        PolynomialModel.load(
+                                "/home/lvuser/deploy/shooting_models/phi_shooter_model.json");
+                thetaShootingModel =
+                        PolynomialModel.load(
+                                "/home/lvuser/deploy/shooting_models/theta_shooter_model.json");
             } else {
-                phiShootingModel = PolynomialModel.load("src/main/deploy/shooting_models/phi_shooter_model.json");
-                thetaShootingModel = PolynomialModel.load("src/main/deploy/shooting_models/theta_shooter_model.json");
+                phiShootingModel =
+                        PolynomialModel.load(
+                                "src/main/deploy/shooting_models/phi_shooter_model.json");
+                thetaShootingModel =
+                        PolynomialModel.load(
+                                "src/main/deploy/shooting_models/theta_shooter_model.json");
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load shooter polynomial models", e);
@@ -134,5 +141,4 @@ public class ShooterSetpoint {
     public double getHoodFF() {
         return hoodFF;
     }
-
 }

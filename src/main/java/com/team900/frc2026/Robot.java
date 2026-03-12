@@ -39,7 +39,8 @@ public class Robot extends LoggedRobot {
     static {
         if (RobotBase.isSimulation()) {
             SimulatedArena.overrideInstance(
-                    new org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt(false));
+                    new org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt(
+                            false));
         }
     }
 

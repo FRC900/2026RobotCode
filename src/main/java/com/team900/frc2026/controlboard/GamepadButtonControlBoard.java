@@ -104,4 +104,9 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     public Trigger pass() {
         return controller.R2().and(additionalController.L3());
     }
+
+    @Override
+    public Trigger toggleHood() {
+        return controller.square();
+    }
 }
