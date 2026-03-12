@@ -262,6 +262,7 @@ public class RobotContainer {
     }
 
     private boolean intakeDeployed = intakePivotSubsystem.getPositionSetpointUnits() < 0.125;
+    private boolean hoodAtMax = false;
 
     private void configureBindings() {
         // Swerve Drive
@@ -278,20 +279,20 @@ public class RobotContainer {
         //                                 .beforeStarting(() -> intakeDeployed = true),
         //                         () -> intakeDeployed));
 
-        // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.defer(
-        //                         () -> {
-        //                                 if (intakeDeployed){
-        //                                         intakeDeployed = false;
-        //                                         return IntakeFactory.retractSlapdown(this);
-        //                                 } else {
-        //                                         intakeDeployed = true;
-        //                                         return IntakeFactory.deploySlapdown(this);
-        //                                 }
-        //                         },
-        //                                 Set.of(getIntakePivotSubsystem())));
+        controlBoard
+                .toggleIntake()
+                .onTrue(
+                        Commands.defer(
+                                () -> {
+                                    if (intakeDeployed) {
+                                        intakeDeployed = false;
+                                        return IntakeFactory.retractSlapdown(this);
+                                    } else {
+                                        intakeDeployed = true;
+                                        return IntakeFactory.deploySlapdown(this);
+                                    }
+                                },
+                                Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .shoot()
@@ -351,6 +352,22 @@ public class RobotContainer {
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
         controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025, instance));
+
+        controlBoard
+                .toggleHood()
+                .onTrue(
+                        Commands.defer(
+                                () -> {
+                                    if (hoodAtMax) {
+                                        hoodAtMax = false;
+                                        return HoodFactory.stow(this);
+                                    } else {
+                                        hoodAtMax = true;
+                                        return HoodFactory.setPositionMotionMagicCommand(
+                                                HoodConstants.kHoodConfig.kMaxPositionUnits, this);
+                                    }
+                                },
+                                Set.of(getHoodSubsystem())));
 
         controlBoard
                 .intake()

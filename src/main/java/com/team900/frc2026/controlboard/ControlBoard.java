@@ -125,4 +125,9 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     public Trigger pass() {
         return buttonControlBoard.pass();
     }
+
+    @Override
+    public Trigger toggleHood() {
+        return buttonControlBoard.toggleHood();
+    }
 }
