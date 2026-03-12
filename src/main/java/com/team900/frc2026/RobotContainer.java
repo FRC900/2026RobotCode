@@ -261,7 +261,7 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private boolean intakeDeployed = intakePivotSubsystem.getPositionSetpointUnits() < 0.125;
+    private boolean intakeDeployed = false;
     private boolean hoodAtMax = false;
 
     private void configureBindings() {
@@ -282,17 +282,11 @@ public class RobotContainer {
         controlBoard
                 .toggleIntake()
                 .onTrue(
-                        Commands.defer(
-                                () -> {
-                                    if (intakeDeployed) {
-                                        intakeDeployed = false;
-                                        return IntakeFactory.retractSlapdown(this);
-                                    } else {
-                                        intakeDeployed = true;
-                                        return IntakeFactory.deploySlapdown(this);
-                                    }
-                                },
-                                Set.of(getIntakePivotSubsystem())));
+                        Commands.either(
+                                        IntakeFactory.retractSlapdown(this),
+                                        IntakeFactory.deploySlapdown(this),
+                                        () -> intakeDeployed)
+                                .beforeStarting(() -> intakeDeployed = !intakeDeployed));
 
         controlBoard
                 .shoot()
@@ -356,18 +350,12 @@ public class RobotContainer {
         controlBoard
                 .toggleHood()
                 .onTrue(
-                        Commands.defer(
-                                () -> {
-                                    if (hoodAtMax) {
-                                        hoodAtMax = false;
-                                        return HoodFactory.stow(this);
-                                    } else {
-                                        hoodAtMax = true;
-                                        return HoodFactory.setPositionMotionMagicCommand(
-                                                HoodConstants.kHoodConfig.kMaxPositionUnits, this);
-                                    }
-                                },
-                                Set.of(getHoodSubsystem())));
+                        Commands.either(
+                                        HoodFactory.stow(this),
+                                        HoodFactory.setPositionMotionMagicCommand(
+                                                HoodConstants.kHoodConfig.kMaxPositionUnits, this),
+                                        () -> hoodAtMax)
+                                .beforeStarting(() -> hoodAtMax = !hoodAtMax));
 
         controlBoard
                 .intake()
