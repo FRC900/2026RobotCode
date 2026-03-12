@@ -3,7 +3,7 @@
   "grid_size": 128,
   "tabs": [
     {
-      "name": "Teleoperated",
+      "name": "Control",
       "grid_layout": {
         "layouts": [
           {
@@ -76,7 +76,7 @@
             "title": "Alerts",
             "x": 256.0,
             "y": 512.0,
-            "width": 640.0,
+            "width": 512.0,
             "height": 256.0,
             "type": "Alerts",
             "properties": {
@@ -86,59 +86,20 @@
           },
           {
             "title": "Photon Alerts",
-            "x": 896.0,
-            "y": 512.0,
-            "width": 512.0,
-            "height": 256.0,
+            "x": 1408.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
             "type": "Alerts",
             "properties": {
               "topic": "/SmartDashboard/PhotonAlerts",
               "period": 0.06
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "Autonomous",
-      "grid_layout": {
-        "layouts": [
-          {
-            "title": "Radio Status",
-            "x": 1152.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Connected",
-                "x": 1408.0,
-                "y": 256.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/AdvantageKit/RadioStatus/Connected",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              }
-            ]
-          }
-        ],
-        "containers": [
+          },
           {
             "title": "Auto Chooser",
-            "x": 768.0,
-            "y": 640.0,
+            "x": 1024.0,
+            "y": 512.0,
             "width": 384.0,
             "height": 256.0,
             "type": "ComboBox Chooser",
@@ -149,9 +110,9 @@
             }
           },
           {
-            "title": "Active Auto Path",
-            "x": 512.0,
-            "y": 640.0,
+            "title": "active",
+            "x": 768.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Text Display",
@@ -163,55 +124,9 @@
             }
           },
           {
-            "title": "Field",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 896.0,
-            "height": 640.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/Field",
-              "period": 0.06,
-              "field_game": "Rebuilt",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": 0.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295,
-              "show_robot_outside_widget": true
-            }
-          },
-          {
-            "title": "Turret Camera Feed",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 512.0,
-            "height": 512.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/TurretCamera-processed",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "Alerts",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Alerts",
-            "properties": {
-              "topic": "/SmartDashboard/Alerts",
-              "period": 0.06
-            }
-          },
-          {
             "title": "Choreo Alerts",
-            "x": 256.0,
-            "y": 512.0,
+            "x": 1408.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 384.0,
             "type": "Alerts",

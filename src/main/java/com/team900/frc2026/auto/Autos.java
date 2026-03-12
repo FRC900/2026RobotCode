@@ -156,7 +156,7 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "oneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
                         )
                 );
@@ -178,7 +178,7 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
                         )
@@ -201,7 +201,7 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
                                 swipeCommand(twoAndThreeSwipePath, "ThreeSwipeCenter"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
