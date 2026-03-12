@@ -51,7 +51,6 @@ import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
 import com.team900.lib.util.ShooterSetpoint;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -326,17 +325,19 @@ public class RobotContainer {
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
 
- controlBoard
+        controlBoard
                 .pass()
                 .onTrue(
-                        (Commands.parallel(ShooterFactory.setShooterRPS(80, this)
-                                        .until(
-                                                () ->
-                                                        MathUtil.isNear(
-                                                                80,
-                                                                shooterSubsystem
-                                                                        .getCurrentVelocity(),
-                                                                1)), HoodFactory.pass(instance, 0.025)))
+                        (Commands.parallel(
+                                        ShooterFactory.setShooterRPS(80, this)
+                                                .until(
+                                                        () ->
+                                                                MathUtil.isNear(
+                                                                        80,
+                                                                        shooterSubsystem
+                                                                                .getCurrentVelocity(),
+                                                                        1)),
+                                        HoodFactory.pass(instance, 0.025)))
                                 .andThen(
                                         new ParallelCommandGroup(
                                                 HandoffFactory.runHandoff(this),
@@ -349,7 +350,7 @@ public class RobotContainer {
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025,instance));
+        controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025, instance));
 
         controlBoard
                 .intake()

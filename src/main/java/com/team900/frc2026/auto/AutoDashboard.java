@@ -27,8 +27,7 @@ public class AutoDashboard {
         autoChooser.addOption("B Simple", Autos.B_Simple());
         autoChooser.addOption("C Simple", Autos.C_Simple());
         autoChooser.addOption("D Simple", Autos.D_Simple());
-        autoChooser.addOption("E Simple", Autos.E_Simple()); 
-
+        autoChooser.addOption("E Simple", Autos.E_Simple());
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
