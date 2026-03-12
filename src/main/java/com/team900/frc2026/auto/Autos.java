@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Autos {
     private static final RobotContainer container = RobotContainer.getInstance();
 
+    // shoot Fuel from starting position
     private static Command simpleAuto(double x, double y, double deg) {
         return Commands.sequence(
                 Commands.runOnce(
@@ -21,6 +22,7 @@ public class Autos {
                                 container
                                         .getDriveSubsystem()
                                         .resetPose(new Pose2d(x, y, Rotation2d.fromDegrees(deg)))),
+                // reset
                 AutoFactory900.resetHood(container),
                 // reset turret
                 Commands.race(
@@ -30,7 +32,47 @@ public class Autos {
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                Commands.runOnce(() -> container.getDriveSubsystem().stop()));
+                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+        );
+    }
+
+    // shoot Fuel from starting position from AutoTrajectory
+    private static Command simpleAutoFromPath(AutoTrajectory path) {
+        return Commands.sequence(
+                // reset
+                path.resetOdometry(),
+                AutoFactory900.resetHood(container),
+                // reset turret
+                Commands.race(
+                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                Commands.race(
+                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)
+        );
+    }
+
+    // Command for moving robot to one swipe of Fuel and back
+    private static Command swipeCommand(AutoTrajectory path, String pathName) {
+        return Commands.sequence(
+                // Intake (only at start) and run path
+                Commands.deadline(
+                        path.cmd(),
+                        pathName.equals("OneSwipe")
+                            ? AutoFactory900.deploySlapdownAndRunIntake(container)
+                            : Commands.none()),
+
+                // Aim turret/hood and shoot
+                Commands.race(
+                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                Commands.race(
+                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.waitSeconds(
+                                AutoConstants.fullHopperShootTime)),
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)
+        );
     }
 
     // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
@@ -45,36 +87,11 @@ public class Autos {
         routine.active()
                 .onTrue(
                         Commands.sequence(
-                                // Reset
-                                oneSwipePath.resetOdometry(),
-                                AutoFactory900.resetHood(container),
-
-                                // shoot first eight (when shoot on the move works, do this while
-                                // moving)
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.eightBallShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run path
-                                Commands.deadline(
-                                        oneSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-
-                                // Aim turret/hood and shoot
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
         return routine.cmd();
     }
@@ -92,49 +109,12 @@ public class Autos {
         routine.active()
                 .onTrue(
                         Commands.sequence(
-                                // reset
-                                oneSwipePath.resetOdometry(),
-                                AutoFactory900.resetHood(container),
-
-                                // shoot first eight (when shoot on the move works, do this while
-                                // moving)
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.eightBallShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run first swipe path
-                                Commands.deadline(
-                                        oneSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run second swipe path
-                                Commands.deadline(
-                                        twoAndThreeSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot again and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
         return routine.cmd();
     }
@@ -152,63 +132,13 @@ public class Autos {
         routine.active()
                 .onTrue(
                         Commands.sequence(
-                                // reset
-                                oneSwipePath.resetOdometry(),
-                                AutoFactory900.resetHood(container),
-
-                                // shoot first eight (when shoot on the move works, do this while
-                                // moving)
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.eightBallShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run first swipe path
-                                Commands.deadline(
-                                        oneSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run second swipe path
-                                Commands.deadline(
-                                        twoAndThreeSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot again and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run third swipe path
-                                Commands.deadline(
-                                        twoAndThreeSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot again and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(
-                                                AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
+                                swipeCommand(twoAndThreeSwipePath, "ThreeSwipe"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
         return routine.cmd();
     }

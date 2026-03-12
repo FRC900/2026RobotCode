@@ -1,5 +1,5 @@
 {
- "name":"TwoAndThreeSwipe",
+ "name":"OneSwipeCenter",
  "version":2,
  "type":"Swerve",
  "variables":{
