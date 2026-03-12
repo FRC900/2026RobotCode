@@ -7,14 +7,9 @@
 
 package com.team900.frc2026.subsystems.vision;
 
-import com.team900.frc2026.Constants;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 import com.team900.lib.util.FieldConstants;
-import com.team900.lib.util.Util;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -63,7 +58,10 @@ public class VisionIOPhotonVision implements VisionIO {
                 for (var target : result.targets) {
 
                     // Pinhole model using sensed tag distance instead of height difference
-                    Optional<Pose3d> tagPose = FieldConstants.defaultAprilTagType.getLayout().getTagPose(target.fiducialId);
+                    Optional<Pose3d> tagPose =
+                            FieldConstants.defaultAprilTagType
+                                    .getLayout()
+                                    .getTagPose(target.fiducialId);
                     double tagDistance = target.getBestCameraToTarget().getTranslation().getNorm();
 
                     if (tagPose.isEmpty()) continue;

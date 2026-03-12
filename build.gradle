@@ -114,22 +114,6 @@ task(replayWatch, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-// Running FuelPathSim polynomial model testing
-sourceSets {
-    test_scripts {
-        java {
-            srcDir 'ProjectileMotionSim/LaunchJavaFiles'
-        }
-        compileClasspath += sourceSets.main.runtimeClasspath + configurations.runtimeClasspath
-    }
-}
-
-task runPolyTest(type: JavaExec) {
-    classpath = sourceSets.test_scripts.runtimeClasspath + sourceSets.main.runtimeClasspath
-    mainClass = 'TestPolynomialModels'
-    args = []
-}
-
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
 dependencies {

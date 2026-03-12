@@ -6,7 +6,6 @@ import choreo.auto.AutoTrajectory;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.factories.AutoFactory900;
 import com.team900.lib.util.ShooterSetpoint;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,9 +14,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Autos {
     private static final RobotContainer container = RobotContainer.getInstance();
 
+    // shoot Fuel from starting position
     private static Command simpleAuto(double x, double y, double deg) {
         return Commands.sequence(
-                Commands.runOnce(() -> container.getDriveSubsystem().resetPose(new Pose2d(x, y, Rotation2d.fromDegrees(deg)))),
+                Commands.runOnce(
+                        () ->
+                                container
+                                        .getDriveSubsystem()
+                                        .resetPose(new Pose2d(x, y, Rotation2d.fromDegrees(deg)))),
+                // reset
                 AutoFactory900.resetHood(container),
                 // reset turret
                 Commands.race(
@@ -27,8 +32,46 @@ public class Autos {
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
+        );
+    }
+
+    // shoot Fuel from starting position from AutoTrajectory
+    private static Command simpleAutoFromPath(AutoTrajectory path) {
+        return Commands.sequence(
+                // reset
+                path.resetOdometry(),
+                AutoFactory900.resetHood(container),
+                // reset turret
+                Commands.race(
+                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                Commands.race(
+                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)
+        );
+    }
+
+    // Command for moving robot to one swipe of Fuel and back
+    private static Command swipeCommand(AutoTrajectory path, String pathName) {
+        return Commands.sequence(
+                // Intake (only at start) and run path
+                Commands.deadline(
+                        path.cmd(),
+                        pathName.equals("OneSwipe")
+                            ? AutoFactory900.deploySlapdownAndRunIntake(container)
+                            : Commands.none()),
+
+                // Aim turret/hood and shoot
+                Commands.race(
+                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                Commands.race(
+                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.waitSeconds(
+                                AutoConstants.fullHopperShootTime)),
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime)
         );
     }
 
@@ -44,33 +87,8 @@ public class Autos {
         routine.active()
                 .onTrue(
                         Commands.sequence(
-                                // Reset
-                                oneSwipePath.resetOdometry(),
-                                AutoFactory900.resetHood(container),
-
-                                // shoot first eight (when shoot on the move works, do this while moving)
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run path 
-                                Commands.deadline(
-                                        oneSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-
-                                // Aim turret/hood and shoot
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
                         )
                 );
@@ -78,7 +96,8 @@ public class Autos {
         return routine.cmd();
     }
 
-    // Two-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot, then run 2and3 swipe.
+    // Two-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot,
+    // then run 2and3 swipe.
     // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
     private static Command twoSwipe(boolean mirrorY) {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
@@ -90,46 +109,9 @@ public class Autos {
         routine.active()
                 .onTrue(
                         Commands.sequence(
-                                // reset
-                                oneSwipePath.resetOdometry(),
-                                AutoFactory900.resetHood(container),
-
-                                // shoot first eight (when shoot on the move works, do this while moving)
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-
-                                // Intake and run first swipe path
-                                Commands.deadline(
-                                        oneSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-
-                                // Intake and run second swipe path 
-                                Commands.deadline(
-                                        twoAndThreeSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot again and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
                         )
                 );
@@ -137,7 +119,8 @@ public class Autos {
         return routine.cmd();
     }
 
-    // Three-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot, then run 2and3 swipe twice.
+    // Three-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and
+    // shoot, then run 2and3 swipe twice.
     // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
     private static Command threeSwipe(boolean mirrorY) {
         AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
@@ -149,58 +132,78 @@ public class Autos {
         routine.active()
                 .onTrue(
                         Commands.sequence(
-                                // reset
-                                oneSwipePath.resetOdometry(),
-                                AutoFactory900.resetHood(container),
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
+                                swipeCommand(twoAndThreeSwipePath, "ThreeSwipe"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
-                                // shoot first eight (when shoot on the move works, do this while moving)
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+        return routine.cmd();
+    }
 
-                                // Intake and run first swipe path
-                                Commands.deadline(
-                                        oneSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+    // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
+    // at the end.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command oneSwipeCenter(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("oneSwipeCenter" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("oneSwipeCenter");
 
-                                // Intake and run second swipe path 
-                                Commands.deadline(
-                                        twoAndThreeSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot again and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "oneSwipeCenter"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
 
-                                // Intake and run third swipe path 
-                                Commands.deadline(
-                                        twoAndThreeSwipePath.cmd(),
-                                        AutoFactory900.deploySlapdownAndRunIntake(container)),
-                                // Aim turret/hood and shoot again and stop
-                                Commands.race(
-                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                                Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                
+        return routine.cmd();
+    }
+
+    // Two-swipe Center auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot,
+    // then run 2and3 swipe.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command twoSwipeCenter(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("TwoSwipeCenter" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("OneSwipeCenter");
+        AutoTrajectory twoAndThreeSwipePath = routine.trajectory("TwoAndThreeSwipeCenter");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
+                                Commands.runOnce(() -> container.getDriveSubsystem().stop())
+                        )
+                );
+
+        return routine.cmd();
+    }
+
+    // Three-swipe Center auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and
+    // shoot, then run 2and3 swipe twice.
+    // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
+    private static Command threeSwipeCenter(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(mirrorY);
+        String end = mirrorY ? "_Left" : "_Right";
+        AutoRoutine routine = choreoFactory.newRoutine("TwoSwipe" + end);
+        AutoTrajectory oneSwipePath = routine.trajectory("OneSwipeCenter");
+        AutoTrajectory twoAndThreeSwipePath = routine.trajectory("TwoAndThreeSwipeCenter");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(oneSwipePath),
+                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
+                                swipeCommand(twoAndThreeSwipePath, "ThreeSwipeCenter"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())
                         )
                 );
@@ -242,6 +245,14 @@ public class Autos {
         return oneSwipe(false);
     }
 
+    public static Command OneSwipeCenter_Left() {
+        return oneSwipeCenter(true);
+    }
+
+    public static Command OneSwipeCenter_Right() {
+        return oneSwipeCenter(false);
+    }
+
     // TwoSwipe autos
     // Right = normal
     // Left = Y-mirrored
@@ -254,6 +265,14 @@ public class Autos {
         return twoSwipe(false);
     }
 
+    public static Command TwoSwipeCenter_Left() {
+        return twoSwipeCenter(true);
+    }
+
+    public static Command TwoSwipeCenter_Right() {
+        return twoSwipeCenter(false);
+    }
+
     // ThreeSwipe autos
     // Right = normal
     // Left = Y-mirrored
@@ -264,5 +283,13 @@ public class Autos {
 
     public static Command ThreeSwipe_Right() {
         return threeSwipe(false);
+    }
+
+    public static Command ThreeSwipeCenter_Left() {
+        return threeSwipeCenter(true);
+    }
+
+    public static Command ThreeSwipeCenter_Right() {
+        return threeSwipeCenter(false);
     }
 }

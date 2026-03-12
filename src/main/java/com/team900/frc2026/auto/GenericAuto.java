@@ -29,9 +29,21 @@ public class GenericAuto {
     public static AutoFactory getAutoFactory(boolean mirrorAcrossY) {
         RobotContainer container = RobotContainer.getInstance();
 
-        PIDController xController = new PIDController(AutoConstants.kRotationP, AutoConstants.kRotationI, AutoConstants.kTranslationD);
-        PIDController yController = new PIDController(AutoConstants.kRotationP, AutoConstants.kRotationI, AutoConstants.kTranslationD);
-        PIDController rotController = new PIDController(AutoConstants.kRotationP, AutoConstants.kRotationI, AutoConstants.kTranslationD);
+        PIDController xController =
+                new PIDController(
+                        AutoConstants.kRotationP,
+                        AutoConstants.kRotationI,
+                        AutoConstants.kTranslationD);
+        PIDController yController =
+                new PIDController(
+                        AutoConstants.kRotationP,
+                        AutoConstants.kRotationI,
+                        AutoConstants.kTranslationD);
+        PIDController rotController =
+                new PIDController(
+                        AutoConstants.kRotationP,
+                        AutoConstants.kRotationI,
+                        AutoConstants.kTranslationD);
         rotController.enableContinuousInput(-Math.PI, Math.PI);
 
         AutoFactory choreoFactory =
@@ -83,7 +95,8 @@ public class GenericAuto {
                                             container.getDriveSubsystem().getPose().getRotation());
                             container.getDriveSubsystem().runVelocity(robotRelative);
                         },
-                        true, // always enable alliance flipping; Choreo queries the alliance lazily at runtime
+                        true, // always enable alliance flipping; Choreo queries the alliance lazily
+                        // at runtime
                         container.getDriveSubsystem());
         return choreoFactory;
     }

@@ -4,6 +4,9 @@ import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.RobotBase;
+
+import java.io.IOException;
 import java.util.Optional;
 
 public class ShooterSetpoint {
@@ -19,6 +22,23 @@ public class ShooterSetpoint {
     private double hoodRadians;
     private double hoodFF;
     private boolean isValid;
+
+    private static final PolynomialModel phiShootingModel;
+    private static final PolynomialModel thetaShootingModel;
+
+    static {
+        try {
+            if (RobotBase.isReal()) {
+                phiShootingModel = PolynomialModel.load("/home/lvuser/deploy/shooting_models/phi_shooter_model.json");
+                thetaShootingModel = PolynomialModel.load("/home/lvuser/deploy/shooting_models/theta_shooter_model.json");
+            } else {
+                phiShootingModel = PolynomialModel.load("src/main/deploy/shooting_models/phi_shooter_model.json");
+                thetaShootingModel = PolynomialModel.load("src/main/deploy/shooting_models/theta_shooter_model.json");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load shooter polynomial models", e);
+        }
+    }
 
     public ShooterSetpoint(double shooterRPS, double hoodRadians, double hoodFF, boolean isValid) {
         this.shooterRPS = shooterRPS;
@@ -77,21 +97,7 @@ public class ShooterSetpoint {
      * @return phi in radians
      */
     public static double getPhi(double r, double vf) {
-        return 1.3181648193362525
-                - 3.8557030940e-02 * r
-                + 6.5172357701e-02 * vf
-                + 1.0370934929e-03 * r * r
-                - 3.1174424260e-04 * r * vf
-                + 4.6050836990e-04 * vf * vf
-                - 4.4489041044e-05 * r * r * r
-                - 6.0106609748e-05 * r * r * vf
-                - 2.7244410203e-05 * r * vf * vf
-                + 2.6662042308e-05 * vf * vf * vf
-                - 2.4672194937e-06 * r * r * r * r
-                + 2.3539741491e-05 * r * r * r * vf
-                - 3.1134809372e-05 * r * r * vf * vf
-                + 2.3985434850e-05 * r * vf * vf * vf
-                - 7.2560025432e-06 * vf * vf * vf * vf;
+        return phiShootingModel.evaluate(r, vf);
     }
 
     /**
@@ -102,21 +108,7 @@ public class ShooterSetpoint {
      * @return theta in radians
      */
     public static double getTheta(double r, double vl) {
-        return 1.0672480382571276e-07
-                + 1.0236363213e-06 * r
-                - 6.7838471178e-02 * vl
-                - 2.1658142815e-06 * r * r
-                - 2.5259903973e-05 * r * vl
-                + 2.8523417706e-08 * vl * vl
-                + 7.5185841520e-07 * r * r * r
-                + 1.6795875603e-05 * r * r * vl
-                + 6.9714925311e-09 * r * vl * vl
-                - 5.5151143377e-05 * vl * vl * vl
-                - 7.0034801371e-08 * r * r * r * r
-                - 2.4279336961e-06 * r * r * r * vl
-                - 6.9442822955e-09 * r * r * vl * vl
-                - 5.7258261252e-07 * r * vl * vl * vl
-                + 1.8639516443e-09 * vl * vl * vl * vl;
+        return thetaShootingModel.evaluate(r, vl);
     }
 
     public double getShooterRPS() {
@@ -142,4 +134,5 @@ public class ShooterSetpoint {
     public double getHoodFF() {
         return hoodFF;
     }
+
 }

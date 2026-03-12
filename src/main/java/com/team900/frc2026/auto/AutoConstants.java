@@ -7,7 +7,7 @@ public class AutoConstants {
     public static final double kRotationI = 0;
     public static final double kTranslationD = 0;
     public static final double kRotationD = 0;
-    
+
     public static final double eightBallShootTime = 0.5;
     public static final double fullHopperShootTime = 5;
     public static final double stopShootTime = 0.5;
