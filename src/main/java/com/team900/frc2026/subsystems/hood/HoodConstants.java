@@ -23,7 +23,7 @@ public class HoodConstants {
 
     public static final double kHoodRotorMaxPosition = 0.0754 + Units.degreesToRotations(15.0);
     public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
-        
+
     public static final double kZeroingAmps = 23;
     public static final double kZeroingSeconds = 0.1;
 

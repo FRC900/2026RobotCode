@@ -41,7 +41,8 @@ public class HoodFactory {
 
     // Stows the hood
     public static Command stow(RobotContainer container) {
-        return setPositionMotionMagicCommand(HoodConstants.kHoodStowTrenchPositionRadians, container)
+        return setPositionMotionMagicCommand(
+                        HoodConstants.kHoodStowTrenchPositionRadians, container)
                 .withName("Hood Stow");
     }
 
@@ -59,7 +60,8 @@ public class HoodFactory {
     public static Command pass(RobotContainer container, double tolerance) {
         return container
                 .getHoodSubsystem()
-                .motionMagicSetpointCommandBlocking(() -> HoodConstants.kHoodRotorMaxPosition, tolerance)
+                .motionMagicSetpointCommandBlocking(
+                        () -> HoodConstants.kHoodRotorMaxPosition, tolerance)
                 .withName("Hood pass Position Blocking");
     }
 

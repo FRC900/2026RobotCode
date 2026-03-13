@@ -352,7 +352,7 @@ public class RobotContainer {
                                 HoodConstants.kHoodStowTrenchPositionRadians, 0.001, instance));
 
         controlBoard
-                .toggleHood()
+                .toggleHoodMax()
                 .onTrue(
                         Commands.either(
                                         HoodFactory.stow(this),
