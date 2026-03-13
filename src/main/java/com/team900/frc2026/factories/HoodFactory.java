@@ -56,17 +56,20 @@ public class HoodFactory {
                                 .andThen(container.getHoodSubsystem()::enableSoftLimits));
     }
 
+    // TODO: tune these positions on the real robot
     public static Command pass(RobotContainer container, double tolerance) {
         return container
                 .getHoodSubsystem()
-                .motionMagicSetpointCommandBlocking(() -> 0.6, tolerance)
+                .motionMagicSetpointCommandBlocking(
+                        () -> HoodConstants.kHoodRotorMaxPosition, tolerance)
                 .withName("Hood pass Position Blocking");
     }
 
     public static Command shoot(RobotContainer container, double tolerance) {
         return container
                 .getHoodSubsystem()
-                .motionMagicSetpointCommandBlocking(() -> 0.3, tolerance)
+                .motionMagicSetpointCommandBlocking(
+                        () -> HoodConstants.kHoodRotorMaxPosition * 0.5, tolerance)
                 .withName("Hood Shoot Position Blocking");
     }
 }

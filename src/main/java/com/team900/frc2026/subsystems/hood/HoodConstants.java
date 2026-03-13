@@ -27,8 +27,9 @@ public class HoodConstants {
     public static final double kZeroingAmps = 23;
     public static final double kZeroingSeconds = 0.1;
 
+    // Convert rotor-rotation positions into radians
     public static final double kHoodMinPositionRadians =
-            Units.rotationsToDegrees(kHoodRotorMinPosition);
+            Units.rotationsToRadians(kHoodRotorMinPosition);
     public static final double kHoodMaxPositionRadians =
             Units.rotationsToRadians(kHoodRotorMaxPosition);
 
@@ -45,8 +46,12 @@ public class HoodConstants {
         // subsystem configs
         kHoodConfig.name = "Hood";
 
-        // TODO: verify these tm
-        kHoodConfig.cancoderToUnitsRatio = 2. * Math.PI;
+        // Compute CANcoder -> subsystem units mapping from Phoenix measurement.
+        // bottom = 0.0 and top = 0.229 rotations.
+        double measuredSpan = 0.229; // rotations reported by Phoenix for full travel
+        double kMaxUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
+        double kMinUnits = kHoodMinPositionRadians;
+        kHoodConfig.cancoderToUnitsRatio = (kMaxUnits - kMinUnits) / measuredSpan;
         kHoodConfig.isFusedCancoder = true;
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;

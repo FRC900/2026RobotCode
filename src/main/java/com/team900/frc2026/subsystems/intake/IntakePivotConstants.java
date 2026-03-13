@@ -39,6 +39,10 @@ public class IntakePivotConstants {
 
     static {
         kIntakePivotConfig.name = "Intake Pivot";
+        // If the CANcoder rotates more than the mechanism (or vice versa), adjust this
+        // ratio so cancoder rotations map to mechanism units. A value of 0.5 means
+        // the CANcoder rotates twice for one mechanism rotation (so 90° -> 0.25).
+        // Measured behaviour showed 90degs -> 0.5 reported, so 0.5 is a good starting
         kIntakePivotConfig.cancoderToUnitsRatio = 0.5;
         kIntakePivotConfig.isFusedCancoder = true;
         kIntakePivotConfig.kMaxPositionUnits = 0.253;
@@ -75,6 +79,9 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
+        // Ensure motor inversion matches the CANcoder sign convention (Clockwise_Positive)
+        // so positive position setpoints move the mechanism in the same physical
+        // direction that the CANcoder reports as positive.
         kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kIntakePivotConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

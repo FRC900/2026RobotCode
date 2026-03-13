@@ -106,7 +106,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     }
 
     @Override
-    public Trigger toggleHood() {
+    public Trigger toggleHoodMax() {
         return controller.square();
     }
 }

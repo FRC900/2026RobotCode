@@ -34,5 +34,5 @@ public interface IButtonControlBoard {
 
     Trigger pass();
 
-    Trigger toggleHood();
+    Trigger toggleHoodMax();
 }

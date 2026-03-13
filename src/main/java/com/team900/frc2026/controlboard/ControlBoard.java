@@ -127,7 +127,7 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     }
 
     @Override
-    public Trigger toggleHood() {
-        return buttonControlBoard.toggleHood();
+    public Trigger toggleHoodMax() {
+        return buttonControlBoard.toggleHoodMax();
     }
 }
