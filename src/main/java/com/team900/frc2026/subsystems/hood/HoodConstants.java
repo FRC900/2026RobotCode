@@ -15,7 +15,7 @@ import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
     // position voltage
-    public static final Gains COMP_GAINS = new Gains(150, 0, 15, 0.37, 100, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(130, 0, 15, 0.37, 100, 0, 0);
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
     public static final double kHoodToleranceRadians = 0.1;
@@ -61,7 +61,7 @@ public class HoodConstants {
         // cancoder config
         kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
         kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = -0.149;
+        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = -0.35;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
