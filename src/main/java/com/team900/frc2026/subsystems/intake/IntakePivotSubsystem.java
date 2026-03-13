@@ -41,8 +41,10 @@ public class IntakePivotSubsystem
         Logger.recordOutput(
                 "Intake Pivot/CanCoderAbsoluteRotations",
                 cancoderInputs.absolutePositionRotations * this.conf.cancoderToUnitsRatio);
-        
-        double midpoint = (IntakePivotConstants.kIntakePivotStow + IntakePivotConstants.kIntakePivotDeploy) / 2.0;
+
+        double midpoint =
+                (IntakePivotConstants.kIntakePivotStow + IntakePivotConstants.kIntakePivotDeploy)
+                        / 2.0;
         boolean isDeployed = inputs.unitPosition < midpoint;
         Logger.recordOutput("Intake Pivot/IntakePivotIsDeployed", isDeployed);
     }
