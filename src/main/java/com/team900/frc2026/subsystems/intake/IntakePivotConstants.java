@@ -1,6 +1,7 @@
 package com.team900.frc2026.subsystems.intake;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -23,8 +24,6 @@ public class IntakePivotConstants {
     public static final double kIntakeGearRatio = 41.9894179894;
 
     public static final Gains COMP_GAINS = new Gains(30, 0, 0, 0, 1, 0, 0);
-
-    //     public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
@@ -58,13 +57,13 @@ public class IntakePivotConstants {
 
         // cancoder config
         kIntakeCanCoderConfig.CANID = new CANDeviceId(62, Constants.kCanBusCanivoreMech);
-        
-        kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.9;
+        kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .7;
         kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.34;
         kIntakeCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
         // fxConfig
+        kIntakePivotConfig.fxConfig = new TalonFXConfiguration();
         kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 120;
         kIntakePivotConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         kIntakePivotConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 80;

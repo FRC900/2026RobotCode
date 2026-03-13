@@ -47,9 +47,9 @@ public class DriveMaintainingHeadingCommand extends Command {
 
     private final PIDController thetaController =
             new PIDController(
-                    DriveConstants.kHeadingController.kP(),
-                    DriveConstants.kHeadingController.kI(),
-                    DriveConstants.kHeadingController.kD());
+                    DriveConstants.kHeadingControllerP,
+                    DriveConstants.kHeadingControllerI,
+                    DriveConstants.kHeadingControllerD);
 
     @Override
     public void initialize() {
