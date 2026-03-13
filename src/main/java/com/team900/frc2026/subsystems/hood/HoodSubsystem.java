@@ -57,8 +57,8 @@ public class HoodSubsystem
     }
 
     private double constrainSetpoint(double desiredRad) {
-        double min = HoodConstants.kHoodMinPositionRadians;
-        double max = HoodConstants.kHoodMaxPositionRadians;
+        double min = HoodConstants.kHoodRotorMinPosition;
+        double max = HoodConstants.kHoodRotorMaxPosition;
 
         // Already in range
         if (desiredRad >= min && desiredRad <= max) {

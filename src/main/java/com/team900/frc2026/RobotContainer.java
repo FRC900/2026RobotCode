@@ -345,7 +345,11 @@ public class RobotContainer {
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025, instance));
+        controlBoard
+                .stowHood()
+                .onTrue(
+                        HoodFactory.setPositionBlocking(
+                                HoodConstants.kHoodStowTrenchPositionRadians, 0.001, instance));
 
         controlBoard
                 .toggleHood()
