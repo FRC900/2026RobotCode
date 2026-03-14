@@ -109,4 +109,14 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
     public Trigger toggleHoodMax() {
         return controller.square();
     }
+
+    @Override
+    public Trigger swerveAlignToHub() {
+        return controller.circle();
+    }
+
+    @Override
+    public Trigger turretAlignToHub() {
+        return controller.cross();
+    }
 }

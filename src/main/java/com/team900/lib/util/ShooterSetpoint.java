@@ -93,7 +93,7 @@ public class ShooterSetpoint {
 
         // values for hood are placeholders rn since that depends on the lookup table
         return new ShooterSetpoint(
-                shooterRPS, Math.PI / 2. - getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
+                shooterRPS, ((5.*Math.PI) / 12.) - getPhi(distanceToTarget, 0.0), 0.0, validSetpont);
     }
 
     /**
