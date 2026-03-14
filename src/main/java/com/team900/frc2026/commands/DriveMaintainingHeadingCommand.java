@@ -112,6 +112,12 @@ public class DriveMaintainingHeadingCommand extends Command {
                                                 mHeadingSetpoint.get().getRadians())
                                         * DriveConstants.kDriveMaxAngularRate,
                                 mDrivetrain.getRotation()));
+
+                                Logger.recordOutput("DriveMaintainHeading/Mode", "Heading");
+                                 
+                Logger.recordOutput(
+                        "DriveMaintainHeading/HeadingSetpoint",
+                        mHeadingSetpoint.get().getDegrees());
             } else {
                 mDrivetrain.runVelocity(
                         ChassisSpeeds.fromFieldRelativeSpeeds(
