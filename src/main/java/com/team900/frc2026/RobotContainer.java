@@ -371,6 +371,10 @@ public class RobotContainer {
                 .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
                 .onFalse(IntakeFactory.stopIntake(this));
 
+        new Trigger(intakeRollerSubsystem::isStalled)
+                .onTrue((IntakeFactory.exhaustIntake(this)))
+                .onFalse(Commands.none());
+
         controlBoard
                 .exhaust()
                 .onTrue(IntakeFactory.exhaustIntake(this))
