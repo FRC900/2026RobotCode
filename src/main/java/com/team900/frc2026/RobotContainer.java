@@ -243,7 +243,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -271,29 +271,19 @@ public class RobotContainer {
         // Swerve Drive
         driveSubsystem.setDefaultCommand(driveCommand);
 
-        // // Intake pivot, l1 to retract and deploy intake
         // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.either(
-        //                         IntakeFactory.retractSlapdown(this)
-        //                                 .beforeStarting(() -> intakeDeployed = false),
-        //                         IntakeFactory.deploySlapdown(this)
-        //                                 .beforeStarting(() -> intakeDeployed = true),
-        //                         () -> intakeDeployed));
-
-        controlBoard
-                .turretAlignToHub()
-                .whileTrue(
-                        new HubAlignTurretCommand(
-                                driveSubsystem,
-                                turretSubsystem));
+        //         .turretAlignToHub()
+        //         .whileTrue(
+        //                 new HubAlignTurretCommand(
+        //                         driveSubsystem,
+        //                         turretSubsystem));
 
         controlBoard
                 .swerveAlignToHub()
                         .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
                         .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
         
+        // Intake pivot, l1 to retract and deploy intake  
         controlBoard
                 .toggleIntake()
                 .onTrue(
