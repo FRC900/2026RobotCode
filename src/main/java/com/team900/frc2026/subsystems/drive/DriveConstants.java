@@ -98,9 +98,6 @@ public class DriveConstants {
         };
     }
 
-    // 30 was way too much
-    public static final Gains kHeadingController = new Gains(0, 0, 0, 0, 0, 0, 0);
-
     public static final double kDriveMaxSpeed =
             CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8;
     public static final double kMaxAccelerationMetersPerSecondSquared = 10.0;

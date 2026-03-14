@@ -65,8 +65,8 @@ public class HoodConstants {
 
         // cancoder config
         kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
-        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = -0.35;
+        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.307;
+        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.44604455;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 

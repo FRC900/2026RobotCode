@@ -282,11 +282,17 @@ public class RobotContainer {
         controlBoard
                 .toggleIntake()
                 .onTrue(
-                        Commands.either(
-                                        IntakeFactory.retractSlapdown(this),
-                                        IntakeFactory.deploySlapdown(this),
-                                        () -> intakeDeployed)
-                                .beforeStarting(() -> intakeDeployed = !intakeDeployed));
+                        Commands.defer(
+                                () -> {
+                                        if (intakeDeployed){
+                                                intakeDeployed = false;
+                                                return IntakeFactory.retractSlapdown(this);
+                                        } else {
+                                                intakeDeployed = true;
+                                                return IntakeFactory.deploySlapdown(this);
+                                        }
+                                },
+                                        Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .shoot()
