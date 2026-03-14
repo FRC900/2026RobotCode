@@ -23,13 +23,37 @@ public record ChoreoTraj(
         double totalTimeSecs,
         Pose2d initialPoseBlue,
         Pose2d endPoseBlue) {
-    public static final ChoreoTraj FourPointZeroFiveMetersFromEdgeToOutpostThenCenter =
+    public static final ChoreoTraj OneSwipe =
             new ChoreoTraj(
-                    "FourPointZeroFiveMetersFromEdgeToOutpostThenCenter",
+                    "OneSwipe",
                     OptionalInt.empty(),
-                    3.86323,
-                    new Pose2d(2, 4.05, Rotation2d.fromRadians(0)),
-                    new Pose2d(8.22793, 4.00385, Rotation2d.fromRadians(-2.38711)));
+                    4.73742,
+                    new Pose2d(3.60754, 0.58164, Rotation2d.fromRadians(0.0)),
+                    new Pose2d(3.28976, 2.21561, Rotation2d.fromRadians(3.14159)));
+
+    public static final ChoreoTraj OneSwipeCenter =
+            new ChoreoTraj(
+                    "OneSwipeCenter",
+                    OptionalInt.empty(),
+                    5.19808,
+                    new Pose2d(3.6, 4.05, Rotation2d.fromRadians(0.0)),
+                    new Pose2d(3.35902, 2.2805, Rotation2d.fromRadians(2.96527)));
+
+    public static final ChoreoTraj TwoAndThreeSwipe =
+            new ChoreoTraj(
+                    "TwoAndThreeSwipe",
+                    OptionalInt.empty(),
+                    6.26534,
+                    new Pose2d(3.28976, 2.21561, Rotation2d.fromRadians(3.14159)),
+                    new Pose2d(3.27859, 2.21561, Rotation2d.fromRadians(3.14159)));
+
+    public static final ChoreoTraj TwoAndThreeSwipeCenter =
+            new ChoreoTraj(
+                    "TwoAndThreeSwipeCenter",
+                    OptionalInt.empty(),
+                    4.71857,
+                    new Pose2d(3.35902, 2.2805, Rotation2d.fromRadians(2.96527)),
+                    new Pose2d(3.29342, 2.22884, Rotation2d.fromRadians(2.41994)));
 
     /**
      * A map between trajectory names and their corresponding data. This allows for trajectory data
@@ -37,9 +61,10 @@ public record ChoreoTraj(
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES =
             Map.ofEntries(
-                    Map.entry(
-                            "FourPointZeroFiveMetersFromEdgeToOutpostThenCenter",
-                            FourPointZeroFiveMetersFromEdgeToOutpostThenCenter));
+                    Map.entry("OneSwipe", OneSwipe),
+                    Map.entry("OneSwipeCenter", OneSwipeCenter),
+                    Map.entry("TwoAndThreeSwipe", TwoAndThreeSwipe),
+                    Map.entry("TwoAndThreeSwipeCenter", TwoAndThreeSwipeCenter));
 
     /**
      * Looks up the ChoreoTraj segment of the given overall ChoreoTraj. WARNING: will raise an
