@@ -105,7 +105,7 @@ public class DriveConstants {
     public static final double kMaxYAccelerationMetersPerSecondSquared = 10.0;
     public static final double kDriveMaxAngularRate = 8.2;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = 20.0;
-    public static final double kHeadingControllerP = 5.0;
+    public static final double kHeadingControllerP = 30/360;
     public static final double kHeadingControllerI = 0;
     public static final double kHeadingControllerD = 0;
 }
