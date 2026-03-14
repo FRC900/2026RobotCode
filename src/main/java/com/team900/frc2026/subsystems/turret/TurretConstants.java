@@ -31,6 +31,9 @@ public class TurretConstants {
     public static final double kTurretMinPositionRadians = -2.0 * Math.PI;
     public static final double kTurretMaxPositionRadians = 2.0 * Math.PI;
 
+    public static final double turretOffSetFromCenterX = 0.5; // parallel to the front bumpers
+    public static final double turretOffSetFromCenterY = 0.3; // parallel to the side bumpers
+
     // Software buffer so we don't slam into the hard stops (back off by this amount)
     public static final double kSoftwareLimitBufferRadians = Units.degreesToRadians(5.0);
     public static final double kTurretSoftMinRadians =
