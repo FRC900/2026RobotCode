@@ -3,11 +3,16 @@ package com.team900.frc2026.auto;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+
+import java.util.Set;
+
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.factories.AutoFactory900;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -277,5 +282,34 @@ public class Autos {
 
     public static Command ThreeSwipeCenter_Right() {
         return threeSwipeCenter(false);
+    }
+
+    // logic to choose auto based on start position
+
+    public static Command OneSwipe() {
+        return Commands.defer(() -> {
+            if (DriverStation.getLocation().orElse(0) == 1) {
+                return OneSwipe_Left();
+            }
+            return OneSwipe_Right();
+        }, Set.of());
+    }
+
+    public static Command TwoSwipe() {
+        return Commands.defer(() -> {
+            if (DriverStation.getLocation().orElse(0) == 1) {
+                return TwoSwipe_Left();
+            }
+            return TwoSwipe_Right();
+        }, Set.of());
+    }
+
+    public static Command ThreeSwipe() {
+        return Commands.defer(() -> {
+            if (DriverStation.getLocation().orElse(0) == 1) {
+                return ThreeSwipe_Left();
+            }
+            return ThreeSwipe_Right();
+        }, Set.of());
     }
 }

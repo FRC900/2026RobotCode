@@ -10,23 +10,20 @@ public class AutoDashboard {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public AutoDashboard() {
-        autoChooser.setDefaultOption("Two-Swipe Right (default)", Autos.TwoSwipe_Right());
+        autoChooser.setDefaultOption("Two-Swipe (default)", Autos.TwoSwipe());
 
         // Swipe autos
         // right = normal side
         // left = Y-mirrored
-        autoChooser.addOption("One-Swipe Left", Autos.OneSwipe_Left());
-        autoChooser.addOption("One-Swipe Right", Autos.OneSwipe_Right());
+        autoChooser.addOption("One-Swipe", Autos.OneSwipe());
         autoChooser.addOption("One-Swipe Center to Left", Autos.OneSwipeCenter_Left());
         autoChooser.addOption("One-Swipe Center to Right", Autos.OneSwipeCenter_Right());
 
-        autoChooser.addOption("Two-Swipe Left", Autos.TwoSwipe_Left());
-        autoChooser.addOption("Two-Swipe Right", Autos.TwoSwipe_Right());
+        autoChooser.addOption("Two-Swipe", Autos.TwoSwipe());
         autoChooser.addOption("Two-Swipe Center to Left", Autos.TwoSwipeCenter_Left());
         autoChooser.addOption("Two-Swipe Center to Right", Autos.TwoSwipeCenter_Right());
 
-        autoChooser.addOption("Three-Swipe Left", Autos.ThreeSwipe_Left());
-        autoChooser.addOption("Three-Swipe Right", Autos.ThreeSwipe_Right());
+        autoChooser.addOption("Three-Swipe", Autos.ThreeSwipe());
         autoChooser.addOption("Three-Swipe Center to Left", Autos.ThreeSwipeCenter_Left());
         autoChooser.addOption("Three-Swipe Center to Right", Autos.ThreeSwipeCenter_Right());
 
