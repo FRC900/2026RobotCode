@@ -6,6 +6,7 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
+import com.team900.frc2026.commands.HubAlignTurretCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
 import com.team900.frc2026.factories.HoodFactory;
@@ -60,6 +61,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.*;
 import lombok.Getter;
 import org.ironmaple.simulation.SimulatedArena;
@@ -240,7 +243,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -279,6 +282,18 @@ public class RobotContainer {
         //                                 .beforeStarting(() -> intakeDeployed = true),
         //                         () -> intakeDeployed));
 
+        controlBoard
+                .turretAlignToHub()
+                .whileTrue(
+                        new HubAlignTurretCommand(
+                                driveSubsystem,
+                                turretSubsystem));
+
+        controlBoard
+                .swerveAlignToHub()
+                        .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
+                        .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
+        
         controlBoard
                 .toggleIntake()
                 .onTrue(
