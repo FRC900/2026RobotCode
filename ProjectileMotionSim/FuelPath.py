@@ -7,27 +7,27 @@ from tabulate import tabulate
 import time
 
 # define targets and initial condition guesses
-xt = 2.75
+xt = 5
 yt = 1.8288
 zt = 0
 y0 = 0.47 
 
 # define robot's initial velocities and Fuel initial spin
-vx_robot = 0
+vx_robot = -3
 vy_robot = 0
-vz_robot = 0
+vz_robot = -3
 
 v_mag_robot = linalg.norm(array([vx_robot, vy_robot, vz_robot]))
 
 # define initial solution guesses
-vxi0 = 8.5
-vyi0 = 8.5
-vzi0 = 8.5
+vxi0 = 7
+vyi0 = 7
+vzi0 = 7
 omegai0 = 100
 
 # define fuel object and fuel_solver object
 fuel = pp.Projectile(0.0762, 0.226796)
-fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, sx0=y0, vx_frame=vx_robot, vy_frame=vy_robot, vz_frame=vz_robot, fix_speed=True, fix_omega=True, lm_iters=20, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance, phi_bounds=(0.785, 1.309), theta_bounds=(0, 0))
+fuel_solver = pp.ProjectileSolver(fuel, xt, yt, zt, vxi0, vyi0, vzi0, omegai0, sy0=y0, vx_frame=vx_robot, vy_frame=vy_robot, vz_frame=vz_robot, fix_speed=True, fix_omega=True, lm_iters=20, sim_end_time=5, dt=0.01, clearance_func=fc.hub_clearance, phi_bounds=(0.785, 1.309))
 
 # solve for valid inputs and time the solver
 start = time.perf_counter()
@@ -35,7 +35,7 @@ fuel_solver.levenberg_marquardt()
 end = time.perf_counter()
 
 # display results 
-vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = fuel.trajectory(fuel_solver.vx+vx_robot, fuel_solver.vy+vy_robot, fuel_solver.vz+vz_robot, fuel_solver.omega, dt=0.01, stop_on_y=yt) # smaller dt=more refined approximation
+vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = fuel.trajectory(fuel_solver.vx+vx_robot, fuel_solver.vy+vy_robot, fuel_solver.vz+vz_robot, fuel_solver.omega, sy0=y0, dt=0.01, stop_on_y=yt) # smaller dt=more refined approximation
 
 table = [
     ["LM Time (ms)", 1000 * (end - start)],

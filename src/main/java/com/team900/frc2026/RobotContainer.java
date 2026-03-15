@@ -51,9 +51,12 @@ import com.team900.lib.subsystems.SimCanCoderIO;
 import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.time.RobotTime;
+import com.team900.lib.util.HubFlipUtil;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -381,6 +384,16 @@ public class RobotContainer {
                 .onFalse(IntakeFactory.stopIntake(this));
 
         controlBoard.resetHood().onTrue(HoodFactory.zero(this));
+
+        new Trigger(
+                () -> HubFlipUtil.isFlip((long)(RobotTime.getTimestampSeconds()))
+        ).onTrue(
+                Commands.sequence(
+                        Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1.0)),
+                        Commands.waitSeconds(0.3),
+                        Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0))
+                )
+        );
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
