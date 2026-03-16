@@ -56,6 +56,7 @@ import com.team900.lib.util.HubFlipUtil;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -374,10 +375,6 @@ public class RobotContainer {
                 .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
                 .onFalse(IntakeFactory.stopIntake(this));
 
-        new Trigger(intakeRollerSubsystem::isStalled)
-                .onTrue((IntakeFactory.exhaustIntake(this)))
-                .onFalse(Commands.none());
-
         controlBoard
                 .exhaust()
                 .onTrue(IntakeFactory.exhaustIntake(this))
@@ -385,15 +382,47 @@ public class RobotContainer {
 
         controlBoard.resetHood().onTrue(HoodFactory.zero(this));
 
+        Trigger isTeleop = new Trigger(DriverStation::isTeleopEnabled);
+
+        new Trigger(intakeRollerSubsystem::isStalled)
+                .onTrue((IntakeFactory.exhaustIntake(this)))
+                .onFalse(Commands.none());
+
         new Trigger(
                 () -> HubFlipUtil.isFlip((long)(RobotTime.getTimestampSeconds()))
-        ).onTrue(
+        ).and(isTeleop).onTrue(
                 Commands.sequence(
                         Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1.0)),
                         Commands.waitSeconds(0.3),
                         Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0))
                 )
         );
+
+        double[][] trenchHoodZeroingBoxes = {
+                {4., 5.25, 0., 1.4}, // xmin, xmax, ymin, ymax (bounds of the box)
+                {4., 5.25, 6.7, 8.1},
+                {11.29, 12.54, 0., 1.4},
+                {11.29, 12.54, 6.7, 8.1},
+        };
+
+        new Trigger(() -> {    
+                Pose2d pose = robotState.getLatestFieldToRobot().getValue();
+                double x = pose.getTranslation().getX();
+                double y = pose.getTranslation().getY();
+
+                for (double[] box : trenchHoodZeroingBoxes) {
+                        if (x >= box[0] && x <= box[1] && y >= box[2] && y <= box[3]) {
+                                double trenchCenterX = (box[0] + box[1]) / 2.0;
+                                double xDist = x - trenchCenterX;
+                                double xVel = robotState.getLatestMeasuredFieldRelativeChassisSpeeds().vxMetersPerSecond;
+
+                                boolean isApproachingTrench = Math.signum(xVel) * Math.signum(xDist) > 0; // positive = moving into trench
+                                return isApproachingTrench;
+                        }
+                }
+                return false;
+        }).and(isTeleop).onTrue(HoodFactory.stow(this));
+        
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {

@@ -72,4 +72,10 @@ public class HoodFactory {
                         () -> HoodConstants.kHoodRotorMaxPosition * 0.5, tolerance)
                 .withName("Hood Shoot Position Blocking");
     }
+
+    public static boolean isHoodStowed(RobotContainer container) {
+        return container
+                .getHoodSubsystem()
+                .isStowed();
+    }
 }

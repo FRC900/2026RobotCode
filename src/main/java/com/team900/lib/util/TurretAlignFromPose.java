@@ -4,6 +4,7 @@ import com.team900.frc2026.subsystems.turret.TurretConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class TurretAlignFromPose {
@@ -18,13 +19,9 @@ public class TurretAlignFromPose {
     
     public TurretAlignFromPose(Pose2d currentPose) {
         this.currentPose = currentPose;
-        if (isRedAlliance()) {
-            this.hub_x = 4.620001792907715;
-            this.hub_y = 4.042872905731201;
-        } else {
-            this.hub_x = 11.919336318969727;
-            this.hub_y = 4.034592628479004;
-        }
+        Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
+        hub_x = hub.getX();
+        hub_y = hub.getY();
     }
 
     public Pose2d getTurretPositionFromRobotPose(Pose2d robotPose) {
