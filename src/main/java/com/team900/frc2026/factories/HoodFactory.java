@@ -13,7 +13,8 @@ import java.util.function.Supplier;
 public class HoodFactory {
 
     // Sets the hood to a fixed position in radians
-    public static Command setPositionMotionMagicCommand(double rotations, RobotContainer container) {
+    public static Command setPositionMotionMagicCommand(
+            double rotations, RobotContainer container) {
         HoodSubsystem hood = container.getHoodSubsystem();
         return hood.motionMagicSetpointCommand(() -> rotations).withName("Hood Set Position");
     }
@@ -41,8 +42,7 @@ public class HoodFactory {
 
     // Stows the hood
     public static Command stow(RobotContainer container) {
-        return setPositionMotionMagicCommand(
-                        HoodConstants.kHoodRotorMinPosition + 0.001, container)
+        return setPositionMotionMagicCommand(HoodConstants.kHoodRotorMinPosition + 0.001, container)
                 .withName("Hood Stow");
     }
 
@@ -82,8 +82,6 @@ public class HoodFactory {
     }
 
     public static boolean isHoodStowed(RobotContainer container) {
-        return container
-                .getHoodSubsystem()
-                .isStowed();
+        return container.getHoodSubsystem().isStowed();
     }
 }

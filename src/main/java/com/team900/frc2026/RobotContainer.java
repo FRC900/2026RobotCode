@@ -65,9 +65,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import java.util.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.ironmaple.simulation.SimulatedArena;
 
 public class RobotContainer {
@@ -246,7 +246,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-//     @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    //     @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -267,7 +267,7 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private boolean intakeDeployed = false;
+    @Setter @Getter private boolean intakeDeployed = intakePivotSubsystem.isDeployed();
     private boolean hoodAtMax = false;
 
     private void configureBindings() {
@@ -287,20 +287,29 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
 
         // Intake pivot, l1 to retract and deploy intake
+        // controlBoard
+        //         .toggleIntake()
+        //         .onTrue(
+        //                 Commands.defer(
+        //                         () -> {
+        //                             if (intakeDeployed) {
+        //                                 intakeDeployed = false;
+        //                                 return IntakeFactory.retractSlapdown(this);
+        //                             } else {
+        //                                 intakeDeployed = true;
+        //                                 return IntakeFactory.deploySlapdown(this);
+        //                             }
+        //                         },
+        //                         Set.of(getIntakePivotSubsystem())));
+
         controlBoard
                 .toggleIntake()
                 .onTrue(
-                        Commands.defer(
-                                () -> {
-                                    if (intakeDeployed) {
-                                        intakeDeployed = false;
-                                        return IntakeFactory.retractSlapdown(this);
-                                    } else {
-                                        intakeDeployed = true;
-                                        return IntakeFactory.deploySlapdown(this);
-                                    }
-                                },
-                                Set.of(getIntakePivotSubsystem())));
+                        Commands.parallel(
+                                (isIntakeDeployed()
+                                        ? IntakeFactory.retractSlapdown(this)
+                                        : IntakeFactory.deploySlapdown(this)),
+                                new InstantCommand(() -> setIntakeDeployed(!intakeDeployed))));
 
         controlBoard
                 .shoot()
@@ -358,21 +367,7 @@ public class RobotContainer {
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        controlBoard
-                .stowHood()
-                .onTrue(
-                        HoodFactory.setPositionMotionMagicCommand(
-                                0.0756 , instance));
-
-        controlBoard
-                .toggleHoodMax()
-                .onTrue(
-                        Commands.either(
-                                        HoodFactory.stow(this),
-                                        HoodFactory.setPositionMotionMagicCommand(
-                                                HoodConstants.kHoodRotorMaxPosition - 0.01, this),
-                                        () -> hoodAtMax)
-                                .beforeStarting(() -> hoodAtMax = !hoodAtMax));
+        controlBoard.stowHood().onTrue(HoodFactory.setPositionMotionMagicCommand(0.0756, instance));
 
         controlBoard
                 .intake()
@@ -392,41 +387,53 @@ public class RobotContainer {
                 .onTrue((IntakeFactory.exhaustIntake(this)))
                 .onFalse(Commands.none());
 
-        new Trigger(
-                () -> HubFlipUtil.isFlip((long)(RobotTime.getTimestampSeconds()))
-        ).and(isTeleop).onTrue(
-                Commands.sequence(
-                        Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1.0)),
-                        Commands.waitSeconds(0.3),
-                        Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0))
-                )
-        );
+        new Trigger(() -> HubFlipUtil.isFlip((long) (RobotTime.getTimestampSeconds())))
+                .and(isTeleop)
+                .onTrue(
+                        Commands.sequence(
+                                Commands.runOnce(
+                                        () ->
+                                                driveController
+                                                        .getHID()
+                                                        .setRumble(RumbleType.kBothRumble, 1.0)),
+                                Commands.waitSeconds(0.3),
+                                Commands.runOnce(
+                                        () ->
+                                                driveController
+                                                        .getHID()
+                                                        .setRumble(RumbleType.kBothRumble, 0.0))));
 
         double[][] trenchHoodZeroingBoxes = {
-                {4., 5.25, 0., 1.4}, // xmin, xmax, ymin, ymax (bounds of the box)
-                {4., 5.25, 6.7, 8.1},
-                {11.29, 12.54, 0., 1.4},
-                {11.29, 12.54, 6.7, 8.1},
+            {4., 5.25, 0., 1.4}, // xmin, xmax, ymin, ymax (bounds of the box)
+            {4., 5.25, 6.7, 8.1},
+            {11.29, 12.54, 0., 1.4},
+            {11.29, 12.54, 6.7, 8.1},
         };
 
-        new Trigger(() -> {    
-                Pose2d pose = robotState.getLatestFieldToRobot().getValue();
-                double x = pose.getTranslation().getX();
-                double y = pose.getTranslation().getY();
+        new Trigger(
+                        () -> {
+                            Pose2d pose = robotState.getLatestFieldToRobot().getValue();
+                            double x = pose.getTranslation().getX();
+                            double y = pose.getTranslation().getY();
 
-                for (double[] box : trenchHoodZeroingBoxes) {
-                        if (x >= box[0] && x <= box[1] && y >= box[2] && y <= box[3]) {
-                                double trenchCenterX = (box[0] + box[1]) / 2.0;
-                                double xDist = x - trenchCenterX;
-                                double xVel = robotState.getLatestMeasuredFieldRelativeChassisSpeeds().vxMetersPerSecond;
+                            for (double[] box : trenchHoodZeroingBoxes) {
+                                if (x >= box[0] && x <= box[1] && y >= box[2] && y <= box[3]) {
+                                    double trenchCenterX = (box[0] + box[1]) / 2.0;
+                                    double xDist = x - trenchCenterX;
+                                    double xVel =
+                                            robotState.getLatestMeasuredFieldRelativeChassisSpeeds()
+                                                    .vxMetersPerSecond;
 
-                                boolean isApproachingTrench = Math.signum(xVel) * Math.signum(xDist) > 0; // positive = moving into trench
-                                return isApproachingTrench;
-                        }
-                }
-                return false;
-        }).and(isTeleop).onTrue(HoodFactory.stow(this));
-        
+                                    boolean isApproachingTrench =
+                                            Math.signum(xVel) * Math.signum(xDist)
+                                                    > 0; // positive = moving into trench
+                                    return isApproachingTrench;
+                                }
+                            }
+                            return false;
+                        })
+                .and(isTeleop)
+                .onTrue(HoodFactory.stow(this));
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
@@ -453,7 +460,7 @@ public class RobotContainer {
     }
 
     public Command getTestCommand() {
-        return IntakeFactory.deploySlapdown(this);
+        return null;
     }
 
     public static synchronized RobotContainer getInstance() {

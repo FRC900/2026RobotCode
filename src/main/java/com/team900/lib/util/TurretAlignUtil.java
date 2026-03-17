@@ -15,10 +15,11 @@ public class TurretAlignUtil {
         return DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
                 == DriverStation.Alliance.Red;
     }
-    
+
     public TurretAlignUtil(Pose2d currentPose) {
         this.currentPose = currentPose;
-        Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
+        Translation2d hub =
+                AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
         hub_x = hub.getX();
         hub_y = hub.getY();
     }

@@ -14,8 +14,8 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
-// Position Torque FOC
-        public static final Gains COMP_GAINS = new Gains(1400, 0, 100, 2.25, 0, 0, 0);
+    // Position Torque FOC
+    public static final Gains COMP_GAINS = new Gains(1400, 0, 100, 2.25, 0, 0, 0);
 
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
@@ -26,16 +26,13 @@ public class HoodConstants {
     public static final double kHoodMinPositionDegrees = 15;
     public static final double kHoodRotorMaxPosition = 0.0754 + Units.degreesToRotations(15.0);
     public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
-    
 
     public static final double kZeroingAmps = 15;
     public static final double kZeroingSeconds = 0.1;
 
     // Convert rotor-rotation positions into radians
-    public static final double kHoodMinPositionRadians =
-            kHoodRotorMinPosition;
-    public static final double kHoodMaxPositionRadians =
-            kHoodRotorMaxPosition;
+    public static final double kHoodMinPositionRadians = kHoodRotorMinPosition;
+    public static final double kHoodMaxPositionRadians = kHoodRotorMaxPosition;
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(1);
@@ -53,11 +50,11 @@ public class HoodConstants {
         // Compute CANcoder -> subsystem units mapping from Phoenix measurement.
         // bottom = 0.0 and top = 0.229 rotations.
         double measuredSpan = 0.229; // rotations reported by Phoenix for full travel
-        double kMaxUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
+        double kMaxUnits = kHoodMaxPositionRadians;
         double kMinUnits = kHoodMinPositionRadians;
         kHoodConfig.cancoderToUnitsRatio = 1;
         kHoodConfig.isFusedCancoder = true;
-        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
+        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);

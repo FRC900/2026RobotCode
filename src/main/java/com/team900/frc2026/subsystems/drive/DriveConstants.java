@@ -24,7 +24,7 @@ public class DriveConstants {
     // CompTunerConstants doesn't include these constants, so they are declared locally
     static final double ODOMETRY_FREQUENCY =
             new CANBus(CompTunerConstants.DrivetrainConstants.CANBusName).isNetworkFD()
-                    ? 250.0
+                    ? 100.0
                     : 100.0;
 
     public static final double DRIVE_BASE_RADIUS =
@@ -104,7 +104,7 @@ public class DriveConstants {
     public static final double kMaxYAccelerationMetersPerSecondSquared = 10.0;
     public static final double kDriveMaxAngularRate = 8.2;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = 20.0;
-    public static final double kHeadingControllerP = 30 / 360;
+    public static final double kHeadingControllerP = 3;
     public static final double kHeadingControllerI = 0;
     public static final double kHeadingControllerD = 0;
 }

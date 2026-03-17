@@ -3,8 +3,6 @@ package com.team900.lib.util;
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
-import com.team900.frc2026.subsystems.turret.TurretConstants;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -12,7 +10,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.littletonrobotics.junction.Logger;
 public class ShooterSetpoint {
 
     static RobotState robotState = RobotState.getInstance();
@@ -91,7 +88,8 @@ public class ShooterSetpoint {
         double turretX = turretPose.getX();
         double turretY = turretPose.getY();
 
-        Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
+        Translation2d hub =
+                AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
 
         // Distance from turret to hub
         double distanceToTarget = Math.hypot(hub.getX() - turretX, hub.getY() - turretY);
@@ -103,11 +101,12 @@ public class ShooterSetpoint {
         boolean validSetpont = true;
         double shooterRPS = ShooterConstants.kShootingRPS;
 
-        double hoodSetpoint = Math.toRadians(HoodConstants.kHoodMaxPositionDegrees) - getPhi(distanceToTarget, 0.0);
+        double hoodSetpoint =
+                Math.toRadians(HoodConstants.kHoodMaxPositionDegrees)
+                        - getPhi(distanceToTarget, 0.0);
 
         // values for hood are placeholders rn since that depends on the lookup table
-        return new ShooterSetpoint(
-                shooterRPS, hoodSetpoint, 0.0, validSetpont);
+        return new ShooterSetpoint(shooterRPS, hoodSetpoint, 0.0, validSetpont);
     }
 
     /**

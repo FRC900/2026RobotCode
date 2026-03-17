@@ -44,10 +44,8 @@ public class AutoFactory900 {
     }
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
-        return new ParallelCommandGroup(
-                ShootingFactory.shoot(setpointSupplier, container)
-        );
-    } 
+        return new ParallelCommandGroup(ShootingFactory.shoot(setpointSupplier, container));
+    }
 
     public static Command stopShoot() {
         return new ParallelCommandGroup(
