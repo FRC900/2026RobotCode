@@ -1,7 +1,7 @@
 plugins {
     id "java"
     id "idea"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "edu.wpi.first.GradleRIO" version "2026.2.1"
     id "com.peterabeles.gversion" version "1.10"
     id "com.diffplug.spotless" version "6.22.0"
       id("io.freefair.lombok") version "9.2.0"
@@ -9,7 +9,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
 }
 
 spotless {
@@ -144,7 +143,8 @@ dependencies {
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
      implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.github.frc-88:ROSNetworkTablesBridge:2024-03-21'
+
+     implementation 'org.jetbrains.bio:npy:0.3.5'
 }
 
 test {

@@ -7,8 +7,8 @@ import org.littletonrobotics.junction.Logger;
 public class CANBusStatusLogger {
     private final CANBus bus;
 
-    public CANBusStatusLogger(String name) {
-        bus = new CANBus(name);
+    public CANBusStatusLogger(CANBus bus) {
+        this.bus = bus;
     }
 
     public void logStatus() {

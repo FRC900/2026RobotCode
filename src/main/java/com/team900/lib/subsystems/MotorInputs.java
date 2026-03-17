@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog
 public class MotorInputs {
+    public boolean connected = false;
     public double velocityUnitsPerSecond = 0.0;
     public double unitPosition = 0.0;
     public double appliedVolts = 0.0;

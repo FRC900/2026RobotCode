@@ -1,0 +1,39 @@
+// Auto generated!! Do not modify.
+package com.team900.lib.rosNetworkTablesBridge.messages.std_msgs;
+
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+
+public class RosUInt32 extends com.team900.lib.rosNetworkTablesBridge.messages.RosMessage {
+
+    private int data = 0;
+
+    @Expose(serialize = false, deserialize = false)
+    public final java.lang.String _type = "std_msgs/UInt32";
+
+    public RosUInt32() {}
+
+    public RosUInt32(int data) {
+        this.data = data;
+    }
+
+    public RosUInt32(JsonObject jsonObj) {
+        this.data = jsonObj.get("data").getAsInt();
+    }
+
+    public int getData() {
+        return this.data;
+    }
+
+    public void setData(int data) {
+        this.data = data;
+    }
+
+    public JsonObject toJSON() {
+        return ginst.toJsonTree(this).getAsJsonObject();
+    }
+
+    public java.lang.String toString() {
+        return ginst.toJson(this);
+    }
+}

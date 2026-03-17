@@ -3,25 +3,27 @@ package com.team900.frc2026.subsystems.hood;
 import com.team900.frc2026.RobotState;
 import com.team900.lib.subsystems.CanCoderIO;
 import com.team900.lib.subsystems.CanCoderInputsAutoLogged;
-import com.team900.lib.subsystems.MotorIO;
 import com.team900.lib.subsystems.MotorInputsAutoLogged;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoder;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
+import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.util.CurrentSpikeDetector;
 import edu.wpi.first.math.MathUtil;
 
 public class HoodSubsystem
         extends ServoMotorSubsystemWithCanCoder<
-                MotorInputsAutoLogged, MotorIO, CanCoderInputsAutoLogged, CanCoderIO> {
+                MotorInputsAutoLogged, TalonFXIO, CanCoderInputsAutoLogged, CanCoderIO> {
     private final RobotState state = RobotState.getInstance();
+    private TalonFXIO motorIO;
+
+    private final CurrentSpikeDetector spikeDetector =
+            new CurrentSpikeDetector(HoodConstants.kZeroingAmps, HoodConstants.kZeroingSeconds);
 
     public HoodSubsystem(
-            ServoMotorSubsystemWithCanCoderConfig c, MotorIO motorIO, CanCoderIO cancoderIO) {
+            ServoMotorSubsystemWithCanCoderConfig c, TalonFXIO motorIO, CanCoderIO cancoderIO) {
         super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
         this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
-        setDefaultCommand(
-                motionMagicSetpointCommand(this::getPositionSetpointUnits)
-                        .withName("Hood Maintain Setpoint (default)")
-                        .ignoringDisable(true));
+        this.motorIO = motorIO;
 
         // Update frequency for feedback.
         cancoderIO.updateFrequency(500);
@@ -31,7 +33,9 @@ public class HoodSubsystem
     @Override
     public void periodic() {
         super.periodic();
-        state.setHoodRadians(inputs.unitPosition);
+        state.setHoodRotations(inputs.unitPosition);
+        state.setHoodRPS(inputs.velocityUnitsPerSecond);
+        state.updateHoodHasZero(spikeDetector.update(inputs.currentStatorAmps));
     }
 
     public boolean isStowed() {
@@ -40,5 +44,36 @@ public class HoodSubsystem
                 HoodConstants.kHoodStowTrenchPositionRadians,
                 getCurrentPosition(),
                 HoodConstants.kHoodToleranceRadians);
+    }
+
+    public void setPositionRadians(double radians) {
+        double safeSetpoint = constrainSetpoint(radians);
+        motorIO.setPositionSetpoint(safeSetpoint, 0.0);
+    }
+
+    public void setPositionRadians(double radians, double velocityRadPerSec) {
+        double safeSetpoint = constrainSetpoint(radians);
+        motorIO.setPositionSetpoint(safeSetpoint, velocityRadPerSec);
+    }
+
+    private double constrainSetpoint(double desiredRad) {
+        double min = HoodConstants.kHoodMinPositionRadians;
+        double max = HoodConstants.kHoodMaxPositionRadians;
+
+        // Already in range
+        if (desiredRad >= min && desiredRad <= max) {
+            return desiredRad;
+        }
+
+        // If out of range, go to nearest limit
+        return desiredRad < min ? min : max;
+    }
+
+    public void disableSoftLimits() {
+        motorIO.setEnableSoftLimits(true, false);
+    }
+
+    public void enableSoftLimits() {
+        motorIO.setEnableSoftLimits(true, true);
     }
 }

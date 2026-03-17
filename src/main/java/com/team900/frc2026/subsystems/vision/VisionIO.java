@@ -1,30 +1,42 @@
-// package com.team900.frc2026.subsystems.vision;
+// Copyright (c) 2025 FRC 1533
+// http://github.com/triplestrange
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
 
-// import edu.wpi.first.math.geometry.Pose3d;
+package com.team900.frc2026.subsystems.vision;
 
-// /** Interface for vision system hardware abstraction. */
-// public interface VisionIO {
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import org.littletonrobotics.junction.AutoLog;
 
-//     /** Container for all vision input data. */
-//     class VisionIOInputs {
-//         /** Input data from a single camera. */
-//         public static class CameraInputs {
-//             public boolean seesTarget;
-//             public FiducialObservation[] fiducialObservations;
-//             public TagPoseEstimate trigPoseEstimate;
-//             public TagPoseEstimate PNPPoseEstimate;
-//             public int trigCount;
-//             public int PNPCount;
-//             public Pose3d pose3d;
-//             public double[] standardDeviations =
-//                     new double[12]; // [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x,
-//             // MT2y, MT2z, MT2roll, MT2pitch, MT2yaw]
-//         }
+public interface VisionIO {
+    @AutoLog
+    public static class VisionIOInputs {
+        public boolean connected = false;
+        public TargetObservation latestTargetObservation =
+                new TargetObservation(new Rotation2d(), new Rotation2d());
+        public PoseObservation[] poseObservations = new PoseObservation[0];
+        public int[] tagIds = new int[0];
+    }
 
-//         public CameraInputs cameraA = new CameraInputs();
-//         public CameraInputs cameraB = new CameraInputs();
-//         public CameraInputs cameraT = new CameraInputs();
-//     }
+    /** Represents the angle to a simple target, not used for pose estimation. */
+    public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
 
-//     void readInputs(VisionIOInputs inputs);
-// }
+    /** Represents a robot pose sample used for pose estimation. */
+    public static record PoseObservation(
+            double timestamp,
+            Pose3d pose,
+            double ambiguity,
+            int tagCount,
+            double averageTagDistance,
+            PoseObservationType type) {}
+
+    public static enum PoseObservationType {
+        SOLVE_PNP,
+        PINHOLE
+    }
+
+    public default void updateInputs(VisionIOInputs inputs) {}
+}

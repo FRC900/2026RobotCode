@@ -21,7 +21,7 @@ public class IntakePivotSubsystem
                 motorIO,
                 new CanCoderInputsAutoLogged(),
                 cancoderIO);
-
+        this.setMotionMagicConfigCommand(IntakePivotConstants.kIntakePivotMotionMagicConfigs);
         setDefaultCommand(
                 motionMagicSetpointCommand(this::getPositionSetpointUnits)
                         .withName("Intake Pivot Hold Setpoint")
@@ -33,6 +33,6 @@ public class IntakePivotSubsystem
     @Override
     public void periodic() {
         super.periodic();
-        state.setIntakePivotRadians(inputs.unitPosition);
+        state.setIntakePivotRotations(inputs.unitPosition);
     }
 }

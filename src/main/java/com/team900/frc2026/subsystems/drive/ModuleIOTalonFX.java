@@ -90,7 +90,7 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
 
         // Configure drive motor
         var driveConfig = constants.DriveMotorInitialConfigs;
-        driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         driveConfig.Slot0 = constants.DriveMotorGains;
         driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
         driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -constants.SlipCurrent;
@@ -111,11 +111,11 @@ public abstract class ModuleIOTalonFX implements ModuleIO {
         var turnConfig = new TalonFXConfiguration();
         turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         turnConfig.Slot0 = constants.SteerMotorGains;
-        if (Constants.currentMode == Mode.SIM)
+        if (Constants.currentMode == Mode.SIM) {
             turnConfig.Slot0 =
                     SimTunerConstants.FrontLeft
                             .SteerMotorGains; // during simulation, gains are slightly different
-
+        }
         turnConfig.Feedback.FeedbackRemoteSensorID = constants.EncoderId;
         turnConfig.Feedback.FeedbackSensorSource =
                 switch (constants.FeedbackSource) {

@@ -33,7 +33,7 @@ public class DriveConstants {
                     Math.max(
                             Math.hypot(
                                     CompTunerConstants.FrontLeft.LocationX,
-                                    CompTunerConstants.FrontRight.LocationY),
+                                    CompTunerConstants.FrontLeft.LocationY),
                             Math.hypot(
                                     CompTunerConstants.FrontRight.LocationX,
                                     CompTunerConstants.FrontRight.LocationY)),
@@ -98,10 +98,17 @@ public class DriveConstants {
         };
     }
 
-    public static final class RotationConfigs {
+    // 30 was way too much
+    public static final Gains kHeadingController = new Gains(0, 0, 0, 0, 0, 0, 0);
 
-        public static final double kSwerveHeadingControllerErrorTolerance = 0.025;
-        public static final Gains gainsSnap = new Gains(30, 0, 0, 0, 0, 0, 0);
-        public static final Gains gainsMaintain = new Gains(30, 0, 0, 0, 0, 0, 0);
-    }
+    public static final double kDriveMaxSpeed =
+            CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 10.0;
+    public static final double kMaxXAccelerationMetersPerSecondSquared = 10.0;
+    public static final double kMaxYAccelerationMetersPerSecondSquared = 10.0;
+    public static final double kDriveMaxAngularRate = 8.2;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 20.0;
+    public static final double kHeadingControllerP = 5.0;
+    public static final double kHeadingControllerI = 0;
+    public static final double kHeadingControllerD = 0;
 }
