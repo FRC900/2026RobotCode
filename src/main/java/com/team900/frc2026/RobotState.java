@@ -254,7 +254,8 @@ public class RobotState implements VisionConsumer {
                                         .toTranslation2d(),
                                 Rotation2d.kZero),
                         getLatestFieldToRobot().getValue())
-                .getRotation().plus(Rotation2d.k180deg);
+                .getRotation()
+                .plus(Rotation2d.k180deg);
     }
 
     // public double getLatestDistanceRobotToHub() {

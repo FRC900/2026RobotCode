@@ -72,10 +72,10 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
         return buttonControlBoard.swerveAlignToHub();
     }
 
-    @Override
-    public Trigger turretAlignToHub() {
-        return buttonControlBoard.turretAlignToHub();
-    }
+    // @Override
+    // public Trigger turretAlignToHub() {
+    //     return buttonControlBoard.turretAlignToHub();
+    // }
 
     @Override
     public Trigger povUp() {

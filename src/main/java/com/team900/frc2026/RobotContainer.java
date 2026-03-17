@@ -6,7 +6,6 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
-import com.team900.frc2026.commands.HubAlignTurretCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
 import com.team900.frc2026.factories.HoodFactory;
@@ -247,7 +246,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+//     @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -284,18 +283,24 @@ public class RobotContainer {
 
         controlBoard
                 .swerveAlignToHub()
-                        .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
-                        .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
-        
-        // Intake pivot, l1 to retract and deploy intake  
+                .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
+                .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
+
+        // Intake pivot, l1 to retract and deploy intake
         controlBoard
                 .toggleIntake()
                 .onTrue(
                         Commands.defer(
-                        () -> intakePivotSubsystem.isDeployed()
-                                ? IntakeFactory.retractSlapdown(this)
-                                : IntakeFactory.deploySlapdown(this),
-                        Set.of(getIntakePivotSubsystem())));
+                                () -> {
+                                    if (intakeDeployed) {
+                                        intakeDeployed = false;
+                                        return IntakeFactory.retractSlapdown(this);
+                                    } else {
+                                        intakeDeployed = true;
+                                        return IntakeFactory.deploySlapdown(this);
+                                    }
+                                },
+                                Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .shoot()
@@ -324,7 +329,6 @@ public class RobotContainer {
                 .onFalse(
                         new ParallelCommandGroup(
                                 ShooterFactory.setShooterRPS(0, this),
-                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
                                 SpindexerFactory.stopSpindexer(this),
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
@@ -357,8 +361,8 @@ public class RobotContainer {
         controlBoard
                 .stowHood()
                 .onTrue(
-                        HoodFactory.setPositionBlocking(
-                                HoodConstants.kHoodStowTrenchPositionRadians, 0.001, instance));
+                        HoodFactory.setPositionMotionMagicCommand(
+                                0.0756 , instance));
 
         controlBoard
                 .toggleHoodMax()
@@ -366,7 +370,7 @@ public class RobotContainer {
                         Commands.either(
                                         HoodFactory.stow(this),
                                         HoodFactory.setPositionMotionMagicCommand(
-                                                HoodConstants.kHoodConfig.kMaxPositionUnits, this),
+                                                HoodConstants.kHoodRotorMaxPosition - 0.01, this),
                                         () -> hoodAtMax)
                                 .beforeStarting(() -> hoodAtMax = !hoodAtMax));
 

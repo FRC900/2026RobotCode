@@ -92,7 +92,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
 
     @Override
     public Trigger stowHood() {
-        return controller.R1().or(additionalController.R1());
+        return controller.R1();
     }
 
     @Override
@@ -115,8 +115,8 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
         return controller.circle();
     }
 
-    @Override
-    public Trigger turretAlignToHub() {
-        return controller.cross();
-    }
+    // @Override
+    // public Trigger turretAlignToHub() {
+    //     return controller.cross();
+    // }
 }

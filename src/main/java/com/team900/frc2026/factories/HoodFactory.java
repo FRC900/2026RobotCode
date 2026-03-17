@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 public class HoodFactory {
 
     // Sets the hood to a fixed position in radians
-    public static Command setPositionMotionMagicCommand(double radians, RobotContainer container) {
+    public static Command setPositionMotionMagicCommand(double rotations, RobotContainer container) {
         HoodSubsystem hood = container.getHoodSubsystem();
-        return hood.motionMagicSetpointCommand(() -> radians).withName("Hood Set Position");
+        return hood.motionMagicSetpointCommand(() -> rotations).withName("Hood Set Position");
     }
 
     public static Command aimHoodToPose(
@@ -24,7 +24,7 @@ public class HoodFactory {
         return Commands.run(
                         () ->
                                 hood.setPositionRadians(
-                                        setPointSupplier.get().getHoodRadians(),
+                                        setPointSupplier.get().getHoodRadians() / (2. * Math.PI),
                                         setPointSupplier.get().getHoodFF()),
                         hood)
                 .withName("Aim Hood to Pose (rad)");
@@ -42,7 +42,7 @@ public class HoodFactory {
     // Stows the hood
     public static Command stow(RobotContainer container) {
         return setPositionMotionMagicCommand(
-                        HoodConstants.kHoodStowTrenchPositionRadians, container)
+                        HoodConstants.kHoodRotorMinPosition + 0.001, container)
                 .withName("Hood Stow");
     }
 
@@ -53,7 +53,15 @@ public class HoodFactory {
                                 .getHoodSubsystem()
                                 .dutyCycleCommand(() -> -0.05)
                                 .until(RobotState.getInstance()::getHoodHasZeroed)
-                                .andThen(container.getHoodSubsystem()::enableSoftLimits));
+                                .andThen(container.getHoodSubsystem()::enableSoftLimits))
+                .andThen(
+                        Commands.runOnce(
+                                () ->
+                                        container
+                                                .getHoodSubsystem()
+                                                .setCurrentPosition(
+                                                        HoodConstants.kHoodMinPositionRadians),
+                                container.getHoodSubsystem()));
     }
 
     // TODO: tune these positions on the real robot

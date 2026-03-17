@@ -66,8 +66,8 @@ public class DriveMaintainingHeadingCommand extends Command {
 
     @Override
     public void execute() {
-        double throttle = mThrottleSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed;
-        double strafe = mStrafeSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed;
+        double throttle = mThrottleSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed * 0.8;
+        double strafe = mStrafeSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed * 0.8;
         double turnFieldFrame =
                 Util.handleDeadband(
                         mTurnSupplier.getAsDouble(),
@@ -129,8 +129,7 @@ public class DriveMaintainingHeadingCommand extends Command {
                                         * DriveConstants.kDriveMaxAngularRate,
                                 mDrivetrain.getRotation()));
 
-                                Logger.recordOutput("DriveMaintainHeading/Mode", "Heading");
-                                 
+                Logger.recordOutput("DriveMaintainHeading/Mode", "Heading");
                 Logger.recordOutput(
                         "DriveMaintainHeading/HeadingSetpoint",
                         mHeadingSetpoint.get().getDegrees());

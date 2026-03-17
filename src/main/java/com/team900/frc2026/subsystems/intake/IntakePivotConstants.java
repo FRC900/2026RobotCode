@@ -79,7 +79,7 @@ public class IntakePivotConstants {
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
-        
+
         // Ensure motor inversion matches the CANcoder sign convention (Clockwise_Positive)
         // so positive position setpoints move the mechanism in the same physical
         // direction that the CANcoder reports as positive.

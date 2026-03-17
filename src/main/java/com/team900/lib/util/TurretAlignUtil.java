@@ -1,7 +1,6 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.subsystems.turret.TurretConstants;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,8 +12,8 @@ public class TurretAlignUtil {
     private double hub_y;
 
     public static boolean isRedAlliance() {
-        return DriverStation.getAlliance()
-            .orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red;
+        return DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
+                == DriverStation.Alliance.Red;
     }
     
     public TurretAlignUtil(Pose2d currentPose) {
