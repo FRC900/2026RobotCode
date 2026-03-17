@@ -21,8 +21,11 @@ public class HoodConstants {
     public static final double kHoodToleranceRadians = 0.1;
     public static final double kHoodZeroedAngleDegrees = 15;
 
+    public static final double kHoodMaxPositionDegrees = 75;
+    public static final double kHoodMinPositionDegrees = 15;
     public static final double kHoodRotorMaxPosition = 0.0754 + Units.degreesToRotations(15.0);
     public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
+    
 
     public static final double kZeroingAmps = 23;
     public static final double kZeroingSeconds = 0.1;

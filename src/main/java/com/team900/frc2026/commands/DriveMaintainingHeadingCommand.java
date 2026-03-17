@@ -6,8 +6,10 @@ import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.drive.DriveConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.frc2026.subsystems.turret.TurretConstants;
+import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose;
 import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.FieldConstants;
+import com.team900.lib.util.TurretAlignUtil;
 import com.team900.lib.util.Util;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -107,10 +109,10 @@ public class DriveMaintainingHeadingCommand extends Command {
             if (kAiming) {
                 Pose2d robotPose = mRobotState.getLatestFieldToRobot().getValue();
                 
-                double cos = robotPose.getRotation().getCos();
-                double sin = robotPose.getRotation().getSin();
-                double turretX = robotPose.getX() + (TurretConstants.turretOffSetFromCenterX * cos - TurretConstants.turretOffSetFromCenterY * sin);
-                double turretY = robotPose.getY() + (TurretConstants.turretOffSetFromCenterX * sin + TurretConstants.turretOffSetFromCenterY * cos);
+                TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
+                Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
+                double turretX = turretPose.getX();
+                double turretY = turretPose.getY();
                 
                 Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
                 double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX);

@@ -1,6 +1,6 @@
 package com.team900.frc2026.commands;
 
-import com.team900.lib.util.TurretAlignFromPose;
+import com.team900.lib.util.TurretAlignUtil;
 import com.team900.frc2026.subsystems.turret.TurretSubsystem;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +18,7 @@ public class HubAlignTurretCommand extends Command {
 
     @Override
     public void execute() {
-        TurretAlignFromPose aligner = new TurretAlignFromPose(drive.getPose());
+        TurretAlignUtil aligner = new TurretAlignUtil(drive.getPose());
         turret.setPositionDegrees(aligner.turretDegreesFromZero());
     }
 

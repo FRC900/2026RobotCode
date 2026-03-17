@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class TurretAlignFromPose {
+public class TurretAlignUtil {
     private Pose2d currentPose;
     private double hub_x;
     private double hub_y;
@@ -17,17 +17,17 @@ public class TurretAlignFromPose {
             .orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red;
     }
     
-    public TurretAlignFromPose(Pose2d currentPose) {
+    public TurretAlignUtil(Pose2d currentPose) {
         this.currentPose = currentPose;
         Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
         hub_x = hub.getX();
         hub_y = hub.getY();
     }
 
-    public Pose2d getTurretPositionFromRobotPose(Pose2d robotPose) {
-        double robotX = robotPose.getX();
-        double robotY = robotPose.getY();
-        Rotation2d robotRot = robotPose.getRotation();
+    public Pose2d getTurretPositionFromRobotPose() {
+        double robotX = currentPose.getX();
+        double robotY = currentPose.getY();
+        Rotation2d robotRot = currentPose.getRotation();
 
         double offsetX = TurretConstants.turretOffSetFromCenterX;
         double offsetY = TurretConstants.turretOffSetFromCenterY;
@@ -45,7 +45,7 @@ public class TurretAlignFromPose {
     // 0 degrees is defined when the shooter is parallel to the side bumpers and is aimed forward
     // degrees are continous (i.e., instead of saying -90 degrees, we say 270)
     public double turretDegreesFromZero() {
-        Pose2d turretPose = getTurretPositionFromRobotPose(currentPose);
+        Pose2d turretPose = getTurretPositionFromRobotPose();
         double turretX = turretPose.getX();
         double turretY = turretPose.getY();
 
