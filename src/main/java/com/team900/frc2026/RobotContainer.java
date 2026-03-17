@@ -4,26 +4,13 @@
 
 package com.team900.frc2026;
 
-import com.team900.frc2026.auto.AutoDashboard;
-import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
-import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
-import com.team900.frc2026.factories.HoodFactory;
 import com.team900.frc2026.factories.IntakeFactory;
-import com.team900.frc2026.factories.ShooterFactory;
-import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.frc2026.factories.SpindexerFactory;
-import com.team900.frc2026.simulation.SimulatedRobotState;
-import com.team900.frc2026.subsystems.coprocessor.CoprocessorSubsystem;
 import com.team900.frc2026.subsystems.drive.CompTunerConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
-import com.team900.frc2026.subsystems.drive.GyroIO;
 import com.team900.frc2026.subsystems.drive.GyroIOPigeon2;
-import com.team900.frc2026.subsystems.drive.GyroIOSim;
-import com.team900.frc2026.subsystems.drive.ModuleIO;
 import com.team900.frc2026.subsystems.drive.ModuleIOTalonFXReal;
-import com.team900.frc2026.subsystems.drive.ModuleIOTalonFXSim;
-import com.team900.frc2026.subsystems.drive.SimTunerConstants;
 import com.team900.frc2026.subsystems.handoff.HandoffConstants;
 import com.team900.frc2026.subsystems.handoff.HandoffSubsystem;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
@@ -36,164 +23,61 @@ import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterSubsystem;
 import com.team900.frc2026.subsystems.spindexer.SpindexerConstants;
 import com.team900.frc2026.subsystems.spindexer.SpindexerSubsystem;
-import com.team900.frc2026.subsystems.turret.TurretIO;
-import com.team900.frc2026.subsystems.turret.TurretIOHardware;
-import com.team900.frc2026.subsystems.turret.TurretIOSim;
 import com.team900.frc2026.subsystems.turret.TurretSubsystem;
-import com.team900.frc2026.subsystems.vision.VisionConstants;
-import com.team900.frc2026.subsystems.vision.VisionIOPhotonVision;
-import com.team900.frc2026.subsystems.vision.VisionIOPhotonVisionSim;
-import com.team900.frc2026.subsystems.vision.VisionSubsystem;
-import com.team900.frc2026.viz.RobotViz;
+import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.subsystems.CanCoderIOHardware;
-import com.team900.lib.subsystems.SimCanCoderIO;
-import com.team900.lib.subsystems.SimTalonFXIO;
-import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
-import com.team900.lib.util.ShooterSetpoint;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import java.util.*;
+import java.util.function.Consumer;
 import lombok.Getter;
-import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class RobotContainer {
     private DriveSubsystem buildDriveSystem() {
 
-        if (RobotBase.isSimulation()) {
-            SimulatedArena.getInstance().addDriveTrainSimulation(simulatedRobotState.getSimDrive());
-
-            return new DriveSubsystem(
-                    new GyroIOSim(simulatedRobotState.getSimDrive().getGyroSimulation()),
-                    new ModuleIOTalonFXSim(
-                            SimTunerConstants.FrontLeft,
-                            simulatedRobotState.getSimDrive().getModules()[0]),
-                    new ModuleIOTalonFXSim(
-                            SimTunerConstants.FrontRight,
-                            simulatedRobotState.getSimDrive().getModules()[1]),
-                    new ModuleIOTalonFXSim(
-                            SimTunerConstants.BackLeft,
-                            simulatedRobotState.getSimDrive().getModules()[2]),
-                    new ModuleIOTalonFXSim(
-                            SimTunerConstants.BackRight,
-                            simulatedRobotState.getSimDrive().getModules()[3]));
-        } else if (RobotBase.isReal())
-            return new DriveSubsystem(
-                    new GyroIOPigeon2(),
-                    new ModuleIOTalonFXReal(CompTunerConstants.FrontLeft),
-                    new ModuleIOTalonFXReal(CompTunerConstants.FrontRight),
-                    new ModuleIOTalonFXReal(CompTunerConstants.BackLeft),
-                    new ModuleIOTalonFXReal(CompTunerConstants.BackRight));
-
         return new DriveSubsystem(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
-    }
-
-    private VisionSubsystem buildVisionSubsystem() {
-        if (RobotBase.isSimulation()) {
-            return new VisionSubsystem(
-                    robotState,
-                    new VisionIOPhotonVisionSim(
-                            VisionConstants.camera0Name,
-                            VisionConstants.robotToCamera0,
-                            simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
-        } else {
-            return new VisionSubsystem(
-                    robotState,
-                    new VisionIOPhotonVision(
-                            VisionConstants.camera0Name, VisionConstants.robotToCamera0));
-        }
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFXReal(CompTunerConstants.FrontLeft),
+                new ModuleIOTalonFXReal(CompTunerConstants.FrontRight),
+                new ModuleIOTalonFXReal(CompTunerConstants.BackLeft),
+                new ModuleIOTalonFXReal(CompTunerConstants.BackRight));
     }
 
     private SpindexerSubsystem buildSpindexerSubsystem() {
-        if (RobotBase.isSimulation())
-            return new SpindexerSubsystem(
-                    SpindexerConstants.kSpindexerConfig,
-                    new SimTalonFXIO(SpindexerConstants.kSpindexerConfig));
-
         return new SpindexerSubsystem(
                 SpindexerConstants.kSpindexerConfig,
                 new TalonFXIO(SpindexerConstants.kSpindexerConfig));
     }
 
     private HoodSubsystem buildHoodSubsystem() {
-        if (RobotBase.isSimulation())
-            return new HoodSubsystem(
-                    HoodConstants.kHoodConfig,
-                    simulatedHoodMotor,
-                    new SimCanCoderIO(
-                            HoodConstants.kHoodCanCoderConfig,
-                            simulatedHoodMotor.getSupplierForCancoder(HoodConstants.kHoodConfig)));
-
         return new HoodSubsystem(
                 HoodConstants.kHoodConfig,
                 new TalonFXIO(HoodConstants.kHoodConfig),
-                new CanCoderIOHardware(HoodConstants.kHoodCanCoderConfig));
-    }
-
-    private TurretSubsystem buildTurretSubsystem() {
-        if (RobotBase.isSimulation()) return new TurretSubsystem(new TurretIOSim());
-
-        if (RobotBase.isReal()) return new TurretSubsystem(new TurretIOHardware());
-
-        return new TurretSubsystem(new TurretIO() {});
+                new CanCoderIOHardware(HoodConstants.kHoodConfig.canCoderConfig));
     }
 
     private IntakeRollerSubsystem buildIntakeRollerSubsystem() {
-        if (RobotBase.isSimulation())
-            return new IntakeRollerSubsystem(
-                    IntakeRollerConstants.kIntakeRollerConfig,
-                    new SimTalonFXIO(IntakeRollerConstants.kIntakeRollerConfig));
-
         return new IntakeRollerSubsystem(
                 IntakeRollerConstants.kIntakeRollerConfig,
                 new TalonFXIO(IntakeRollerConstants.kIntakeRollerConfig));
     }
 
     private IntakePivotSubsystem buildIntakePivotSubsystem() {
-        if (RobotBase.isSimulation())
-            return new IntakePivotSubsystem(
-                    IntakePivotConstants.kIntakePivotConfig,
-                    simulatedIntakeMotor,
-                    new SimCanCoderIO(
-                            IntakePivotConstants.kIntakeCanCoderConfig,
-                            simulatedIntakeMotor.getSupplierForCancoder(
-                                    IntakePivotConstants.kIntakePivotConfig)));
-
         return new IntakePivotSubsystem(
                 IntakePivotConstants.kIntakePivotConfig,
                 new TalonFXIO(IntakePivotConstants.kIntakePivotConfig),
-                new CanCoderIOHardware(IntakePivotConstants.kIntakeCanCoderConfig));
+                new CanCoderIOHardware(IntakePivotConstants.kIntakePivotConfig.canCoderConfig));
     }
 
     private HandoffSubsystem buildHandoffSubsystem() {
-        if (RobotBase.isSimulation())
-            return new HandoffSubsystem(
-                    HandoffConstants.kHandoffConfig,
-                    new SimTalonFXIO(HandoffConstants.kHandoffConfig));
         return new HandoffSubsystem(
                 HandoffConstants.kHandoffConfig, new TalonFXIO(HandoffConstants.kHandoffConfig));
     }
 
     private ShooterSubsystem buildShooterSubsystem() {
-        if (RobotBase.isSimulation())
-            return new ShooterSubsystem(
-                    ShooterConstants.kShooterConfig,
-                    new SimTalonFXIO(ShooterConstants.kShooterConfig),
-                    new TalonFXIO[] {
-                        new SimTalonFXIO(ShooterConstants.kShooterConfig.followers[0].config)
-                    });
         return new ShooterSubsystem(
                 ShooterConstants.kShooterConfig,
                 new TalonFXIO(ShooterConstants.kShooterConfig),
@@ -202,46 +86,25 @@ public class RobotContainer {
                 });
     }
 
-    @Getter private final ControlBoard controlBoard = ControlBoard.getInstance();
-
-    private final SimTalonFXWithCancoder simulatedHoodMotor =
-            Robot.isSimulation() ? new SimTalonFXWithCancoder(HoodConstants.kHoodConfig) : null;
-
-    private final SimTalonFXWithCancoder simulatedIntakeMotor =
-            Robot.isSimulation()
-                    ? new SimTalonFXWithCancoder(IntakePivotConstants.kIntakePivotConfig)
-                    : null;
-
     private static volatile RobotContainer instance;
 
-    @Getter private SimulatedRobotState simulatedRobotState = new SimulatedRobotState();
-
+    public SwerveDriveSimulation driveSimulation = null;
     @Getter private final DriveSubsystem driveSubsystem = buildDriveSystem();
 
-    private final RobotState robotState = RobotState.getInstance();
-
-    @Getter private final VisionSubsystem visionSubsystem = buildVisionSubsystem();
-
-    @Getter
-    private final CoprocessorSubsystem coprocessorSubsystem = new CoprocessorSubsystem(robotState);
-
-    @Getter
-    private final DriveMaintainingHeadingCommand driveCommand =
-            (new DriveMaintainingHeadingCommand(
-                    this,
-                    controlBoard::getThrottle,
-                    controlBoard::getStrafe,
-                    controlBoard::getRotation));
-
-    @Getter private final RobotViz robotViz = new RobotViz();
+    private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer =
+            new Consumer<VisionFieldPoseEstimate>() {
+                @Override
+                public void accept(VisionFieldPoseEstimate estimate) {
+                    driveSubsystem.addVisionMeasurement(estimate);
+                }
+            };
+    private final RobotState robotState = RobotState.getInstance(visionEstimateConsumer);
 
     private final CommandPS5Controller driveController = new CommandPS5Controller(0);
 
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
-    @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
-
+    // private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
 
@@ -251,148 +114,52 @@ public class RobotContainer {
     @Getter private final ShooterSubsystem shooterSubsystem = buildShooterSubsystem();
 
     private RobotContainer() {
-        instance = this;
-
         if (Robot.isSimulation()) {
-            assert this.simulatedRobotState != null;
-            this.simulatedRobotState.init();
+            // assert this.simulatedRobotState != null;
+            // this.simulatedRobotState.init();
         }
-        autoDashboard = new AutoDashboard();
         configureBindings();
     }
 
-    private boolean intakeDeployed = intakePivotSubsystem.getPositionSetpointUnits() < 0.125;
-
     private void configureBindings() {
         // Swerve Drive
-        driveSubsystem.setDefaultCommand(driveCommand);
+        driveSubsystem.setDefaultCommand(
+                driveSubsystem.run(
+                        () ->
+                                driveSubsystem.teleopControl(
+                                        -driveController.getLeftY(),
+                                        -driveController.getLeftX(),
+                                        -driveController.getRightX())));
 
-        // Intake pivot, l1 to retract and deploy intake
-        // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.either(
-        //                         IntakeFactory.retractSlapdown(this)
-        //                                 .beforeStarting(() -> intakeDeployed = false),
-        //                         IntakeFactory.deploySlapdown(this)
-        //                                 .beforeStarting(() -> intakeDeployed = true),
-        //                         () -> intakeDeployed));
-
-        // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.defer(
-        //                         () -> {
-        //                                 if (intakeDeployed){
-        //                                         intakeDeployed = false;
-        //                                         return IntakeFactory.retractSlapdown(this);
-        //                                 } else {
-        //                                         intakeDeployed = true;
-        //                                         return IntakeFactory.deploySlapdown(this);
-        //                                 }
-        //                         },
-        //                                 Set.of(getIntakePivotSubsystem())));
-
-        controlBoard
-                .shoot()
-                .onTrue(
-                        ((ShooterFactory.setShooterRPS(60, this)
-                                        .until(
-                                                () ->
-                                                        MathUtil.isNear(
-                                                                60,
-                                                                shooterSubsystem
-                                                                        .getCurrentVelocity(),
-                                                                1))))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this))))
-                .onFalse(
+        driveController
+                .R1()
+                .whileTrue(
                         new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                SpindexerFactory.stopSpindexer(this),
-                                HandoffFactory.stopHandoff(this)));
-
-        controlBoard
-                .shootAuto()
-                .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
-                .onFalse(
+                                IntakeFactory.runIntake(instance),
+                                HandoffFactory.runHandoff(instance),
+                                SpindexerFactory.runSpindexer(instance)));
+        driveController
+                .L1()
+                .whileTrue(
                         new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
-                                SpindexerFactory.stopSpindexer(this),
-                                IntakeFactory.stopIntake(this),
-                                HandoffFactory.stopHandoff(this)));
-
-        controlBoard
-                .pass()
-                .onTrue(
-                        (Commands.parallel(
-                                        ShooterFactory.setShooterRPS(80, this)
-                                                .until(
-                                                        () ->
-                                                                MathUtil.isNear(
-                                                                        80,
-                                                                        shooterSubsystem
-                                                                                .getCurrentVelocity(),
-                                                                        1)),
-                                        HoodFactory.pass(instance, 0.025)))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this))))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                SpindexerFactory.stopSpindexer(this),
-                                HandoffFactory.stopHandoff(this)));
-
-        controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
-
-        controlBoard.stowHood().onTrue(HoodFactory.setPositionBlocking(0.33, 0.025, instance));
-
-        controlBoard
-                .intake()
-                .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
-                .onFalse(IntakeFactory.stopIntake(this));
-
-        controlBoard
-                .exhaust()
-                .onTrue(IntakeFactory.exhaustIntake(this))
-                .onFalse(IntakeFactory.stopIntake(this));
-
-        controlBoard.resetHood().onTrue(HoodFactory.zero(this));
+                                IntakeFactory.exhaustIntake(instance),
+                                HandoffFactory.exhaustHandoff(instance),
+                                SpindexerFactory.exhaustSpindexer(instance)));
     }
-
-    public boolean odometryCloseToPose(Pose2d pose) {
-        Pose2d fieldToRobot = robotState.getLatestFieldToRobot().getValue();
-        double distance = fieldToRobot.getTranslation().getDistance(pose.getTranslation());
-        SmartDashboard.putNumber("Distance From Start Pose", distance);
-        double rotation =
-                Math.abs(
-                        fieldToRobot
-                                .getRotation()
-                                .rotateBy(pose.getRotation().unaryMinus())
-                                .getDegrees());
-        SmartDashboard.putNumber("Rotation From Start Pose", rotation);
-        if (distance < 0.25 && rotation < 8.0) {
-            return true;
-        }
-        return false;
-    }
-
-    private final AutoDashboard autoDashboard;
 
     public Command getAutonomousCommand() {
-        return autoDashboard.getSelectedAuto();
+        return Commands.print("No autonomous command configured");
     }
 
-    public Command getTestCommand() {
-        return IntakeFactory.deploySlapdown(this);
+    public TurretSubsystem getTurretSubsystem() {
+        return null;
     }
 
-    public static synchronized RobotContainer getInstance() {
+    public HoodSubsystem getHoodSubsystem() {
+        return null;
+    }
+
+    public static RobotContainer getInstance() {
         if (instance == null) {
             synchronized (RobotContainer.class) {
                 if (instance == null) {

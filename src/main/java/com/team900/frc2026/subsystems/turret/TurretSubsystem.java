@@ -40,7 +40,6 @@ public class TurretSubsystem extends FullSubsystem {
         }
     }
 
-    // TODO: at some point check this to see if it works with 900 turret
     /**
      * Finds the best reachable angle for the turret target If the target is within limits, use it
      * directly Otherwise check if rotating 360 degrees in either direction gives an equivalent that
@@ -98,10 +97,10 @@ public class TurretSubsystem extends FullSubsystem {
         velocitySetpointRadPerSec = 0.0;
     }
 
-    public void setPositionDegrees(double degrees, double velocityDegPerSec) {
+    public void setPositionDegrees(double degrees, double velocitySetpointDegPerSec) {
         isOpenLoop = false;
         positionSetpointRad = Math.toRadians(degrees);
-        velocitySetpointRadPerSec = Math.toRadians(velocityDegPerSec);
+        velocitySetpointRadPerSec = Math.toRadians(velocitySetpointDegPerSec);
     }
 
     public void setOpenLoop(double dutyCycle) {

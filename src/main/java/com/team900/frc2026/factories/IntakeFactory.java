@@ -6,36 +6,31 @@ import com.team900.frc2026.subsystems.intake.IntakeRollerConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class IntakeFactory {
-
     public static Command runIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
-                .voltageCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
+                .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycle);
     }
 
     public static Command exhaustIntake(RobotContainer container) {
         return container
                 .getIntakeRollerSubsystem()
-                .voltageCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
-    }
-
-    public static Command stopIntake(RobotContainer container) {
-        return container.getIntakeRollerSubsystem().voltageCommand(() -> 0);
+                .dutyCycleCommand(() -> IntakeRollerConstants.kIntakeDutyCycleExhaust);
     }
 
     public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
-                .motionMagicSetpointCommand(
-                        () -> IntakePivotConstants.kIntakePivotDeploy,
-                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs);
+                .motionMagicSetpointCommandBlocking(
+                        () -> IntakePivotConstants.kIntakePivotDeployRadians,
+                        IntakePivotConstants.kIntakePivotToleranceRadians);
     }
 
     public static Command retractSlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
-                .motionMagicSetpointCommand(
-                        () -> IntakePivotConstants.kIntakePivotStow,
-                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs);
+                .motionMagicSetpointCommandBlocking(
+                        () -> IntakePivotConstants.kIntakePivotStowRadians,
+                        IntakePivotConstants.kIntakePivotToleranceRadians);
     }
 }

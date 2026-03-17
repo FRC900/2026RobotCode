@@ -1,49 +1,41 @@
 package com.team900.frc2026;
 
-import com.team900.frc2026.subsystems.vision.VisionConstants;
-import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
-import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
-import com.team900.frc2026.subsystems.vision.VisionSubsystem.VisionConsumer;
-import com.team900.lib.util.AllianceFlipUtil;
+import com.team900.frc2026.subsystems.vision.VisionFieldPoseEstimate;
 import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.MathHelpers;
 import com.team900.lib.util.Util;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.Timer;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /** Tracks robot state including pose, velocities, and mechanism positions. */
-public class RobotState implements VisionConsumer {
+public class RobotState {
 
     private static volatile RobotState instance;
 
     public static final double LOOKBACK_TIME = 1.0;
 
-    private RobotState() {
+    private final Consumer<VisionFieldPoseEstimate> visionEstimateConsumer;
+
+    private RobotState(Consumer<VisionFieldPoseEstimate> visionEstimateConsumer) {
+        this.visionEstimateConsumer = visionEstimateConsumer;
         fieldToRobot.addSample(0.0, MathHelpers.kPose2dZero);
-        robotToTurret.addSample(0.0, MathHelpers.kRotation2dZero);
-        turretAngularVelocity.addSample(0.0, 0.0);
         driveYawAngularVelocity.addSample(0.0, 0.0);
-        turretPositionRadians.addSample(0.0, 0.0);
 
         // Initialize mechanism positions
-        intakePivotRotations.set(0.0);
-        hoodRotations.set(0.0);
+        elevatorHeightMeters.set(0.0);
+        hoodRadians.set(0.0);
+        intakeRollerRotations.set(0.0);
+        clawRollerRotations.set(0.0);
     }
 
     // State of robot.
@@ -52,13 +44,6 @@ public class RobotState implements VisionConsumer {
     // Robot's pose in field coordinates over time
     private final ConcurrentTimeInterpolatableBuffer<Pose2d> fieldToRobot =
             ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
-    private final ConcurrentTimeInterpolatableBuffer<Rotation2d> robotToTurret =
-            ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
-    private static final Transform2d TURRET_TO_CAMERA =
-            new Transform2d(
-                    VisionConstants.kTurretToCameraXMeters,
-                    VisionConstants.kTurretToCameraYMeters,
-                    MathHelpers.kRotation2dZero);
     // Current robot-relative chassis speeds (measured from encoders)
     private final AtomicReference<ChassisSpeeds> measuredRobotRelativeChassisSpeeds =
             new AtomicReference<>(new ChassisSpeeds());
@@ -76,12 +61,8 @@ public class RobotState implements VisionConsumer {
 
     private final AtomicInteger iteration = new AtomicInteger(0);
 
-    private double lastUsedTagSlamTimestamp = 0;
-    private Pose2d lastUsedTagSlamPose = Pose2d.kZero;
-    private ConcurrentTimeInterpolatableBuffer<Double> turretAngularVelocity =
-            ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
-    private ConcurrentTimeInterpolatableBuffer<Double> turretPositionRadians =
-            ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
+    private double lastUsedMegatagTimestamp = 0;
+    private Pose2d lastUsedMegatagPose = Pose2d.kZero;
     private final ConcurrentTimeInterpolatableBuffer<Double> driveYawAngularVelocity =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
     private final ConcurrentTimeInterpolatableBuffer<Double> driveRollAngularVelocity =
@@ -99,8 +80,6 @@ public class RobotState implements VisionConsumer {
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
 
     private final AtomicBoolean enablePathCancel = new AtomicBoolean(false);
-
-    private final AtomicBoolean hasHoodZero = new AtomicBoolean(false);
 
     private double autoStartTime;
 
@@ -125,14 +104,6 @@ public class RobotState implements VisionConsumer {
 
     public boolean getPathCancel() {
         return enablePathCancel.get();
-    }
-
-    public void updateHoodHasZero(boolean hoodZereod) {
-        hasHoodZero.set(hoodZereod);
-    }
-
-    public boolean getHoodHasZeroed() {
-        return hasHoodZero.get();
     }
 
     public void addOdometryMeasurement(double timestamp, Pose2d pose) {
@@ -219,61 +190,8 @@ public class RobotState implements VisionConsumer {
                         delta.omegaRadiansPerSecond));
     }
 
-    // This has rotation and radians to allow for wrapping tracking.
-    public void addTurretUpdates(
-            double timestamp,
-            Rotation2d turretRotation,
-            double turretRadians,
-            double angularYawRadsPerS) {
-        // turret frame 180 degrees off from robot frame
-        robotToTurret.addSample(timestamp, turretRotation.rotateBy(MathHelpers.kRotation2dPi));
-        this.turretAngularVelocity.addSample(timestamp, angularYawRadsPerS);
-        this.turretPositionRadians.addSample(timestamp, turretRadians);
-    }
-
-    public double getLatestTurretPositionRadians() {
-        return this.turretPositionRadians.getInternalBuffer().lastEntry().getValue();
-    }
-
-    public double getLatestTurretAngularVelocity() {
-        return this.turretAngularVelocity.getInternalBuffer().lastEntry().getValue();
-    }
-
     public Optional<Pose2d> getFieldToRobot(double timestamp) {
         return fieldToRobot.getSample(timestamp);
-    }
-
-    public Transform2d getTurretToCamera() {
-        return TURRET_TO_CAMERA;
-    }
-
-    public Rotation2d getLatestRotationRobotToHub() {
-        return new Transform2d(
-                        new Pose2d(
-                                AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint)
-                                        .toTranslation2d(),
-                                Rotation2d.kZero),
-                        getLatestFieldToRobot().getValue())
-                .getRotation();
-    }
-
-    // public double getLatestDistanceRobotToHub() {
-    //     return RobotContainer.getInstance().getVisionSubsystem().getRotation2dToHubTy().getCos()
-    // * getLatestTranlastionRobotToHub().toTranslation2d().getNorm();
-    // }
-
-    public Translation3d getLatestTranlastionRobotToHub() {
-
-        return AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint)
-                .minus(
-                        new Translation3d(
-                                getLatestFieldToRobot().getValue().getX(),
-                                getLatestFieldToRobot().getValue().getY(),
-                                0.4464568922));
-    }
-
-    public Map.Entry<Double, Rotation2d> getLatestRobotToTurret() {
-        return robotToTurret.getLatest();
     }
 
     public ChassisSpeeds getLatestMeasuredFieldRelativeChassisSpeeds() {
@@ -330,12 +248,18 @@ public class RobotState implements VisionConsumer {
         return getMaxAbsValueInRange(driveRollAngularVelocity, minTime, maxTime);
     }
 
-    public double lastUsedTagSlamTimestamp() {
-        return lastUsedTagSlamTimestamp;
+    public void updateMegatagEstimate(VisionFieldPoseEstimate megatagEstimate) {
+        lastUsedMegatagTimestamp = megatagEstimate.getTimestampSeconds();
+        lastUsedMegatagPose = megatagEstimate.getVisionRobotPoseMeters();
+        visionEstimateConsumer.accept(megatagEstimate);
     }
 
-    public Pose2d lastUsedTagSlamPose() {
-        return lastUsedTagSlamPose;
+    public double lastUsedMegatagTimestamp() {
+        return lastUsedMegatagTimestamp;
+    }
+
+    public Pose2d lastUsedMegatagPose() {
+        return lastUsedMegatagPose;
     }
 
     public void updateLogger() {
@@ -385,33 +309,31 @@ public class RobotState implements VisionConsumer {
                 "RobotState/FusedChassisSpeedFieldFrame",
                 getLatestFusedFieldRelativeChassisSpeed());
 
-        Logger.recordOutput("RobotState/HasHoodZero", getHoodHasZeroed());
-
-        Logger.recordOutput("RobotState/RobotToHubRotation", getLatestRotationRobotToHub());
-
         // Add mechanism logging
-        Logger.recordOutput("RobotState/TurretRotations", getLatestTurretPositionRadians());
-        Logger.recordOutput("RobotState/HoodRotations", getHoodRotations());
-        Logger.recordOutput("RobotState/IntakePivotRotations", getIntakePivotRotations());
+        Logger.recordOutput("RobotState/ElevatorHeightMeters", getElevatorHeightMeters());
+        Logger.recordOutput("RobotState/HoodRadians", getHoodRadians());
+        Logger.recordOutput("RobotState/IntakeRollerRotations", getIntakeRollerRotations());
+        Logger.recordOutput("RobotState/CoralRollerRotations", getClawRollerRotations());
     }
 
     private final AtomicReference<Optional<Integer>> exclusiveTag =
             new AtomicReference<>(Optional.empty());
 
-    private final AtomicReference<Double> hoodRotations = new AtomicReference<>(0.0);
-    private final AtomicReference<Double> hoodRPS = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> elevatorHeightMeters = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> hoodRadians = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> clawRollerRotations = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> intakeRollerRotations = new AtomicReference<>(0.0);
     private final AtomicReference<Double> intakeRollerRPS = new AtomicReference<>(0.0);
-
-    private final AtomicReference<Double> intakePivotRotations = new AtomicReference<>(0.0);
-    private final AtomicReference<Double> intakePivotRPS = new AtomicReference<>(0.0);
+    private final AtomicReference<Double> intakePivotRadians = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> spindexerRotations = new AtomicReference<>(0.0);
     private final AtomicReference<Double> spindexerRPS = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> handoffRotations = new AtomicReference<>(0.0);
     private final AtomicReference<Double> handoffRPS = new AtomicReference<>(0.0);
+
+    private final AtomicReference<Double> clawRollerRPS = new AtomicReference<>(0.0);
 
     private final AtomicReference<Double> shooterRPS = new AtomicReference<>(0.0);
 
@@ -455,28 +377,20 @@ public class RobotState implements VisionConsumer {
         return handoffRPS.get();
     }
 
-    public void setIntakePivotRotations(double rotations) {
-        intakePivotRotations.set(rotations);
+    public void setIntakePivotRadians(double radians) {
+        intakePivotRadians.set(radians);
     }
 
-    public void setIntakePivotRPS(double rps) {
-        intakePivotRPS.set(0.0);
+    public double getIntakePivotRadians() {
+        return intakePivotRadians.get();
     }
 
-    public double getIntakePivotRotations() {
-        return intakePivotRotations.get();
+    public void setElevatorHeightMeters(double heightMeters) {
+        elevatorHeightMeters.set(heightMeters);
     }
 
-    public double getIntakePivotRPS() {
-        return intakePivotRPS.get();
-    }
-
-    public void setHoodRotations(double rotations) {
-        hoodRotations.set(rotations);
-    }
-
-    public void setHoodRPS(double rps) {
-        hoodRPS.set(rps);
+    public void setHoodRadians(double radians) {
+        hoodRadians.set(radians);
     }
 
     public void setIntakeRollerRotations(double rotations) {
@@ -487,8 +401,16 @@ public class RobotState implements VisionConsumer {
         intakeRollerRPS.set(rps);
     }
 
-    public double getHoodRotations() {
-        return hoodRotations.get();
+    public void setClawRollerRotations(double rotations) {
+        clawRollerRotations.set(rotations);
+    }
+
+    public double getElevatorHeightMeters() {
+        return elevatorHeightMeters.get();
+    }
+
+    public double getHoodRadians() {
+        return hoodRadians.get();
     }
 
     public double getIntakeRollerRotations() {
@@ -499,7 +421,18 @@ public class RobotState implements VisionConsumer {
         return intakeRollerRPS.get();
     }
 
-    // not helpful for right now since we can't check tag ids with our estimates
+    public double getClawRollerRotations() {
+        return clawRollerRotations.get();
+    }
+
+    public void setClawRollerRPS(double rps) {
+        clawRollerRPS.set(rps);
+    }
+
+    public double getClawRollerRPS() {
+        return clawRollerRPS.get();
+    }
+
     public void setExclusiveTag(int id) {
         exclusiveTag.set(Optional.of(id));
     }
@@ -561,34 +494,18 @@ public class RobotState implements VisionConsumer {
     }
 
     public static RobotState getInstance() {
+        return instance;
+    }
+
+    public static RobotState getInstance(Consumer<VisionFieldPoseEstimate> estimateConsumer) {
         if (instance == null) {
             synchronized (RobotState.class) {
                 if (instance == null) {
 
-                    instance = new RobotState();
+                    instance = new RobotState(estimateConsumer);
                 }
             }
         }
         return instance;
-    }
-
-    /** Adds a new timestamped vision measurement. */
-    @Override
-    public void accept(PoseObservation observation, Matrix<N3, N1> visionMeasurementStdDevs) {
-        updatePoseObservation(observation, visionMeasurementStdDevs);
-    }
-
-    public void updatePoseObservation(
-            PoseObservation poseObservation, Matrix<N3, N1> visionMeasurementStdDevs) {
-
-        if (poseObservation.type() == PoseObservationType.SOLVE_PNP)
-            lastUsedTagSlamTimestamp = Timer.getFPGATimestamp();
-        RobotContainer.getInstance()
-                .getDriveSubsystem()
-                .getPoseEstimator()
-                .addVisionMeasurement(
-                        poseObservation.pose().toPose2d(),
-                        poseObservation.timestamp(),
-                        visionMeasurementStdDevs);
     }
 }

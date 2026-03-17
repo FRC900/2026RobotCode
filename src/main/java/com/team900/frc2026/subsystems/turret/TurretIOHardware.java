@@ -8,7 +8,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -47,8 +47,7 @@ public class TurretIOHardware implements TurretIO {
                     TurretConstants.kTurret29To1CANCoder.getDeviceNumber(),
                     TurretConstants.kTurret29To1CANCoder.getBus());
     private final DutyCycleOut dutyCycleControl = new DutyCycleOut(0);
-    private final PositionTorqueCurrentFOC positionTorqueCurrentFOCControl =
-            new PositionTorqueCurrentFOC(0.0).withSlot(0);
+    private final PositionVoltage positionVoltageControl = new PositionVoltage(0.0).withSlot(0);
 
     private final StatusSignal<Angle> positionSignal = talon.getPosition();
     private final StatusSignal<AngularVelocity> velocitySignal = talon.getVelocity();
@@ -91,15 +90,15 @@ public class TurretIOHardware implements TurretIO {
             config.CurrentLimits.StatorCurrentLimit = 150.0;
             config.CurrentLimits.StatorCurrentLimitEnable = true;
             config.ClosedLoopRamps = Constants.makeDefaultClosedLoopRampConfig();
-            config.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.01;
+            config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.01;
             config.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
         }
 
-        config.Slot0.kS = TurretConstants.COMP_GAINS.ffkS();
-        config.Slot0.kP = TurretConstants.COMP_GAINS.kP();
-        config.Slot0.kD = TurretConstants.COMP_GAINS.kD();
-        config.Slot0.kV = TurretConstants.COMP_GAINS.ffkV();
-        config.Slot0.kA = TurretConstants.COMP_GAINS.ffkA();
+        config.Slot0.kS = 0.18;
+        config.Slot0.kP = 6.0;
+        config.Slot0.kD = 0.1;
+        config.Slot0.kV = 0.120;
+        config.Slot0.kA = 0.0001 * 12.0;
         // find motion magic values
         config.MotionMagic.MotionMagicJerk = 0.0;
         config.MotionMagic.MotionMagicAcceleration = 900.0;
@@ -160,7 +159,7 @@ public class TurretIOHardware implements TurretIO {
 
     @Override
     public void setOpenLoopDutyCycle(double dutyCycle) {
-        // talon.setControl(dutyCycleControl.withOutput(dutyCycle));
+        talon.setControl(dutyCycleControl.withOutput(dutyCycle));
         Logger.recordOutput("Turret/IO/setOpenLoopDutyCycle/dutyCycle", dutyCycle);
     }
 
@@ -243,8 +242,7 @@ public class TurretIOHardware implements TurretIO {
         double setpointRotations = Units.radiansToRotations(setpointRadians);
         double setpointRotor = setpointRotations / TurretConstants.kTurretGearRatio;
         double ffVel = Units.radiansToRotations(radsPerSecond) / TurretConstants.kTurretGearRatio;
-        // talon.setControl(
-        //         positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
+        talon.setControl(positionVoltageControl.withPosition(setpointRotor).withVelocity(ffVel));
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radiansFromCenter", radiansFromCenter);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radsPerSecond", radsPerSecond);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/ffVel", ffVel);

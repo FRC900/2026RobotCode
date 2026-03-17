@@ -36,6 +36,6 @@ public class HandoffConstants {
     }
 
     public static final double kHandoffGearRatio = 1;
-    public static final double kHandoffDutyCycle = 1;
+    public static final double kHandoffDutyCycle = 0.5;
     public static final double kHandoffDutyCycleExhaust = -0.5;
 }
