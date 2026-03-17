@@ -5,10 +5,17 @@ import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.drive.DriveConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
+import com.team900.frc2026.subsystems.turret.TurretConstants;
+import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose;
+import com.team900.lib.util.AllianceFlipUtil;
+import com.team900.lib.util.FieldConstants;
+import com.team900.lib.util.TurretAlignUtil;
 import com.team900.lib.util.Util;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,8 +66,8 @@ public class DriveMaintainingHeadingCommand extends Command {
 
     @Override
     public void execute() {
-        double throttle = mThrottleSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed;
-        double strafe = mStrafeSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed;
+        double throttle = mThrottleSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed * 0.8;
+        double strafe = mStrafeSupplier.getAsDouble() * DriveConstants.kDriveMaxSpeed * 0.8;
         double turnFieldFrame =
                 Util.handleDeadband(
                         mTurnSupplier.getAsDouble(),
@@ -100,8 +107,17 @@ public class DriveMaintainingHeadingCommand extends Command {
             Logger.recordOutput("DriveMaintainHeading/mHeadingSetpoint", mHeadingSetpoint.get());
 
             if (kAiming) {
+                Pose2d robotPose = mRobotState.getLatestFieldToRobot().getValue();
+                
+                TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
+                Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
+                double turretX = turretPose.getX();
+                double turretY = turretPose.getY();
+                
+                Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
+                double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX);
 
-                mHeadingSetpoint = Optional.of(mRobotState.getLatestRotationRobotToHub());
+                mHeadingSetpoint = Optional.of(new Rotation2d(angleRad));
 
                 mDrivetrain.runVelocity(
                         ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -112,6 +128,11 @@ public class DriveMaintainingHeadingCommand extends Command {
                                                 mHeadingSetpoint.get().getRadians())
                                         * DriveConstants.kDriveMaxAngularRate,
                                 mDrivetrain.getRotation()));
+
+                Logger.recordOutput("DriveMaintainHeading/Mode", "Heading");
+                Logger.recordOutput(
+                        "DriveMaintainHeading/HeadingSetpoint",
+                        mHeadingSetpoint.get().getDegrees());
             } else {
                 mDrivetrain.runVelocity(
                         ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -131,14 +152,14 @@ public class DriveMaintainingHeadingCommand extends Command {
         }
     }
 
-    @Override
-    public boolean isFinished() {
-        if (isNearTarget()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // @Override
+    // public boolean isFinished() {
+    //     if (isNearTarget()) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     public boolean isNearTarget() {
         if (mHeadingSetpoint.isEmpty()) {

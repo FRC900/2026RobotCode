@@ -75,6 +75,8 @@ for i, r in enumerate(r_vals):
                 vz_frame=vl,
                 fix_speed=True,
                 fix_omega=True,
+                phi_bounds=(0.785398, 1.309),
+                theta_bounds=(0, 5.93411946),
                 lm_iters=5,
                 sim_end_time=5,
                 dt=0.01,

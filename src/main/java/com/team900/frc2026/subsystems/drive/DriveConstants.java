@@ -12,7 +12,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-import com.team900.frc2026.Constants.Gains;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -98,17 +97,14 @@ public class DriveConstants {
         };
     }
 
-    // 30 was way too much
-    public static final Gains kHeadingController = new Gains(0, 0, 0, 0, 0, 0, 0);
-
     public static final double kDriveMaxSpeed =
-            CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.8;
+            CompTunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double kMaxAccelerationMetersPerSecondSquared = 10.0;
     public static final double kMaxXAccelerationMetersPerSecondSquared = 10.0;
     public static final double kMaxYAccelerationMetersPerSecondSquared = 10.0;
     public static final double kDriveMaxAngularRate = 8.2;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = 20.0;
-    public static final double kHeadingControllerP = 5.0;
+    public static final double kHeadingControllerP = 30 / 360;
     public static final double kHeadingControllerI = 0;
     public static final double kHeadingControllerD = 0;
 }

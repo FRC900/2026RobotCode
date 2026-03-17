@@ -14,24 +14,28 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
-    // position voltage
-    public static final Gains COMP_GAINS = new Gains(130, 0, 15, 0.37, 100, 0, 0);
+// Position Torque FOC
+        public static final Gains COMP_GAINS = new Gains(1400, 0, 100, 2.25, 0, 0, 0);
+
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
     public static final double kHoodToleranceRadians = 0.1;
     public static final double kHoodZeroedAngleDegrees = 15;
 
+    public static final double kHoodMaxPositionDegrees = 75;
+    public static final double kHoodMinPositionDegrees = 15;
     public static final double kHoodRotorMaxPosition = 0.0754 + Units.degreesToRotations(15.0);
     public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
+    
 
-    public static final double kZeroingAmps = 23;
+    public static final double kZeroingAmps = 15;
     public static final double kZeroingSeconds = 0.1;
 
     // Convert rotor-rotation positions into radians
     public static final double kHoodMinPositionRadians =
-            Units.rotationsToRadians(kHoodRotorMinPosition);
+            kHoodRotorMinPosition;
     public static final double kHoodMaxPositionRadians =
-            Units.rotationsToRadians(kHoodRotorMaxPosition);
+            kHoodRotorMaxPosition;
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(1);
@@ -51,13 +55,13 @@ public class HoodConstants {
         double measuredSpan = 0.229; // rotations reported by Phoenix for full travel
         double kMaxUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
         double kMinUnits = kHoodMinPositionRadians;
-        kHoodConfig.cancoderToUnitsRatio = (kMaxUnits - kMinUnits) / measuredSpan;
+        kHoodConfig.cancoderToUnitsRatio = 1;
         kHoodConfig.isFusedCancoder = true;
         kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
-        kHoodConfig.unitToRotorRatio = 2 * Math.PI;
+        kHoodConfig.unitToRotorRatio = 1;
 
         // configs for sim
         kHoodConfig.ratioForSim = kHoodGearRatio;
@@ -65,8 +69,8 @@ public class HoodConstants {
 
         // cancoder config
         kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
-        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = -0.35;
+        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.307;
+        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.44604455;
         kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
@@ -91,7 +95,7 @@ public class HoodConstants {
 
         kHoodConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         kHoodConfig.fxConfig.Slot0.StaticFeedforwardSign =
-                StaticFeedforwardSignValue.UseVelocitySign;
+                StaticFeedforwardSignValue.UseClosedLoopSign;
         kHoodConfig.fxConfig.Slot0.kA = COMP_GAINS.ffkA();
         kHoodConfig.fxConfig.Slot0.kD = COMP_GAINS.kD();
         kHoodConfig.fxConfig.Slot0.kG = COMP_GAINS.ffkG();

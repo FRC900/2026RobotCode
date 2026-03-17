@@ -24,8 +24,8 @@ public class TalonFXIO implements MotorIO {
     protected final DutyCycleOut dutyCycleControl = new DutyCycleOut(0.0);
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0).withEnableFOC(true);
     private final VoltageOut voltageControl = new VoltageOut(0.0);
-    private final PositionVoltage positionVoltageControl =
-            new PositionVoltage(0.0).withEnableFOC(true);
+    private final PositionTorqueCurrentFOC positionTorqueCurrent =
+            new PositionTorqueCurrentFOC(0.0);
     private final MotionMagicExpoTorqueCurrentFOC motionMagicPositionControl =
             new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final DynamicMotionMagicVoltage dynamicMotionMagicVoltage =
@@ -110,16 +110,16 @@ public class TalonFXIO implements MotorIO {
     @Override
     public void setPositionSetpoint(double units) {
         talon.setControl(
-                positionVoltageControl.withPosition(clampPosition(units)).withEnableFOC(true));
+                positionTorqueCurrent.withPosition(clampPosition(units)));
     }
 
     @Override
     public void setPositionSetpoint(double units, double ff) {
         talon.setControl(
-                positionVoltageControl
+                positionTorqueCurrent
                         .withPosition(clampPosition(units))
                         .withFeedForward(ff)
-                        .withEnableFOC(true));
+                        );
     }
 
     @Override

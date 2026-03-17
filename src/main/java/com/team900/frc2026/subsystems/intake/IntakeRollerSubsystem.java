@@ -30,4 +30,8 @@ public class IntakeRollerSubsystem extends ServoMotorSubsystem<MotorInputsAutoLo
         state.setIntakeRollerRotations(getPositionRotations());
         state.setIntakeRollerRPS(getCurrentVelocity());
     }
+
+    public boolean isStalled() {
+        return inputs.velocityUnitsPerSecond < 5 && inputs.currentStatorAmps > IntakeRollerConstants.stallCurrent;
+    }
 }

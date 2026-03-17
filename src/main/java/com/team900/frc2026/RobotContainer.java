@@ -6,6 +6,7 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
+import com.team900.frc2026.commands.HubAlignTurretCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
 import com.team900.frc2026.factories.HoodFactory;
@@ -50,9 +51,17 @@ import com.team900.lib.subsystems.SimCanCoderIO;
 import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
+import com.team900.lib.time.RobotTime;
+import com.team900.lib.util.FieldConstants.LeftTrench;
+import com.team900.lib.util.FieldConstants.LinesVertical;
+import com.team900.lib.util.FieldConstants.RightTrench;
+import com.team900.lib.util.FieldConstants;
+import com.team900.lib.util.HubFlipUtil;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +69,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.*;
 import lombok.Getter;
 import org.ironmaple.simulation.SimulatedArena;
@@ -268,25 +279,27 @@ public class RobotContainer {
         // Swerve Drive
         driveSubsystem.setDefaultCommand(driveCommand);
 
-        // // Intake pivot, l1 to retract and deploy intake
         // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.either(
-        //                         IntakeFactory.retractSlapdown(this)
-        //                                 .beforeStarting(() -> intakeDeployed = false),
-        //                         IntakeFactory.deploySlapdown(this)
-        //                                 .beforeStarting(() -> intakeDeployed = true),
-        //                         () -> intakeDeployed));
+        //         .turretAlignToHub()
+        //         .whileTrue(
+        //                 new HubAlignTurretCommand(
+        //                         driveSubsystem,
+        //                         turretSubsystem));
 
+        controlBoard
+                .swerveAlignToHub()
+                        .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
+                        .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
+        
+        // Intake pivot, l1 to retract and deploy intake  
         controlBoard
                 .toggleIntake()
                 .onTrue(
-                        Commands.either(
-                                        IntakeFactory.retractSlapdown(this),
-                                        IntakeFactory.deploySlapdown(this),
-                                        () -> intakeDeployed)
-                                .beforeStarting(() -> intakeDeployed = !intakeDeployed));
+                        Commands.defer(
+                        () -> intakePivotSubsystem.isDeployed()
+                                ? IntakeFactory.retractSlapdown(this)
+                                : IntakeFactory.deploySlapdown(this),
+                        Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .shoot()
@@ -372,6 +385,76 @@ public class RobotContainer {
                 .onFalse(IntakeFactory.stopIntake(this));
 
         controlBoard.resetHood().onTrue(HoodFactory.zero(this));
+
+        Trigger isTeleop = new Trigger(DriverStation::isTeleopEnabled);
+
+        new Trigger(intakeRollerSubsystem::isStalled)
+                .onTrue((IntakeFactory.exhaustIntake(this)))
+                .onFalse(Commands.none());
+
+        new Trigger(
+                () -> HubFlipUtil.isFlip((long)(RobotTime.getTimestampSeconds()))
+        ).and(isTeleop).onTrue(
+                Commands.sequence(
+                        Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1.0)),
+                        Commands.waitSeconds(0.3),
+                        Commands.runOnce(() -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0.0))
+                )
+        );
+
+        double trenchXHalfDepth = RightTrench.depth / 2.0;
+        double fieldWidth = FieldConstants.fieldWidth;
+
+        double[][] trenchHoodZeroingBoxes = {
+                // xmin, xmax, ymin, ymax
+                // Alliance side, right trench (y near 0)
+                {
+                        LinesVertical.hubCenter - trenchXHalfDepth,
+                        LinesVertical.hubCenter + trenchXHalfDepth,
+                        0,
+                        RightTrench.openingWidth
+                },
+                // Alliance side, left trench (y near fieldWidth)
+                {
+                        LinesVertical.hubCenter - trenchXHalfDepth,
+                        LinesVertical.hubCenter + trenchXHalfDepth,
+                        fieldWidth - LeftTrench.openingWidth,
+                        fieldWidth
+                },
+                // Opponent side, right trench
+                {
+                        LinesVertical.oppHubCenter - trenchXHalfDepth,
+                        LinesVertical.oppHubCenter + trenchXHalfDepth,
+                        0,
+                        RightTrench.openingWidth
+                },
+                // Opponent side, left trench
+                {
+                        LinesVertical.oppHubCenter - trenchXHalfDepth,
+                        LinesVertical.oppHubCenter + trenchXHalfDepth,
+                        fieldWidth - LeftTrench.openingWidth,
+                        fieldWidth
+                },
+        };
+
+        new Trigger(() -> {    
+                Pose2d pose = robotState.getLatestFieldToRobot().getValue();
+                double x = pose.getTranslation().getX();
+                double y = pose.getTranslation().getY();
+
+                for (double[] box : trenchHoodZeroingBoxes) {
+                        if (x >= box[0] && x <= box[1] && y >= box[2] && y <= box[3]) {
+                                double trenchCenterX = (box[0] + box[1]) / 2.0;
+                                double xDist = x - trenchCenterX;
+                                double xVel = robotState.getLatestMeasuredFieldRelativeChassisSpeeds().vxMetersPerSecond;
+
+                                boolean isApproachingTrench = Math.signum(xVel) * Math.signum(xDist) > 0; // positive = moving into trench
+                                return isApproachingTrench;
+                        }
+                }
+                return false;
+        }).and(isTeleop).onTrue(HoodFactory.stow(this));
+        
     }
 
     public boolean odometryCloseToPose(Pose2d pose) {
