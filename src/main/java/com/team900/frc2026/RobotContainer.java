@@ -6,6 +6,7 @@ package com.team900.frc2026;
 
 import com.team900.frc2026.auto.AutoDashboard;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
+import com.team900.frc2026.commands.HubAlignTurretCommand;
 import com.team900.frc2026.controlboard.ControlBoard;
 import com.team900.frc2026.factories.HandoffFactory;
 import com.team900.frc2026.factories.HoodFactory;
@@ -51,6 +52,10 @@ import com.team900.lib.subsystems.SimTalonFXIO;
 import com.team900.lib.subsystems.SimTalonFXWithCancoder;
 import com.team900.lib.subsystems.TalonFXIO;
 import com.team900.lib.time.RobotTime;
+import com.team900.lib.util.FieldConstants.LeftTrench;
+import com.team900.lib.util.FieldConstants.LinesVertical;
+import com.team900.lib.util.FieldConstants.RightTrench;
+import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.HubFlipUtil;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
@@ -246,7 +251,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-//     @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -283,24 +288,18 @@ public class RobotContainer {
 
         controlBoard
                 .swerveAlignToHub()
-                .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
-                .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
-
-        // Intake pivot, l1 to retract and deploy intake
+                        .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
+                        .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
+        
+        // Intake pivot, l1 to retract and deploy intake  
         controlBoard
                 .toggleIntake()
                 .onTrue(
                         Commands.defer(
-                                () -> {
-                                    if (intakeDeployed) {
-                                        intakeDeployed = false;
-                                        return IntakeFactory.retractSlapdown(this);
-                                    } else {
-                                        intakeDeployed = true;
-                                        return IntakeFactory.deploySlapdown(this);
-                                    }
-                                },
-                                Set.of(getIntakePivotSubsystem())));
+                        () -> intakePivotSubsystem.isDeployed()
+                                ? IntakeFactory.retractSlapdown(this)
+                                : IntakeFactory.deploySlapdown(this),
+                        Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .shoot()
@@ -329,6 +328,7 @@ public class RobotContainer {
                 .onFalse(
                         new ParallelCommandGroup(
                                 ShooterFactory.setShooterRPS(0, this),
+                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
                                 SpindexerFactory.stopSpindexer(this),
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
@@ -361,8 +361,8 @@ public class RobotContainer {
         controlBoard
                 .stowHood()
                 .onTrue(
-                        HoodFactory.setPositionMotionMagicCommand(
-                                0.0756 , instance));
+                        HoodFactory.setPositionBlocking(
+                                HoodConstants.kHoodStowTrenchPositionRadians, 0.001, instance));
 
         controlBoard
                 .toggleHoodMax()
@@ -370,7 +370,7 @@ public class RobotContainer {
                         Commands.either(
                                         HoodFactory.stow(this),
                                         HoodFactory.setPositionMotionMagicCommand(
-                                                HoodConstants.kHoodRotorMaxPosition - 0.01, this),
+                                                HoodConstants.kHoodConfig.kMaxPositionUnits, this),
                                         () -> hoodAtMax)
                                 .beforeStarting(() -> hoodAtMax = !hoodAtMax));
 
@@ -402,11 +402,39 @@ public class RobotContainer {
                 )
         );
 
+        double trenchXHalfDepth = RightTrench.depth / 2.0;
+        double fieldWidth = FieldConstants.fieldWidth;
+
         double[][] trenchHoodZeroingBoxes = {
-                {4., 5.25, 0., 1.4}, // xmin, xmax, ymin, ymax (bounds of the box)
-                {4., 5.25, 6.7, 8.1},
-                {11.29, 12.54, 0., 1.4},
-                {11.29, 12.54, 6.7, 8.1},
+                // xmin, xmax, ymin, ymax
+                // Alliance side, right trench (y near 0)
+                {
+                        LinesVertical.hubCenter - trenchXHalfDepth,
+                        LinesVertical.hubCenter + trenchXHalfDepth,
+                        0,
+                        RightTrench.openingWidth
+                },
+                // Alliance side, left trench (y near fieldWidth)
+                {
+                        LinesVertical.hubCenter - trenchXHalfDepth,
+                        LinesVertical.hubCenter + trenchXHalfDepth,
+                        fieldWidth - LeftTrench.openingWidth,
+                        fieldWidth
+                },
+                // Opponent side, right trench
+                {
+                        LinesVertical.oppHubCenter - trenchXHalfDepth,
+                        LinesVertical.oppHubCenter + trenchXHalfDepth,
+                        0,
+                        RightTrench.openingWidth
+                },
+                // Opponent side, left trench
+                {
+                        LinesVertical.oppHubCenter - trenchXHalfDepth,
+                        LinesVertical.oppHubCenter + trenchXHalfDepth,
+                        fieldWidth - LeftTrench.openingWidth,
+                        fieldWidth
+                },
         };
 
         new Trigger(() -> {    
