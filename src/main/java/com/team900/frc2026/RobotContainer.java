@@ -71,6 +71,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.ironmaple.simulation.SimulatedArena;
 
 public class RobotContainer {
@@ -249,7 +250,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
+    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();=======
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -270,8 +271,7 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private boolean intakeDeployed = false;
-    private boolean hoodAtMax = false;
+    @Setter @Getter private boolean intakeDeployed = intakePivotSubsystem.isDeployed();
 
     private void configureBindings() {
         // Swerve Drive
@@ -290,6 +290,21 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
 
         // Intake pivot, l1 to retract and deploy intake
+        // controlBoard
+        //         .toggleIntake()
+        //         .onTrue(
+        //                 Commands.defer(
+        //                         () -> {
+        //                             if (intakeDeployed) {
+        //                                 intakeDeployed = false;
+        //                                 return IntakeFactory.retractSlapdown(this);
+        //                             } else {
+        //                                 intakeDeployed = true;
+        //                                 return IntakeFactory.deploySlapdown(this);
+        //                             }
+        //                         },
+        //                         Set.of(getIntakePivotSubsystem())));
+
         controlBoard
                 .toggleIntake()
                 .onTrue(
@@ -299,6 +314,7 @@ public class RobotContainer {
                                                 ? IntakeFactory.retractSlapdown(this)
                                                 : IntakeFactory.deploySlapdown(this),
                                 Set.of(getIntakePivotSubsystem())));
+
 
         controlBoard
                 .shoot()
@@ -332,50 +348,13 @@ public class RobotContainer {
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
 
-        controlBoard
-                .pass()
-                .onTrue(
-                        (Commands.parallel(
-                                        ShooterFactory.setShooterRPS(80, this)
-                                                .until(
-                                                        () ->
-                                                                MathUtil.isNear(
-                                                                        80,
-                                                                        shooterSubsystem
-                                                                                .getCurrentVelocity(),
-                                                                        1)),
-                                        HoodFactory.pass(instance, 0.025)))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this))))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                SpindexerFactory.stopSpindexer(this),
-                                HandoffFactory.stopHandoff(this)));
-
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        controlBoard
-                .stowHood()
-                .onTrue(
-                        HoodFactory.setPositionBlocking(
-                                HoodConstants.kHoodStowTrenchPositionRadians, 0.001, instance));
-
-        controlBoard
-                .toggleHoodMax()
-                .onTrue(
-                        Commands.either(
-                                        HoodFactory.stow(this),
-                                        HoodFactory.setPositionMotionMagicCommand(
-                                                HoodConstants.kHoodConfig.kMaxPositionUnits, this),
-                                        () -> hoodAtMax)
-                                .beforeStarting(() -> hoodAtMax = !hoodAtMax));
+        controlBoard.stowHood().onTrue(HoodFactory.stow(instance));
 
         controlBoard
                 .intake()
-                .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
+                .onTrue(IntakeFactory.runIntake(this))
                 .onFalse(IntakeFactory.stopIntake(this));
 
         controlBoard
@@ -493,7 +472,7 @@ public class RobotContainer {
     }
 
     public Command getTestCommand() {
-        return IntakeFactory.deploySlapdown(this);
+        return null;
     }
 
     public static synchronized RobotContainer getInstance() {

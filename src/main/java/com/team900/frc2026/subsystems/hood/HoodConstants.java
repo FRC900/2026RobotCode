@@ -50,11 +50,11 @@ public class HoodConstants {
         // Compute CANcoder -> subsystem units mapping from Phoenix measurement.
         // bottom = 0.0 and top = 0.229 rotations.
         double measuredSpan = 0.229; // rotations reported by Phoenix for full travel
-        double kMaxUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
+        double kMaxUnits = kHoodMaxPositionRadians;
         double kMinUnits = kHoodMinPositionRadians;
         kHoodConfig.cancoderToUnitsRatio = 1;
         kHoodConfig.isFusedCancoder = true;
-        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians - Units.degreesToRadians(3);
+        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
         kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);

@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
 import lombok.Setter;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMaintainingHeadingCommand extends Command {
@@ -39,6 +40,7 @@ public class DriveMaintainingHeadingCommand extends Command {
         setName("Swerve Drive Maintain Heading");
     }
 
+
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotContainer mRobotContainer;
     protected DriveSubsystem mDrivetrain;
@@ -47,7 +49,7 @@ public class DriveMaintainingHeadingCommand extends Command {
     private final DoubleSupplier mStrafeSupplier;
     private final DoubleSupplier mTurnSupplier;
     private Optional<Rotation2d> mHeadingSetpoint = Optional.empty();
-    @Getter @Setter private boolean kAiming = false;
+    @AutoLogOutput @Getter @Setter private boolean kAiming = false;
     private double mJoystickLastTouched = -1;
 
     private final PIDController thetaController =
@@ -59,7 +61,7 @@ public class DriveMaintainingHeadingCommand extends Command {
     @Override
     public void initialize() {
         mHeadingSetpoint = Optional.empty();
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.enableContinuousInput(-0.5, 0.5);
     }
 
     @Override
@@ -106,7 +108,6 @@ public class DriveMaintainingHeadingCommand extends Command {
 
             if (kAiming) {
                 Pose2d robotPose = mRobotState.getLatestFieldToRobot().getValue();
-
                 TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
                 Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
                 double turretX = turretPose.getX();
@@ -114,7 +115,7 @@ public class DriveMaintainingHeadingCommand extends Command {
 
                 Translation2d hub =
                         AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
-                double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX);
+                double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX) + Math.PI;
 
                 mHeadingSetpoint = Optional.of(new Rotation2d(angleRad));
 
@@ -123,8 +124,8 @@ public class DriveMaintainingHeadingCommand extends Command {
                                 throttleFieldFrame,
                                 strafeFieldFrame,
                                 thetaController.calculate(
-                                                mDrivetrain.getRotation().getRadians(),
-                                                mHeadingSetpoint.get().getRadians())
+                                                mDrivetrain.getRotation().getRotations(),
+                                                mHeadingSetpoint.get().getRotations())
                                         * DriveConstants.kDriveMaxAngularRate,
                                 mDrivetrain.getRotation()));
 
@@ -138,8 +139,8 @@ public class DriveMaintainingHeadingCommand extends Command {
                                 throttleFieldFrame,
                                 strafeFieldFrame,
                                 thetaController.calculate(
-                                                mDrivetrain.getRotation().getRadians(),
-                                                mHeadingSetpoint.get().getRadians())
+                                                mDrivetrain.getRotation().getRotations(),
+                                                mHeadingSetpoint.get().getRotations())
                                         * DriveConstants.kDriveMaxAngularRate,
                                 mDrivetrain.getRotation()));
 
