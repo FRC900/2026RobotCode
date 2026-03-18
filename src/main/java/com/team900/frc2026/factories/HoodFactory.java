@@ -8,16 +8,11 @@ import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class HoodFactory {
-
-    // Sets the hood to a fixed position in radians
-    public static Command setPositionMotionMagicCommand(
-            double rotations, RobotContainer container) {
-        HoodSubsystem hood = container.getHoodSubsystem();
-        return hood.motionMagicSetpointCommand(() -> rotations).withName("Hood Set Position");
-    }
 
     public static Command aimHoodToPose(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
@@ -32,17 +27,17 @@ public class HoodFactory {
     }
 
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance
-    public static Command setPositionBlocking(
-            double radians, double tolerance, RobotContainer container) {
+    public static Command setPosition(
+            DoubleSupplier radians, RobotContainer container) {
         return container
                 .getHoodSubsystem()
-                .motionMagicSetpointCommandBlocking(() -> radians, tolerance)
+                .positionSetpointCommand(radians)
                 .withName("Hood Set Position Blocking");
     }
 
     // Stows the hood
     public static Command stow(RobotContainer container) {
-        return setPositionMotionMagicCommand(HoodConstants.kHoodRotorMinPosition + 0.001, container)
+        return container.getHoodSubsystem().positionSetpointUntilOnTargetCommand(() -> 0.0756, () -> 0.01)
                 .withName("Hood Stow");
     }
 
@@ -64,20 +59,13 @@ public class HoodFactory {
                                 container.getHoodSubsystem()));
     }
 
-    // TODO: tune these positions on the real robot
-    public static Command pass(RobotContainer container, double tolerance) {
-        return container
-                .getHoodSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> HoodConstants.kHoodRotorMaxPosition, tolerance)
-                .withName("Hood pass Position Blocking");
-    }
+    
 
     public static Command shoot(RobotContainer container, double tolerance) {
         return container
                 .getHoodSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> HoodConstants.kHoodRotorMaxPosition * 0.5, tolerance)
+                .positionSetpointUntilOnTargetCommand(
+                        () -> HoodConstants.kHoodRotorMaxPosition * 0.5, () -> tolerance)
                 .withName("Hood Shoot Position Blocking");
     }
 

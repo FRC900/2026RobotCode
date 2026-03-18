@@ -268,7 +268,6 @@ public class RobotContainer {
     }
 
     @Setter @Getter private boolean intakeDeployed = intakePivotSubsystem.isDeployed();
-    private boolean hoodAtMax = false;
 
     private void configureBindings() {
         // Swerve Drive
@@ -342,36 +341,13 @@ public class RobotContainer {
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
 
-        controlBoard
-                .pass()
-                .onTrue(
-                        (Commands.parallel(
-                                        ShooterFactory.setShooterRPS(80, this)
-                                                .until(
-                                                        () ->
-                                                                MathUtil.isNear(
-                                                                        80,
-                                                                        shooterSubsystem
-                                                                                .getCurrentVelocity(),
-                                                                        1)),
-                                        HoodFactory.pass(instance, 0.025)))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this))))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                SpindexerFactory.stopSpindexer(this),
-                                HandoffFactory.stopHandoff(this)));
-
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
-        controlBoard.stowHood().onTrue(HoodFactory.setPositionMotionMagicCommand(0.0756, instance));
+        controlBoard.stowHood().onTrue(HoodFactory.stow(instance));
 
         controlBoard
                 .intake()
-                .onTrue(new ParallelCommandGroup(IntakeFactory.runIntake(this)))
+                .onTrue(IntakeFactory.runIntake(this))
                 .onFalse(IntakeFactory.stopIntake(this));
 
         controlBoard

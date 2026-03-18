@@ -113,9 +113,9 @@ public class TalonFXIO implements MotorIO {
     }
 
     @Override
-    public void setPositionSetpoint(double units, double ff) {
+    public void setPositionSetpoint(double units, double ffkV) {
         talon.setControl(
-                positionTorqueCurrent.withPosition(clampPosition(units)).withFeedForward(ff));
+                positionTorqueCurrent.withPosition(clampPosition(units)).withVelocity(ffkV));
     }
 
     @Override

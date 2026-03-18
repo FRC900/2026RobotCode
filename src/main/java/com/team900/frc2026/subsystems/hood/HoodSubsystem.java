@@ -52,8 +52,8 @@ public class HoodSubsystem
     }
 
     public void setPositionRadians(double radians, double velocityRadPerSec) {
-        // double safeSetpoint = constrainSetpoint(radians);
-        motorIO.setPositionSetpoint(radians, velocityRadPerSec);
+        double safeSetpoint = constrainSetpoint(radians);
+        motorIO.setPositionSetpoint(safeSetpoint, velocityRadPerSec);
     }
 
     private double constrainSetpoint(double desiredRad) {
