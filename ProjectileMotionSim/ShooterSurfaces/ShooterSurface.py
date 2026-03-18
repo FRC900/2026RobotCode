@@ -87,7 +87,7 @@ for i, r in enumerate(r_vals):
             solver.levenberg_marquardt()
 
             # check for accuracy
-            vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = fuel.trajectory(solver.vx+vf, solver.vy, solver.vz+vl, solver.omega, dt=0.01, stop_on_y=yt)
+            vel_approx_tlist, vx_list, vy_list, vz_list, speedf, pos_approx_tlist, sx_list, sy_list, sz_list, omegaf = fuel.trajectory(solver.vx+vf, solver.vy, solver.vz+vl, solver.omega, sy0=y0, dt=0.01, stop_on_y=yt)
             if abs(sx_list[-1]-xt) < 0.5 and abs(sy_list[-1]-yt) < 0.5 and abs(sz_list[-1]-zt) < 0.5:
                 theta_surface[i,j,k] = solver.theta
                 phi_surface[i,j,k] = solver.phi
