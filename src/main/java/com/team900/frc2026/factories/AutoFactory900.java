@@ -25,11 +25,6 @@ public class AutoFactory900 {
         return new WaitCommand(seconds);
     }
 
-    public static Command intakeSlapdown() {
-        return new ParallelCommandGroup(
-                IntakeFactory.deploySlapdown(container), IntakeFactory.runIntake(container));
-    }
-
     public static Command retractSlapdown() {
         return new ParallelCommandGroup(
                 IntakeFactory.retractSlapdown(container), IntakeFactory.stopIntake(container));
