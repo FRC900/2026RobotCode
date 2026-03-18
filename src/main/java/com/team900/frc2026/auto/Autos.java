@@ -280,39 +280,4 @@ public class Autos {
     public static Command ThreeSwipeCenter_Right() {
         return threeSwipeCenter(false);
     }
-
-    // logic to choose auto based on start position
-
-    public static Command OneSwipe() {
-        return Commands.defer(
-                () -> {
-                    if (DriverStation.getLocation().orElse(0) == 1) {
-                        return OneSwipe_Left();
-                    }
-                    return OneSwipe_Right();
-                },
-                Set.of());
-    }
-
-    public static Command TwoSwipe() {
-        return Commands.defer(
-                () -> {
-                    if (DriverStation.getLocation().orElse(0) == 1) {
-                        return TwoSwipe_Left();
-                    }
-                    return TwoSwipe_Right();
-                },
-                Set.of());
-    }
-
-    public static Command ThreeSwipe() {
-        return Commands.defer(
-                () -> {
-                    if (DriverStation.getLocation().orElse(0) == 1) {
-                        return ThreeSwipe_Left();
-                    }
-                    return ThreeSwipe_Right();
-                },
-                Set.of());
-    }
 }
