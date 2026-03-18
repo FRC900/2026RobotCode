@@ -32,6 +32,7 @@ public class IntakeRollerSubsystem extends ServoMotorSubsystem<MotorInputsAutoLo
     }
 
     public boolean isStalled() {
-        return inputs.velocityUnitsPerSecond < 5 && inputs.currentStatorAmps > IntakeRollerConstants.stallCurrent;
+        return inputs.velocityUnitsPerSecond < 5
+                && inputs.currentStatorAmps > IntakeRollerConstants.stallCurrent;
     }
 }

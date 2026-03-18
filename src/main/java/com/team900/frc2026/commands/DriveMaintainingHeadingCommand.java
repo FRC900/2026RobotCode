@@ -5,8 +5,6 @@ import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.drive.DriveConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
-import com.team900.frc2026.subsystems.turret.TurretConstants;
-import com.team900.lib.rosNetworkTablesBridge.messages.geometry_msgs.Pose;
 import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.TurretAlignUtil;
@@ -108,13 +106,14 @@ public class DriveMaintainingHeadingCommand extends Command {
 
             if (kAiming) {
                 Pose2d robotPose = mRobotState.getLatestFieldToRobot().getValue();
-                
+
                 TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
                 Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
                 double turretX = turretPose.getX();
                 double turretY = turretPose.getY();
-                
-                Translation2d hub = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
+
+                Translation2d hub =
+                        AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
                 double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX);
 
                 mHeadingSetpoint = Optional.of(new Rotation2d(angleRad));

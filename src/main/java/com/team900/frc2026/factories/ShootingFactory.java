@@ -1,7 +1,6 @@
 package com.team900.frc2026.factories;
 
 import com.team900.frc2026.RobotContainer;
-import com.team900.frc2026.RobotState;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,7 +24,8 @@ public class ShootingFactory {
                                                                 .getCurrentVelocity(),
                                                         1)
                                                 && MathUtil.isNear(
-                                                        setPointSupplier.get().getHoodRadians() / (2.0 * Math.PI),
+                                                        setPointSupplier.get().getHoodRadians()
+                                                                / (2.0 * Math.PI),
                                                         container
                                                                 .getHoodSubsystem()
                                                                 .getCurrentPosition(),

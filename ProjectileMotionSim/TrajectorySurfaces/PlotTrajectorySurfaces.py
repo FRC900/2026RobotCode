@@ -110,6 +110,6 @@ def plot_save_models(name):
     plt.show()
 
 
-dir_list = ["20_RPS", "30_RPS", "40_RPS", "50_RPS", "60_RPS"]
+dir_list = ["20_RPS", "30_RPS", "40_RPS", "50_RPS", "60_RPS", "70_RPS", "80_RPS", "90_RPS"]
 for dir in dir_list:
     plot_save_models(dir)

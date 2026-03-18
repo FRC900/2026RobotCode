@@ -145,6 +145,18 @@ def gen_surface(speed, spin, name=""):
     print(f"Levenberg-Marquardt model failed on {bad_line_count} simulations for {name} run.")
 
 
+def rps_90():
+    speed, spin = get_frc900_spin_and_speed_from_shooter_rps(90)
+    gen_surface(speed, spin, name="90_RPS")
+
+def rps_80():
+    speed, spin = get_frc900_spin_and_speed_from_shooter_rps(80)
+    gen_surface(speed, spin, name="80_RPS")
+
+def rps_70():
+    speed, spin = get_frc900_spin_and_speed_from_shooter_rps(70)
+    gen_surface(speed, spin, name="70_RPS")
+
 def rps_60():
     speed, spin = get_frc900_spin_and_speed_from_shooter_rps(60)
     gen_surface(speed, spin, name="60_RPS")
@@ -152,11 +164,11 @@ def rps_60():
 def rps_50():
     speed, spin = get_frc900_spin_and_speed_from_shooter_rps(50)
     gen_surface(speed, spin, name="50_RPS")
-    
+
 def rps_40():
     speed, spin = get_frc900_spin_and_speed_from_shooter_rps(40)
     gen_surface(speed, spin, name="40_RPS")
-    
+
 def rps_30():
     speed, spin = get_frc900_spin_and_speed_from_shooter_rps(30)
     gen_surface(speed, spin, name="30_RPS")
@@ -164,14 +176,17 @@ def rps_30():
 def rps_20():
     speed, spin = get_frc900_spin_and_speed_from_shooter_rps(20)
     gen_surface(speed, spin, name="20_RPS")
-
+    
 if __name__ == "__main__":
     # Create processes
-    p1 = mp.Process(target=rps_60)
-    p2 = mp.Process(target=rps_50)
+    p1 = mp.Process(target=rps_20)
+    p2 = mp.Process(target=rps_30)
     p3 = mp.Process(target=rps_40)
-    p4 = mp.Process(target=rps_30)
-    p5 = mp.Process(target=rps_20)
+    p4 = mp.Process(target=rps_50)
+    p5 = mp.Process(target=rps_60)
+    p6 = mp.Process(target=rps_70)
+    p7 = mp.Process(target=rps_80)
+    p8 = mp.Process(target=rps_90)
 
     # Start processes
     p1.start()
@@ -179,6 +194,9 @@ if __name__ == "__main__":
     p3.start()
     p4.start()
     p5.start()
+    p6.start()
+    p7.start()
+    p8.start()
 
     # Wait until processes are finished
     p1.join()
@@ -186,5 +204,8 @@ if __name__ == "__main__":
     p3.join()
     p4.join()
     p5.join()
+    p6.join()
+    p7.join()
+    p8.join()
 
     print("Done with all processes!")

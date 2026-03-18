@@ -65,7 +65,7 @@ def export_model(model, path):
 
 
 base = 'ProjectileMotionSim/TrajectorySurfaces'
-dir_list = ["20_RPS", "30_RPS", "40_RPS", "50_RPS", "60_RPS"]
+dir_list = ["20_RPS", "30_RPS", "40_RPS", "50_RPS", "60_RPS", "70_RPS", "80_RPS", "90_RPS"]
 
 for dir in dir_list:
     phi_model, theta_model = fit_surfaces(f'{base}/{dir}/clean_theta_phi_surface.npz', dir)

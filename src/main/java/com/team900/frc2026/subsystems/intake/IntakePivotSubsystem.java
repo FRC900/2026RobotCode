@@ -48,7 +48,7 @@ public class IntakePivotSubsystem
         boolean isDeployed = inputs.unitPosition < midpoint;
         Logger.recordOutput("Intake Pivot/IntakePivotIsDeployed", isDeployed);
     }
-    
+
     public boolean isDeployed() {
         double midpoint =
                 (IntakePivotConstants.kIntakePivotStow + IntakePivotConstants.kIntakePivotDeploy)
