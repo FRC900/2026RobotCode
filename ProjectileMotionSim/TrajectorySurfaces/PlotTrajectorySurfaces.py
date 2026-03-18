@@ -7,7 +7,6 @@ def plot_save_models(name):
     base = f"ProjectileMotionSim/TrajectorySurfaces/{name}"
 
     # load data
-    print(base + "/clean_theta_phi_surface.npz")
     data = np.load(base + "/clean_theta_phi_surface.npz")
     
     r_vals = data['r_vals']
@@ -25,7 +24,8 @@ def plot_save_models(name):
         theta_model = pickle.load(f)
 
     # forward (radial) velocity, distance to target --> theta
-    theta_slice = theta_surface[:, 0, :] 
+    zero_vf_idx = np.argmin(np.abs(vf_vals))
+    theta_slice = theta_surface[:, zero_vf_idx, :] 
     R, VL = np.meshgrid(r_vals, vl_vals, indexing='ij')
 
     fig1 = plt.figure(figsize=(10,6))
@@ -39,7 +39,8 @@ def plot_save_models(name):
     fig1.savefig(base + "/plots/theta_surface.png", dpi=300, bbox_inches='tight') # save plot 1
 
     # lateral (tangential) velocity, distance to target --> phi
-    phi_slice = phi_surface[:, :, 0]
+    zero_vl_idx = np.argmin(np.abs(vl_vals))
+    phi_slice = phi_surface[:, :, zero_vl_idx]
     R, VF = np.meshgrid(r_vals, vf_vals, indexing='ij')
 
     fig2 = plt.figure(figsize=(10,6))

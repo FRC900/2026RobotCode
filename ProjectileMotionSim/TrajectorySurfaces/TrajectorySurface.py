@@ -54,9 +54,9 @@ def gen_surface(speed, spin, name=""):
 
     fuel = pp.Projectile(0.0762, 0.226796) # FRC 2026 Fuel object
 
-    r_vals  = np.linspace(0, 6.5, 26) # radial distance to target
-    vf_vals = np.linspace(-5.5, 5.5, 22) # forward (radial) velocity
-    vl_vals = np.linspace(-5.5, 5.5, 22) # lateral (tangential) velocity
+    r_vals  = np.linspace(0, 6.5, 27) # radial distance to target
+    vf_vals = np.linspace(-5.5, 5.5, 23) # forward (radial) velocity
+    vl_vals = np.linspace(-5.5, 5.5, 23) # lateral (tangential) velocity
 
     theta_surface = np.zeros((len(r_vals),
                             len(vf_vals),
