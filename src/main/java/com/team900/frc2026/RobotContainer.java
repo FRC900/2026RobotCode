@@ -318,16 +318,16 @@ public class RobotContainer {
                 .onTrue(
                         Commands.runOnce(
                                 () -> {
-                                        Command current = intakePivotSubsystem.getCurrentCommand();
-                                        if (current != null) {
-                                                current.cancel();
-                                        }
-                                        
-                                        if (intakePivotSubsystem.isDeployed()){
-                                                IntakeFactory.retractSlapdown(this).schedule();
-                                        } else {
-                                                IntakeFactory.deploySlapdown(this).schedule();
-                                        }
+                                    Command current = intakePivotSubsystem.getCurrentCommand();
+                                    if (current != null) {
+                                        current.cancel();
+                                    }
+
+                                    if (intakePivotSubsystem.isDeployed()) {
+                                        IntakeFactory.retractSlapdown(this).schedule();
+                                    } else {
+                                        IntakeFactory.deploySlapdown(this).schedule();
+                                    }
                                 }));
 
         // controlBoard
@@ -343,9 +343,6 @@ public class RobotContainer {
         //                                         IntakePivotConstants.kIntakePivotDeploy);
         //                             }
         //                         }));
-        
-        
-        
 
         controlBoard
                 .shoot()

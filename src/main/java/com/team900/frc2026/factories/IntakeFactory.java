@@ -23,41 +23,18 @@ public class IntakeFactory {
         return container.getIntakeRollerSubsystem().voltageCommand(() -> 0);
     }
 
-    // public static Command deploySlapdown(RobotContainer container) {
-    //     return container
-    //             .getIntakePivotSubsystem()
-    //             .motionMagicSetpointCommand(
-    //                     () -> IntakePivotConstants.kIntakePivotDeploy,
-    //                     () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs);
-    // }
-
-    // public static Command retractSlapdown(RobotContainer container) {
-    //     return container
-    //             .getIntakePivotSubsystem()
-    //             .motionMagicSetpointCommand(
-    //                     () -> IntakePivotConstants.kIntakePivotStow,
-    //                     () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs);
-    // }
-
-     public static Command deploySlapdown(RobotContainer container) {
+    public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                        () -> IntakePivotConstants.kIntakePivotDeploy,
-                        () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs,
-                        () -> 0.0,
-                        IntakePivotConstants.kIntakePivotToleranceRotations,
-                        0);
+                .motionMagicSetpointCommand(
+                        () -> IntakePivotConstants.kIntakePivotDeploy);
     }
 
     public static Command retractSlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
-                .motionMagicSetpointCommandBlocking(
-                    () -> IntakePivotConstants.kIntakePivotStow,
-                    () -> IntakePivotConstants.kIntakePivotMotionMagicConfigs,
-                    () -> 0.0,
-                    IntakePivotConstants.kIntakePivotToleranceRotations,
-                    0);
+                .motionMagicSetpointCommand(
+                        () -> IntakePivotConstants.kIntakePivotStow);
     }
-}
+
+    }

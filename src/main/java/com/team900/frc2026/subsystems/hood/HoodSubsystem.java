@@ -1,7 +1,5 @@
 package com.team900.frc2026.subsystems.hood;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.team900.frc2026.RobotState;
 import com.team900.lib.subsystems.CanCoderIO;
 import com.team900.lib.subsystems.CanCoderInputsAutoLogged;
@@ -11,6 +9,7 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import com.team900.lib.subsystems.TalonFXIO;
 import com.team900.lib.util.CurrentSpikeDetector;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class HoodSubsystem
         extends ServoMotorSubsystemWithCanCoder<
@@ -56,9 +55,9 @@ public class HoodSubsystem
     public void setPositionRadians(double radians, double velocityRadPerSec) {
         double safeSetpoint = constrainSetpoint(radians);
         motorIO.setPositionSetpoint(safeSetpoint, velocityRadPerSec);
-                     Logger.recordOutput(getName() + "/API/setPositionSetpointImp/Radians", radians);
-        Logger.recordOutput(getName() + "/API/setPositionSetpointImp/velocityRadPerSec", velocityRadPerSec);
-
+        Logger.recordOutput(getName() + "/API/setPositionSetpointImp/Radians", radians);
+        Logger.recordOutput(
+                getName() + "/API/setPositionSetpointImp/velocityRadPerSec", velocityRadPerSec);
     }
 
     private double constrainSetpoint(double desiredRad) {
