@@ -305,16 +305,47 @@ public class RobotContainer {
         //                         },
         //                         Set.of(getIntakePivotSubsystem())));
 
+        // controlBoard
+        //         .toggleIntake().and(intakePivotSubsystem::isDeployed)
+        //         .onTrue(IntakeFactory.retractSlapdown(this));
+
+        //   controlBoard
+        //         .toggleIntake().and(() -> !intakePivotSubsystem.isDeployed())
+        //         .onTrue(IntakeFactory.retractSlapdown(this));
+
         controlBoard
                 .toggleIntake()
                 .onTrue(
-                        Commands.defer(
-                                () ->
-                                        intakePivotSubsystem.isDeployed()
-                                                ? IntakeFactory.retractSlapdown(this)
-                                                : IntakeFactory.deploySlapdown(this),
-                                Set.of(getIntakePivotSubsystem())));
+                        Commands.runOnce(
+                                () -> {
+                                        Command current = intakePivotSubsystem.getCurrentCommand();
+                                        if (current != null) {
+                                                current.cancel();
+                                        }
+                                        
+                                        if (intakePivotSubsystem.isDeployed()){
+                                                IntakeFactory.retractSlapdown(this).schedule();
+                                        } else {
+                                                IntakeFactory.deploySlapdown(this).schedule();
+                                        }
+                                }));
 
+        // controlBoard
+        //         .toggleIntake()
+        //         .onTrue(
+        //                 Commands.runOnce(
+        //                         () -> {
+        //                             if (intakePivotSubsystem.isDeployed()) {
+        //                                 intakePivotSubsystem.setPositionSetpointUnits(
+        //                                         IntakePivotConstants.kIntakePivotStow);
+        //                             } else {
+        //                                 intakePivotSubsystem.setPositionSetpointUnits(
+        //                                         IntakePivotConstants.kIntakePivotDeploy);
+        //                             }
+        //                         }));
+        
+        
+        
 
         controlBoard
                 .shoot()

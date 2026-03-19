@@ -44,6 +44,7 @@ public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends Moto
         Logger.recordOutput(
                 getName() + "/currentCommand",
                 (getCurrentCommand() == null) ? "Default" : getCurrentCommand().getName());
+        Logger.recordOutput(getName() + "/setPositionSetpointUnitsManual", positionSetpointUnits);
     }
 
     protected void setMotionMagicConfig(MotionMagicConfigs config) {
@@ -133,6 +134,11 @@ public class ServoMotorSubsystem<T extends MotorInputsAutoLogged, U extends Moto
 
     public double getPositionSetpointUnits() {
         return positionSetpointUnits;
+    }
+
+    public void setPositionSetpointUnits(double units) {
+        positionSetpointUnits = units;
+        // System.out.println("[" + getName() + "] setPositionSetpointunits: " + units);
     }
 
     public Command setMotionMagicConfigCommand(MotionMagicConfigs configs) {
