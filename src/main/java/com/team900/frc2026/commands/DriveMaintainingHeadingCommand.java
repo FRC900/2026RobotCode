@@ -7,7 +7,6 @@ import com.team900.frc2026.subsystems.drive.DriveConstants;
 import com.team900.frc2026.subsystems.drive.DriveSubsystem;
 import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.FieldConstants;
-import com.team900.lib.util.TurretAlignUtil;
 import com.team900.lib.util.Util;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -106,9 +105,8 @@ public class DriveMaintainingHeadingCommand extends Command {
             Logger.recordOutput("DriveMaintainHeading/mHeadingSetpoint", mHeadingSetpoint.get());
 
             if (kAiming) {
-                Pose2d robotPose = mRobotState.getLatestFieldToRobot().getValue();
-                TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
-                Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
+
+                Pose2d turretPose = RobotState.getInstance().getLatestFieldToTurret();
                 double turretX = turretPose.getX();
                 double turretY = turretPose.getY();
 

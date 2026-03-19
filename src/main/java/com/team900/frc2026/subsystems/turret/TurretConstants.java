@@ -3,6 +3,11 @@ package com.team900.frc2026.subsystems.turret;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 public class TurretConstants {
@@ -31,10 +36,7 @@ public class TurretConstants {
     public static final double kTurretMinPositionRadians = -2.0 * Math.PI;
     public static final double kTurretMaxPositionRadians = 2.0 * Math.PI;
 
-    public static final double turretOffSetFromCenterX =
-            0.1524; // parallel to the front bumpers, need to tune this
-    public static final double turretOffSetFromCenterY =
-            -0.148908; // parallel to the side bumpers, need to tune this
+    public static final Translation2d turretOffsetFromCenter = new Translation2d( 0.1524,-0.148908);
 
     // Software buffer so we don't slam into the hard stops (back off by this amount)
     public static final double kSoftwareLimitBufferRadians = Units.degreesToRadians(5.0);

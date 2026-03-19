@@ -1,5 +1,6 @@
 package com.team900.frc2026;
 
+import com.team900.frc2026.subsystems.turret.TurretConstants;
 import com.team900.frc2026.subsystems.vision.VisionConstants;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
@@ -76,8 +77,8 @@ public class RobotState implements VisionConsumer {
 
     private final AtomicInteger iteration = new AtomicInteger(0);
 
-    private double lastUsedTagSlamTimestamp = 0;
-    private Pose2d lastUsedTagSlamPose = Pose2d.kZero;
+    private double lastUsedMultiTagTimestamp = 0;
+    private Pose2d lastUsedMultiTagPose = Pose2d.kZero;
     private ConcurrentTimeInterpolatableBuffer<Double> turretAngularVelocity =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
     private ConcurrentTimeInterpolatableBuffer<Double> turretPositionRadians =
@@ -98,8 +99,6 @@ public class RobotState implements VisionConsumer {
     private final ConcurrentTimeInterpolatableBuffer<Double> accelY =
             ConcurrentTimeInterpolatableBuffer.createDoubleBuffer(LOOKBACK_TIME);
 
-    private final AtomicBoolean enablePathCancel = new AtomicBoolean(false);
-
     private final AtomicBoolean hasHoodZero = new AtomicBoolean(false);
 
     private double autoStartTime;
@@ -115,17 +114,6 @@ public class RobotState implements VisionConsumer {
         return autoStartTime;
     }
 
-    public void enablePathCancel() {
-        enablePathCancel.set(true);
-    }
-
-    public void disablePathCancel() {
-        enablePathCancel.set(false);
-    }
-
-    public boolean getPathCancel() {
-        return enablePathCancel.get();
-    }
 
     public void updateHoodHasZero(boolean hoodZereod) {
         hasHoodZero.set(hoodZereod);
@@ -202,23 +190,6 @@ public class RobotState implements VisionConsumer {
                         delta.omegaRadiansPerSecond));
     }
 
-    /**
-     * Like getPredictedFieldToRobot but caps negative velocities to zero. Used for non-holonomic
-     * path planning.
-     */
-    public Pose2d getPredictedCappedFieldToRobot(double lookaheadTimeS) {
-        var maybeFieldToRobot = getLatestFieldToRobot();
-        Pose2d fieldToRobot =
-                maybeFieldToRobot == null ? MathHelpers.kPose2dZero : maybeFieldToRobot.getValue();
-        var delta = getLatestRobotRelativeChassisSpeed();
-        delta = delta.times(lookaheadTimeS);
-        return fieldToRobot.exp(
-                new Twist2d(
-                        Math.max(0.0, delta.vxMetersPerSecond),
-                        Math.max(0.0, delta.vyMetersPerSecond),
-                        delta.omegaRadiansPerSecond));
-    }
-
     // This has rotation and radians to allow for wrapping tracking.
     public void addTurretUpdates(
             double timestamp,
@@ -247,31 +218,26 @@ public class RobotState implements VisionConsumer {
         return TURRET_TO_CAMERA;
     }
 
-    public Rotation2d getLatestRotationRobotToHub() {
-        return new Transform2d(
-                        new Pose2d(
-                                AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint)
-                                        .toTranslation2d(),
-                                Rotation2d.kZero),
-                        getLatestFieldToRobot().getValue())
-                .getRotation()
-                .plus(Rotation2d.k180deg);
-    }
+   // Internal helper — apply turret offset to any robot pose
+private Pose2d fieldToTurret(Pose2d fieldToRobot) {
+    return fieldToRobot.transformBy(
+            new Transform2d(TurretConstants.turretOffsetFromCenter, Rotation2d.kZero));
+}
 
-    // public double getLatestDistanceRobotToHub() {
-    //     return RobotContainer.getInstance().getVisionSubsystem().getRotation2dToHubTy().getCos()
-    // * getLatestTranlastionRobotToHub().toTranslation2d().getNorm();
-    // }
+// Latest
+public Pose2d getLatestFieldToTurret() {
+    return fieldToTurret(getLatestFieldToRobot().getValue());
+}
 
-    public Translation3d getLatestTranlastionRobotToHub() {
+// Past (by timestamp)
+public Optional<Pose2d> getFieldToTurret(double timestamp) {
+    return getFieldToRobot(timestamp).map(this::fieldToTurret);
+}
 
-        return AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint)
-                .minus(
-                        new Translation3d(
-                                getLatestFieldToRobot().getValue().getX(),
-                                getLatestFieldToRobot().getValue().getY(),
-                                0.4464568922));
-    }
+// Future (by lookahead)
+public Pose2d getPredictedFieldToTurret(double lookaheadTimeS) {
+    return fieldToTurret(getPredictedFieldToRobot(lookaheadTimeS));
+}
 
     public Map.Entry<Double, Rotation2d> getLatestRobotToTurret() {
         return robotToTurret.getLatest();
@@ -331,12 +297,12 @@ public class RobotState implements VisionConsumer {
         return getMaxAbsValueInRange(driveRollAngularVelocity, minTime, maxTime);
     }
 
-    public double lastUsedTagSlamTimestamp() {
-        return lastUsedTagSlamTimestamp;
+    public double lastUsedMultiTagTimestamp() {
+        return lastUsedMultiTagTimestamp;
     }
 
-    public Pose2d lastUsedTagSlamPose() {
-        return lastUsedTagSlamPose;
+    public Pose2d lastUsedMultiTagPose() {
+        return lastUsedMultiTagPose;
     }
 
     public void updateLogger() {
@@ -387,8 +353,6 @@ public class RobotState implements VisionConsumer {
                 getLatestFusedFieldRelativeChassisSpeed());
 
         Logger.recordOutput("RobotState/HasHoodZero", getHoodHasZeroed());
-
-        Logger.recordOutput("RobotState/RobotToHubRotation", getLatestRotationRobotToHub());
 
         // Add mechanism logging
         Logger.recordOutput("RobotState/TurretRotations", getLatestTurretPositionRadians());
@@ -513,22 +477,6 @@ public class RobotState implements VisionConsumer {
         return exclusiveTag.get();
     }
 
-    public void setTrajectoryTargetPose(Pose2d pose) {
-        trajectoryTargetPose = Optional.of(pose);
-    }
-
-    public Optional<Pose2d> getTrajectoryTargetPose() {
-        return trajectoryTargetPose;
-    }
-
-    public void setTrajectoryCurrentPose(Pose2d pose) {
-        trajectoryCurrentPose = Optional.of(pose);
-    }
-
-    public Optional<Pose2d> getTrajectoryCurrentPose() {
-        return trajectoryCurrentPose;
-    }
-
     public double getDrivePitchRadians() {
         if (this.drivePitchRads.getInternalBuffer().lastEntry() != null) {
             return drivePitchRads.getInternalBuffer().lastEntry().getValue();
@@ -547,19 +495,6 @@ public class RobotState implements VisionConsumer {
     //         Logger.recordOutput("Controller Mode",
     // ModalControls.getInstance().getMode().toString());
     //     }
-
-    public static boolean onOpponentSide(boolean isRedAlliance, Pose2d pose) {
-        return (isRedAlliance
-                        && pose.getTranslation().getX()
-                                < FieldConstants.fieldLength / 2 - Constants.kMidlineBuffer)
-                || (!isRedAlliance
-                        && pose.getTranslation().getX()
-                                > FieldConstants.fieldLength / 2 + Constants.kMidlineBuffer);
-    }
-
-    public boolean onOpponentSide() {
-        return onOpponentSide(Util.shouldFlip(), this.getLatestFieldToRobot().getValue());
-    }
 
     public static RobotState getInstance() {
         if (instance == null) {
@@ -583,7 +518,7 @@ public class RobotState implements VisionConsumer {
             PoseObservation poseObservation, Matrix<N3, N1> visionMeasurementStdDevs) {
 
         if (poseObservation.type() == PoseObservationType.SOLVE_PNP)
-            lastUsedTagSlamTimestamp = Timer.getFPGATimestamp();
+            lastUsedMultiTagTimestamp = Timer.getFPGATimestamp();
         RobotContainer.getInstance()
                 .getDriveSubsystem()
                 .getPoseEstimator()
