@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
+import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig.FollowerConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,7 +15,9 @@ import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
 
-    public static final ServoMotorSubsystemWithFollowersConfig kShooterConfig =
+    public static final class ShooterStage2 {
+
+          public static final ServoMotorSubsystemWithFollowersConfig kShooterConfig =
             new ServoMotorSubsystemWithFollowersConfig();
     public static final FollowerConfig kShooterLeftConfig = new FollowerConfig();
 
@@ -86,7 +89,7 @@ public class ShooterConstants {
     }
 
     public static final double kShooterGearRatio = 1;
-    public static final double kIdleRPS = 1200. / 60.;
+    public static final double kIdleRPS = 10.;
     public static final double kShootingRPS = 3500. / 60.;
     public static final double kFeedingRPS = 5000. / 60.;
     public static final Rotation2d kTurretToShotCorrection =
@@ -94,4 +97,43 @@ public class ShooterConstants {
 
     public static final double kLaunchVelMetersPerSecPerRotPerSec = 0.141;
     public static final double kShooterRPSCap = 5500. / 60.;
+
+    }
+
+  
+
+
+
+public static final class ShooterStage1 {
+
+    public static ServoMotorSubsystemConfig kHandoffConfig = new ServoMotorSubsystemConfig();
+
+    static {
+        kHandoffConfig.name = "Handoff";
+        kHandoffConfig.talonCANID = new CANDeviceId(40, Constants.kCanBusCanivoreMech);
+        // 1:1 for all wheels
+        // Above motor - 18t:18t 30t:30t
+        // First wheels - 18t:18t 18t:18t
+        // Second wheels - 18t:18t 18t:18t 18t:18t
+        kHandoffConfig.unitToRotorRatio = 1.0;
+
+        kHandoffConfig.fxConfig = new TalonFXConfiguration();
+        kHandoffConfig.fxConfig.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
+        // TODO: experimentally find the current limits which we need
+        kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 80;
+        kHandoffConfig.fxConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimit = 70;
+        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
+        kHandoffConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
+        kHandoffConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kHandoffConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        // using arbitralily small value for not since handoff position and velocity isn't important
+        kHandoffConfig.momentOfInertia = 0.00042474;
+    }
+
+    public static final double kHandoffGearRatio = 1;
+    public static final double kHandoffDutyCycle = 1;
+    public static final double kHandoffDutyCycleExhaust = -0.5;
+}
 }

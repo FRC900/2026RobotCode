@@ -149,14 +149,6 @@ public class DriveMaintainingHeadingCommand extends Command {
         }
     }
 
-    // @Override
-    // public boolean isFinished() {
-    //     if (isNearTarget()) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
 
     public boolean isNearTarget() {
         if (mHeadingSetpoint.isEmpty()) {

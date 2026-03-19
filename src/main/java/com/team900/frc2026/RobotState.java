@@ -5,16 +5,14 @@ import com.team900.frc2026.subsystems.vision.VisionConstants;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservation;
 import com.team900.frc2026.subsystems.vision.VisionIO.PoseObservationType;
 import com.team900.frc2026.subsystems.vision.VisionSubsystem.VisionConsumer;
-import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.ConcurrentTimeInterpolatableBuffer;
-import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.MathHelpers;
-import com.team900.lib.util.Util;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -113,7 +111,6 @@ public class RobotState implements VisionConsumer {
     public double getAutoStartTime() {
         return autoStartTime;
     }
-
 
     public void updateHoodHasZero(boolean hoodZereod) {
         hasHoodZero.set(hoodZereod);
@@ -218,26 +215,39 @@ public class RobotState implements VisionConsumer {
         return TURRET_TO_CAMERA;
     }
 
-   // Internal helper — apply turret offset to any robot pose
-private Pose2d fieldToTurret(Pose2d fieldToRobot) {
-    return fieldToRobot.transformBy(
-            new Transform2d(TurretConstants.turretOffsetFromCenter, Rotation2d.kZero));
+    // Internal helper — apply turret offset to any robot pose
+    private Pose2d fieldToTurret(Pose2d fieldToRobot) {
+        return fieldToRobot.transformBy(
+                new Transform2d(TurretConstants.turretOffsetFromCenter, Rotation2d.kZero));
+    }
+
+    // Latest
+    public Pose2d getLatestFieldToTurret() {
+        return fieldToTurret(getLatestFieldToRobot().getValue());
+    }
+
+    // Past (by timestamp)
+    public Optional<Pose2d> getFieldToTurret(double timestamp) {
+        return getFieldToRobot(timestamp).map(this::fieldToTurret);
+    }
+
+    // Future (by lookahead)
+    public Pose2d getPredictedFieldToTurret(double lookaheadTimeS) {
+        return fieldToTurret(getPredictedFieldToRobot(lookaheadTimeS));
+    }
+
+    /** Returns the current robot-to-turret-camera Transform3d, composing the live turret angle. */
+public Transform3d getRobotToTurretCamera() {
+    var entry = getLatestRobotToTurret();
+    Transform3d robotToTurret =
+            new Transform3d(
+                    TurretConstants.turretOffsetFromCenter.getX(),
+                    TurretConstants.turretOffsetFromCenter.getY(),
+                    0.0,
+                    new Rotation3d(0, 0, turretAngle.getRadians()));
+    return robotToTurret.plus(VisionConstants.turretToCamera0);
 }
 
-// Latest
-public Pose2d getLatestFieldToTurret() {
-    return fieldToTurret(getLatestFieldToRobot().getValue());
-}
-
-// Past (by timestamp)
-public Optional<Pose2d> getFieldToTurret(double timestamp) {
-    return getFieldToRobot(timestamp).map(this::fieldToTurret);
-}
-
-// Future (by lookahead)
-public Pose2d getPredictedFieldToTurret(double lookaheadTimeS) {
-    return fieldToTurret(getPredictedFieldToRobot(lookaheadTimeS));
-}
 
     public Map.Entry<Double, Rotation2d> getLatestRobotToTurret() {
         return robotToTurret.getLatest();
@@ -296,6 +306,11 @@ public Pose2d getPredictedFieldToTurret(double lookaheadTimeS) {
             double minTime, double maxTime) {
         return getMaxAbsValueInRange(driveRollAngularVelocity, minTime, maxTime);
     }
+
+    public Optional<Double> getMaxAbsTurretAngularVelocityInRange(
+        double minTime, double maxTime) {
+    return getMaxAbsValueInRange(turretAngularVelocity, minTime, maxTime);
+}
 
     public double lastUsedMultiTagTimestamp() {
         return lastUsedMultiTagTimestamp;

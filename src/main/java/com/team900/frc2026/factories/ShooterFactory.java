@@ -16,18 +16,34 @@ public class ShooterFactory {
 
     public static Command idle(RobotContainer container) {
         return container
-                .getShooterSubsystem()
-                .velocitySetpointCommand(() -> ShooterConstants.kIdleRPS);
+                .getShooterStage2Subsystem()
+                .velocitySetpointCommand(() -> ShooterConstants.ShooterStage2.kIdleRPS);
     }
 
     public static Command setShooterRPS(double RPS, RobotContainer container) {
-        return container.getShooterSubsystem().velocitySetpointCommand(() -> RPS);
+        return container.getShooterStage2Subsystem().velocitySetpointCommand(() -> RPS);
     }
 
     public static Command setShooterRPS(
-            Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container) {
+           RobotContainer container,   Supplier<ShooterSetpoint> setpointSupplier) {
         return container
-                .getShooterSubsystem()
+                .getShooterStage2Subsystem()
                 .velocitySetpointCommand(setpointSupplier.get()::getShooterRPS);
+    }
+
+    public static Command runHandoff(RobotContainer container) {
+        return container
+                .getShooterStage1Subsystem()
+                .dutyCycleCommand(() -> ShooterConstants.ShooterStage1.kHandoffDutyCycle);
+    }
+
+    public static Command stopHandoff(RobotContainer container) {
+        return container.getShooterStage1Subsystem().voltageCommand(() -> 0);
+    }
+
+    public static Command exhaustHandoff(RobotContainer container) {
+        return container
+                .getShooterStage1Subsystem()
+                .dutyCycleCommand(() -> ShooterConstants.ShooterStage1.kHandoffDutyCycleExhaust);
     }
 }

@@ -1,133 +1,147 @@
 package com.team900.frc2026.subsystems.turret;
 
-import com.team900.lib.util.FullSubsystem;
-import edu.wpi.first.math.MathUtil;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.team900.frc2026.RobotState;
+import com.team900.lib.loops.IStatusSignalLoop;
+import com.team900.lib.time.RobotTime;
+import com.team900.lib.util.Util;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.*;
+
 import org.littletonrobotics.junction.Logger;
 
-public class TurretSubsystem extends FullSubsystem {
-    private final TurretIO io;
-    private final FastTurretInputsAutoLogged fastInputs = new FastTurretInputsAutoLogged();
+import java.util.List;
+import java.util.function.DoubleSupplier;
+
+/**
+ * The TurretIOHardware class interfaces with the TalonFX motor controller and
+ * CANCoders
+ * to manage turret movement and sensor readings.
+ */
+public class TurretSubsystem extends SubsystemBase implements IStatusSignalLoop {
 
     private final TurretInputsAutoLogged inputs = new TurretInputsAutoLogged();
+    // Fast inputs is used by 250Hz thread. Should not touch without accounting for
+    // race conditions.
+    private volatile FastTurretInputsAutoLogged fastInputs = new FastTurretInputsAutoLogged();
+    // This is used for logging in 50Hz thread.
+    private final FastTurretInputsAutoLogged cachedFastInputs = new FastTurretInputsAutoLogged();
+    private final TurretIO io;
+    private double turretPositionSetpointRadiansFromCenter = 0.0;
+    private double lastModeChange = 0.0;
 
-    private double positionSetpointRad = 0.0;
-    private double velocitySetpointRadPerSec = 0.0;
-    private boolean isOpenLoop = false;
-    private double openLoopDutyCycle = 0.0;
-
+    // Constructor
     public TurretSubsystem(final TurretIO io) {
         this.io = io;
     }
 
     @Override
-    public void periodic() {
-        io.readFastInputs(fastInputs);
-        io.readInputs(inputs);
-
-        Logger.processInputs("Turret/Fast", fastInputs);
-        Logger.processInputs("Turret", inputs);
+    public List<BaseStatusSignal> getStatusSignals() {
+        return io.getStatusSignals();
     }
 
     @Override
-    public void periodicAfterScheduler() {
-        if (isOpenLoop) {
-            io.setOpenLoopDutyCycle(openLoopDutyCycle);
-        } else {
-            double safeSetpoint = constrainSetpoint(positionSetpointRad);
-            io.setPositionSetpoint(safeSetpoint, velocitySetpointRadPerSec);
-            Logger.recordOutput("Turret/requestedSetpointRad", positionSetpointRad);
-            Logger.recordOutput("Turret/constrainedSetpointRad", safeSetpoint);
-        }
+    public void onLoop() {
+        io.readFastInputs(fastInputs);
+        double timestamp = RobotTime.getTimestampSeconds();
+        RobotState.getInstance().addTurretUpdates(timestamp, fastInputs.turretPositionAbsolute,
+                fastInputs.positionRad,
+                fastInputs.velocityRadPerSec);
     }
 
-    // TODO: at some point check this to see if it works with 900 turret
-    /**
-     * Finds the best reachable angle for the turret target If the target is within limits, use it
-     * directly Otherwise check if rotating 360 degrees in either direction gives an equivalent that
-     * is in range And if no equivalent is in range go to the nearest limit
-     */
-    private double constrainSetpoint(double desiredRad) {
-        double min = TurretConstants.kTurretSoftMinRadians;
-        double max = TurretConstants.kTurretSoftMaxRadians;
-
-        // Already in range
-        if (desiredRad >= min && desiredRad <= max) {
-            return desiredRad;
-        }
-
-        // Try adding/subtracting full rotations to find an equivalent angle in range
-        double bestAngle = desiredRad;
-        double bestDistance = Double.MAX_VALUE;
-
-        // The turret range is at most ~2 full rotations, so checking ±1 rotation covers it
-        for (int i = -2; i <= 2; i++) {
-            double candidate = desiredRad + i * 2.0 * Math.PI;
-            if (candidate >= min && candidate <= max) {
-                double distance = Math.abs(candidate - fastInputs.positionRad);
-                if (distance < bestDistance) {
-                    bestDistance = distance;
-                    bestAngle = candidate;
-                }
-            }
-        }
-
-        // If we found a valid in-range spot, use it
-        if (bestDistance < Double.MAX_VALUE) {
-            return bestAngle;
-        }
-
-        // No equivalent is in range go to the nearest limit
-        return MathUtil.clamp(desiredRad, min, max);
+    @Override
+    public void periodic() {
+        double timestamp = RobotTime.getTimestampSeconds();
+        io.readInputs(inputs);
+        Logger.processInputs("Turret", inputs);
+        cachedFastInputs.positionRad = getCurrentPosition();
+        cachedFastInputs.velocityRadPerSec = RobotState.getInstance().getLatestTurretAngularVelocity();
+        cachedFastInputs.turretPositionAbsolute = RobotState.getInstance().getLatestRobotToTurret().getValue();
+        Logger.processInputs("Turret/fastInputs", cachedFastInputs);
+        Logger.recordOutput("Turret/latencyPeriodicSec", RobotTime.getTimestampSeconds() - timestamp);
     }
 
-    public void setPositionRadians(double radians) {
-        isOpenLoop = false;
-        positionSetpointRad = radians;
-        velocitySetpointRadPerSec = 0.0;
+    public void updateModeChange() {
+        this.lastModeChange = RobotTime.getTimestampSeconds();
     }
 
-    public void setPositionRadians(double radians, double velocityRadPerSec) {
-        isOpenLoop = false;
-        positionSetpointRad = radians;
-        velocitySetpointRadPerSec = velocityRadPerSec;
-    }
-
-    public void setPositionDegrees(double degrees) {
-        isOpenLoop = false;
-        positionSetpointRad = Math.toRadians(degrees);
-        velocitySetpointRadPerSec = 0.0;
-    }
-
-    public void setPositionDegrees(double degrees, double velocityDegPerSec) {
-        isOpenLoop = false;
-        positionSetpointRad = Math.toRadians(degrees);
-        velocitySetpointRadPerSec = Math.toRadians(velocityDegPerSec);
-    }
-
-    public void setOpenLoop(double dutyCycle) {
-        isOpenLoop = true;
+    private void setOpenLoopDutyCycleImpl(double dutyCycle) {
+        Logger.recordOutput("Turret/API/setOpenLoopDutyCycle/dutyCycle", dutyCycle);
         io.setOpenLoopDutyCycle(dutyCycle);
     }
 
-    public void stop() {
-        isOpenLoop = true;
-        io.setOpenLoopDutyCycle(0.0);
+    public void setPositionSetpointImpl(double radiansFromCenter, double radPerS) {
+        Logger.recordOutput("Turret/API/setPositionSetpoint/radiansFromCenter", radiansFromCenter);
+        io.setPositionSetpoint(radiansFromCenter, radPerS);
     }
 
-    public double getPositionRadians() {
-        return fastInputs.positionRad;
+    // Public API
+    public Command setOpenLoopDutyCycle(DoubleSupplier dutyCycle) {
+        return startEnd(() -> {
+            setOpenLoopDutyCycleImpl(dutyCycle.getAsDouble());
+        }, () -> {
+        }).withName("Turret DutyCycleControl");
     }
 
-    public double getVelocityRadPerSec() {
-        return fastInputs.velocityRadPerSec;
+    private double adjustSetpointForWrap(double radiansFromCenter) {
+        // We have two options the raw radiansFromCenter or +/- 2 * PI.
+        double alternative = radiansFromCenter - 2.0 * Math.PI;
+        if (radiansFromCenter < 0.0) {
+            alternative = radiansFromCenter + 2.0 * Math.PI;
+        }
+        if (Math.abs(getCurrentPosition() - alternative) < Math.abs(getCurrentPosition() - radiansFromCenter)) {
+            return alternative;
+        }
+        return radiansFromCenter;
     }
 
-    public double getVelocityDegPerSec() {
-        return Math.toDegrees(fastInputs.velocityRadPerSec);
+    private boolean unwrapped(double setpoint) {
+        // Radians comparison intentional because this is the raw value going into
+        // rotor.
+        return (RobotTime.getTimestampSeconds() - this.lastModeChange > 0.5) ||
+                Util.epsilonEquals(setpoint,
+                        getCurrentPosition(), Math.toRadians(10.0));
     }
 
-    public boolean atSetpoint() {
-        return Math.abs(fastInputs.positionRad - positionSetpointRad)
-                < TurretConstants.toleranceRad;
+    private Command positionSetpointUntilUnwrapped(DoubleSupplier radiansFromCenter, DoubleSupplier ffVel) {
+        return run(() -> {
+            // Intentional do not wrap turret
+            double setpoint = radiansFromCenter.getAsDouble();
+            setPositionSetpointImpl(setpoint, unwrapped(setpoint) ? ffVel.getAsDouble() : 0.0);
+            turretPositionSetpointRadiansFromCenter = setpoint;
+        }).until(() -> unwrapped(radiansFromCenter.getAsDouble()));
+    }
+
+    // FF is in rad/s.
+    public Command positionSetpointCommand(DoubleSupplier radiansFromCenter,
+            DoubleSupplier ffVel) {
+        return positionSetpointUntilUnwrapped(radiansFromCenter, ffVel).andThen(
+                run(() -> {
+                    double setpoint = adjustSetpointForWrap(radiansFromCenter.getAsDouble());
+                    setPositionSetpointImpl(setpoint, ffVel.getAsDouble());
+                    turretPositionSetpointRadiansFromCenter = setpoint;
+                })).withName("Turret positionSetpointCommand");
+    }
+
+    public Command waitForPosition(DoubleSupplier radiansFromCenter, double toleranceRadians) {
+        return new WaitUntilCommand(() -> {
+            return Math.abs(new Rotation2d(getCurrentPosition()).rotateBy(
+                    new Rotation2d(radiansFromCenter.getAsDouble()).unaryMinus()).getRadians()) < toleranceRadians;
+        }).withName("Turret wait for position");
+    }
+
+    public double getSetpoint() {
+        return this.turretPositionSetpointRadiansFromCenter;
+    }
+
+    public double getCurrentPosition() {
+        return RobotState.getInstance().getLatestTurretPositionRadians();
+    }
+
+    public void setTeleopDefaultCommand() {
+        this.setDefaultCommand(run(() -> {
+            setPositionSetpointImpl(turretPositionSetpointRadiansFromCenter, 0.0);
+        }).withName("Turret Maintain Setpoint (default)"));
     }
 }

@@ -1,10 +1,3 @@
-// Copyright (c) 2025 FRC 1533
-// http://github.com/triplestrange
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file at
-// the root directory of this project.
-
 package com.team900.frc2026.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -12,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
+
     @AutoLog
     public static class VisionIOInputs {
         public boolean connected = false;
@@ -24,17 +18,25 @@ public interface VisionIO {
     /** Represents the angle to a simple target, not used for pose estimation. */
     public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
 
-    /** Represents a robot pose sample used for pose estimation. */
+    /**
+     * Represents a robot pose sample used for pose estimation.
+     *
+     * <p>Carries all the metadata the subsystem needs to decide whether to accept
+     * the observation and how to weight it.
+     */
     public static record PoseObservation(
             double timestamp,
             Pose3d pose,
             double ambiguity,
             int tagCount,
             double averageTagDistance,
+            double averageTagArea,
             PoseObservationType type) {}
 
     public static enum PoseObservationType {
+        /** Multi-tag SolvePNP (PhotonVision multi-tag result). */
         SOLVE_PNP,
+        /** Single-tag pinhole projection model. */
         PINHOLE
     }
 

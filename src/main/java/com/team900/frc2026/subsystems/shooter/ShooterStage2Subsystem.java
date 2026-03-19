@@ -6,12 +6,12 @@ import com.team900.lib.subsystems.MotorInputsAutoLogged;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowers;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 
-public class ShooterSubsystem
+public class ShooterStage2Subsystem
         extends ServoMotorSubsystemWithFollowers<MotorInputsAutoLogged, MotorIO> {
 
     private final RobotState state = RobotState.getInstance();
 
-    public ShooterSubsystem(
+    public ShooterStage2Subsystem(
             ServoMotorSubsystemWithFollowersConfig leadConfig,
             MotorIO leadIo,
             MotorIO[] followerIo) {

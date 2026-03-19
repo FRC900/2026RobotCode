@@ -1,7 +1,12 @@
-package com.team900.frc2026.factories;
+package com.team900.frc2026.auto;
 
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.commands.DriveMaintainingHeadingCommand;
+import com.team900.frc2026.factories.HoodFactory;
+import com.team900.frc2026.factories.IntakeFactory;
+import com.team900.frc2026.factories.ShooterFactory;
+import com.team900.frc2026.factories.SpindexerFactory;
+import com.team900.frc2026.factories.SuperstructureFactory;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,14 +49,14 @@ public class AutoFactory900 {
     }
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
-        return new ParallelCommandGroup(ShootingFactory.shoot(setpointSupplier, container));
+        return new ParallelCommandGroup(SuperstructureFactory.shoot(container, setpointSupplier));
     }
 
     public static Command stopShoot() {
         return new ParallelCommandGroup(
                 ShooterFactory.setShooterRPS(0, container),
                 SpindexerFactory.stopSpindexer(container),
-                HandoffFactory.stopHandoff(container),
+                ShooterFactory.stopHandoff(container),
                 HoodFactory.stow(container));
     }
 

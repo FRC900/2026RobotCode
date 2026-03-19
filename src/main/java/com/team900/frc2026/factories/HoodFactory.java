@@ -14,14 +14,10 @@ import java.util.function.Supplier;
 public class HoodFactory {
 
     public static Command aimHoodToPose(
-            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
-        HoodSubsystem hood = container.getHoodSubsystem();
-        return Commands.run(
-                        () ->
-                                hood.setPositionRadians(
-                                        setPointSupplier.get().getHoodRadians() / (2. * Math.PI),
-                                        setPointSupplier.get().getHoodFF()),
-                        hood)
+            RobotContainer container, Supplier<ShooterSetpoint> setPointSupplier) {
+        return container.getHoodSubsystem().positionSetpointCommand(
+                                        setPointSupplier.get()::getHoodRadians,
+                                        setPointSupplier.get()::getHoodFF)
                 .withName("Aim Hood to Pose (rad)");
     }
 
