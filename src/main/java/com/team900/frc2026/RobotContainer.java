@@ -306,15 +306,14 @@ public class RobotContainer {
         //                         Set.of(getIntakePivotSubsystem())));
 
         controlBoard
-                .toggleIntake()
-                .onTrue(
-                        Commands.defer(
-                                () ->
-                                        intakePivotSubsystem.isDeployed()
-                                                ? IntakeFactory.retractSlapdown(this)
-                                                : IntakeFactory.deploySlapdown(this),
-                                Set.of(getIntakePivotSubsystem())));
+                .toggleIntake().and(intakePivotSubsystem::isDeployed)
+                .onTrue(IntakeFactory.retractSlapdown(this));
 
+          controlBoard
+                .toggleIntake().and(() -> !intakePivotSubsystem.isDeployed())
+                .onTrue(IntakeFactory.retractSlapdown(this));
+
+        
 
         controlBoard
                 .shoot()
