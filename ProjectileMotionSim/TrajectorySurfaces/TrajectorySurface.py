@@ -106,8 +106,8 @@ def gen_surface(speed, spin, name=""):
                     fix_omega=True,
                     phi_bounds=(0.785398, 1.309),
                     theta_bounds=(0, 5.93411946),
-                    lm_iters=20,
-                    sim_end_time=10,
+                    lm_iters=10,
+                    sim_end_time=7.5,
                     dt=0.01,
                     clearance_func=fc.hub_clearance
                 )
