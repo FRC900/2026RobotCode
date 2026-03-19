@@ -17,13 +17,13 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 public class IntakePivotConstants {
     // Intake radians will be measured from horizontal to avoid confusion where positive direction
     // is up
-    public static final double kIntakePivotToleranceRadians = 0.1;
+    public static final double kIntakePivotToleranceRotations = 0.05;
     public static final double kIntakePivotStow = 0.2; // update
     public static final double kIntakePivotDeploy = .003;
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-    public static final Gains COMP_GAINS = new Gains(30, 0, 0, 0, 1, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(50, 0, 0, 0, 1, 0, 0);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
