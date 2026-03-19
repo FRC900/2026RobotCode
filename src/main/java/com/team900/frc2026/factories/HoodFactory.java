@@ -8,7 +8,6 @@ import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -27,8 +26,7 @@ public class HoodFactory {
     }
 
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance
-    public static Command setPosition(
-            DoubleSupplier radians, RobotContainer container) {
+    public static Command setPosition(DoubleSupplier radians, RobotContainer container) {
         return container
                 .getHoodSubsystem()
                 .positionSetpointCommand(radians)
@@ -37,7 +35,9 @@ public class HoodFactory {
 
     // Stows the hood
     public static Command stow(RobotContainer container) {
-        return container.getHoodSubsystem().positionSetpointUntilOnTargetCommand(() -> 0.0756, () -> 0.01)
+        return container
+                .getHoodSubsystem()
+                .positionSetpointUntilOnTargetCommand(() -> 0.0756, () -> 0.01)
                 .withName("Hood Stow");
     }
 
@@ -58,8 +58,6 @@ public class HoodFactory {
                                                         HoodConstants.kHoodMinPositionRadians),
                                 container.getHoodSubsystem()));
     }
-
-    
 
     public static Command shoot(RobotContainer container, double tolerance) {
         return container
