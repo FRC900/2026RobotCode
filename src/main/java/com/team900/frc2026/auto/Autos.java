@@ -55,7 +55,7 @@ public class Autos {
     private static Command swipeCommand(AutoTrajectory path, String pathName) {
         return Commands.sequence(
                 // Intake (only at start) and run path
-                Commands.deadline(path.cmd(), AutoFactory900.runIntake()),
+                Commands.parallel(path.cmd(), AutoFactory900.runIntake()),
                 // pathName.equals("OneSwipe")
                 //         ? AutoFactory900.runIntake()
                 //         : Commands.none()),

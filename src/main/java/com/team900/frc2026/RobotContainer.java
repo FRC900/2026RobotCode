@@ -140,12 +140,10 @@ public class RobotContainer {
     private HoodSubsystem buildHoodSubsystem() {
         if (RobotBase.isSimulation())
             return new HoodSubsystem(
-                    HoodConstants.kHoodConfig,
-                    new SimTalonFXIO(HoodConstants.kHoodConfig));
+                    HoodConstants.kHoodConfig, new SimTalonFXIO(HoodConstants.kHoodConfig));
 
         return new HoodSubsystem(
-                HoodConstants.kHoodConfig,
-                new TalonFXIO(HoodConstants.kHoodConfig));
+                HoodConstants.kHoodConfig, new TalonFXIO(HoodConstants.kHoodConfig));
     }
 
     private TurretSubsystem buildTurretSubsystem() {
