@@ -59,7 +59,7 @@ public class IntakePivotConstants {
         kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .7;
         kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.34;
         kIntakeCanCoderConfig.config.MagnetSensor.SensorDirection =
-                SensorDirectionValue.Clockwise_Positive;
+                SensorDirectionValue.CounterClockwise_Positive;
 
         // fxConfig
         kIntakePivotConfig.fxConfig = new TalonFXConfiguration();
@@ -82,7 +82,7 @@ public class IntakePivotConstants {
         // Ensure motor inversion matches the CANcoder sign convention (Clockwise_Positive)
         // so positive position setpoints move the mechanism in the same physical
         // direction that the CANcoder reports as positive.
-        kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         kIntakePivotConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         kIntakePivotConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;

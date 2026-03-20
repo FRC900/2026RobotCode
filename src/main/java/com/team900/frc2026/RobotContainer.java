@@ -305,15 +305,25 @@ public class RobotContainer {
         //                         },
         //                         Set.of(getIntakePivotSubsystem())));
 
+        // controlBoard
+        //         .toggleIntake()
+        //         .onTrue(
+        //                 Commands.defer(
+        //                         () ->
+        //                                 intakePivotSubsystem.isDeployed()
+        //                                         ? IntakeFactory.retractSlapdown(this)
+        //                                         : IntakeFactory.deploySlapdown(this),
+        //                         Set.of(getIntakePivotSubsystem())));
+
         controlBoard
                 .toggleIntake()
-                .onTrue(
-                        Commands.defer(
-                                () ->
-                                        intakePivotSubsystem.isDeployed()
-                                                ? IntakeFactory.retractSlapdown(this)
-                                                : IntakeFactory.deploySlapdown(this),
-                                Set.of(getIntakePivotSubsystem())));
+                .and(() -> !intakePivotSubsystem.isDeployed())
+                .onTrue(IntakeFactory.deploySlapdown(this));
+
+        controlBoard
+                .toggleIntake()
+                .and(() -> intakePivotSubsystem.isDeployed())
+                .onTrue(IntakeFactory.retractSlapdown(this));
 
 
         controlBoard
@@ -326,16 +336,21 @@ public class RobotContainer {
                                                                 60,
                                                                 shooterSubsystem
                                                                         .getCurrentVelocity(),
-                                                                1))))
+                                                                5))))
                                 .andThen(
                                         new ParallelCommandGroup(
                                                 HandoffFactory.runHandoff(this),
                                                 SpindexerFactory.runSpindexer(this))))
-                .onFalse(
+                 .onFalse(
                         new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
-                                SpindexerFactory.stopSpindexer(this),
-                                HandoffFactory.stopHandoff(this)));
+                                // ShooterFactory.setShooterRPS(0, this),
+                                shooterSubsystem.voltageCommand(() -> 0),
+                                SpindexerFactory.exhaustSpindexer(instance)
+                                        .withTimeout(0.25)
+                                        .andThen(SpindexerFactory.stopSpindexer(this)),
+                                HandoffFactory.exhaustHandoff(this)
+                                        .withTimeout(0.25)
+                                        .andThen(HandoffFactory.stopHandoff(this))));
 
         controlBoard
                 .shootAuto()
@@ -438,7 +453,7 @@ public class RobotContainer {
 
                                     boolean isApproachingTrench =
                                             Math.signum(xVel) * Math.signum(xDist)
-                                                    > 0; // positive = moving into trench
+                                                    < 0; // positive = moving into trench
                                     return isApproachingTrench;
                                 }
                             }

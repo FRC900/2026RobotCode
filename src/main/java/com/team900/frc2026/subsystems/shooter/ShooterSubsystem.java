@@ -1,10 +1,21 @@
 package com.team900.frc2026.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.team900.frc2026.RobotState;
+import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.lib.subsystems.MotorIO;
 import com.team900.lib.subsystems.MotorInputsAutoLogged;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowers;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
+import com.team900.lib.util.AllianceFlipUtil;
+import com.team900.lib.util.FieldConstants;
+import com.team900.lib.util.ShooterSetpoint;
+import com.team900.lib.util.TurretAlignUtil;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class ShooterSubsystem
         extends ServoMotorSubsystemWithFollowers<MotorInputsAutoLogged, MotorIO> {
@@ -27,6 +38,26 @@ public class ShooterSubsystem
     public void periodic() {
         super.periodic();
         // Update robot state
+        Pose2d robotPose = state.getLatestFieldToRobot().getValue();
+        TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
+        Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
+
+        double turretX = turretPose.getX();
+        double turretY = turretPose.getY();
+
+        Translation2d hub =
+                AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
+
+        // Distance from turret to hub
+        double distanceToTarget = Math.hypot(hub.getX() - turretX, hub.getY() - turretY);
+
         state.setShooterRPS(inputs.velocityUnitsPerSecond);
+        Logger.recordOutput(getName() + "/DistanceFromHub", distanceToTarget);
+
+        double hoodSetpoint =
+                Math.toRadians(HoodConstants.kHoodMaxPositionDegrees)
+                        - ShooterSetpoint.getPhi(distanceToTarget, 0.0);
+
+        Logger.recordOutput(getName() + "/HoodSetpoint", hoodSetpoint/(2*Math.PI));
     }
 }

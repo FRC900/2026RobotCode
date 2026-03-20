@@ -1,5 +1,7 @@
 package com.team900.frc2026.subsystems.hood;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.team900.frc2026.RobotState;
 import com.team900.lib.subsystems.CanCoderIO;
 import com.team900.lib.subsystems.CanCoderInputsAutoLogged;
@@ -54,6 +56,12 @@ public class HoodSubsystem
     public void setPositionRadians(double radians, double velocityRadPerSec) {
         double safeSetpoint = constrainSetpoint(radians);
         motorIO.setPositionSetpoint(safeSetpoint, velocityRadPerSec);
+        Logger.recordOutput(getName() + "/API/setPositionSetpointImp/Radians", radians);
+        Logger.recordOutput(getName() + "/API/setPositionSetpointImp/SafeSetpoint", safeSetpoint);
+        Logger.recordOutput(
+                getName() + "/API/setPositionSetpointImp/velocityRadPerSec", velocityRadPerSec);
+        Logger.recordOutput(
+                getName() + "/API/setPositionSetpointImp/currentPosition", getCurrentPosition());
     }
 
     private double constrainSetpoint(double desiredRad) {
