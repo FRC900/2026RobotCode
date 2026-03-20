@@ -40,7 +40,6 @@ public class DriveMaintainingHeadingCommand extends Command {
         setName("Swerve Drive Maintain Heading");
     }
 
-
     private final RobotState mRobotState = RobotState.getInstance();
     private final RobotContainer mRobotContainer;
     protected DriveSubsystem mDrivetrain;

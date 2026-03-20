@@ -18,7 +18,7 @@ public class ShooterConstants {
             new ServoMotorSubsystemWithFollowersConfig();
     public static final FollowerConfig kShooterLeftConfig = new FollowerConfig();
 
-    public static final Gains gains = new Gains(0.4, 0, 0, 0.28, 0.115, 0, 0);
+    public static final Gains gains = new Gains(0.6, 0, 0, 0.28, 0.115, 0, 0);
 
     static {
         kShooterConfig.name = "Shooter Right";

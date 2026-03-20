@@ -1,7 +1,5 @@
 package com.team900.frc2026.subsystems.shooter;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.lib.subsystems.MotorIO;
@@ -12,10 +10,9 @@ import com.team900.lib.util.AllianceFlipUtil;
 import com.team900.lib.util.FieldConstants;
 import com.team900.lib.util.ShooterSetpoint;
 import com.team900.lib.util.TurretAlignUtil;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterSubsystem
         extends ServoMotorSubsystemWithFollowers<MotorInputsAutoLogged, MotorIO> {
@@ -55,9 +52,8 @@ public class ShooterSubsystem
         Logger.recordOutput(getName() + "/DistanceFromHub", distanceToTarget);
 
         double hoodSetpoint =
-                Math.toRadians(HoodConstants.kHoodMaxPositionDegrees)
-                        - ShooterSetpoint.getPhi(distanceToTarget, 0.0);
+                ShooterSetpoint.getPhi(distanceToTarget, 0.0);
 
-        Logger.recordOutput(getName() + "/HoodSetpoint", hoodSetpoint/(2*Math.PI));
+        Logger.recordOutput(getName() + "/HoodSetpoint", hoodSetpoint / (2 * Math.PI));
     }
 }

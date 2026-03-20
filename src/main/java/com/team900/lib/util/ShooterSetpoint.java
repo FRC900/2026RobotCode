@@ -102,8 +102,7 @@ public class ShooterSetpoint {
         double shooterRPS = ShooterConstants.kShootingRPS;
 
         double hoodSetpoint =
-                Math.toRadians(HoodConstants.kHoodMaxPositionDegrees)
-                        - getPhi(distanceToTarget, 0.0);
+                getPhi(distanceToTarget, 0.0);
 
         // values for hood are placeholders rn since that depends on the lookup table
         return new ShooterSetpoint(shooterRPS, hoodSetpoint, 0.0, validSetpont);

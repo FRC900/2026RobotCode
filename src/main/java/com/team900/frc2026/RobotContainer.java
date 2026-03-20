@@ -141,15 +141,11 @@ public class RobotContainer {
         if (RobotBase.isSimulation())
             return new HoodSubsystem(
                     HoodConstants.kHoodConfig,
-                    simulatedHoodMotor,
-                    new SimCanCoderIO(
-                            HoodConstants.kHoodCanCoderConfig,
-                            simulatedHoodMotor.getSupplierForCancoder(HoodConstants.kHoodConfig)));
+                    new SimTalonFXIO(HoodConstants.kHoodConfig));
 
         return new HoodSubsystem(
                 HoodConstants.kHoodConfig,
-                new TalonFXIO(HoodConstants.kHoodConfig),
-                new CanCoderIOHardware(HoodConstants.kHoodCanCoderConfig));
+                new TalonFXIO(HoodConstants.kHoodConfig));
     }
 
     private TurretSubsystem buildTurretSubsystem() {
@@ -213,9 +209,6 @@ public class RobotContainer {
     }
 
     @Getter private final ControlBoard controlBoard = ControlBoard.getInstance();
-
-    private final SimTalonFXWithCancoder simulatedHoodMotor =
-            Robot.isSimulation() ? new SimTalonFXWithCancoder(HoodConstants.kHoodConfig) : null;
 
     private final SimTalonFXWithCancoder simulatedIntakeMotor =
             Robot.isSimulation()
@@ -340,7 +333,7 @@ public class RobotContainer {
                                         new ParallelCommandGroup(
                                                 HandoffFactory.runHandoff(this),
                                                 SpindexerFactory.runSpindexer(this))))
-                 .onFalse(
+                .onFalse(
                         new ParallelCommandGroup(
                                 // ShooterFactory.setShooterRPS(0, this),
                                 shooterSubsystem.voltageCommand(() -> 0),

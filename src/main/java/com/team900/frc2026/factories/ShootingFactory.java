@@ -9,15 +9,10 @@ import java.util.function.Supplier;
 
 public class ShootingFactory {
 
-    public static Command shoot(
-            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
-        return Commands.sequence(
-                Commands.parallel(
-                                ShooterFactory.setShooterRPS(setPointSupplier, container),
-                                SuperstructureFactory.aim(setPointSupplier, container))
-                        .until(
-                                () ->
-                                        MathUtil.isNear(
+  
+
+    public static boolean canShoot( Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container)    {
+        return MathUtil.isNear(
                                                         setPointSupplier.get().getShooterRPS(),
                                                         container
                                                                 .getShooterSubsystem()
@@ -29,13 +24,20 @@ public class ShootingFactory {
                                                         container
                                                                 .getHoodSubsystem()
                                                                 .getCurrentPosition(),
-                                                        1))
-                // && container.getTurretSubsystem().atSetpoint()))
+                                                        0.003) && container.getDriveCommand().isNearTarget();
+    }
+
+      public static Command shoot(
+            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
+        return Commands.sequence(
+                Commands.parallel(
+                                ShooterFactory.setShooterRPS(setPointSupplier, container),
+                                SuperstructureFactory.aim(setPointSupplier, container))
+                        .until(() -> canShoot(setPointSupplier, container))
                 ,
                 Commands.parallel(
                                 IntakeFactory.runIntake(container),
                                 HandoffFactory.runHandoff(container),
-                                SpindexerFactory.runSpindexer(container))
-                        .onlyWhile(container.getDriveCommand()::isNearTarget));
+                                SpindexerFactory.runSpindexer(container)));
     }
 }

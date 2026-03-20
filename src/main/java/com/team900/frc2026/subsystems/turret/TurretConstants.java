@@ -34,7 +34,7 @@ public class TurretConstants {
     public static final double turretOffSetFromCenterX =
             0.1524; // parallel to the front bumpers, need to tune this
     public static final double turretOffSetFromCenterY =
-           -0.148908; // parallel to the side bumpers, need to tune this
+            -0.148908; // parallel to the side bumpers, need to tune this
 
     // Software buffer so we don't slam into the hard stops (back off by this amount)
     public static final double kSoftwareLimitBufferRadians = Units.degreesToRadians(5.0);

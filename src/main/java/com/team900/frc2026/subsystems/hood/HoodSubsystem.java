@@ -1,20 +1,21 @@
 package com.team900.frc2026.subsystems.hood;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.team900.frc2026.RobotState;
 import com.team900.lib.subsystems.CanCoderIO;
 import com.team900.lib.subsystems.CanCoderInputsAutoLogged;
 import com.team900.lib.subsystems.MotorInputsAutoLogged;
+import com.team900.lib.subsystems.ServoMotorSubsystem;
+import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoder;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import com.team900.lib.subsystems.TalonFXIO;
 import com.team900.lib.util.CurrentSpikeDetector;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class HoodSubsystem
-        extends ServoMotorSubsystemWithCanCoder<
-                MotorInputsAutoLogged, TalonFXIO, CanCoderInputsAutoLogged, CanCoderIO> {
+        extends ServoMotorSubsystem<
+                MotorInputsAutoLogged, TalonFXIO> {
     private final RobotState state = RobotState.getInstance();
     private TalonFXIO motorIO;
 
@@ -22,14 +23,14 @@ public class HoodSubsystem
             new CurrentSpikeDetector(HoodConstants.kZeroingAmps, HoodConstants.kZeroingSeconds);
 
     public HoodSubsystem(
-            ServoMotorSubsystemWithCanCoderConfig c, TalonFXIO motorIO, CanCoderIO cancoderIO) {
-        super(c, new MotorInputsAutoLogged(), motorIO, new CanCoderInputsAutoLogged(), cancoderIO);
+            ServoMotorSubsystemConfig c, TalonFXIO motorIO) {
+        super(c, new MotorInputsAutoLogged(), motorIO);
         this.positionSetpointUnits = HoodConstants.kHoodStowTrenchPositionRadians;
         this.motorIO = motorIO;
 
-        // Update frequency for feedback.
-        cancoderIO.updateFrequency(500);
-    }
+        setCurrentPosition(HoodConstants.kHoodRotorMaxPosition);
+
+            }
 
     // Updates robot state with current Hood angle
     @Override
@@ -45,7 +46,7 @@ public class HoodSubsystem
         return MathUtil.isNear(
                 HoodConstants.kHoodStowTrenchPositionRadians,
                 getCurrentPosition(),
-                HoodConstants.kHoodToleranceRadians);
+                0.01);
     }
 
     public void setPositionRadians(double radians) {

@@ -8,10 +8,8 @@ import com.team900.frc2026.factories.AutoFactory900;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import java.util.Set;
 
 public class Autos {
     private static final RobotContainer container = RobotContainer.getInstance();
@@ -57,12 +55,10 @@ public class Autos {
     private static Command swipeCommand(AutoTrajectory path, String pathName) {
         return Commands.sequence(
                 // Intake (only at start) and run path
-                Commands.deadline(
-                        path.cmd(),
-                        AutoFactory900.runIntake()),
-                        // pathName.equals("OneSwipe")
-                        //         ? AutoFactory900.runIntake()
-                        //         : Commands.none()),
+                Commands.deadline(path.cmd(), AutoFactory900.runIntake()),
+                // pathName.equals("OneSwipe")
+                //         ? AutoFactory900.runIntake()
+                //         : Commands.none()),
 
                 // Aim turret/hood and shoot
                 Commands.race(

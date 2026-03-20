@@ -56,5 +56,4 @@ public class IntakePivotSubsystem
                         / 2.0;
         return inputs.unitPosition < midpoint;
     }
-
 }
