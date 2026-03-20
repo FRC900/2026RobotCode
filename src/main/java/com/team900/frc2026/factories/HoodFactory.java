@@ -46,19 +46,46 @@ public class HoodFactory {
                 .withName("Hood Stow");
     }
 
+//     public static Command zero(RobotContainer container) {
+//         return Commands.sequence(
+//                 container.getHoodSubsystem().runOnce(container.getHoodSubsystem()::disableSoftLimits),
+//                 container
+//                         .getHoodSubsystem()
+//                         .dutyCycleCommand(() -> 0.05)
+//                         .until(RobotState.getInstance()::getHoodHasZeroed),
+//                container.getHoodSubsystem().runOnce(
+//                        () -> container.getHoodSubsystem()
+//                         .setCurrentPosition(HoodConstants.kHoodRotorMinPosition)),
+                
+//                 container.getHoodSubsystem().run(container.getHoodSubsystem()::enableSoftLimits)
+//         ).withName("Zero Hood");
+//     }
+
     public static Command zero(RobotContainer container) {
         return Commands.sequence(
-                container.getHoodSubsystem().runOnce(container.getHoodSubsystem()::disableSoftLimits),
-                container
-                        .getHoodSubsystem()
-                        .dutyCycleCommand(() -> 0.05)
-                        .until(RobotState.getInstance()::getHoodHasZeroed),
-               container.getHoodSubsystem().run(
-                       () -> container.getHoodSubsystem()
-                        .setCurrentPosition(HoodConstants.kHoodRotorMaxPosition)),
-                
-                container.getHoodSubsystem().run(container.getHoodSubsystem()::enableSoftLimits)
-        ).withName("Zero Hood");
+                        container
+                                .getHoodSubsystem()
+                                .runOnce(
+                                        () -> {
+                                            RobotState.getInstance().resetHoodHasZero();
+                                            container.getHoodSubsystem().disableSoftLimits();
+                                        }),
+                        container
+                                .getHoodSubsystem()
+                                .dutyCycleCommand(() -> 0.05)
+                                .until(RobotState.getInstance()::getHoodHasZeroed),
+                        container
+                                .getHoodSubsystem()
+                                .runOnce(
+                                        () ->
+                                                container
+                                                        .getHoodSubsystem()
+                                                        .setCurrentPosition(
+                                                                Units.degreesToRotations(75))),
+                        container
+                                .getHoodSubsystem()
+                                .runOnce(container.getHoodSubsystem()::enableSoftLimits))
+                .withName("Zero Hood");
     }
 
     public static Command shoot(RobotContainer container, double tolerance) {

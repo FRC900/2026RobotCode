@@ -18,7 +18,7 @@ public class ShooterConstants {
             new ServoMotorSubsystemWithFollowersConfig();
     public static final FollowerConfig kShooterLeftConfig = new FollowerConfig();
 
-    public static final Gains gains = new Gains(0.6, 0, 0, 0.28, 0.115, 0, 0);
+    public static final Gains gains = new Gains(10, 0, 0, 5, 0.12, 0, 0);
 
     static {
         kShooterConfig.name = "Shooter Right";
@@ -87,8 +87,8 @@ public class ShooterConstants {
 
     public static final double kShooterGearRatio = 1;
     public static final double kIdleRPS = 1200. / 60.;
-    public static final double kShootingRPS = 5000. / 60.;
-    public static final double kFeedingRPS = 5000. / 60.;
+    public static final double kShootingRPS = 3700. / 60.;
+    public static final double kFeedingRPS = 4200. / 60.;
     public static final Rotation2d kTurretToShotCorrection =
             Rotation2d.fromRadians(Units.degreesToRadians(0));
 

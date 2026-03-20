@@ -22,7 +22,7 @@ public class TalonFXIO implements MotorIO {
     protected final ServoMotorSubsystemConfig config;
 
     protected final DutyCycleOut dutyCycleControl = new DutyCycleOut(0.0);
-    private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0).withEnableFOC(true);
+    private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0.0);
     private final VoltageOut voltageControl = new VoltageOut(0.0);
     private final PositionTorqueCurrentFOC positionTorqueCurrent =
             new PositionTorqueCurrentFOC(0.0);
@@ -181,10 +181,8 @@ public class TalonFXIO implements MotorIO {
     @Override
     public void setVelocitySetpoint(double unitsPerSecond, int slot) {
         talon.setControl(
-                velocityVoltage
-                        .withVelocity(unitsToRotor(unitsPerSecond))
-                        .withSlot(slot)
-                        .withEnableFOC(true));
+velocityTorqueCurrentFOC                        .withVelocity(unitsToRotor(unitsPerSecond))
+                        .withSlot(slot));
     }
 
     @Override

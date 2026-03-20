@@ -1,5 +1,6 @@
 package com.team900.frc2026.subsystems.hood;
 
+import com.ctre.phoenix.Util;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -34,8 +35,8 @@ public class HoodConstants {
     public static final double kZeroingSeconds = 0.1;
 
     // Convert rotor-rotation positions into radians
-    public static final double kHoodMinPositionRadians = kHoodRotorMinPosition;
-    public static final double kHoodMaxPositionRadians = kHoodRotorMaxPosition;
+    public static final double kHoodMinPositionRadians = Units.rotationsToRadians(kHoodRotorMinPosition);
+    public static final double kHoodMaxPositionRadians = Units.rotationsToRadians(kHoodRotorMaxPosition);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(1);

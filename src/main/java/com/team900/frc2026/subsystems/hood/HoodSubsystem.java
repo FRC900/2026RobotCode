@@ -79,7 +79,7 @@ public class HoodSubsystem
     }
 
     public void disableSoftLimits() {
-        motorIO.setEnableSoftLimits(true, false);
+        motorIO.setEnableSoftLimits(false, false);
     }
 
     public void enableSoftLimits() {

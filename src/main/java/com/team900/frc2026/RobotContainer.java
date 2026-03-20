@@ -321,11 +321,11 @@ public class RobotContainer {
         controlBoard
                 .shoot()
                 .onTrue(
-                        ((ShooterFactory.setShooterRPS(60, this)
+                        ((ShooterFactory.setShooterRPS(ShooterConstants.kShootingRPS, this)
                                         .until(
                                                 () ->
                                                         MathUtil.isNear(
-                                                                60,
+                                                                ShooterConstants.kShootingRPS,
                                                                 shooterSubsystem
                                                                         .getCurrentVelocity(),
                                                                 5))))

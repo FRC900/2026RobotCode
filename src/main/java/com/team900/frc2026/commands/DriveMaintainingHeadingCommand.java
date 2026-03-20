@@ -169,7 +169,7 @@ public class DriveMaintainingHeadingCommand extends Command {
                 MathUtil.isNear(
                         mHeadingSetpoint.get().getDegrees(),
                         mRobotContainer.getDriveSubsystem().getRotation().getDegrees(),
-                        2.5);
+                        3);
 
         return isNearHubTarget;
     }
