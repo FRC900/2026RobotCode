@@ -325,7 +325,6 @@ public class RobotContainer {
                 .and(() -> intakePivotSubsystem.isDeployed())
                 .onTrue(IntakeFactory.retractSlapdown(this));
 
-
         controlBoard
                 .shoot()
                 .onTrue(

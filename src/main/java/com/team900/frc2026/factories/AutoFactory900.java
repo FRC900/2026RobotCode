@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import lombok.Getter;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -64,8 +66,12 @@ public class AutoFactory900 {
         return new InstantCommand(() -> HoodFactory.stow(container));
     }
 
-    public static DriveMaintainingHeadingCommand alignToHub(
+    public static Command alignToHub(
             DoubleSupplier throttle, DoubleSupplier strafe, DoubleSupplier turn) {
-        return new DriveMaintainingHeadingCommand(container, throttle, strafe, turn);
+            
+            DriveMaintainingHeadingCommand autoDriveCommand = 
+                new DriveMaintainingHeadingCommand(container, throttle, strafe, turn);
+            autoDriveCommand.setKAiming(true);
+            return autoDriveCommand;
     }
 }

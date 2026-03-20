@@ -59,9 +59,10 @@ public class Autos {
                 // Intake (only at start) and run path
                 Commands.deadline(
                         path.cmd(),
-                        pathName.equals("OneSwipe")
-                                ? AutoFactory900.deploySlapdownAndRunIntake(container)
-                                : Commands.none()),
+                        AutoFactory900.runIntake()),
+                        // pathName.equals("OneSwipe")
+                        //         ? AutoFactory900.runIntake()
+                        //         : Commands.none()),
 
                 // Aim turret/hood and shoot
                 Commands.race(
@@ -148,7 +149,7 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "oneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())));
 
         return routine.cmd();
@@ -169,7 +170,7 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())));
 
@@ -191,7 +192,7 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
                                 swipeCommand(twoAndThreeSwipePath, "ThreeSwipeCenter"),
                                 Commands.runOnce(() -> container.getDriveSubsystem().stop())));
