@@ -9,6 +9,8 @@ import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig.FollowerConfig;
+import com.team900.lib.util.LoggedTunableNumber;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -87,7 +89,8 @@ public class ShooterConstants {
 
     public static final double kShooterGearRatio = 1;
     public static final double kIdleRPS = 1200. / 60.;
-    public static final double kShootingRPS = 3700. / 60.;
+    // public static final double kShootingRPS = 3700. / 60.;
+    public static final LoggedTunableNumber kShootingRPS = new LoggedTunableNumber("kShootingRPS", 3700/60);
     public static final double kFeedingRPS = 4200. / 60.;
     public static final Rotation2d kTurretToShotCorrection =
             Rotation2d.fromRadians(Units.degreesToRadians(0));
