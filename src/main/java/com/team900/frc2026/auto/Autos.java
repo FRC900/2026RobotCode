@@ -94,20 +94,18 @@ public class Autos {
                                 simpleAutoFromPath(path),
                                 path.cmd(),
                                 Commands.race(
-                                    AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                                    AutoFactory900.waitSeconds(AutoConstants.alignTime)
-                                ),
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
                                 Commands.race(
-                                    AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                                    AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)
-                                ),
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(
+                                                AutoConstants.eightBallShootTime)),
                                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
                                 Commands.runOnce(
-                                    () -> {
-                                        container.getDriveSubsystem().stop();
-                                        container.getDriveCommand().setKAiming(false);
-                                    }
-                                )));
+                                        () -> {
+                                            container.getDriveSubsystem().stop();
+                                            container.getDriveCommand().setKAiming(false);
+                                        })));
 
         return routine.cmd();
     }
@@ -345,7 +343,7 @@ public class Autos {
     }
 
     // MoveBackFromCenterShoot
-    public static Command MoveBackFromCenterShoot(){
+    public static Command MoveBackFromCenterShoot() {
         return MoveBackFromCenterShoot(false);
     }
 }
