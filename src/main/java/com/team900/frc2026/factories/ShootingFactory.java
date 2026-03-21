@@ -51,7 +51,7 @@ public class ShootingFactory {
                                                                 ShooterConstants.kShootingRPS,
                                                                 container.getShooterSubsystem()
                                                                         .getCurrentVelocity(),
-                                                                1))
+                                                                2))
                                 ,
                                         Commands.parallel(
                                                 HandoffFactory.runHandoff(container),
