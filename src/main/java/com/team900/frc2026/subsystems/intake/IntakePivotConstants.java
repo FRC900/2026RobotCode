@@ -57,7 +57,7 @@ public class IntakePivotConstants {
         // cancoder config
         kIntakeCanCoderConfig.CANID = new CANDeviceId(62, Constants.kCanBusCanivoreMech);
         kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .7;
-        kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.04;
+        kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.26;
         kIntakeCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
@@ -74,7 +74,7 @@ public class IntakePivotConstants {
                 kIntakeCanCoderConfig.CANID.getDeviceNumber();
         kIntakePivotConfig.fxConfig.Feedback.FeedbackSensorSource =
                 FeedbackSensorSourceValue.FusedCANcoder;
-        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio = 18.3704;
+        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio = 21;
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
