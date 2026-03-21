@@ -13,7 +13,9 @@ public class SuperstructureFactory {
     public static Command aim(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         // return null;
-        return Commands.parallel(HoodFactory.aimHoodToPose(setPointSupplier, container),new InstantCommand(() -> container.getDriveCommand().setKAiming(true)) );
+        return Commands.parallel(
+                HoodFactory.aimHoodToPose(setPointSupplier, container),
+                new InstantCommand(() -> container.getDriveCommand().setKAiming(true)));
         /*Command to aim at target
          * Aim turret
          * Aim hood */

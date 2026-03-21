@@ -10,6 +10,8 @@ public class AutoConstants {
 
     public static final double eightBallShootTime = 0.5;
     public static final double fullHopperShootTime = 5;
+    public static final double stowIntakeShootTime = 3;
+    public static final double postStowShootTime = 2;
     public static final double stopShootTime = 0.5;
     public static final double alignTime = 1;
 

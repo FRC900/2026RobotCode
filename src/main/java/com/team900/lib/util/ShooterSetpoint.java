@@ -1,7 +1,6 @@
 package com.team900.lib.util;
 
 import com.team900.frc2026.RobotState;
-import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -101,8 +100,7 @@ public class ShooterSetpoint {
         boolean validSetpont = true;
         double shooterRPS = ShooterConstants.kShootingRPS.get();
 
-        double hoodSetpoint =
-                getPhi(distanceToTarget, 0.0);
+        double hoodSetpoint = getPhi(distanceToTarget, 0.0);
 
         // values for hood are placeholders rn since that depends on the lookup table
         return new ShooterSetpoint(shooterRPS, hoodSetpoint, 0.0, validSetpont);
