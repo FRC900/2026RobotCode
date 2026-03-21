@@ -262,9 +262,11 @@ public class RobotContainer {
         }
         autoDashboard = new AutoDashboard();
 
-        zeroHood = new Trigger(DriverStation::isEnabled)
-                .onTrue(Commands.defer(() -> HoodFactory.zero(this), Set.of(hoodSubsystem)));
-        
+        zeroHood =
+                new Trigger(DriverStation::isEnabled)
+                        .onTrue(
+                                Commands.defer(
+                                        () -> HoodFactory.zero(this), Set.of(hoodSubsystem)));
 
         configureBindings();
     }
@@ -281,7 +283,6 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
                 .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
 
-
         controlBoard
                 .toggleIntake()
                 .and(() -> !intakePivotSubsystem.isDeployed())
@@ -295,7 +296,7 @@ public class RobotContainer {
         controlBoard
                 .shoot()
                 .onTrue(ShootingFactory.manualShoot(this))
-                .onFalse( 
+                .onFalse(
                         new ParallelCommandGroup(
                                 shooterSubsystem.voltageCommand(() -> 0),
                                 new InstantCommand(() -> getDriveCommand().setKAiming(false)),
@@ -319,17 +320,21 @@ public class RobotContainer {
 
         controlBoard
                 .pass()
-                        .onTrue(
+                .onTrue(
                         ((new ParallelCommandGroup(
-                                HoodFactory.setPosition((() -> HoodConstants.kHoodMinPositionRadians), this),
-                                ShooterFactory.setShooterRPS(ShooterConstants.kFarShotRPS, this)
-                                        .until(
-                                                () ->
-                                                        MathUtil.isNear(
-                                                                ShooterConstants.kPassingRPS,
-                                                                shooterSubsystem
-                                                                        .getCurrentVelocity(),
-                                                                5))))
+                                        HoodFactory.setPosition(
+                                                (() -> HoodConstants.kHoodMinPositionRadians),
+                                                this),
+                                        ShooterFactory.setShooterRPS(
+                                                        ShooterConstants.kFarShotRPS, this)
+                                                .until(
+                                                        () ->
+                                                                MathUtil.isNear(
+                                                                        ShooterConstants
+                                                                                .kPassingRPS,
+                                                                        shooterSubsystem
+                                                                                .getCurrentVelocity(),
+                                                                        5))))
                                 .andThen(
                                         new ParallelCommandGroup(
                                                 HandoffFactory.runHandoff(this),

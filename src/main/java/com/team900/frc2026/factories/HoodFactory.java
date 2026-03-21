@@ -32,7 +32,7 @@ public class HoodFactory {
 
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance
     public static Command setPosition(DoubleSupplier value, RobotContainer container) {
-           return Commands.run(
+        return Commands.run(
                         () -> {
                             container.getHoodSubsystem().setPositionRadians(value.getAsDouble(), 0);
                         },
