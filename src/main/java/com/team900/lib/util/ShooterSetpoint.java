@@ -23,26 +23,41 @@ public class ShooterSetpoint {
     private double hoodFF;
     private boolean isValid;
 
-    private static final PolynomialModel phiShootingModel;
-    private static final PolynomialModel thetaShootingModel;
+    private static final PolynomialModel phiShootingModelClose;
+    private static final PolynomialModel thetaShootingModelClose;
+    private static final PolynomialModel phiShootingModelFar;
+    private static final PolynomialModel thetaShootingModelFar;
 
     static {
         try {
             if (RobotBase.isReal()) {
-                phiShootingModel =
+                phiShootingModelClose =
                         PolynomialModel.load(
-                                "/home/lvuser/deploy/shooting_models/phi_shooter_model.json");
-                thetaShootingModel =
+                                "/home/lvuser/deploy/trajectories/30_RPS/phi_model.json");
+                thetaShootingModelClose =
                         PolynomialModel.load(
-                                "/home/lvuser/deploy/shooting_models/theta_shooter_model.json");
+                                "/home/lvuser/deploy/trajectories/30_RPS/theta_model.json");
+                phiShootingModelFar =
+                        PolynomialModel.load(
+                                "/home/lvuser/deploy/trajectories/34_RPS/phi_model.json");
+                thetaShootingModelFar =
+                        PolynomialModel.load(
+                                "/home/lvuser/deploy/trajectories/34_RPS/theta_model.json");
             } else {
-                phiShootingModel =
+                phiShootingModelClose =
                         PolynomialModel.load(
-                                "src/main/deploy/shooting_models/phi_shooter_model.json");
-                thetaShootingModel =
+                                "src/main/deploy/trajectories/30_RPS/phi_model.json");
+                thetaShootingModelClose =
                         PolynomialModel.load(
-                                "src/main/deploy/shooting_models/theta_shooter_model.json");
+                                "src/main/deploy/trajectories/30_RPS/theta_model.json");
+                phiShootingModelFar =
+                        PolynomialModel.load(
+                                "/home/lvuser/deploy/trajectories/34_RPS/phi_model.json");
+                thetaShootingModelFar =
+                        PolynomialModel.load(
+                                "/home/lvuser/deploy/trajectories/34_RPS/theta_model.json");
             }
+
         } catch (IOException e) {
             throw new RuntimeException("Failed to load shooter polynomial models", e);
         }
@@ -98,7 +113,13 @@ public class ShooterSetpoint {
         // var angular = robotSpeeds.omegaRadiansPerSecond;
 
         boolean validSetpont = true;
-        double shooterRPS = ShooterConstants.kShootingRPS;
+
+        double shooterRPS;
+        if (distanceToTarget < 2.24) {
+            shooterRPS = ShooterConstants.kCloseShotRPS;
+        } else {
+            shooterRPS = ShooterConstants.kFarShotRPS;
+        }
 
         double hoodSetpoint = getPhi(distanceToTarget, 0.0);
 
@@ -114,7 +135,12 @@ public class ShooterSetpoint {
      * @return phi in radians
      */
     public static double getPhi(double r, double vf) {
-        return phiShootingModel.evaluate(r, vf);
+        if (r < 2.24) {
+            return phiShootingModelClose.evaluate(r, vf);
+        } else {
+            return phiShootingModelFar.evaluate(r, vf);
+        }
+        
     }
 
     /**
@@ -125,7 +151,11 @@ public class ShooterSetpoint {
      * @return theta in radians
      */
     public static double getTheta(double r, double vl) {
-        return thetaShootingModel.evaluate(r, vl);
+        if (r < 2.24) {
+            return thetaShootingModelClose.evaluate(r, vl);
+        } else {
+            return thetaShootingModelFar.evaluate(r, vl);
+        }
     }
 
     public double getShooterRPS() {

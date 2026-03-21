@@ -44,11 +44,11 @@ public class ShootingFactory {
                 Commands.parallel(
                                 HoodFactory.setPosition(() -> HoodConstants.kHoodRotorMaxPosition - 0.01, container),
                                 new InstantCommand(() -> container.getDriveCommand().setKAiming(true)),
-                                ShooterFactory.setShooterRPS(ShooterConstants.kShootingRPS, container))
+                                ShooterFactory.setShooterRPS(ShooterConstants.kCloseShotRPS, container))
                                         .until(
                                                 () ->
                                                         MathUtil.isNear(
-                                                                ShooterConstants.kShootingRPS,
+                                                                ShooterConstants.kCloseShotRPS,
                                                                 container.getShooterSubsystem()
                                                                         .getCurrentVelocity(),
                                                                 2))
