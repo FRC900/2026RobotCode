@@ -208,6 +208,8 @@ public class RobotContainer {
 
     @Getter private final ControlBoard controlBoard = ControlBoard.getInstance();
 
+    private final Trigger zeroHood;
+
     private final SimTalonFXWithCancoder simulatedIntakeMotor =
             Robot.isSimulation()
                     ? new SimTalonFXWithCancoder(IntakePivotConstants.kIntakePivotConfig)
@@ -259,12 +261,18 @@ public class RobotContainer {
             this.simulatedRobotState.init();
         }
         autoDashboard = new AutoDashboard();
+
+        zeroHood = new Trigger(DriverStation::isEnabled)
+                .onTrue(Commands.defer(() -> HoodFactory.zero(this), Set.of(hoodSubsystem)));
+        
+
         configureBindings();
     }
 
     @Setter @Getter private boolean intakeDeployed = intakePivotSubsystem.isDeployed();
 
     private void configureBindings() {
+        
         // Swerve Drive
         driveSubsystem.setDefaultCommand(driveCommand);
 

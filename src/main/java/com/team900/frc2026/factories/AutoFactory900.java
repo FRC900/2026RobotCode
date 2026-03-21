@@ -64,6 +64,10 @@ public class AutoFactory900 {
         return new InstantCommand(() -> HoodFactory.stow(container));
     }
 
+    public static Command zeroHood(RobotContainer container) {
+        return HoodFactory.zero(container);
+    }
+
     public static Command alignToHub(
             DoubleSupplier throttle, DoubleSupplier strafe, DoubleSupplier turn) {
 
