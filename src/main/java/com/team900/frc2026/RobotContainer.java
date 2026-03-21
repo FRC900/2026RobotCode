@@ -243,7 +243,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();=======
+    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();
@@ -307,7 +307,7 @@ public class RobotContainer {
 
         controlBoard
                 .shootAuto()
-                .onTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
+                .onTrue(ShootingFactory.shoot(ShooterSetpoint::makeShootingSetpoint, this))
                 .onFalse(
                         new ParallelCommandGroup(
                                 shooterSubsystem.voltageCommand(() -> 0),
@@ -315,6 +315,11 @@ public class RobotContainer {
                                 SpindexerFactory.stopSpindexer(this),
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
+        controlBoard.turretShoot().onTrue(ShootingFactory.turretShoot(ShooterSetpoint::makeShootingSetpoint, this)).onFalse(new ParallelCommandGroup(shooterSubsystem.voltageCommand(() -> 0),
+        SpindexerFactory.stopSpindexer(this),
+        IntakeFactory.stopIntake(this),
+        HandoffFactory.stopHandoff(this)
+        ));
 
         controlBoard
                 .pass()

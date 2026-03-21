@@ -29,7 +29,7 @@ public class Autos {
                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
                         AutoFactory900.waitSeconds(AutoConstants.alignTime)),
                 Commands.race(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.shoot(ShooterSetpoint::makeShootingSetpoint),
                         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
                 Commands.runOnce(
@@ -72,11 +72,11 @@ public class Autos {
                         AutoFactory900.waitSeconds(AutoConstants.alignTime)),
                 // Shoot for 3 seconds, then stow intake, then keep shooting
                 Commands.race(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.shoot(ShooterSetpoint::makeShootingSetpoint),
                         AutoFactory900.waitSeconds(AutoConstants.stowIntakeShootTime)),
                 AutoFactory900.retractSlapdown(),
                 Commands.race(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.shoot(ShooterSetpoint::makeShootingSetpoint),
                         AutoFactory900.waitSeconds(AutoConstants.postStowShootTime)),
                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
                 AutoFactory900.intakeSlapdown());

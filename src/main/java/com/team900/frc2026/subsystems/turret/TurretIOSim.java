@@ -11,7 +11,6 @@ public class TurretIOSim implements TurretIO {
     private double appliedDutyCycle = 0.0;
 
     private final TurretInputs inputs = new TurretInputs();
-    private final FastTurretInputs fastInputs = new FastTurretInputs();
 
     protected double addFriction(double motorVoltage, double frictionVoltage) {
         if (Math.abs(motorVoltage) < frictionVoltage) {
@@ -39,10 +38,6 @@ public class TurretIOSim implements TurretIO {
         Logger.recordOutput("Turret/Sim/AppliedVolts", inputs.appliedVolts);
         Logger.recordOutput("Turret/Sim/CurrentStator", inputs.currentStatorAmps);
         Logger.recordOutput("Turret/Sim/PositionRotations", inputs.cancoder33AbsolutePosition);
-    }
-
-    @Override
-    public void readFastInputs(FastTurretInputs inputs) {
         inputs.positionRad = simulatedPositionRad;
         inputs.velocityRadPerSec = simulatedVelocityRadPerSec;
         inputs.turretPositionAbsolute = Rotation2d.fromRadians(simulatedPositionRad);

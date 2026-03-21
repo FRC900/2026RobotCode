@@ -34,9 +34,9 @@ public interface IButtonControlBoard {
 
     Trigger pass();
 
-    Trigger toggleHoodMax();
-
     Trigger swerveAlignToHub();
+
+    Trigger turretShoot()  ;
 
     // Trigger turretAlignToHub();
 }

@@ -105,14 +105,19 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
         return additionalController.square().and(() -> false);
     }
 
-    @Override
-    public Trigger toggleHoodMax() {
-        return controller.square();
-    }
+    // @Override
+    // public Trigger toggleHoodMax() {
+    //     return controller.square();
+    // }
 
     @Override
     public Trigger swerveAlignToHub() {
         return controller.circle();
+    }
+
+    @Override 
+    public Trigger turretShoot()    {
+        return controller.square();
     }
 
     // @Override

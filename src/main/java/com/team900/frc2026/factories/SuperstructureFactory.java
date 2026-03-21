@@ -20,6 +20,16 @@ public class SuperstructureFactory {
          * Aim hood */
     }
 
+    public static Command aimWTurret(
+            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
+        return Commands.parallel(
+                HoodFactory.aimHoodToPose(setPointSupplier, container),
+                    TurretFactory.aimTurretToPose(setPointSupplier));
+        /*Command to aim at target
+         * Aim turret
+         * Aim hood */
+    }
+
     public static Command stow(RobotContainer container) {
         return new ParallelCommandGroup(HoodFactory.stow(container));
     }

@@ -121,27 +121,6 @@ public class TurretIOHardware implements TurretIO {
         talon.optimizeBusUtilization();
     }
 
-    public List<BaseStatusSignal> getStatusSignals() {
-        // Only read position and velocity at 250 hz
-        return Arrays.asList(
-                positionSignal, velocitySignal, cancoder33AbsolutePosition, cancoder33Velocity);
-    }
-
-    public void readFastInputs(FastTurretInputs inputs) {
-        double talonPosition =
-                BaseStatusSignal.getLatencyCompensatedValue(positionSignal, velocitySignal)
-                        .in(Radians);
-        double kGearRatio = TurretConstants.kTurretGearRatio;
-        inputs.positionRad = Units.rotationsToRadians(talonPosition * kGearRatio);
-        inputs.velocityRadPerSec =
-                Units.rotationsToRadians(velocitySignal.getValueAsDouble() * kGearRatio);
-        inputs.turretPositionAbsolute =
-                Rotation2d.fromRotations(
-                        BaseStatusSignal.getLatencyCompensatedValue(
-                                        cancoder33AbsolutePosition, cancoder33Velocity)
-                                .in(Rotation));
-    }
-
     @Override
     public void readInputs(TurretInputs inputs) {
         BaseStatusSignal.refreshAll(
@@ -156,11 +135,24 @@ public class TurretIOHardware implements TurretIO {
         inputs.appliedVolts = voltsSignal.getValueAsDouble();
         inputs.currentStatorAmps = currentStatorSignal.getValueAsDouble();
         inputs.currentSupplyAmps = currentSupplySignal.getValueAsDouble();
+
+         double talonPosition =
+                BaseStatusSignal.getLatencyCompensatedValue(positionSignal, velocitySignal)
+                        .in(Radians);
+        double kGearRatio = TurretConstants.kTurretGearRatio;
+        inputs.positionRad = Units.rotationsToRadians(talonPosition * kGearRatio);
+        inputs.velocityRadPerSec =
+                Units.rotationsToRadians(velocitySignal.getValueAsDouble() * kGearRatio);
+        inputs.turretPositionAbsolute =
+                Rotation2d.fromRotations(
+                        BaseStatusSignal.getLatencyCompensatedValue(
+                                        cancoder33AbsolutePosition, cancoder33Velocity)
+                                .in(Rotation));
     }
 
     @Override
     public void setOpenLoopDutyCycle(double dutyCycle) {
-        // talon.setControl(dutyCycleControl.withOutput(dutyCycle));
+        talon.setControl(dutyCycleControl.withOutput(dutyCycle));
         Logger.recordOutput("Turret/IO/setOpenLoopDutyCycle/dutyCycle", dutyCycle);
     }
 
@@ -243,8 +235,8 @@ public class TurretIOHardware implements TurretIO {
         double setpointRotations = Units.radiansToRotations(setpointRadians);
         double setpointRotor = setpointRotations / TurretConstants.kTurretGearRatio;
         double ffVel = Units.radiansToRotations(radsPerSecond) / TurretConstants.kTurretGearRatio;
-        // talon.setControl(
-        //         positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
+        talon.setControl(
+                positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radiansFromCenter", radiansFromCenter);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radsPerSecond", radsPerSecond);
         Logger.recordOutput("Turret/IO/setPositionSetpoint/ffVel", ffVel);

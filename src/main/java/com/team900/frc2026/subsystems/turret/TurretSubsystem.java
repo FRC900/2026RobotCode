@@ -1,12 +1,12 @@
 package com.team900.frc2026.subsystems.turret;
 
+import com.team900.frc2026.factories.TurretFactory;
 import com.team900.lib.util.FullSubsystem;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretSubsystem extends FullSubsystem {
     private final TurretIO io;
-    private final FastTurretInputsAutoLogged fastInputs = new FastTurretInputsAutoLogged();
 
     private final TurretInputsAutoLogged inputs = new TurretInputsAutoLogged();
 
@@ -17,14 +17,13 @@ public class TurretSubsystem extends FullSubsystem {
 
     public TurretSubsystem(final TurretIO io) {
         this.io = io;
+
     }
 
     @Override
     public void periodic() {
-        io.readFastInputs(fastInputs);
         io.readInputs(inputs);
 
-        Logger.processInputs("Turret/Fast", fastInputs);
         Logger.processInputs("Turret", inputs);
     }
 
@@ -40,7 +39,6 @@ public class TurretSubsystem extends FullSubsystem {
         }
     }
 
-    // TODO: at some point check this to see if it works with 900 turret
     /**
      * Finds the best reachable angle for the turret target If the target is within limits, use it
      * directly Otherwise check if rotating 360 degrees in either direction gives an equivalent that
@@ -63,7 +61,7 @@ public class TurretSubsystem extends FullSubsystem {
         for (int i = -2; i <= 2; i++) {
             double candidate = desiredRad + i * 2.0 * Math.PI;
             if (candidate >= min && candidate <= max) {
-                double distance = Math.abs(candidate - fastInputs.positionRad);
+                double distance = Math.abs(candidate - inputs.positionRad);
                 if (distance < bestDistance) {
                     bestDistance = distance;
                     bestAngle = candidate;
@@ -92,17 +90,6 @@ public class TurretSubsystem extends FullSubsystem {
         velocitySetpointRadPerSec = velocityRadPerSec;
     }
 
-    public void setPositionDegrees(double degrees) {
-        isOpenLoop = false;
-        positionSetpointRad = Math.toRadians(degrees);
-        velocitySetpointRadPerSec = 0.0;
-    }
-
-    public void setPositionDegrees(double degrees, double velocityDegPerSec) {
-        isOpenLoop = false;
-        positionSetpointRad = Math.toRadians(degrees);
-        velocitySetpointRadPerSec = Math.toRadians(velocityDegPerSec);
-    }
 
     public void setOpenLoop(double dutyCycle) {
         isOpenLoop = true;
@@ -115,19 +102,19 @@ public class TurretSubsystem extends FullSubsystem {
     }
 
     public double getPositionRadians() {
-        return fastInputs.positionRad;
+        return inputs.positionRad;
     }
 
     public double getVelocityRadPerSec() {
-        return fastInputs.velocityRadPerSec;
+        return inputs.velocityRadPerSec;
     }
 
     public double getVelocityDegPerSec() {
-        return Math.toDegrees(fastInputs.velocityRadPerSec);
+        return Math.toDegrees(inputs.velocityRadPerSec);
     }
 
     public boolean atSetpoint() {
-        return Math.abs(fastInputs.positionRad - positionSetpointRad)
+        return Math.abs(inputs.positionRad - positionSetpointRad)
                 < TurretConstants.toleranceRad;
     }
 }

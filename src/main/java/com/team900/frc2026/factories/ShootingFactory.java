@@ -3,6 +3,7 @@ package com.team900.frc2026.factories;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
+import com.team900.frc2026.subsystems.turret.TurretConstants;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +26,20 @@ public class ShootingFactory {
                         container.getHoodSubsystem().getCurrentPosition(),
                         0.003);
                 // && container.getDriveCommand().isNearTarget();
+    }
+
+    @AutoLogOutput
+    public static boolean canShootWTurret(
+            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
+        return MathUtil.isNear(
+                        setPointSupplier.get().getShooterRPS(),
+                        container.getShooterSubsystem().getCurrentVelocity(),
+                        2)
+                && MathUtil.isNear(
+                        setPointSupplier.get().getHoodRadians() / (2.0 * Math.PI),
+                        container.getHoodSubsystem().getCurrentPosition(),
+                        0.003)
+                && MathUtil.isNear(setPointSupplier.get().getTurretRadiansFromCenter(), container.getTurretSubsystem().getPositionRadians(), TurretConstants.kTurretShootingEpsilon);
     }
 
     public static Command shoot(
@@ -57,4 +72,19 @@ public class ShootingFactory {
                                                 HandoffFactory.runHandoff(container),
                                                 SpindexerFactory.runSpindexer(container)));
     }
+
+
+    public static Command turretShoot(
+        Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container)   {
+                return Commands.parallel(
+    ShooterFactory.setShooterRPS(setpointSupplier, container),
+    SuperstructureFactory.aim(setpointSupplier, container),
+    Commands.sequence(
+        Commands.waitUntil(() -> canShootWTurret(setpointSupplier, container)),
+        Commands.parallel(
+            IntakeFactory.runIntake(container),
+            HandoffFactory.runHandoff(container),
+            SpindexerFactory.runSpindexer(container))));
+        }
+    
 }

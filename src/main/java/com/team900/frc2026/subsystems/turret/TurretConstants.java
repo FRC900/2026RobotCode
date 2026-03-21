@@ -8,7 +8,7 @@ import edu.wpi.first.math.util.Units;
 public class TurretConstants {
 
     // 14t:42t  24:176t  overall: 22:1
-    public static final double kTurretGearRatio = 1.0 / 22.0;
+    public static final double kTurretGearRatio = 22.0;
     // TODO: Check this canID just for the Talon
     public static final CANDeviceId kTurretTalonCanID =
             new CANDeviceId(41, Constants.kCanBusCanivoreMech);
@@ -28,8 +28,9 @@ public class TurretConstants {
 
     // TODO: Measure the actual hard stop positions on the robot and set these values
     // These are hard stop limits in radians from center (0 = forward)
-    public static final double kTurretMinPositionRadians = -2.0 * Math.PI;
-    public static final double kTurretMaxPositionRadians = 2.0 * Math.PI;
+    // clockwise is positive
+    public static final double kTurretMinPositionRadians = 0;
+    public static final double kTurretMaxPositionRadians = 3.0 * Math.PI / 2.0;
 
     public static final double turretOffSetFromCenterX =
             0.1524; // parallel to the front bumpers, need to tune this
@@ -44,7 +45,7 @@ public class TurretConstants {
             kTurretMaxPositionRadians - kSoftwareLimitBufferRadians;
 
     public static final double kTurretEpsilon = Units.degreesToRadians(2.0);
-    public static final double kTurretShootingEpsilon = Units.degreesToRadians(5.0);
+    public static final double kTurretShootingEpsilon = Units.degreesToRadians(3.0);
 
     public static final double toleranceRad = 0.1;
 

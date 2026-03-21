@@ -19,7 +19,6 @@ public class HubAlignTurretCommand extends Command {
     @Override
     public void execute() {
         TurretAlignUtil aligner = new TurretAlignUtil(drive.getPose());
-        turret.setPositionDegrees(aligner.turretDegreesFromZero());
     }
 
     @Override

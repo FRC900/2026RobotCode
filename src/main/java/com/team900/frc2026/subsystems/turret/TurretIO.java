@@ -17,12 +17,6 @@ import org.littletonrobotics.junction.AutoLog;
  * status signal management, providing a flexible mechanism to control and monitor the turret.
  */
 public interface TurretIO {
-    @AutoLog
-    class FastTurretInputs {
-        public Rotation2d turretPositionAbsolute = MathHelpers.kRotation2dZero;
-        public double positionRad = 0.0;
-        public double velocityRadPerSec = 0.0;
-    }
 
     @AutoLog
     class TurretInputs {
@@ -31,6 +25,9 @@ public interface TurretIO {
         public double currentSupplyAmps = 0.0;
         public double cancoder33AbsolutePosition = 0.0;
         public double cancoder29AbsolutePosition = 0.0;
+        public Rotation2d turretPositionAbsolute = MathHelpers.kRotation2dZero;
+        public double positionRad = 0.0;
+        public double velocityRadPerSec = 0.0;
     }
 
     default List<BaseStatusSignal> getStatusSignals() {
@@ -42,8 +39,6 @@ public interface TurretIO {
     default void readInputs(TurretInputs inputs) {}
     ;
 
-    default void readFastInputs(FastTurretInputs inputs) {}
-    ;
 
     // Set open loop duty cycle
     default void setOpenLoopDutyCycle(double dutyCycle) {}
