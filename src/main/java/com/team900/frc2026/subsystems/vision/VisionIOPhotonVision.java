@@ -97,14 +97,14 @@ public class VisionIOPhotonVision implements VisionIO {
                             new Pose3d(
                                     new Translation3d(fieldToRobot), new Rotation3d(robotRotation));
 
-                    // poseObservations.add(
-                    //         new PoseObservation(
-                    //                 result.getTimestampSeconds(), // Timestamp
-                    //                 robotPose, // 3D pose estimate
-                    //                 0, // Ambiguity
-                    //                 1, // Tag count
-                    //                 tagDistance, // Average tag distance
-                    //                 PoseObservationType.PINHOLE)); // Observation type
+                    poseObservations.add(
+                            new PoseObservation(
+                                    result.getTimestampSeconds(), // Timestamp
+                                    robotPose, // 3D pose estimate
+                                    0, // Ambiguity
+                                    1, // Tag count
+                                    tagDistance, // Average tag distance
+                                    PoseObservationType.PINHOLE)); // Observation type
 
                     tagIds.add((short) target.fiducialId);
                 }

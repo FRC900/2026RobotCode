@@ -20,7 +20,7 @@ public class ShooterConstants {
             new ServoMotorSubsystemWithFollowersConfig();
     public static final FollowerConfig kShooterLeftConfig = new FollowerConfig();
 
-    public static final Gains gains = new Gains(10, 0, 0, 5, 0.12, 0, 0);
+    public static final Gains gains = new Gains(.8, 0, 0, 0, 0.203, 0, 0);
 
     static {
         kShooterConfig.name = "Shooter Right";
@@ -57,9 +57,12 @@ public class ShooterConstants {
         kShooterLeftConfig.inverted = true;
         kShooterLeftConfig.config.momentOfInertia = 0.0011720789;
         kShooterLeftConfig.config.talonCANID = new CANDeviceId(56, new CANBus("mech"));
-        kShooterLeftConfig.config.unitToRotorRatio = 1;
+        kShooterLeftConfig.config.unitToRotorRatio = 1.;
 
         kShooterLeftConfig.config.fxConfig = new TalonFXConfiguration();
+
+        kShooterConfig.fxConfig.Feedback.SensorToMechanismRatio = 14. / 18.;
+        kShooterConfig.fxConfig.Feedback.RotorToSensorRatio = 1.;
 
         kShooterLeftConfig.config.fxConfig.Slot0.kA = gains.ffkA();
         kShooterLeftConfig.config.fxConfig.Slot0.kD = gains.kD();
@@ -89,9 +92,9 @@ public class ShooterConstants {
 
     public static final double kShooterGearRatio = 1;
     public static final double kIdleRPS = 1200. / 60.;
-    // public static final double kShootingRPS = 3700. / 60.;
-    public static final LoggedTunableNumber kShootingRPS = new LoggedTunableNumber("kShootingRPS", 3700/60);
+    public static final double kShootingRPS = 3700. / 60.;
     public static final double kFeedingRPS = 4200. / 60.;
+    public static final double kPassingRPS = 4800. / 60.;
     public static final Rotation2d kTurretToShotCorrection =
             Rotation2d.fromRadians(Units.degreesToRadians(0));
 

@@ -31,11 +31,13 @@ public class HoodFactory {
     }
 
     // Sets the hood to a fixed position and finishes when it arrives within the tolerance
-    public static Command setPosition(DoubleSupplier radians, RobotContainer container) {
-        return container
-                .getHoodSubsystem()
-                .positionSetpointCommand(radians)
-                .withName("Hood Set Position Blocking");
+    public static Command setPosition(DoubleSupplier value, RobotContainer container) {
+           return Commands.run(
+                        () -> {
+                            container.getHoodSubsystem().setPositionRadians(value.getAsDouble(), 0);
+                        },
+                        container.getHoodSubsystem())
+                .withName("Aim Hood to Pose (rad)");
     }
 
     // Stows the hood

@@ -52,9 +52,9 @@ public class ShooterSubsystem
         state.setShooterRPS(inputs.velocityUnitsPerSecond);
         Logger.recordOutput(getName() + "/DistanceFromHub", distanceToTarget);
 
-        if (ShooterConstants.kShootingRPS.hasChanged(hashCode()){
+        // if (ShooterConstants.kShootingRPS.hasChanged(hashCode()){
 
-        }
+        // }
 
         double hoodSetpoint =
                 ShooterSetpoint.getPhi(distanceToTarget, 0.0);

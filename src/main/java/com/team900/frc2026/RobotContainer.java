@@ -272,47 +272,15 @@ public class RobotContainer {
     @Setter @Getter private boolean intakeDeployed = intakePivotSubsystem.isDeployed();
 
     private void configureBindings() {
-        
+
         // Swerve Drive
         driveSubsystem.setDefaultCommand(driveCommand);
-
-        // controlBoard
-        //         .turretAlignToHub()
-        //         .whileTrue(
-        //                 new HubAlignTurretCommand(
-        //                         driveSubsystem,
-        //                         turretSubsystem));
 
         controlBoard
                 .swerveAlignToHub()
                 .onTrue(new InstantCommand(() -> getDriveCommand().setKAiming(true)))
                 .onFalse(new InstantCommand(() -> getDriveCommand().setKAiming(false)));
 
-        // Intake pivot, l1 to retract and deploy intake
-        // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.defer(
-        //                         () -> {
-        //                             if (intakeDeployed) {
-        //                                 intakeDeployed = false;
-        //                                 return IntakeFactory.retractSlapdown(this);
-        //                             } else {
-        //                                 intakeDeployed = true;
-        //                                 return IntakeFactory.deploySlapdown(this);
-        //                             }
-        //                         },
-        //                         Set.of(getIntakePivotSubsystem())));
-
-        // controlBoard
-        //         .toggleIntake()
-        //         .onTrue(
-        //                 Commands.defer(
-        //                         () ->
-        //                                 intakePivotSubsystem.isDeployed()
-        //                                         ? IntakeFactory.retractSlapdown(this)
-        //                                         : IntakeFactory.deploySlapdown(this),
-        //                         Set.of(getIntakePivotSubsystem())));
 
         controlBoard
                 .toggleIntake()
@@ -326,24 +294,12 @@ public class RobotContainer {
 
         controlBoard
                 .shoot()
-                .onTrue(
-                        ((ShooterFactory.setShooterRPS(ShooterConstants.kShootingRPS.get(), this)
-                                        .until(
-                                                () ->
-                                                        MathUtil.isNear(
-                                                                ShooterConstants.kShootingRPS.get(),
-                                                                shooterSubsystem
-                                                                        .getCurrentVelocity(),
-                                                                5))))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this))))
-                .onFalse(
+                .onTrue(ShootingFactory.manualShoot(this))
+                .onFalse( 
                         new ParallelCommandGroup(
-                                // ShooterFactory.setShooterRPS(0, this),
                                 shooterSubsystem.voltageCommand(() -> 0),
-                                SpindexerFactory.exhaustSpindexer(instance)
+                                new InstantCommand(() -> getDriveCommand().setKAiming(false)),
+                                SpindexerFactory.exhaustSpindexer(this)
                                         .withTimeout(0.25)
                                         .andThen(SpindexerFactory.stopSpindexer(this)),
                                 HandoffFactory.exhaustHandoff(this)
@@ -355,11 +311,39 @@ public class RobotContainer {
                 .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
                 .onFalse(
                         new ParallelCommandGroup(
-                                ShooterFactory.setShooterRPS(0, this),
+                                shooterSubsystem.voltageCommand(() -> 0),
                                 new InstantCommand(() -> getDriveCommand().setKAiming(false)),
                                 SpindexerFactory.stopSpindexer(this),
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
+
+        controlBoard
+                .pass()
+                        .onTrue(
+                        ((new ParallelCommandGroup(
+                                HoodFactory.setPosition((() -> HoodConstants.kHoodMinPositionRadians), this),
+                                ShooterFactory.setShooterRPS(ShooterConstants.kShootingRPS, this)
+                                        .until(
+                                                () ->
+                                                        MathUtil.isNear(
+                                                                ShooterConstants.kPassingRPS,
+                                                                shooterSubsystem
+                                                                        .getCurrentVelocity(),
+                                                                5))))
+                                .andThen(
+                                        new ParallelCommandGroup(
+                                                HandoffFactory.runHandoff(this),
+                                                SpindexerFactory.runSpindexer(this)))))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                // ShooterFactory.setShooterRPS(0, this),
+                                shooterSubsystem.voltageCommand(() -> 0),
+                                SpindexerFactory.exhaustSpindexer(instance)
+                                        .withTimeout(0.25)
+                                        .andThen(SpindexerFactory.stopSpindexer(this)),
+                                HandoffFactory.exhaustHandoff(this)
+                                        .withTimeout(0.25)
+                                        .andThen(HandoffFactory.stopHandoff(this))));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
