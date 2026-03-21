@@ -379,10 +379,10 @@ public class RobotContainer {
 
         Trigger isTeleop = new Trigger(DriverStation::isTeleopEnabled);
 
-        new Trigger(intakeRollerSubsystem::isStalled)
-                .debounce(0.1)
-                .onTrue((IntakeFactory.exhaustIntake(this)))
-                .onFalse(Commands.none());
+        // new Trigger(intakeRollerSubsystem::isStalled)
+        //         .debounce(0.1)
+        //         .onTrue((IntakeFactory.exhaustIntake(this)))
+        //         .onFalse(Commands.none());
 
         new Trigger(() -> HubFlipUtil.isFlip((long) (RobotTime.getTimestampSeconds())))
                 .and(isTeleop)
