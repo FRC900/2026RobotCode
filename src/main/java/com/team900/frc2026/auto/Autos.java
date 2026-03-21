@@ -60,19 +60,28 @@ public class Autos {
     private static Command swipeCommand(AutoTrajectory path, String pathName) {
         return Commands.sequence(
                 // Intake (only at start) and run path
-                Commands.parallel(path.cmd(), AutoFactory900.runIntake()),
+                Commands.parallel(path.cmd(), AutoFactory900.deploySlapdownAndRunIntake(container)),
                 // pathName.equals("OneSwipe")
                 //         ? AutoFactory900.runIntake()
                 //         : Commands.none()),
+
+                // Stop intake rollers after path finishes
+                AutoFactory900.stopIntake(),
 
                 // Aim turret/hood and shoot
                 Commands.race(
                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
                         AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                // Shoot for 3 seconds, then stow intake, then keep shooting
                 Commands.race(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime));
+                        AutoFactory900.waitSeconds(AutoConstants.stowIntakeShootTime)),
+                AutoFactory900.retractSlapdown(),
+                Commands.race(
+                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.waitSeconds(AutoConstants.postStowShootTime)),
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                AutoFactory900.intakeSlapdown());
     }
 
     // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
