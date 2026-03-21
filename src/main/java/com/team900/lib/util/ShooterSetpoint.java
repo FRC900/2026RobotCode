@@ -52,10 +52,10 @@ public class ShooterSetpoint {
                                 "src/main/deploy/trajectories/30_RPS/theta_model.json");
                 phiShootingModelFar =
                         PolynomialModel.load(
-                                "/home/lvuser/deploy/trajectories/34_RPS/phi_model.json");
+                                "src/main/deploy/trajectories/34_RPS/phi_model.json");
                 thetaShootingModelFar =
                         PolynomialModel.load(
-                                "/home/lvuser/deploy/trajectories/34_RPS/theta_model.json");
+                                "src/main/deploy/trajectories/34_RPS/theta_model.json");
             }
 
         } catch (IOException e) {
