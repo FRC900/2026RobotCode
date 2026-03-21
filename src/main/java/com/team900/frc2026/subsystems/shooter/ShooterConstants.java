@@ -92,7 +92,8 @@ public class ShooterConstants {
 
     public static final double kShooterGearRatio = 1;
     public static final double kIdleRPS = 1200. / 60.;
-    public static final double kShootingRPS = 3700. / 60.;
+    public static final double kCloseShotRPS = 3000. / 60.;
+    public static final double kFarShotRPS = 3700. / 60.;
     public static final double kFeedingRPS = 4200. / 60.;
     public static final double kPassingRPS = 4800. / 60.;
     public static final Rotation2d kTurretToShotCorrection =

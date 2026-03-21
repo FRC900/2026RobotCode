@@ -322,7 +322,7 @@ public class RobotContainer {
                         .onTrue(
                         ((new ParallelCommandGroup(
                                 HoodFactory.setPosition((() -> HoodConstants.kHoodMinPositionRadians), this),
-                                ShooterFactory.setShooterRPS(ShooterConstants.kShootingRPS, this)
+                                ShooterFactory.setShooterRPS(ShooterConstants.kFarShotRPS, this)
                                         .until(
                                                 () ->
                                                         MathUtil.isNear(
