@@ -45,8 +45,7 @@ public class ShooterSetpoint {
                                 "/home/lvuser/deploy/trajectories/34_RPS/theta_model.json");
             } else {
                 phiShootingModelClose =
-                        PolynomialModel.load(
-                                "src/main/deploy/trajectories/30_RPS/phi_model.json");
+                        PolynomialModel.load("src/main/deploy/trajectories/30_RPS/phi_model.json");
                 thetaShootingModelClose =
                         PolynomialModel.load(
                                 "src/main/deploy/trajectories/30_RPS/theta_model.json");
@@ -137,7 +136,6 @@ public class ShooterSetpoint {
         } else {
             return phiShootingModelFar.evaluate(r, vf);
         }
-        
     }
 
     /**

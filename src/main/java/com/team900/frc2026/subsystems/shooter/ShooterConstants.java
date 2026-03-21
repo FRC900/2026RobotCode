@@ -9,8 +9,6 @@ import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowersConfig.FollowerConfig;
-import com.team900.lib.util.LoggedTunableNumber;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 

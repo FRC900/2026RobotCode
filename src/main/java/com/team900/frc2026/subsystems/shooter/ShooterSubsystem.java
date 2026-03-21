@@ -1,8 +1,6 @@
 package com.team900.frc2026.subsystems.shooter;
 
 import com.team900.frc2026.RobotState;
-import com.team900.frc2026.subsystems.hood.HoodConstants;
-import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import com.team900.lib.subsystems.MotorIO;
 import com.team900.lib.subsystems.MotorInputsAutoLogged;
 import com.team900.lib.subsystems.ServoMotorSubsystemWithFollowers;
@@ -58,8 +56,7 @@ public class ShooterSubsystem
 
         // }
 
-        double hoodSetpoint =
-                ShooterSetpoint.getPhi(distanceToTarget, 0.0);
+        double hoodSetpoint = ShooterSetpoint.getPhi(distanceToTarget, 0.0);
 
         Logger.recordOutput(getName() + "/HoodSetpoint", hoodSetpoint / (2 * Math.PI));
     }
