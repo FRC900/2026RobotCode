@@ -11,19 +11,21 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.function.Supplier;
 
-public class ShootingFactory {
+import org.littletonrobotics.junction.AutoLogOutput;
 
+public class ShootingFactory {
+@AutoLogOutput
     public static boolean canShoot(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return MathUtil.isNear(
                         setPointSupplier.get().getShooterRPS(),
                         container.getShooterSubsystem().getCurrentVelocity(),
-                        1)
+                        2)
                 && MathUtil.isNear(
                         setPointSupplier.get().getHoodRadians() / (2.0 * Math.PI),
                         container.getHoodSubsystem().getCurrentPosition(),
-                        0.003)
-                && container.getDriveCommand().isNearTarget();
+                        0.003);
+                // && container.getDriveCommand().isNearTarget();
     }
 
     public static Command shoot(
@@ -31,10 +33,9 @@ public class ShootingFactory {
         return Commands.sequence(
                 Commands.parallel(
                                 ShooterFactory.setShooterRPS(setPointSupplier, container),
-                                SuperstructureFactory.aim(setPointSupplier, container)) .until(() -> canShoot(setPointSupplier, container))
+                                SuperstructureFactory.aim(setPointSupplier, container)) .withTimeout(0.25)
                        ,
                 Commands.parallel(
-                        IntakeFactory.runIntake(container),
                         HandoffFactory.runHandoff(container),
                         SpindexerFactory.runSpindexer(container)));
     }
@@ -44,14 +45,14 @@ public class ShootingFactory {
                 Commands.parallel(
                                 HoodFactory.setPosition(() -> HoodConstants.kHoodRotorMaxPosition - 0.01, container),
                                 new InstantCommand(() -> container.getDriveCommand().setKAiming(true)),
-                                ShooterFactory.setShooterRPS(ShooterConstants.kCloseShotRPS, container))
-                                        .until(
-                                                () ->
-                                                        MathUtil.isNear(
-                                                                ShooterConstants.kCloseShotRPS,
-                                                                container.getShooterSubsystem()
-                                                                        .getCurrentVelocity(),
-                                                                2))
+                                ShooterFactory.setShooterRPS(ShooterConstants.kCloseShotRPS, container)).withTimeout(0.25)
+                                        // .until(
+                                        //         () ->
+                                        //                 MathUtil.isNear(
+                                        //                         ShooterConstants.kCloseShotRPS,
+                                        //                         container.getShooterSubsystem()
+                                        //                                 .getCurrentVelocity(),
+                                        //                         5))
                                 ,
                                         Commands.parallel(
                                                 HandoffFactory.runHandoff(container),

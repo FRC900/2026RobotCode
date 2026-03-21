@@ -299,16 +299,14 @@ public class RobotContainer {
                         new ParallelCommandGroup(
                                 shooterSubsystem.voltageCommand(() -> 0),
                                 new InstantCommand(() -> getDriveCommand().setKAiming(false)),
-                                SpindexerFactory.exhaustSpindexer(this)
-                                        .withTimeout(0.25)
-                                        .andThen(SpindexerFactory.stopSpindexer(this)),
-                                HandoffFactory.exhaustHandoff(this)
-                                        .withTimeout(0.25)
-                                        .andThen(HandoffFactory.stopHandoff(this))));
+                                SpindexerFactory.stopSpindexer(this)
+                                      ,
+                                HandoffFactory.stopHandoff(this)
+                                       ));
 
         controlBoard
                 .shootAuto()
-                .whileTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
+                .onTrue(ShootingFactory.shoot(ShooterSetpoint::setpointHub, this))
                 .onFalse(
                         new ParallelCommandGroup(
                                 shooterSubsystem.voltageCommand(() -> 0),

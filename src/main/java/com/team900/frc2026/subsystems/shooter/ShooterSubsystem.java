@@ -30,6 +30,8 @@ public class ShooterSubsystem
                 leadIo,
                 new MotorInputsAutoLogged[] {new MotorInputsAutoLogged()},
                 followerIo);
+
+                
     }
 
     @Override

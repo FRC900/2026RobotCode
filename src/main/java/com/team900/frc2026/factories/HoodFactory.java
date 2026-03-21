@@ -5,6 +5,8 @@ import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.hood.HoodConstants;
 import com.team900.frc2026.subsystems.hood.HoodSubsystem;
 import com.team900.lib.util.ShooterSetpoint;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -36,7 +38,7 @@ public class HoodFactory {
                         () -> {
                             container.getHoodSubsystem().setPositionRadians(value.getAsDouble(), 0);
                         },
-                        container.getHoodSubsystem())
+                        container.getHoodSubsystem()).until(() -> MathUtil.isNear(value.getAsDouble(), RobotState.getInstance().getHoodRotations(), 0.003))
                 .withName("Aim Hood to Pose (rad)");
     }
 
