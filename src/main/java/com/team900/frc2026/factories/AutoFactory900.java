@@ -36,11 +36,11 @@ public class AutoFactory900 {
     }
 
     public static Command runIntake() {
-        return new InstantCommand(() -> IntakeFactory.runIntake(container));
+        return IntakeFactory.runIntake(container);
     }
 
     public static Command stopIntake() {
-        return new InstantCommand(() -> IntakeFactory.stopIntake(container));
+        return IntakeFactory.stopIntake(container);
     }
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
@@ -62,6 +62,10 @@ public class AutoFactory900 {
 
     public static Command resetHood(RobotContainer container) {
         return new InstantCommand(() -> HoodFactory.stow(container));
+    }
+
+    public static Command zeroHood(RobotContainer container) {
+        return HoodFactory.zero(container);
     }
 
     public static Command alignToHub(

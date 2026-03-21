@@ -140,12 +140,10 @@ public class RobotContainer {
     private HoodSubsystem buildHoodSubsystem() {
         if (RobotBase.isSimulation())
             return new HoodSubsystem(
-                    HoodConstants.kHoodConfig,
-                    new SimTalonFXIO(HoodConstants.kHoodConfig));
+                    HoodConstants.kHoodConfig, new SimTalonFXIO(HoodConstants.kHoodConfig));
 
         return new HoodSubsystem(
-                HoodConstants.kHoodConfig,
-                new TalonFXIO(HoodConstants.kHoodConfig));
+                HoodConstants.kHoodConfig, new TalonFXIO(HoodConstants.kHoodConfig));
     }
 
     private TurretSubsystem buildTurretSubsystem() {
@@ -210,6 +208,8 @@ public class RobotContainer {
 
     @Getter private final ControlBoard controlBoard = ControlBoard.getInstance();
 
+    private final Trigger zeroHood;
+
     private final SimTalonFXWithCancoder simulatedIntakeMotor =
             Robot.isSimulation()
                     ? new SimTalonFXWithCancoder(IntakePivotConstants.kIntakePivotConfig)
@@ -261,12 +261,18 @@ public class RobotContainer {
             this.simulatedRobotState.init();
         }
         autoDashboard = new AutoDashboard();
+
+        zeroHood = new Trigger(DriverStation::isEnabled)
+                .onTrue(Commands.defer(() -> HoodFactory.zero(this), Set.of(hoodSubsystem)));
+        
+
         configureBindings();
     }
 
     @Setter @Getter private boolean intakeDeployed = intakePivotSubsystem.isDeployed();
 
     private void configureBindings() {
+        
         // Swerve Drive
         driveSubsystem.setDefaultCommand(driveCommand);
 
@@ -373,10 +379,10 @@ public class RobotContainer {
 
         Trigger isTeleop = new Trigger(DriverStation::isTeleopEnabled);
 
-        new Trigger(intakeRollerSubsystem::isStalled)
-                .debounce(0.1)
-                .onTrue((IntakeFactory.exhaustIntake(this)))
-                .onFalse(Commands.none());
+        // new Trigger(intakeRollerSubsystem::isStalled)
+        //         .debounce(0.1)
+        //         .onTrue((IntakeFactory.exhaustIntake(this)))
+        //         .onFalse(Commands.none());
 
         new Trigger(() -> HubFlipUtil.isFlip((long) (RobotTime.getTimestampSeconds())))
                 .and(isTeleop)

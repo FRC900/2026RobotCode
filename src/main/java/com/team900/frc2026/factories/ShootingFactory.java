@@ -9,35 +9,29 @@ import java.util.function.Supplier;
 
 public class ShootingFactory {
 
-  
-
-    public static boolean canShoot( Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container)    {
+    public static boolean canShoot(
+            Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return MathUtil.isNear(
-                                                        setPointSupplier.get().getShooterRPS(),
-                                                        container
-                                                                .getShooterSubsystem()
-                                                                .getCurrentVelocity(),
-                                                        1)
-                                                && MathUtil.isNear(
-                                                        setPointSupplier.get().getHoodRadians()
-                                                                / (2.0 * Math.PI),
-                                                        container
-                                                                .getHoodSubsystem()
-                                                                .getCurrentPosition(),
-                                                        0.003) && container.getDriveCommand().isNearTarget();
+                        setPointSupplier.get().getShooterRPS(),
+                        container.getShooterSubsystem().getCurrentVelocity(),
+                        1)
+                && MathUtil.isNear(
+                        setPointSupplier.get().getHoodRadians() / (2.0 * Math.PI),
+                        container.getHoodSubsystem().getCurrentPosition(),
+                        0.003)
+                && container.getDriveCommand().isNearTarget();
     }
 
-      public static Command shoot(
+    public static Command shoot(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return Commands.sequence(
                 Commands.parallel(
                                 ShooterFactory.setShooterRPS(setPointSupplier, container),
                                 SuperstructureFactory.aim(setPointSupplier, container))
-                        .until(() -> canShoot(setPointSupplier, container))
-                ,
+                        .until(() -> canShoot(setPointSupplier, container)),
                 Commands.parallel(
-                                IntakeFactory.runIntake(container),
-                                HandoffFactory.runHandoff(container),
-                                SpindexerFactory.runSpindexer(container)));
+                        IntakeFactory.runIntake(container),
+                        HandoffFactory.runHandoff(container),
+                        SpindexerFactory.runSpindexer(container)));
     }
 }

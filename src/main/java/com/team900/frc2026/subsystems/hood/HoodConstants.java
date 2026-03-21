@@ -1,18 +1,14 @@
 package com.team900.frc2026.subsystems.hood;
 
-import com.ctre.phoenix.Util;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
-import com.team900.lib.subsystems.CanCoderConfig;
 import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
-import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
@@ -35,16 +31,17 @@ public class HoodConstants {
     public static final double kZeroingSeconds = 0.1;
 
     // Convert rotor-rotation positions into radians
-    public static final double kHoodMinPositionRadians = Units.rotationsToRadians(kHoodRotorMinPosition);
-    public static final double kHoodMaxPositionRadians = Units.rotationsToRadians(kHoodRotorMaxPosition);
+    public static final double kHoodMinPositionRadians =
+            Units.rotationsToRadians(kHoodRotorMinPosition);
+    public static final double kHoodMaxPositionRadians =
+            Units.rotationsToRadians(kHoodRotorMaxPosition);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(1);
     // TODO: find this experimetnatlly
     public static final double kHoodStowTrenchPositionRadians = Units.degreesToRotations(75.0);
 
-    public static ServoMotorSubsystemConfig kHoodConfig =
-            new ServoMotorSubsystemConfig();
+    public static ServoMotorSubsystemConfig kHoodConfig = new ServoMotorSubsystemConfig();
 
     static {
         // subsystem configs
@@ -67,8 +64,7 @@ public class HoodConstants {
         kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
 
-        kHoodConfig.fxConfig.Feedback.FeedbackSensorSource =
-                FeedbackSensorSourceValue.RotorSensor;
+        kHoodConfig.fxConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = 1;
         kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 17 * 15.625;
 
