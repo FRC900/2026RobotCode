@@ -1,5 +1,7 @@
 package com.team900.frc2026.subsystems.shooter;
 
+import java.io.PrintStream;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -90,7 +92,7 @@ public class ShooterConstants {
     public static final double kShooterGearRatio = 1;
     public static final double kIdleRPS = 1200. / 60.;
     // public static final double kShootingRPS = 3700. / 60.;
-    public static final LoggedTunableNumber kShootingRPS = new LoggedTunableNumber("kShootingRPS", 3700/60);
+    public static final LoggedTunableNumber kShootingRPS = new LoggedTunableNumber("Shooter/kShootingRPS", 3700.0/60.0);
     public static final double kFeedingRPS = 4200. / 60.;
     public static final Rotation2d kTurretToShotCorrection =
             Rotation2d.fromRadians(Units.degreesToRadians(0));

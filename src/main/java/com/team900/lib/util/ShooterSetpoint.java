@@ -99,7 +99,7 @@ public class ShooterSetpoint {
         // var angular = robotSpeeds.omegaRadiansPerSecond;
 
         boolean validSetpont = true;
-        double shooterRPS = ShooterConstants.kShootingRPS;
+        double shooterRPS = ShooterConstants.kShootingRPS.get();
 
         double hoodSetpoint =
                 getPhi(distanceToTarget, 0.0);
