@@ -98,8 +98,8 @@ public class Autos {
                                 swipeCommand(oneSwipePath, "OneSwipe"),
                                 Commands.runOnce(
                                         () -> {
-                                            container.getDriveSubsystem().stop();
                                             container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
                                         })));
 
         return routine.cmd();
@@ -123,8 +123,8 @@ public class Autos {
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
                                 Commands.runOnce(
                                         () -> {
-                                            container.getDriveSubsystem().stop();
                                             container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
                                         })));
 
         return routine.cmd();
@@ -149,8 +149,8 @@ public class Autos {
                                 swipeCommand(twoAndThreeSwipePath, "ThreeSwipe"),
                                 Commands.runOnce(
                                         () -> {
-                                            container.getDriveSubsystem().stop();
                                             container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
                                         })));
 
         return routine.cmd();
@@ -172,8 +172,8 @@ public class Autos {
                                 swipeCommand(oneSwipePath, "OneSwipe"),
                                 Commands.runOnce(
                                         () -> {
-                                            container.getDriveSubsystem().stop();
                                             container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
                                         })));
 
         return routine.cmd();
@@ -198,8 +198,8 @@ public class Autos {
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
                                 Commands.runOnce(
                                         () -> {
-                                            container.getDriveSubsystem().stop();
                                             container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
                                         })));
 
         return routine.cmd();
@@ -225,8 +225,8 @@ public class Autos {
                                 swipeCommand(twoAndThreeSwipePath, "ThreeSwipeCenter"),
                                 Commands.runOnce(
                                         () -> {
-                                            container.getDriveSubsystem().stop();
                                             container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
                                         })));
 
         return routine.cmd();

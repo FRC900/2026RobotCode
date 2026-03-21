@@ -56,7 +56,7 @@ public class AutoFactory900 {
     }
 
     public static Command deploySlapdownAndRunIntake(RobotContainer container) {
-        return new SequentialCommandGroup(
+        return new ParallelCommandGroup(
                 IntakeFactory.deploySlapdown(container), IntakeFactory.runIntake(container));
     }
 
