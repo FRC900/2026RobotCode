@@ -79,11 +79,16 @@ public class IntakePivotConstants {
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
 
+        kIntakePivotConfig.fxConfig.TorqueCurrent.PeakForwardTorqueCurrent = 80;
+        kIntakePivotConfig.fxConfig.TorqueCurrent.PeakReverseTorqueCurrent = -20;
+
+        
         // Ensure motor inversion matches the CANcoder sign convention (Clockwise_Positive)
         // so positive position setpoints move the mechanism in the same physical
         // direction that the CANcoder reports as positive.
         kIntakePivotConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kIntakePivotConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
 
         kIntakePivotConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         kIntakePivotConfig.fxConfig.Slot0.StaticFeedforwardSign =

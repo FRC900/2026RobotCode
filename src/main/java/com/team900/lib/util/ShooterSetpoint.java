@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
+
 public class ShooterSetpoint {
 
     static RobotState robotState = RobotState.getInstance();
@@ -111,6 +113,7 @@ public class ShooterSetpoint {
         boolean validSetpont = true;
 
         double shooterRPS;
+        //TODO: if tshooting isstill inconsistent chage this value
         if (distanceToTarget < 2.24) {
             shooterRPS = ShooterConstants.kCloseShotRPS;
         } else {
@@ -118,6 +121,9 @@ public class ShooterSetpoint {
         }
 
         double hoodSetpoint = getPhi(distanceToTarget, 0.0);
+
+        Logger.recordOutput("/ShooterRPSSetpoint", shooterRPS);
+        Logger.recordOutput("/distanceToTarget", distanceToTarget);
 
         // values for hood are placeholders rn since that depends on the lookup table
         return new ShooterSetpoint(shooterRPS, hoodSetpoint, 0.0, validSetpont);

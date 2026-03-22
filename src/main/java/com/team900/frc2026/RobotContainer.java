@@ -316,37 +316,37 @@ public class RobotContainer {
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
 
-        controlBoard
-                .pass()
-                .onTrue(
-                        ((new ParallelCommandGroup(
-                                        HoodFactory.setPosition(
-                                                (() -> HoodConstants.kHoodMinPositionRadians),
-                                                this),
-                                        ShooterFactory.setShooterRPS(
-                                                        ShooterConstants.kFarShotRPS, this)
-                                                .until(
-                                                        () ->
-                                                                MathUtil.isNear(
-                                                                        ShooterConstants
-                                                                                .kPassingRPS,
-                                                                        shooterSubsystem
-                                                                                .getCurrentVelocity(),
-                                                                        5))))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this)))))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                // ShooterFactory.setShooterRPS(0, this),
-                                shooterSubsystem.voltageCommand(() -> 0),
-                                SpindexerFactory.exhaustSpindexer(instance)
-                                        .withTimeout(0.25)
-                                        .andThen(SpindexerFactory.stopSpindexer(this)),
-                                HandoffFactory.exhaustHandoff(this)
-                                        .withTimeout(0.25)
-                                        .andThen(HandoffFactory.stopHandoff(this))));
+        // controlBoard
+        //         .pass()
+        //         .onTrue(
+        //                 ((new ParallelCommandGroup(
+        //                                 HoodFactory.setPosition(
+        //                                         (() -> HoodConstants.kHoodMinPositionRadians),
+        //                                         this),
+        //                                 ShooterFactory.setShooterRPS(
+        //                                                 ShooterConstants.kFarShotRPS, this)
+        //                                         .until(
+        //                                                 () ->
+        //                                                         MathUtil.isNear(
+        //                                                                 ShooterConstants
+        //                                                                         .kPassingRPS,
+        //                                                                 shooterSubsystem
+        //                                                                         .getCurrentVelocity(),
+        //                                                                 5))))
+        //                         .andThen(
+        //                                 new ParallelCommandGroup(
+        //                                         HandoffFactory.runHandoff(this),
+        //                                         SpindexerFactory.runSpindexer(this)))))
+        //         .onFalse(
+        //                 new ParallelCommandGroup(
+        //                         // ShooterFactory.setShooterRPS(0, this),
+        //                         shooterSubsystem.voltageCommand(() -> 0),
+        //                         SpindexerFactory.exhaustSpindexer(instance)
+        //                                 .withTimeout(0.25)
+        //                                 .andThen(SpindexerFactory.stopSpindexer(this)),
+        //                         HandoffFactory.exhaustHandoff(this)
+        //                                 .withTimeout(0.25)
+        //                                 .andThen(HandoffFactory.stopHandoff(this))));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
