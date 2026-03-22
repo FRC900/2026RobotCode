@@ -38,7 +38,10 @@ public class ShootingFactory {
                         setPointSupplier.get().getHoodRadians() / (2.0 * Math.PI),
                         container.getHoodSubsystem().getCurrentPosition(),
                         0.003)
-                && MathUtil.isNear(setPointSupplier.get().getTurretRadiansFromCenter(), container.getTurretSubsystem().getPositionRadians(), TurretConstants.kTurretShootingEpsilon);
+                && MathUtil.isNear(
+                        setPointSupplier.get().getTurretRadiansFromCenter(),
+                        container.getTurretSubsystem().getPositionRadians(),
+                        TurretConstants.kTurretShootingEpsilon);
     }
 
     public static Command shoot(
@@ -77,18 +80,16 @@ public class ShootingFactory {
                         SpindexerFactory.runSpindexer(container)));
     }
 
-
     public static Command turretShoot(
-        Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container)   {
-                return Commands.parallel(
-    ShooterFactory.setShooterRPS(setpointSupplier, container),
-    SuperstructureFactory.aim(setpointSupplier, container),
-    Commands.sequence(
-        Commands.waitUntil(() -> canShootWTurret(setpointSupplier, container)),
-        Commands.parallel(
-            IntakeFactory.runIntake(container),
-            HandoffFactory.runHandoff(container),
-            SpindexerFactory.runSpindexer(container))));
-        }
-    
+            Supplier<ShooterSetpoint> setpointSupplier, RobotContainer container) {
+        return Commands.parallel(
+                ShooterFactory.setShooterRPS(setpointSupplier, container),
+                SuperstructureFactory.aim(setpointSupplier, container),
+                Commands.sequence(
+                        Commands.waitUntil(() -> canShootWTurret(setpointSupplier, container)),
+                        Commands.parallel(
+                                IntakeFactory.runIntake(container),
+                                HandoffFactory.runHandoff(container),
+                                SpindexerFactory.runSpindexer(container))));
+    }
 }

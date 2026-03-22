@@ -313,11 +313,15 @@ public class RobotContainer {
                                 SpindexerFactory.stopSpindexer(this),
                                 IntakeFactory.stopIntake(this),
                                 HandoffFactory.stopHandoff(this)));
-        controlBoard.turretShoot().onTrue(ShootingFactory.turretShoot(ShooterSetpoint::makeShootingSetpoint, this)).onFalse(new ParallelCommandGroup(shooterSubsystem.voltageCommand(() -> 0),
-        SpindexerFactory.stopSpindexer(this),
-        IntakeFactory.stopIntake(this),
-        HandoffFactory.stopHandoff(this)
-        ));
+        controlBoard
+                .turretShoot()
+                .onTrue(ShootingFactory.turretShoot(ShooterSetpoint::makeShootingSetpoint, this))
+                .onFalse(
+                        new ParallelCommandGroup(
+                                shooterSubsystem.voltageCommand(() -> 0),
+                                SpindexerFactory.stopSpindexer(this),
+                                IntakeFactory.stopIntake(this),
+                                HandoffFactory.stopHandoff(this)));
 
         controlBoard
                 .pass()

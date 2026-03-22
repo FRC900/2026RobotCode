@@ -24,7 +24,7 @@ public class SuperstructureFactory {
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return Commands.parallel(
                 HoodFactory.aimHoodToPose(setPointSupplier, container),
-                    TurretFactory.aimTurretToPose(setPointSupplier));
+                TurretFactory.aimTurretToPose(setPointSupplier));
         /*Command to aim at target
          * Aim turret
          * Aim hood */

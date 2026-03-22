@@ -97,7 +97,7 @@ public class Autos {
                                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
                                         AutoFactory900.waitSeconds(AutoConstants.alignTime)),
                                 Commands.race(
-                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.shoot(ShooterSetpoint::makeShootingSetpoint),
                                         AutoFactory900.waitSeconds(
                                                 AutoConstants.eightBallShootTime)),
                                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),

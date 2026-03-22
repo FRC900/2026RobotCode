@@ -24,8 +24,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import java.util.Arrays;
-import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -62,8 +60,8 @@ public class TurretIOHardware implements TurretIO {
     private final StatusSignal<Angle> cancoder29AbsolutePosition = canCoder29To1.getPosition();
 
     public TurretIOHardware() {
-//TODO: CHECK THE CANCODER CONFIGS
-//TODO: check if need continuous wrap 
+        // TODO: CHECK THE CANCODER CONFIGS
+        // TODO: check if need continuous wrap
         var cancoderConfig = new CANcoderConfiguration();
         cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         cancoderConfig.MagnetSensor.MagnetOffset =
@@ -83,11 +81,9 @@ public class TurretIOHardware implements TurretIO {
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         // Convert from radians to rotor rotations for the TalonFX
         config.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-                Units.radiansToRotations(TurretConstants.kTurretMaxPositionRadians)
-                        / TurretConstants.kTurretGearRatio;
+                Units.radiansToRotations(TurretConstants.kTurretMaxPositionRadians);
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-                Units.radiansToRotations(TurretConstants.kTurretMinPositionRadians)
-                        / TurretConstants.kTurretGearRatio;
+                Units.radiansToRotations(TurretConstants.kTurretMinPositionRadians);
 
         if (Robot.isReal()) {
             config.CurrentLimits.StatorCurrentLimit = 150.0;
@@ -98,8 +94,7 @@ public class TurretIOHardware implements TurretIO {
         }
 
         config.Feedback.RotorToSensorRatio = 1.0;
-                config.Feedback.SensorToMechanismRatio = TurretConstants.kTurretGearRatio;
-
+        config.Feedback.SensorToMechanismRatio = TurretConstants.kTurretGearRatio;
 
         config.Slot0.kS = TurretConstants.COMP_GAINS.ffkS();
         config.Slot0.kP = TurretConstants.COMP_GAINS.kP();
@@ -111,10 +106,9 @@ public class TurretIOHardware implements TurretIO {
         config.MotionMagic.MotionMagicAcceleration = 0;
         config.MotionMagic.MotionMagicCruiseVelocity = 0;
 
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         config.TorqueCurrent.PeakForwardTorqueCurrent = 20;
         config.TorqueCurrent.PeakReverseTorqueCurrent = -20;
-
 
         CTREUtil.applyConfiguration(talon, config);
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -137,7 +131,7 @@ public class TurretIOHardware implements TurretIO {
         BaseStatusSignal.refreshAll(
                 voltsSignal, currentStatorSignal, currentSupplySignal, cancoder29AbsolutePosition);
         if (!cancoderOffset && cancoder33AbsolutePosition != null) {
-            talon.setPosition(getTurretAngleOffset());
+        //     talon.setPosition(getTurretAngleOffset());
             cancoderOffset = true;
         }
         Logger.recordOutput("Turret/IO/cancoderOffset", cancoderOffset);
@@ -147,17 +141,17 @@ public class TurretIOHardware implements TurretIO {
         inputs.currentStatorAmps = currentStatorSignal.getValueAsDouble();
         inputs.currentSupplyAmps = currentSupplySignal.getValueAsDouble();
 
-         double talonPosition =
+        double talonPosition =
                 BaseStatusSignal.getLatencyCompensatedValue(positionSignal, velocitySignal)
                         .in(Radians);
         inputs.positionRad = Units.rotationsToRadians(talonPosition);
-        inputs.velocityRadPerSec =
-                Units.rotationsToRadians(velocitySignal.getValueAsDouble());
+        inputs.velocityRadPerSec = Units.rotationsToRadians(velocitySignal.getValueAsDouble());
         inputs.turretPositionAbsolute =
                 Rotation2d.fromRotations(
                         BaseStatusSignal.getLatencyCompensatedValue(
                                         cancoder33AbsolutePosition, cancoder33Velocity)
                                 .in(Rotation));
+        Logger.recordOutput("Cancoder offest", getTurretAngleOffset());
     }
 
     @Override
@@ -254,5 +248,9 @@ public class TurretIOHardware implements TurretIO {
         Logger.recordOutput(
                 "Turret/IO/setPositionSetpoint/radsPerSecondRotor",
                 radsPerSecond / TurretConstants.kTurretGearRatio);
+    }
+@Override
+    public void setPositionZero()    {
+        talon.setPosition(0.0);
     }
 }

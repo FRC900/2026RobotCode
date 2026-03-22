@@ -115,8 +115,8 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
         return controller.circle();
     }
 
-    @Override 
-    public Trigger turretShoot()    {
+    @Override
+    public Trigger turretShoot() {
         return controller.square();
     }
 

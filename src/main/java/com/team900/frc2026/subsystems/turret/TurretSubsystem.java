@@ -1,6 +1,5 @@
 package com.team900.frc2026.subsystems.turret;
 
-import com.team900.frc2026.factories.TurretFactory;
 import com.team900.lib.util.FullSubsystem;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
@@ -17,7 +16,7 @@ public class TurretSubsystem extends FullSubsystem {
 
     public TurretSubsystem(final TurretIO io) {
         this.io = io;
-
+        io.setPositionZero();
     }
 
     @Override
@@ -90,7 +89,6 @@ public class TurretSubsystem extends FullSubsystem {
         velocitySetpointRadPerSec = velocityRadPerSec;
     }
 
-
     public void setOpenLoop(double dutyCycle) {
         isOpenLoop = true;
         io.setOpenLoopDutyCycle(dutyCycle);
@@ -114,7 +112,6 @@ public class TurretSubsystem extends FullSubsystem {
     }
 
     public boolean atSetpoint() {
-        return Math.abs(inputs.positionRad - positionSetpointRad)
-                < TurretConstants.toleranceRad;
+        return Math.abs(inputs.positionRad - positionSetpointRad) < TurretConstants.toleranceRad;
     }
 }

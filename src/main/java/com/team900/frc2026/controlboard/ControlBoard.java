@@ -137,7 +137,7 @@ public class ControlBoard implements IDriveControlBoard, IButtonControlBoard {
     }
 
     @Override
-    public Trigger turretShoot()    {
+    public Trigger turretShoot() {
         return buttonControlBoard.turretShoot();
     }
 }

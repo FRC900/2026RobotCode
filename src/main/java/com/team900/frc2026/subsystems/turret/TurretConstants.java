@@ -17,8 +17,8 @@ public class TurretConstants {
     public static final CANDeviceId kTurret29To1CANCoder =
             new CANDeviceId(31, Constants.kCanBusCanivoreMech);
     // TODO: Update these offsets, 0 should be facing directly forward.
-    public static final double k33To1TurretCancoderOffset = 0;
-    public static final double k29To1TurretCancoderOffset = 0;
+    public static final double k33To1TurretCancoderOffset = 0.425;
+    public static final double k29To1TurretCancoderOffset = 0.175;
 
     // 33to1 cancoder: 33 rotations to 170 turret rotations
     // 29to1 cancoder: 29 rotations to 170 turret rotations
@@ -30,8 +30,8 @@ public class TurretConstants {
     // TODO: Measure the actual hard stop positions on the robot and set these values
     // These are hard stop limits in radians from center (0 = backward)
     // clockwise is positive
-    public static final double kTurretMinPositionRadians = - Math.PI / 2.0;
-    public static final double kTurretMaxPositionRadians =  Math.PI;
+    public static final double kTurretMinPositionRadians = -Math.PI / 2.0;
+    public static final double kTurretMaxPositionRadians = Math.PI;
 
     public static final double turretOffSetFromCenterX =
             0.1524; // parallel to the front bumpers, need to tune this

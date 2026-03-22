@@ -39,9 +39,10 @@ public interface TurretIO {
     default void readInputs(TurretInputs inputs) {}
     ;
 
-
     // Set open loop duty cycle
     default void setOpenLoopDutyCycle(double dutyCycle) {}
 
     default void setPositionSetpoint(double radiansFromCenter, double radsPerSecond) {}
+
+    default void setPositionZero(){};
 }

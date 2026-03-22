@@ -3,11 +3,8 @@ package com.team900.lib.util;
 import com.team900.frc2026.RobotState;
 import com.team900.frc2026.subsystems.shooter.ShooterConstants;
 import com.team900.frc2026.subsystems.turret.TurretConstants;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.io.IOException;
@@ -65,7 +62,13 @@ public class ShooterSetpoint {
         }
     }
 
-    public ShooterSetpoint(double shooterRPS, double hoodRadians, double hoodFF, double turretRad, double turretFF, boolean isValid) {
+    public ShooterSetpoint(
+            double shooterRPS,
+            double hoodRadians,
+            double hoodFF,
+            double turretRad,
+            double turretFF,
+            boolean isValid) {
         this.shooterRPS = shooterRPS;
         this.hoodRadians = hoodRadians;
         this.hoodFF = hoodFF;
@@ -106,7 +109,8 @@ public class ShooterSetpoint {
                 AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint).toTranslation2d();
 
         // Distance from turret to hub
-        Translation2d distanceToTarget = new Translation2d(hub.getX() - turretX, hub.getY() - turretY);
+        Translation2d distanceToTarget =
+                new Translation2d(hub.getX() - turretX, hub.getY() - turretY);
 
         boolean validSetpont = true;
 
@@ -116,43 +120,49 @@ public class ShooterSetpoint {
         } else {
             shooterRPS = ShooterConstants.kFarShotRPS;
         }
-        
-         // Feedfowards
+
+        // Feedfowards
         var robotSpeeds = robotState.getLatestMeasuredFieldRelativeChassisSpeeds();
 
         var robotToTargetXY = new Translation2d(distanceToTarget.getX(), distanceToTarget.getY());
 
         // In this frame, x = radial component (positive towards goal)
         // y = tangential component (positive means turret needs negative lead)
-        var targetFrameToRobot = new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
-                .rotateBy(
-                        robotToTargetXY.getAngle());
+        var targetFrameToRobot =
+                new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
+                        .rotateBy(robotToTargetXY.getAngle());
 
         var tangent = targetFrameToRobot.getY();
         var angular = robotSpeeds.omegaRadiansPerSecond;
         var turretFF = -(angular + tangent / distanceToTarget.getNorm());
         // This is the deriative of atan2 accounting for the frame that the hood is
         // defined in.
-        
-        ChassisSpeeds robotVelocity = RobotState.getInstance().getLatestFusedFieldRelativeChassisSpeed();
-    double robotAngle = robotState.getLatestFieldToRobot().getValue().getRotation().getRadians();
+
+        ChassisSpeeds robotVelocity =
+                RobotState.getInstance().getLatestFusedFieldRelativeChassisSpeed();
+        double robotAngle =
+                robotState.getLatestFieldToRobot().getValue().getRotation().getRadians();
 
         double turretVelocityX =
-    robotVelocity.vxMetersPerSecond
-        - robotVelocity.omegaRadiansPerSecond
-            * (TurretConstants.turretOffSetFromCenterX * Math.sin(robotAngle)
-                + TurretConstants.turretOffSetFromCenterY * Math.cos(robotAngle));
+                robotVelocity.vxMetersPerSecond
+                        - robotVelocity.omegaRadiansPerSecond
+                                * (TurretConstants.turretOffSetFromCenterX * Math.sin(robotAngle)
+                                        + TurretConstants.turretOffSetFromCenterY
+                                                * Math.cos(robotAngle));
 
-double turretVelocityY =
-    robotVelocity.vyMetersPerSecond
-        + robotVelocity.omegaRadiansPerSecond
-            * (TurretConstants.turretOffSetFromCenterX * Math.cos(robotAngle)
-                - TurretConstants.turretOffSetFromCenterY * Math.sin(robotAngle));
+        double turretVelocityY =
+                robotVelocity.vyMetersPerSecond
+                        + robotVelocity.omegaRadiansPerSecond
+                                * (TurretConstants.turretOffSetFromCenterX * Math.cos(robotAngle)
+                                        - TurretConstants.turretOffSetFromCenterY
+                                                * Math.sin(robotAngle));
 
         double hoodSetpoint = getPhi(distanceToTarget.getNorm(), turretVelocityY);
-        // TODO: prettu sure i can get rid of the math.pi but lets see 
-                double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX) + Math.PI + getTheta(distanceToTarget.getNorm(), turretVelocityX);
-
+        // TODO: prettu sure i can get rid of the math.pi but lets see
+        double angleRad =
+                Math.atan2(hub.getY() - turretY, hub.getX() - turretX)
+                        + Math.PI
+                        + getTheta(distanceToTarget.getNorm(), turretVelocityX);
 
         // values for hood are placeholders rn since that depends on the lookup table
         return new ShooterSetpoint(shooterRPS, hoodSetpoint, 0.0, angleRad, turretFF, validSetpont);

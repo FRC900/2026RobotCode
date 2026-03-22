@@ -36,7 +36,7 @@ public interface IButtonControlBoard {
 
     Trigger swerveAlignToHub();
 
-    Trigger turretShoot()  ;
+    Trigger turretShoot();
 
     // Trigger turretAlignToHub();
 }
