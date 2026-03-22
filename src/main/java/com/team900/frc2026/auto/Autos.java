@@ -82,6 +82,34 @@ public class Autos {
                 AutoFactory900.intakeSlapdown());
     }
 
+    // Move-back and shoot, simple auto for center
+    private static Command MoveBackFromCenterShoot(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(false);
+        AutoRoutine routine = choreoFactory.newRoutine("MoveBackFromCenterShoot");
+        AutoTrajectory path = routine.trajectory("MoveBackCenterShoot");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(path),
+                                path.cmd(),
+                                Commands.race(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                                Commands.race(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(
+                                                AutoConstants.eightBallShootTime)),
+                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveSubsystem().stop();
+                                            container.getDriveCommand().setKAiming(false);
+                                        })));
+
+        return routine.cmd();
+    }
+
     // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
     // at the end.
     // mirrorY bool to flip across y axis (switch from left side to right or vice versa)
@@ -312,5 +340,10 @@ public class Autos {
 
     public static Command ThreeSwipeCenter_Right() {
         return threeSwipeCenter(false);
+    }
+
+    // MoveBackFromCenterShoot
+    public static Command MoveBackFromCenterShoot() {
+        return MoveBackFromCenterShoot(false);
     }
 }

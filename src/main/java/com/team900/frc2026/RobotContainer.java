@@ -300,10 +300,8 @@ public class RobotContainer {
                         new ParallelCommandGroup(
                                 shooterSubsystem.voltageCommand(() -> 0),
                                 new InstantCommand(() -> getDriveCommand().setKAiming(false)),
-                                SpindexerFactory.stopSpindexer(this)
-                                      ,
-                                HandoffFactory.stopHandoff(this)
-                                       ));
+                                SpindexerFactory.stopSpindexer(this),
+                                HandoffFactory.stopHandoff(this)));
 
         controlBoard
                 .shootAuto()

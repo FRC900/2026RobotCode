@@ -54,8 +54,7 @@ public class ShooterSetpoint {
                         PolynomialModel.load(
                                 "src/main/deploy/trajectories/30_RPS/theta_model.json");
                 phiShootingModelFar =
-                        PolynomialModel.load(
-                                "src/main/deploy/trajectories/34_RPS/phi_model.json");
+                        PolynomialModel.load("src/main/deploy/trajectories/34_RPS/phi_model.json");
                 thetaShootingModelFar =
                         PolynomialModel.load(
                                 "src/main/deploy/trajectories/34_RPS/theta_model.json");
@@ -108,7 +107,6 @@ public class ShooterSetpoint {
 
         // Distance from turret to hub
         Translation2d distanceToTarget = new Translation2d(hub.getX() - turretX, hub.getY() - turretY);
-
 
         boolean validSetpont = true;
 
