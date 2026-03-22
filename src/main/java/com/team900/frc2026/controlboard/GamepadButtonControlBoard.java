@@ -102,7 +102,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
 
     @Override
     public Trigger pass() {
-        return additionalController.square().and(() -> false);
+        return additionalController.touchpad();
     }
 
     @Override
