@@ -116,13 +116,13 @@ public class RobotContainer {
                     robotState,
                     new VisionIOPhotonVisionSim(
                             VisionConstants.camera0Name,
-                            VisionConstants.robotToCamera0,
+                            robotState::getRobotToTurretCamera,
                             simulatedRobotState.getSimDrive()::getSimulatedDriveTrainPose));
         } else {
             return new VisionSubsystem(
                     robotState,
                     new VisionIOPhotonVision(
-                            VisionConstants.camera0Name, VisionConstants.robotToCamera0));
+                            VisionConstants.camera0Name, robotState::getRobotToTurretCamera));
         }
     }
 
@@ -149,9 +149,7 @@ public class RobotContainer {
     private TurretSubsystem buildTurretSubsystem() {
         if (RobotBase.isSimulation()) return new TurretSubsystem(new TurretIOSim());
 
-        if (RobotBase.isReal()) return new TurretSubsystem(new TurretIOHardware());
-
-        return new TurretSubsystem(new TurretIO() {});
+        return new TurretSubsystem(new TurretIOHardware());
     }
 
     private IntakeRollerSubsystem buildIntakeRollerSubsystem() {

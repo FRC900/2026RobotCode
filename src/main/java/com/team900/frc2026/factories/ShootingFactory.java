@@ -48,6 +48,8 @@ public class ShootingFactory {
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
         return Commands.sequence(
                 Commands.parallel(
+                                                TurretFactory.setPositionRadians(0),
+
                                 ShooterFactory.setShooterRPS(setPointSupplier, container),
                                 SuperstructureFactory.aim(setPointSupplier, container))
                         .withTimeout(0.25),
@@ -59,6 +61,7 @@ public class ShootingFactory {
     public static Command manualShoot(RobotContainer container) {
         return Commands.sequence(
                 Commands.parallel(
+                        TurretFactory.setPositionRadians(0),
                                 HoodFactory.setPosition(
                                         () -> HoodConstants.kHoodRotorMaxPosition - 0.01,
                                         container),

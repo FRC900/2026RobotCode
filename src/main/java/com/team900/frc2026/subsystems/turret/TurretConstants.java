@@ -50,5 +50,5 @@ public class TurretConstants {
 
     public static final double toleranceRad = 0.1;
 
-    public static final Gains COMP_GAINS = new Gains(0, 0, 0, 0, 0, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(220, 0, 22, 2, 0, 0, 0);
 }

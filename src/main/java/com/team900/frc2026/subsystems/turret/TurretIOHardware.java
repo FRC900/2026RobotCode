@@ -107,8 +107,8 @@ public class TurretIOHardware implements TurretIO {
         config.MotionMagic.MotionMagicCruiseVelocity = 0;
 
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        config.TorqueCurrent.PeakForwardTorqueCurrent = 20;
-        config.TorqueCurrent.PeakReverseTorqueCurrent = -20;
+        config.TorqueCurrent.PeakForwardTorqueCurrent = 0;
+        config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
 
         CTREUtil.applyConfiguration(talon, config);
         BaseStatusSignal.setUpdateFrequencyForAll(

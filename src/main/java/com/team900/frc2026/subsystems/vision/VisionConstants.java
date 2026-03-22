@@ -7,6 +7,8 @@
 
 package com.team900.frc2026.subsystems.vision;
 
+import com.team900.frc2026.subsystems.turret.TurretConstants;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -56,8 +58,8 @@ public class VisionConstants {
 
     public static Transform3d robotToCamera0 =
             new Transform3d(
-                    kRobotToCameraTForward,
-                    kRobotToCameraTSide,
+                    TurretConstants.turretOffSetFromCenterX,
+                    TurretConstants.turretOffSetFromCenterY,
                     kCameraTHeightOffGroundMeters,
                     new Rotation3d(
                             0,

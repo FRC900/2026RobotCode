@@ -13,6 +13,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntSupplier;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /** Tracks robot state including pose, velocities, and mechanism positions. */
@@ -54,11 +58,10 @@ public class RobotState implements VisionConsumer {
             ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
     private final ConcurrentTimeInterpolatableBuffer<Rotation2d> robotToTurret =
             ConcurrentTimeInterpolatableBuffer.createBuffer(LOOKBACK_TIME);
-    private static final Transform2d TURRET_TO_CAMERA =
-            new Transform2d(
+    private static final Translation2d TURRET_TO_CAMERA =
+            new Translation2d(
                     VisionConstants.kTurretToCameraXMeters,
-                    VisionConstants.kTurretToCameraYMeters,
-                    MathHelpers.kRotation2dZero);
+                    VisionConstants.kTurretToCameraYMeters);
     // Current robot-relative chassis speeds (measured from encoders)
     private final AtomicReference<ChassisSpeeds> measuredRobotRelativeChassisSpeeds =
             new AtomicReference<>(new ChassisSpeeds());
@@ -249,9 +252,13 @@ public class RobotState implements VisionConsumer {
         return fieldToRobot.getSample(timestamp);
     }
 
-    public Transform2d getTurretToCamera() {
-        return TURRET_TO_CAMERA;
+    public Translation2d getTurretToCamera() {
+        return TURRET_TO_CAMERA.rotateBy(Rotation2d.fromRadians(getLatestTurretPositionRadians()));
     }
+@AutoLogOutput
+    public Transform3d getRobotToTurretCamera() {
+        return VisionConstants.robotToCamera0.plus(new Transform3d(new Transform2d(getTurretToCamera(), Rotation2d.fromRadians(getLatestTurretPositionRadians()))));
+    } 
 
     public Rotation2d getLatestRotationRobotToHub() {
         return new Transform2d(

@@ -16,20 +16,18 @@ public class TurretFactory {
     // Continuously aims the turret in radians
     public static Command aimTurretToPose(Supplier<ShooterSetpoint> setpointSupplier) {
         TurretSubsystem turret = getContainer().getTurretSubsystem();
-        return Commands.run(
+        return turret.run(
                         () ->
                                 turret.setPositionRadians(
                                         setpointSupplier.get().getTurretRadiansFromCenter(),
-                                        setpointSupplier.get().getTurretFF()),
-                        turret)
+                                        setpointSupplier.get().getTurretFF()))
                 .withName("Aim Turret to Pose (rad)");
     }
 
     // Goes to a fixed position in radians, then finishes
     public static Command setPositionRadians(double radians) {
         TurretSubsystem turret = getContainer().getTurretSubsystem();
-        return Commands.run(() -> turret.setPositionRadians(radians), turret)
-                .until(turret::atSetpoint)
+        return turret.run(() -> turret.setPositionRadians(radians))
                 .withName("Turret Set Position (rad)");
     }
 
