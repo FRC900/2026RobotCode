@@ -25,12 +25,13 @@ public class TurretConstants {
     // Both are direct — no additional gear stages
     public static final int kCRTRatio33 = 33;
     public static final int kCRTRatio29 = 29;
+    public static final int kCRTRingGearTeeth = 176;
 
     // TODO: Measure the actual hard stop positions on the robot and set these values
-    // These are hard stop limits in radians from center (0 = forward)
+    // These are hard stop limits in radians from center (0 = backward)
     // clockwise is positive
-    public static final double kTurretMinPositionRadians = 0;
-    public static final double kTurretMaxPositionRadians = 3.0 * Math.PI / 2.0;
+    public static final double kTurretMinPositionRadians = - Math.PI / 2.0;
+    public static final double kTurretMaxPositionRadians =  Math.PI;
 
     public static final double turretOffSetFromCenterX =
             0.1524; // parallel to the front bumpers, need to tune this

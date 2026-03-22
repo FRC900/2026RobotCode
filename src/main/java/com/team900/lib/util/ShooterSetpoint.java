@@ -153,7 +153,7 @@ double turretVelocityY =
 
         double hoodSetpoint = getPhi(distanceToTarget.getNorm(), turretVelocityY);
         // TODO: prettu sure i can get rid of the math.pi but lets see 
-                double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX) + getTheta(distanceToTarget.getNorm(), turretVelocityX);
+                double angleRad = Math.atan2(hub.getY() - turretY, hub.getX() - turretX) + Math.PI + getTheta(distanceToTarget.getNorm(), turretVelocityX);
 
 
         // values for hood are placeholders rn since that depends on the lookup table

@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.team900.frc2026.Constants;
@@ -61,7 +62,8 @@ public class TurretIOHardware implements TurretIO {
     private final StatusSignal<Angle> cancoder29AbsolutePosition = canCoder29To1.getPosition();
 
     public TurretIOHardware() {
-
+//TODO: CHECK THE CANCODER CONFIGS
+//TODO: check if need continuous wrap 
         var cancoderConfig = new CANcoderConfiguration();
         cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         cancoderConfig.MagnetSensor.MagnetOffset =
@@ -95,6 +97,10 @@ public class TurretIOHardware implements TurretIO {
             config.OpenLoopRamps = Constants.makeDefaultOpenLoopRampConfig();
         }
 
+        config.Feedback.RotorToSensorRatio = 1.0;
+                config.Feedback.SensorToMechanismRatio = TurretConstants.kTurretGearRatio;
+
+
         config.Slot0.kS = TurretConstants.COMP_GAINS.ffkS();
         config.Slot0.kP = TurretConstants.COMP_GAINS.kP();
         config.Slot0.kD = TurretConstants.COMP_GAINS.kD();
@@ -102,8 +108,13 @@ public class TurretIOHardware implements TurretIO {
         config.Slot0.kA = TurretConstants.COMP_GAINS.ffkA();
         // find motion magic values
         config.MotionMagic.MotionMagicJerk = 0.0;
-        config.MotionMagic.MotionMagicAcceleration = 900.0;
-        config.MotionMagic.MotionMagicCruiseVelocity = 90.0;
+        config.MotionMagic.MotionMagicAcceleration = 0;
+        config.MotionMagic.MotionMagicCruiseVelocity = 0;
+
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        config.TorqueCurrent.PeakForwardTorqueCurrent = 20;
+        config.TorqueCurrent.PeakReverseTorqueCurrent = -20;
+
 
         CTREUtil.applyConfiguration(talon, config);
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -113,7 +124,7 @@ public class TurretIOHardware implements TurretIO {
                 currentSupplySignal,
                 cancoder29AbsolutePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
-                250,
+                100,
                 cancoder33AbsolutePosition,
                 cancoder33Velocity,
                 positionSignal,
@@ -139,10 +150,9 @@ public class TurretIOHardware implements TurretIO {
          double talonPosition =
                 BaseStatusSignal.getLatencyCompensatedValue(positionSignal, velocitySignal)
                         .in(Radians);
-        double kGearRatio = TurretConstants.kTurretGearRatio;
-        inputs.positionRad = Units.rotationsToRadians(talonPosition * kGearRatio);
+        inputs.positionRad = Units.rotationsToRadians(talonPosition);
         inputs.velocityRadPerSec =
-                Units.rotationsToRadians(velocitySignal.getValueAsDouble() * kGearRatio);
+                Units.rotationsToRadians(velocitySignal.getValueAsDouble());
         inputs.turretPositionAbsolute =
                 Rotation2d.fromRotations(
                         BaseStatusSignal.getLatencyCompensatedValue(
@@ -210,7 +220,7 @@ public class TurretIOHardware implements TurretIO {
         Logger.recordOutput("Turret/CRT/turretRotations", turretRotations);
 
         // Return in rotor rotations (what the TalonFX encoder expects)
-        return turretRotations / TurretConstants.kTurretGearRatio;
+        return turretRotations;
     }
 
     /** Computes the modular inverse of a mod m using the extended Euclidean algorithm. */
@@ -233,8 +243,8 @@ public class TurretIOHardware implements TurretIO {
                         TurretConstants.kTurretMinPositionRadians,
                         TurretConstants.kTurretMaxPositionRadians);
         double setpointRotations = Units.radiansToRotations(setpointRadians);
-        double setpointRotor = setpointRotations / TurretConstants.kTurretGearRatio;
-        double ffVel = Units.radiansToRotations(radsPerSecond) / TurretConstants.kTurretGearRatio;
+        double setpointRotor = setpointRotations;
+        double ffVel = Units.radiansToRotations(radsPerSecond);
         talon.setControl(
                 positionTorqueCurrentFOCControl.withPosition(setpointRotor).withVelocity(ffVel));
         Logger.recordOutput("Turret/IO/setPositionSetpoint/radiansFromCenter", radiansFromCenter);
