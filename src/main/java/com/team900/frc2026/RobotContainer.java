@@ -57,7 +57,6 @@ import com.team900.lib.util.FieldConstants.LinesVertical;
 import com.team900.lib.util.FieldConstants.RightTrench;
 import com.team900.lib.util.HubFlipUtil;
 import com.team900.lib.util.ShooterSetpoint;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -324,34 +323,28 @@ public class RobotContainer {
         controlBoard
                 .pass()
                 .onTrue(
-                        ((new ParallelCommandGroup(
-                                        HoodFactory.setPosition(
-                                                (() -> HoodConstants.kHoodMinPositionRadians),
-                                                this),
-                                        ShooterFactory.setShooterRPS(
-                                                        ShooterConstants.kFarShotRPS, this)
-                                                .until(
+                        Commands.sequence(
+                                Commands.parallel(
+                                                HoodFactory.setPosition(
                                                         () ->
-                                                                MathUtil.isNear(
-                                                                        ShooterConstants
-                                                                                .kPassingRPS,
-                                                                        shooterSubsystem
-                                                                                .getCurrentVelocity(),
-                                                                        5))))
-                                .andThen(
-                                        new ParallelCommandGroup(
-                                                HandoffFactory.runHandoff(this),
-                                                SpindexerFactory.runSpindexer(this)))))
+                                                                HoodConstants.kHoodRotorMaxPosition
+                                                                        - 0.01,
+                                                        this),
+                                                new InstantCommand(
+                                                        () -> getDriveCommand().setKPassing(true)),
+                                                ShooterFactory.setShooterRPS(
+                                                        ShooterConstants.kCloseShotRPS, this))
+                                        .withTimeout(0.25),
+                                Commands.parallel(
+                                        HandoffFactory.runHandoff(this),
+                                        SpindexerFactory.runSpindexer(this))))
                 .onFalse(
                         new ParallelCommandGroup(
-                                // ShooterFactory.setShooterRPS(0, this),
                                 shooterSubsystem.voltageCommand(() -> 0),
-                                SpindexerFactory.exhaustSpindexer(instance)
-                                        .withTimeout(0.25)
-                                        .andThen(SpindexerFactory.stopSpindexer(this)),
-                                HandoffFactory.exhaustHandoff(this)
-                                        .withTimeout(0.25)
-                                        .andThen(HandoffFactory.stopHandoff(this))));
+                                new InstantCommand(() -> getDriveCommand().setKPassing(false)),
+                                SpindexerFactory.stopSpindexer(this),
+                                IntakeFactory.stopIntake(this),
+                                HandoffFactory.stopHandoff(this)));
 
         controlBoard.resetGyro().onTrue(new InstantCommand(driveSubsystem::teleopResetRotation));
 
