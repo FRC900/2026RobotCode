@@ -243,7 +243,7 @@ public class RobotContainer {
     @Getter private final SpindexerSubsystem spindexerSubsystem = buildSpindexerSubsystem();
     @Getter private final HoodSubsystem hoodSubsystem = buildHoodSubsystem();
 
-    // @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();=======
+    @Getter private final TurretSubsystem turretSubsystem = buildTurretSubsystem();
 
     @Getter
     private final IntakeRollerSubsystem intakeRollerSubsystem = buildIntakeRollerSubsystem();

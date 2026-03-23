@@ -115,8 +115,8 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
         return controller.circle();
     }
 
-    // @Override
-    // public Trigger turretAlignToHub() {
-    //     return controller.cross();
-    // }
+    @Override
+    public Trigger turretAlignToHub() {
+        return controller.cross();
+    }
 }

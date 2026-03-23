@@ -5,6 +5,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.team900.frc2026.RobotContainer;
 import com.team900.frc2026.factories.AutoFactory900;
+import com.team900.frc2026.factories.ShootingFactory;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,10 +27,7 @@ public class Autos {
                 AutoFactory900.resetHood(container),
                 // reset turret
                 Commands.race(
-                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                Commands.race(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        ShootingFactory.shoot(ShooterSetpoint::setpointHub, container),
                         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
                 Commands.runOnce(
