@@ -17,13 +17,13 @@ import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
 public class IntakePivotConstants {
     // Intake radians will be measured from horizontal to avoid confusion where positive direction
     // is up
-    public static final double kIntakePivotToleranceRotations = 0.05;
+    public static final double kIntakePivotToleranceRadians = 0.1;
     public static final double kIntakePivotStow = 0.2; // update
     public static final double kIntakePivotDeploy = .003;
 
     public static final double kIntakeGearRatio = 41.9894179894;
 
-    public static final Gains COMP_GAINS = new Gains(50, 0, 0, 0, 1, 0, 0);
+    public static final Gains COMP_GAINS = new Gains(200, 0, 0, 3.8, 0, 0, 5);
 
     public static ServoMotorSubsystemWithCanCoderConfig kIntakePivotConfig =
             new ServoMotorSubsystemWithCanCoderConfig();
@@ -57,7 +57,7 @@ public class IntakePivotConstants {
         // cancoder config
         kIntakeCanCoderConfig.CANID = new CANDeviceId(62, Constants.kCanBusCanivoreMech);
         kIntakeCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .7;
-        kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.34;
+        kIntakeCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.26;
         kIntakeCanCoderConfig.config.MagnetSensor.SensorDirection =
                 SensorDirectionValue.Clockwise_Positive;
 
@@ -74,7 +74,7 @@ public class IntakePivotConstants {
                 kIntakeCanCoderConfig.CANID.getDeviceNumber();
         kIntakePivotConfig.fxConfig.Feedback.FeedbackSensorSource =
                 FeedbackSensorSourceValue.FusedCANcoder;
-        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio = 18.3704;
+        kIntakePivotConfig.fxConfig.Feedback.RotorToSensorRatio = 21;
         kIntakePivotConfig.fxConfig.Feedback.SensorToMechanismRatio = 2;
 
         kIntakePivotConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;

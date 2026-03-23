@@ -49,6 +49,7 @@ public class DriveMaintainingHeadingCommand extends Command {
     private final DoubleSupplier mTurnSupplier;
     private Optional<Rotation2d> mHeadingSetpoint = Optional.empty();
     @AutoLogOutput @Getter @Setter private boolean kAiming = false;
+    @AutoLogOutput @Getter @Setter private boolean kPassing = false;
     private double mJoystickLastTouched = -1;
 
     private final PIDController thetaController =
@@ -105,7 +106,24 @@ public class DriveMaintainingHeadingCommand extends Command {
             Logger.recordOutput("DriveMaintainHeading/strafeFieldFrame", strafeFieldFrame);
             Logger.recordOutput("DriveMaintainHeading/mHeadingSetpoint", mHeadingSetpoint.get());
 
-            if (kAiming) {
+            if (kPassing) {
+                mHeadingSetpoint = Optional.of(Rotation2d.fromDegrees(180));
+
+                mDrivetrain.runVelocity(
+                        ChassisSpeeds.fromFieldRelativeSpeeds(
+                                throttleFieldFrame,
+                                strafeFieldFrame,
+                                thetaController.calculate(
+                                                mDrivetrain.getRotation().getRotations(),
+                                                mHeadingSetpoint.get().getRotations())
+                                        * DriveConstants.kDriveMaxAngularRate,
+                                mDrivetrain.getRotation()));
+
+                // Logger.recordOutput("DriveMaintainHeading/Mode", "Passing");
+                // Logger.recordOutput(
+                //         "DriveMaintainHeading/HeadingSetpoint",
+                //         mHeadingSetpoint.get().getDegrees());
+            } else if (kAiming) {
                 Pose2d robotPose = mRobotState.getLatestFieldToRobot().getValue();
                 TurretAlignUtil aligner = new TurretAlignUtil(robotPose);
                 Pose2d turretPose = aligner.getTurretPositionFromRobotPose();
@@ -151,14 +169,14 @@ public class DriveMaintainingHeadingCommand extends Command {
         }
     }
 
-    // @Override
-    // public boolean isFinished() {
-    //     if (isNearTarget()) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
+    @Override
+    public boolean isFinished() {
+        if (isNearTarget()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public boolean isNearTarget() {
         if (mHeadingSetpoint.isEmpty()) {
@@ -169,7 +187,7 @@ public class DriveMaintainingHeadingCommand extends Command {
                 MathUtil.isNear(
                         mHeadingSetpoint.get().getDegrees(),
                         mRobotContainer.getDriveSubsystem().getRotation().getDegrees(),
-                        2.5);
+                        3);
 
         return isNearHubTarget;
     }

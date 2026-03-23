@@ -30,6 +30,9 @@ public class AutoDashboard {
         autoChooser.addOption("Three-Swipe Center to Left", Autos.ThreeSwipeCenter_Left());
         autoChooser.addOption("Three-Swipe Center to Right", Autos.ThreeSwipeCenter_Right());
 
+        // Center go back and shoot
+        autoChooser.addOption("Move Back From Center and Shoot", Autos.MoveBackFromCenterShoot());
+
         // Simple stanstill autos
         autoChooser.addOption("A Simple", Autos.A_Simple());
         autoChooser.addOption("B Simple", Autos.B_Simple());

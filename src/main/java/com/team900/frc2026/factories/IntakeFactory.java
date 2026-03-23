@@ -26,12 +26,18 @@ public class IntakeFactory {
     public static Command deploySlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
+                // .motionMagicSetpointCommandBlocking(
+                //         () -> IntakePivotConstants.kIntakePivotDeploy, 1, 1)
+                // .withTimeout(2);
                 .positionSetpointCommand(() -> IntakePivotConstants.kIntakePivotDeploy);
     }
 
     public static Command retractSlapdown(RobotContainer container) {
         return container
                 .getIntakePivotSubsystem()
+                // .motionMagicSetpointCommandBlocking(
+                //         () -> IntakePivotConstants.kIntakePivotStow, 1, 1)
+                // .withTimeout(3);
                 .positionSetpointCommand(() -> IntakePivotConstants.kIntakePivotStow);
     }
 }

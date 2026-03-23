@@ -3,6 +3,8 @@ package com.team900.frc2026.factories;
 import com.team900.frc2026.RobotContainer;
 import com.team900.lib.util.ShooterSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import java.util.function.Supplier;
 
@@ -10,8 +12,9 @@ public class SuperstructureFactory {
 
     public static Command aim(
             Supplier<ShooterSetpoint> setPointSupplier, RobotContainer container) {
-        // return null;
-        return HoodFactory.aimHoodToPose(setPointSupplier, container);
+        return Commands.parallel(
+                HoodFactory.aimHoodToPose(setPointSupplier, container),
+                new InstantCommand(() -> container.getDriveCommand().setKAiming(true)));
         /*Command to aim at target
          * Aim turret
          * Aim hood */

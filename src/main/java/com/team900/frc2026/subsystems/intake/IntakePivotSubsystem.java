@@ -22,9 +22,8 @@ public class IntakePivotSubsystem
                 motorIO,
                 new CanCoderInputsAutoLogged(),
                 cancoderIO);
-        this.setMotionMagicConfigCommand(IntakePivotConstants.kIntakePivotMotionMagicConfigs);
         setDefaultCommand(
-                motionMagicSetpointCommand(this::getPositionSetpointUnits)
+                positionSetpointCommand(this::getPositionSetpointUnits)
                         .withName("Intake Pivot Hold Setpoint")
                         .ignoringDisable(true));
 
@@ -46,6 +45,7 @@ public class IntakePivotSubsystem
                 (IntakePivotConstants.kIntakePivotStow + IntakePivotConstants.kIntakePivotDeploy)
                         / 2.0;
         boolean isDeployed = inputs.unitPosition < midpoint;
+
         Logger.recordOutput("Intake Pivot/IntakePivotIsDeployed", isDeployed);
     }
 

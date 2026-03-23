@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -36,11 +35,11 @@ public class AutoFactory900 {
     }
 
     public static Command runIntake() {
-        return new InstantCommand(() -> IntakeFactory.runIntake(container));
+        return IntakeFactory.runIntake(container);
     }
 
     public static Command stopIntake() {
-        return new InstantCommand(() -> IntakeFactory.stopIntake(container));
+        return IntakeFactory.stopIntake(container);
     }
 
     public static Command shoot(Supplier<ShooterSetpoint> setpointSupplier) {
@@ -56,7 +55,7 @@ public class AutoFactory900 {
     }
 
     public static Command deploySlapdownAndRunIntake(RobotContainer container) {
-        return new SequentialCommandGroup(
+        return new ParallelCommandGroup(
                 IntakeFactory.deploySlapdown(container), IntakeFactory.runIntake(container));
     }
 
@@ -64,8 +63,16 @@ public class AutoFactory900 {
         return new InstantCommand(() -> HoodFactory.stow(container));
     }
 
-    public static DriveMaintainingHeadingCommand alignToHub(
+    public static Command zeroHood(RobotContainer container) {
+        return HoodFactory.zero(container);
+    }
+
+    public static Command alignToHub(
             DoubleSupplier throttle, DoubleSupplier strafe, DoubleSupplier turn) {
-        return new DriveMaintainingHeadingCommand(container, throttle, strafe, turn);
+
+        DriveMaintainingHeadingCommand autoDriveCommand =
+                new DriveMaintainingHeadingCommand(container, throttle, strafe, turn);
+        autoDriveCommand.setKAiming(true);
+        return autoDriveCommand;
     }
 }

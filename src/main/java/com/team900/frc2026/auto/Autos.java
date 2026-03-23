@@ -32,43 +32,82 @@ public class Autos {
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
                         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
                 AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
-                Commands.runOnce(() -> container.getDriveSubsystem().stop()));
+                Commands.runOnce(
+                        () -> {
+                            container.getDriveSubsystem().stop();
+                            container.getDriveCommand().setKAiming(false);
+                        }));
     }
 
     // shoot Fuel from starting position from AutoTrajectory
     private static Command simpleAutoFromPath(AutoTrajectory path) {
         return Commands.sequence(
                 // reset
-                path.resetOdometry(),
-                AutoFactory900.resetHood(container),
-                // reset turret
-                Commands.race(
-                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
-                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
-                Commands.race(
-                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                        AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
-                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime));
+                path.resetOdometry(), AutoFactory900.zeroHood(container));
+        // reset turret
+        // Commands.race(
+        //         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+        //         AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+        // Commands.race(
+        //         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+        //         AutoFactory900.waitSeconds(AutoConstants.eightBallShootTime)),
+        // AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime));
     }
 
     // Command for moving robot to one swipe of Fuel and back
     private static Command swipeCommand(AutoTrajectory path, String pathName) {
         return Commands.sequence(
                 // Intake (only at start) and run path
-                Commands.deadline(
-                        path.cmd(),
-                        pathName.equals("OneSwipe")
-                                ? AutoFactory900.deploySlapdownAndRunIntake(container)
-                                : Commands.none()),
+                Commands.parallel(path.cmd(), AutoFactory900.deploySlapdownAndRunIntake(container)),
+                // pathName.equals("OneSwipe")
+                //         ? AutoFactory900.runIntake()
+                //         : Commands.none()),
+
+                // Stop intake rollers after path finishes
+                AutoFactory900.stopIntake(),
 
                 // Aim turret/hood and shoot
                 Commands.race(
                         AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
                         AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                // Shoot for 3 seconds, then stow intake, then keep shooting
                 Commands.race(
                         AutoFactory900.shoot(ShooterSetpoint::setpointHub),
-                        AutoFactory900.waitSeconds(AutoConstants.fullHopperShootTime)),
-                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime));
+                        AutoFactory900.waitSeconds(AutoConstants.stowIntakeShootTime)),
+                AutoFactory900.retractSlapdown(),
+                Commands.race(
+                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                        AutoFactory900.waitSeconds(AutoConstants.postStowShootTime)),
+                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                AutoFactory900.intakeSlapdown());
+    }
+
+    // Move-back and shoot, simple auto for center
+    private static Command MoveBackFromCenterShoot(boolean mirrorY) {
+        AutoFactory choreoFactory = GenericAuto.getAutoFactory(false);
+        AutoRoutine routine = choreoFactory.newRoutine("MoveBackFromCenterShoot");
+        AutoTrajectory path = routine.trajectory("MoveBackCenterShoot");
+
+        routine.active()
+                .onTrue(
+                        Commands.sequence(
+                                simpleAutoFromPath(path),
+                                path.cmd(),
+                                Commands.race(
+                                        AutoFactory900.alignToHub(() -> 0.0, () -> 0.0, () -> 0.0),
+                                        AutoFactory900.waitSeconds(AutoConstants.alignTime)),
+                                Commands.race(
+                                        AutoFactory900.shoot(ShooterSetpoint::setpointHub),
+                                        AutoFactory900.waitSeconds(
+                                                AutoConstants.eightBallShootTime)),
+                                AutoFactory900.stopShoot().withTimeout(AutoConstants.stopShootTime),
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveSubsystem().stop();
+                                            container.getDriveCommand().setKAiming(false);
+                                        })));
+
+        return routine.cmd();
     }
 
     // One-swipe auto: deploy intake + run path (OneSwipe) while intaking, then aim hood and shoot
@@ -85,7 +124,11 @@ public class Autos {
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
                                 swipeCommand(oneSwipePath, "OneSwipe"),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
+                                        })));
 
         return routine.cmd();
     }
@@ -106,7 +149,11 @@ public class Autos {
                                 simpleAutoFromPath(oneSwipePath),
                                 swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
+                                        })));
 
         return routine.cmd();
     }
@@ -128,7 +175,11 @@ public class Autos {
                                 swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "ThreeSwipe"),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
+                                        })));
 
         return routine.cmd();
     }
@@ -146,8 +197,12 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "oneSwipeCenter"),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                swipeCommand(oneSwipePath, "OneSwipe"),
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
+                                        })));
 
         return routine.cmd();
     }
@@ -167,9 +222,13 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
+                                        })));
 
         return routine.cmd();
     }
@@ -189,10 +248,14 @@ public class Autos {
                 .onTrue(
                         Commands.sequence(
                                 simpleAutoFromPath(oneSwipePath),
-                                swipeCommand(oneSwipePath, "OneSwipeCenter"),
+                                swipeCommand(oneSwipePath, "OneSwipe"),
                                 swipeCommand(twoAndThreeSwipePath, "TwoSwipeCenter"),
                                 swipeCommand(twoAndThreeSwipePath, "ThreeSwipeCenter"),
-                                Commands.runOnce(() -> container.getDriveSubsystem().stop())));
+                                Commands.runOnce(
+                                        () -> {
+                                            container.getDriveCommand().setKAiming(false);
+                                            container.getDriveSubsystem().stop();
+                                        })));
 
         return routine.cmd();
     }
@@ -277,5 +340,10 @@ public class Autos {
 
     public static Command ThreeSwipeCenter_Right() {
         return threeSwipeCenter(false);
+    }
+
+    // MoveBackFromCenterShoot
+    public static Command MoveBackFromCenterShoot() {
+        return MoveBackFromCenterShoot(false);
     }
 }

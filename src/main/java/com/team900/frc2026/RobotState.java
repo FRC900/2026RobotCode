@@ -127,8 +127,14 @@ public class RobotState implements VisionConsumer {
         return enablePathCancel.get();
     }
 
-    public void updateHoodHasZero(boolean hoodZereod) {
-        hasHoodZero.set(hoodZereod);
+    public void updateHoodHasZero(boolean hoodZeroed) {
+        if (hoodZeroed) {
+            hasHoodZero.set(true);
+        }
+    }
+
+    public void resetHoodHasZero() {
+        hasHoodZero.set(false);
     }
 
     public boolean getHoodHasZeroed() {

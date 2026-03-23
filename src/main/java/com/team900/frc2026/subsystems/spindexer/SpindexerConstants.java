@@ -31,6 +31,6 @@ public class SpindexerConstants {
     }
 
     public static final double kSpindexerGearRatio = 10.0;
-    public static final double kSpindexerDutyCycle = 1.0;
+    public static final double kSpindexerDutyCycle = 0.5;
     public static final double kSpindexerDutyCycleExhaust = -0.5;
 }

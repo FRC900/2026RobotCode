@@ -4,13 +4,11 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.team900.frc2026.Constants;
 import com.team900.frc2026.Constants.Gains;
 import com.team900.lib.drivers.CANDeviceId;
-import com.team900.lib.subsystems.CanCoderConfig;
-import com.team900.lib.subsystems.ServoMotorSubsystemWithCanCoderConfig;
+import com.team900.lib.subsystems.ServoMotorSubsystemConfig;
 import edu.wpi.first.math.util.Units;
 
 public class HoodConstants {
@@ -20,28 +18,30 @@ public class HoodConstants {
     public static final double kHoodGearRatio = 15.625 * 170. / 10.;
 
     public static final double kHoodToleranceRadians = 0.1;
-    public static final double kHoodZeroedAngleDegrees = 15;
+    public static final double kHoodZeroedAngleDegrees = 0;
 
     public static final double kHoodMaxPositionDegrees = 75;
-    public static final double kHoodMinPositionDegrees = 15;
-    public static final double kHoodRotorMaxPosition = 0.0754 + Units.degreesToRotations(15.0);
-    public static final double kHoodRotorMinPosition = Units.degreesToRotations(15.0);
+    public static final double kHoodMinPositionDegrees = 45;
+    public static final double kHoodRotorMaxPosition =
+            Units.degreesToRotations(kHoodMaxPositionDegrees);
+    public static final double kHoodRotorMinPosition =
+            Units.degreesToRotations(kHoodMinPositionDegrees);
 
     public static final double kZeroingAmps = 15;
     public static final double kZeroingSeconds = 0.1;
 
     // Convert rotor-rotation positions into radians
-    public static final double kHoodMinPositionRadians = kHoodRotorMinPosition;
-    public static final double kHoodMaxPositionRadians = kHoodRotorMaxPosition;
+    public static final double kHoodMinPositionRadians =
+            Units.rotationsToRadians(kHoodRotorMinPosition);
+    public static final double kHoodMaxPositionRadians =
+            Units.rotationsToRadians(kHoodRotorMaxPosition);
 
     public static final double kHoodEpsilon = Units.degreesToRadians(1.0);
     public static final double kHoodShootingEpsilon = Units.degreesToRadians(1);
     // TODO: find this experimetnatlly
-    public static final double kHoodStowTrenchPositionRadians = Units.degreesToRadians(15.0);
+    public static final double kHoodStowTrenchPositionRadians = Units.degreesToRotations(75.0);
 
-    public static ServoMotorSubsystemWithCanCoderConfig kHoodConfig =
-            new ServoMotorSubsystemWithCanCoderConfig();
-    public static CanCoderConfig kHoodCanCoderConfig = new CanCoderConfig();
+    public static ServoMotorSubsystemConfig kHoodConfig = new ServoMotorSubsystemConfig();
 
     static {
         // subsystem configs
@@ -50,26 +50,11 @@ public class HoodConstants {
         // Compute CANcoder -> subsystem units mapping from Phoenix measurement.
         // bottom = 0.0 and top = 0.229 rotations.
         double measuredSpan = 0.229; // rotations reported by Phoenix for full travel
-        double kMaxUnits = kHoodMaxPositionRadians;
-        double kMinUnits = kHoodMinPositionRadians;
-        kHoodConfig.cancoderToUnitsRatio = 1;
-        kHoodConfig.isFusedCancoder = true;
-        kHoodConfig.kMaxPositionUnits = kHoodMaxPositionRadians;
-        kHoodConfig.kMinPositionUnits = kHoodMinPositionRadians;
+        kHoodConfig.kMaxPositionUnits = kHoodRotorMaxPosition;
+        kHoodConfig.kMinPositionUnits = kHoodRotorMinPosition;
         kHoodConfig.momentOfInertia = 0.0255356814;
         kHoodConfig.talonCANID = new CANDeviceId(34, Constants.kCanBusCanivoreMech);
         kHoodConfig.unitToRotorRatio = 1;
-
-        // configs for sim
-        kHoodConfig.ratioForSim = kHoodGearRatio;
-        kHoodConfig.cancoderUnitsForSim = 1;
-
-        // cancoder config
-        kHoodCanCoderConfig.CANID = new CANDeviceId(30, Constants.kCanBusCanivoreMech);
-        kHoodCanCoderConfig.config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.307;
-        kHoodCanCoderConfig.config.MagnetSensor.MagnetOffset = 0.44604455;
-        kHoodCanCoderConfig.config.MagnetSensor.SensorDirection =
-                SensorDirectionValue.Clockwise_Positive;
 
         // fxConfig
         kHoodConfig.fxConfig.CurrentLimits.StatorCurrentLimit = 150;
@@ -79,15 +64,12 @@ public class HoodConstants {
         kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLowerLimit = 40;
         kHoodConfig.fxConfig.CurrentLimits.SupplyCurrentLowerTime = 1;
 
-        kHoodConfig.fxConfig.Feedback.FeedbackRemoteSensorID =
-                kHoodCanCoderConfig.CANID.getDeviceNumber();
-        kHoodConfig.fxConfig.Feedback.FeedbackSensorSource =
-                FeedbackSensorSourceValue.FusedCANcoder;
-        kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = 15.625;
-        kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 17;
+        kHoodConfig.fxConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        kHoodConfig.fxConfig.Feedback.RotorToSensorRatio = 1;
+        kHoodConfig.fxConfig.Feedback.SensorToMechanismRatio = 17 * 15.625;
 
         kHoodConfig.fxConfig.MotorOutput.ControlTimesyncFreqHz = 500;
-        kHoodConfig.fxConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        kHoodConfig.fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         kHoodConfig.fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         kHoodConfig.fxConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
@@ -105,7 +87,5 @@ public class HoodConstants {
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = kHoodRotorMinPosition;
         kHoodConfig.fxConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-
-        kHoodConfig.canCoderConfig = kHoodCanCoderConfig;
     }
 }

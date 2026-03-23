@@ -82,12 +82,12 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
 
     @Override
     public Trigger shoot() {
-        return controller.R2();
+        return controller.triangle();
     }
 
     @Override
     public Trigger shootAuto() {
-        return controller.triangle();
+        return controller.R2();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class GamepadButtonControlBoard implements IButtonControlBoard {
 
     @Override
     public Trigger pass() {
-        return controller.R2().and(additionalController.L3());
+        return additionalController.touchpad();
     }
 
     @Override
